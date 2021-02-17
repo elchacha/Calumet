@@ -1,7 +1,5 @@
-[version]v6.3[/version]
-[update]CalumetGui-6.3.jar[/update]
+[version]v6.31[/version]
+[update]CalumetGui-6.31.jar[/update]
 [additional][/additional]
 [history]Update :
-- enhancement on storage tab
-- added update control[/history]
-
+- Ajout de l'export en xls dans l'ongler soql.(cette fonction ne marche qu'après un redemarrage de calumet)
