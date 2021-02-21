@@ -1,5 +1,7 @@
-[version]v6.32[/version]
-[update]CalumetGui-6.32.jar[/update]
+[version]v6.33[/version]
+[update]CalumetGui-6.33.jar[/update]
 [additional][/additional]
 [history]Update :
-- Modification de l'updater pour Mac/Windows[/history]
+- Modification de l'updater pour Mac/Windows
+- Ajout des fonctions FIELDS(CUSTOM),FIELDS(STANDARD),FIELDS(CREAT),FIELDS(UPDATE)
+[/history]
