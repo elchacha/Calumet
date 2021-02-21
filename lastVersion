@@ -1,5 +1,5 @@
 [version]v6.31[/version]
-[update]CalumetGui-6.31.jar[/update]
+[update]CalumetGui-6.32.jar[/update]
 [additional][/additional]
 [history]Update :
-- Ajout de l'export en xls dans l'ongler soql.(cette fonction ne marche qu'après un redemarrage de calumet)[/history]
+- Modification de l'updater pour Mac/Windows[/history]
