@@ -1,5 +1,6 @@
-[version]v6.34[/version]
-[update]CalumetGui-6.34.jar[/update]
+[version]v6.33[/version]
+[update]CalumetGui-6.33
+.jar[/update]
 [additional][/additional]
 [history]Update :
 - Modification de l'updater pour Mac/Windows
