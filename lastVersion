@@ -6,3 +6,5 @@
 - Modification de l'updater pour Mac/Windows
 - Ajout des fonctions FIELDS(CUSTOM),FIELDS(STANDARD),FIELDS(CREAT),FIELDS(UPDATE)
 [/history]
+[versionUpdater]v0.1[/versionUpdater]
+[updater]CalumetUpdater.jar[/updater]
