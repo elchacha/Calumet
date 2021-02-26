@@ -1,10 +1,7 @@
-[version]v6.34[/version]
+[version]v6.35[/version]
 [update]CalumetGui.jar[/update]
 [additional][/additional]
 [history]Update :
-- Modification de l'updater pour Mac/Windows
-- Ajout des fonctions FIELDS(CUSTOM),FIELDS(STANDARD),FIELDS(CREAT),FIELDS(UPDATE)
-- Modification de l'autoUpdater
+- Correction bug majeur sur le moteur soql (il ne rechargeait pas les objets entre orgs)
+- Ajout d'un bouton pour supprimer les projets (no Warning donc attention)
 [/history]
-[versionUpdater]v0.1[/versionUpdater]
-[updater]CalumetUpdater.jar[/updater]
