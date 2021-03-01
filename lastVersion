@@ -1,7 +1,7 @@
-[version]v6.35[/version]
+[version]v6.36[/version]
 [update]CalumetGui.jar[/update]
 [additional][/additional]
 [history]Update :
-- Correction bug majeur sur le moteur soql (il ne rechargeait pas les objets entre orgs)
-- Ajout d'un bouton pour supprimer les projets (no Warning donc attention)
+  - corrections bug mineurs
+  - ajout d'un sous-onglet dans les test: Il permet de monitorer les limits. Notamment , de voir le nb de soql executé lors d'un test et d'anticiper de futur SOQL101
 [/history]
