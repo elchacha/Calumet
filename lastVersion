@@ -1,7 +1,6 @@
-[version]v6.36[/version]
+[version]v6.37[/version]
 [update]CalumetGui.jar[/update]
 [additional][/additional]
 [history]Update :
-  - corrections bug mineurs
-  - ajout d'un sous-onglet dans les test: Il permet de monitorer les limits. Notamment , de voir le nb de soql executé lors d'un test et d'anticiper de futur SOQL101
+  - ajout d'une nouvelle fonction/onglet: PicklistDependent : permet d'extraire au format csv ou excel les picklist dependent
 [/history]
