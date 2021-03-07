@@ -1,6 +1,6 @@
-[version]v6.37[/version]
+[version]v6.38[/version]
 [update]CalumetGui.jar[/update]
 [additional][/additional]
 [history]Update :
-  - ajout d'une nouvelle fonction/onglet: PicklistDependent : permet d'extraire au format csv ou excel les picklist dependent
+  - Ajout du choix de l'éditeur : Aucun, Vscode, IntellJ
 [/history]
