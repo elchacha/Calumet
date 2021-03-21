@@ -1,7 +1,7 @@
 [version]v6.39[/version]
 [update]CalumetGui.jar[/update]
 [additional][/additional]
-[history]Update :
+[history]ChangeLog :
   - Lifting de l'onglet Retrieve
   - Par défaut, copier un projet vous emmène directement sur l'onglet déploiement
   - ajout d'une fonction de "tailing" des logs en mode continu (CTL+T ou bouton dans l'onglet Logs)
