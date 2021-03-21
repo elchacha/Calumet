@@ -1,6 +1,9 @@
-[version]v6.38[/version]
+[version]v6.39[/version]
 [update]CalumetGui.jar[/update]
 [additional][/additional]
 [history]Update :
-  - Ajout du choix de l'éditeur : Aucun, Vscode, IntellJ
+  - Lifting de l'onglet Retrieve
+  - Par défaut, copier un projet vous emmène directement sur l'onglet déploiement
+  - ajout d'une fonction de "tailing" des logs en mode continu (CTL+T ou bouton dans l'onglet Logs)
+  - Lifting de l'onglet liste dépendentes
 [/history]
