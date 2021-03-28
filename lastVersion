@@ -1,10 +1,8 @@
-[version]v6.40[/version]
+[version]v6.41[/version]
 [update]CalumetGui.jar[/update]
 [additional][/additional]
 [history]ChangeLog :
-  - Lifting de l'onglet Retrieve
-  - Par défaut, copier un projet vous emmène directement sur l'onglet déploiement
-  - Ajout d'une fonction de "tailing" des logs en mode continu (CTL+T ou bouton dans l'onglet Logs)
-  - Lifting de l'onglet liste dépendentes
-  - Correction d'un bug changeTracker lié au customMetadata
+  - HUGHES : Ajout de la requete SOQL lors d'un extract Excel 
+  - MEHDI : Ajout d'un bouton pour renseigner les actions manuelles lors d'un postDeploiement
+  - Le tailing des logs est multi log , on peut choisir le logLevel et le user à suivre
 [/history]
