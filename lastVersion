@@ -1,8 +1,6 @@
-[version]v6.41[/version]
+[version]v6.42[/version]
 [update]CalumetGui.jar[/update]
 [additional][/additional]
 [history]ChangeLog :
-  - HUGHES : Ajout de la requete SOQL lors d'un extract Excel 
-  - MEHDI : Ajout d'un bouton pour renseigner les actions manuelles lors d'un postDeploiement
-  - Le tailing des logs est multi log , on peut choisir le logLevel et le user à suivre
+  - Ajout de la gestion des org
 [/history]
