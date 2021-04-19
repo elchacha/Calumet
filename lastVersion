@@ -1,6 +1,8 @@
-[version]v6.42[/version]
+[version]v6.43[/version]
 [update]CalumetGui.jar[/update]
 [additional][/additional]
 [history]ChangeLog :
-  - Ajout de la gestion des org
+  - Correction pour la gestion des profiles. Elle est user language agnostique desormais
+  - amélioration de l'onglet orgManagmeent
+  - possibilité de créer de nouveaux profiles d'affichage
 [/history]
