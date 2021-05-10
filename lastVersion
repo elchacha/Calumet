@@ -1,6 +1,6 @@
-[version]v6.45[/version]
+[version]v6.46[/version]
 [update]CalumetGui.jar[/update]
 [additional][/additional]
 [history]ChangeLog :
-  Bug fixes
+  Bug fixes(Profile extracter, Mac version)
 [/history]
