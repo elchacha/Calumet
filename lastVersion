@@ -1,8 +1,6 @@
-[version]v6.47[/version]
+[version]v6.48[/version]
 [update]CalumetGui.jar[/update]
 [additional][/additional]
 [history]ChangeLog :
-  - Profile comparison added
-  - PickList depency can now be updated with an excel file
-  - lot of bug fix
+  - lot of bug fix and UI improvement
 [/history]
