@@ -2,5 +2,9 @@
 [update]CalumetGui.jar[/update]
 [additional][/additional]
 [history]ChangeLog :
-  - lot of bug fix and UI improvement
+  - BLogs improvement ( ability to display only error logs)
+  - ListView has its own tab now
+  - Dump view improved with cellwrapping
+  - Audit fix
+  - small UI changes
 [/history]
