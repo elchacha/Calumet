@@ -1,10 +1,9 @@
-[version]v6.49[/version]
+[version]v6.5[/version]
 [update]CalumetGui.jar[/update]
 [additional][/additional]
 [history]ChangeLog :
-  - BLogs improvement ( ability to display only error logs)
-  - ListView has its own tab now
-  - Dump view improved with cellwrapping
-  - Audit fix
+  - Org config has been fixed.Save button will close properly the window now 
+  - Retrieve Tab has been lifted
+  - Tables display improved
   - small UI changes
 [/history]
