@@ -1,4 +1,5 @@
 [version]v6.5[/version]
+[updaterVersion]v1[/updaterVersion]
 [update]CalumetGui.jar[/update]
 [additional][/additional]
 [history]ChangeLog :
