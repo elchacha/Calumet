@@ -1,10 +1,11 @@
-[version]v7[/version]
+[version]v7.1[/version]
 [updaterVersion]v1[/updaterVersion]
 [update]CalumetGui.jar[/update]
 [additional][/additional]
 [history]ChangeLog :
-  - Calumet is not relying anymore on ant .Jar lib is still there but will be deprecated properly in version 7.1. It will enable the use of lastest API of Salesforce >50
-  - Profile Change is now properly managed without the package.xml
-  - Soql performance improvement
-  - small UI changes
+  - ant is properly remove for the configuration. Less files in org folders
+  - support of multi-key on one license (@Doria)
+  - soql export is fixed properly (xls,csv bulk or not bulk)
+  - added a feature to simplify the removal of metadata and dependencies
+  - changeTracker improvement
 [/history]
