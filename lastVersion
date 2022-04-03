@@ -3,9 +3,7 @@
 [update]CalumetGui.jar[/update]
 [additional][/additional]
 [history]ChangeLog :
-  - ant is properly remove for the configuration. Less files in org folders
-  - support of multi-key on one license (@Doria)
-  - soql export is fixed properly (xls,csv bulk or not bulk)
-  - added a feature to simplify the removal of metadata and dependencies
-  - changeTracker improvement
+  - Calumet libs have been updated to support v54 of Salesforce. At least !!!
+  - Added a module to prepare the deletion of non needed object ( desctrutive package=
+  - Small improvement on the Lwc helper
 [/history]
