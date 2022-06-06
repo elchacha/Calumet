@@ -1,10 +1,8 @@
-[version]v7.2[/version]
+[version]v7.3[/version]
 [updaterVersion]v1.2[/updaterVersion]
 [update]CalumetGui.jar[/update]
 [additional][/additional]
 [history]ChangeLog :
-  - Calumet libs have been updated to support v54 of Salesforce. At least !!!
-  - Added a module to prepare the deletion of non needed object ( desctrutive package=
-  - Small improvement on the Lwc helper
-  - Deploy has now a 1 hour timeout to be sure that the history is properly deploy even if deployement task is really long
+  - Backup when deploying could cause an infinite loop and is fixed properly
+  - minor improvements
 [/history]
