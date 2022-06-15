@@ -1,8 +1,11 @@
-[version]v7.3[/version]
+[version]v7.4[/version]
 [updaterVersion]v1.2[/updaterVersion]
 [update]CalumetGui.jar[/update]
 [additional][/additional]
 [history]ChangeLog :
-  - Backup when deploying could cause an infinite loop and is fixed properly
-  - minor improvements
+  - New features 
+    * flexipages filters analysis (tab : Flexipages)
+    * validation rules analysis (tab : ValidationRules)
+    * ProfilesPermission analysis (tab : ProfilesPermissions)
+  - Profile comparator between orgs was corrected and enhanced 
 [/history]
