@@ -1,11 +1,7 @@
-[version]v7.4[/version]
+[version]v7.4a[/version]
 [updaterVersion]v1.2[/updaterVersion]
 [update]CalumetGui.jar[/update]
 [additional][/additional]
 [history]ChangeLog :
-  - New features 
-    * flexipages filters analysis (tab : Flexipages)
-    * validation rules analysis (tab : ValidationRules)
-    * ProfilesPermission analysis (tab : ProfilesPermissions)
-  - Profile comparator between orgs was corrected and enhanced 
+  - Button added to Relation Tab: allow the export of object relations in excel file 
 [/history]
