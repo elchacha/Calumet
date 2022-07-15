@@ -1,7 +1,11 @@
-[version]v7.4[/version]
+[version]v7.5[/version]
 [updaterVersion]v1.2[/updaterVersion]
 [update]CalumetGui.jar[/update]
 [additional][/additional]
 [history]ChangeLog :
-  - Button added to Relation Tab: allow the export of object relations in excel file 
+  - ChangeTracker : 
+    * above 6 month, the change tracker will do a "simple" all package and will not try to read the audittrail
+    * change tracking is now opening a log window
+   - Added a tab to monitor the record Type usage
+   - retrieve/deploy : correction for customLabel metadata
 [/history]
