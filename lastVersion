@@ -1,11 +1,12 @@
-[version]v7.51[/version]
+[version]v7.6[/version]
 [updaterVersion]v1.2[/updaterVersion]
 [update]CalumetGui.jar[/update]
 [additional][/additional]
 [history]ChangeLog :
   - ChangeTracker : 
-    * above 6 month, the change tracker will do a "simple" all package and will not try to read the audittrail
-    * change tracking is now opening a log window
-   - Added a tab to monitor the record Type usage
-   - retrieve/deploy : correction for customLabel metadata
+    * report/EmailTemplate are not tracked by default.it's an option
+    * quickActionLayout layout are now properly detected
+    * customObjectTranslation are now properly detected
+   - Profiles comparison imroved
+   - Calumet now use the latest SF version supported
 [/history]
