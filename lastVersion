@@ -1,12 +1,12 @@
-[version]v7.6[/version]
+[version]v7.61[/version]
 [updaterVersion]v1.2[/updaterVersion]
 [update]CalumetGui.jar[/update]
 [additional][/additional]
 [history]ChangeLog :
-  - ChangeTracker : 
-    * report/EmailTemplate are not tracked by default.it's an option
-    * quickActionLayout layout are now properly detected
-    * customObjectTranslation are now properly detected
-   - Profiles comparison imroved
-   - Calumet now use the latest SF version supported
+  - BIG FIX : To detect a new created field , the clear cache is now efficient and works as expected
+  - Small lifting for org management screen
+  - API consumption should now be displayed properly as expected
+  - NEW TAbS :
+      * Connected App tab to monitor them and revoke them in mass
+      * Unused Layout is now displayed within a dedicated tab with option
 [/history]
