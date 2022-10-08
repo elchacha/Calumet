@@ -6,9 +6,7 @@
   - BIG FIX : To detect a new created field , the clear cache is now efficient and works as expected
   - Small lifting for org management screen
   - API consumption should now be displayed properly as expected
-  - NEW TABS :
-  
-      # Connected App tab to monitor them and revoke them in mass
-
-      & Unused Layout is now displayed within a dedicated tab with option
+  - NEW TABS :  
+      * Connected App tab to monitor them and revoke them in mass
+      * Unused Layout is now displayed within a dedicated tab with option
 [/history]
