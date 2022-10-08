@@ -8,7 +8,7 @@
   - API consumption should now be displayed properly as expected
   - NEW TABS :
   
-      * Connected App tab to monitor them and revoke them in mass
+      # Connected App tab to monitor them and revoke them in mass
 
-      * Unused Layout is now displayed within a dedicated tab with option
+      & Unused Layout is now displayed within a dedicated tab with option
 [/history]
