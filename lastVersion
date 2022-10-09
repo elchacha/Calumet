@@ -1,12 +1,7 @@
-[version]v7.61[/version]
+[version]v7.62[/version]
 [updaterVersion]v1.2[/updaterVersion]
 [update]CalumetGui.jar[/update]
 [additional][/additional]
 [history]ChangeLog :
-  - BIG FIX : To detect a new created field , the clear cache is now efficient and works as expected
-  - Small lifting for org management screen
-  - API consumption should now be displayed properly as expected
-  - NEW TABS :  
-      * Connected App tab to monitor them and revoke them in mass
-      * Unused Layout is now displayed within a dedicated tab with option
+  - Minor release to prepare winter23
 [/history]
