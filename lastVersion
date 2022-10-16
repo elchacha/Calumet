@@ -1,7 +1,11 @@
-[version]v7.62[/version]
+[version]v7.7[/version]
 [updaterVersion]v1.2[/updaterVersion]
 [update]CalumetGui.jar[/update]
 [additional][/additional]
 [history]ChangeLog :
-  - Minor release to prepare winter23
+  - Search has been simplified for apex. Only one option and a physical cache is running in order to reduce the amount of time processing
+  - Data Dictionnary function has been added and can be displayed with the shortcut : CTRL + F (It may take up to 1mn the first time but will run faster after)
+  - Profiles functions have been partially rewritten to work more efficiently
+  - Number of API calls is strongly reduced 
+  - Control for deployment now contain a PageLayout comparison: Double clik on a layout diff to see a readable explanation of the difference 
 [/history]
