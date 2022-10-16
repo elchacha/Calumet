@@ -7,7 +7,7 @@
   - Please download manually the file below and replace it within Calumet folder
   - https://github.com/elchacha/Calumet/blob/main/CalumetUpdater.jar?raw=true
   - Relaunch calumet , it will be set to verion 7.7 correcly
-  -!!!!!!!!!!!!!!!!!!! END OF WARNING !!!!!!!!!!!!!!!!!!!!!!!\n\n\n
+  -!!!!!!!!!!!!!!!!!!! END OF WARNING !!!!!!!!!!!!!!!!!!!!!!!
   **********ChangeLog : *****************
   - Search has been simplified for apex. Only one option and a physical cache is running in order to reduce the amount of time processing
   - Data Dictionnary function has been added and can be displayed with the shortcut : CTRL + F (It may take up to 1mn the first time but will run faster after)
