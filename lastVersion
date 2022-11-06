@@ -1,20 +1,17 @@
-[version]v7.8[/version]
-[updaterVersion]v1.2[/updaterVersion]
+[version]v7.81[/version]
+[updaterVersion]v1.3[/updaterVersion]
 [update]CalumetGui.jar[/update]
 [additional][/additional]
 [history]!!!!!!!!!!!!!!!!!!!!!!!!!!! WARNING !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !! if you have version 7.62 , Updater is broken. 
 !! Please download manually the file below and replace it within Calumet folder
 !! https://github.com/elchacha/Calumet/blob/main/CalumetGui.jar?raw=true
-!! Relaunch calumet , it will be set to verion 7.8 correcly
+!! Relaunch calumet , it will be set to verion 7.8 correctly
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! END OF WARNING !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 **********ChangeLog : *****************
-  - The datadictionnary is now working fine
-  - Search has been simplified for apex. Only one option and a physical cache is running in order to reduce the amount of time processing
-  - Data Dictionnary function has been added and can be displayed with the shortcut : CTRL + F (It may take up to 1mn the first time but will run faster after)
-  - Profiles functions have been partially rewritten to work more efficiently
-  - Number of API calls is strongly reduced 
-  - Control for deployment now contain a PageLayout comparison: Double clik on a layout diff to see a readable explanation of the difference 
+  - If not working previsouly, the datadictionnary is now working fine and contains the Object Security
+  - Test class for deployment will be kept if changing tabs
+  - Added a way to retrieve storage for an org on a daily basis
 **********End of ChangeLog : *****************
 [/history]
