@@ -1,17 +1,11 @@
-[version]v7.81[/version]
+[version]v7.83[/version]
 [updaterVersion]v1.4[/updaterVersion]
 [update]CalumetGui.jar[/update]
 [additional][/additional]
-[history]!!!!!!!!!!!!!!!!!!!!!!!!!!! WARNING !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-!! if you have version 7.62 , Updater is broken. 
-!! Please download manually the file below and replace it within Calumet folder
-!! https://github.com/elchacha/Calumet/blob/main/CalumetGui.jar?raw=true
-!! Relaunch calumet , it will be set to verion 7.8 correctly
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! END OF WARNING !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
+[history]
 **********ChangeLog : *****************
-  - If not working previsouly, the datadictionnary is now working fine and contains the Object Security
-  - Test class for deployment will be kept if changing tabs
-  - Added a way to retrieve storage for an org on a daily basis
+  - Permission Set viewer is modified and more efficient
+  - fix a possible issue within the search
+  - Added tabs to manage technical debts for new objects
 **********End of ChangeLog : *****************
 [/history]
