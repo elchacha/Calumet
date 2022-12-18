@@ -1,11 +1,10 @@
-[version]v7.81[/version]
+[version]v7.8.4[/version]
 [updaterVersion]v1.4[/updaterVersion]
 [update]CalumetGui.jar[/update]
 [additional][/additional]
 [history]
 **********ChangeLog : *****************
-  - Permission Set viewer is modified and more efficient
-  - fix a possible issue within the search
-  - Added tabs to manage technical debts for new objects
+  - Permission Set viewer is improved again.Slower on the first execution but faster after
+  - Added a all fields extracter (Thanks Jani for the idea).Available currently in the newfields tab
 **********End of ChangeLog : *****************
 [/history]
