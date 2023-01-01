@@ -1,10 +1,14 @@
-[version]v7.8.4[/version]
+[version]v7.9[/version]
 [updaterVersion]v1.4[/updaterVersion]
 [update]CalumetGui.jar[/update]
 [additional][/additional]
 [history]
 **********ChangeLog : *****************
-  - Permission Set viewer is improved again.Slower on the first execution but faster after
-  - Added a all fields extracter (Thanks Jani for the idea).Available currently in the newfields tab
+  - ChangeTracker is now using Source Tracking if available
+  - New tab to quickly modify customMetadata with excel file (CustomMetadata Updater)
+  - New tab to find the usage of custom fields for any object (CustomField Usage)
+  - Improved autocompletion
+  - Field Not Used can now use the results of CustomField Usage feature to enhanced informations
+  
 **********End of ChangeLog : *****************
 [/history]
