@@ -1,4 +1,4 @@
-[version]v7.91[/version]
+[version]v7.92[/version]
 [updaterVersion]v1.5[/updaterVersion]
 [update]CalumetGui.jar[/update]
 [additional][/additional]
@@ -12,7 +12,7 @@
   - Improved autocompletion
   - Field Not Used can now use the results of CustomField Usage feature to enhanced informations
   
-  version 7.91
+  version 7.92
   - improved selection of word with double click
   - improved the customFieldUsage analyser with more detail information
   
