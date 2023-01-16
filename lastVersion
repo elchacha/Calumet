@@ -1,4 +1,4 @@
-[version]v7.92[/version]
+[version]v7.93[/version]
 [updaterVersion]v1.5[/updaterVersion]
 [update]CalumetGui.jar[/update]
 [additional][/additional]
@@ -15,6 +15,11 @@
   version 7.92
   - improved selection of word with double click
   - improved the customFieldUsage analyser with more detail information
-  
+
+  version 7.93
+  - CustomField Usage is now splitted per recordRtype (Thanks Joel)
+  - New tabs addes to manage testSuite (Thanks to Mehdi)
+  - Minor bugs fixed
+
 **********End of ChangeLog : *****************
 [/history]
