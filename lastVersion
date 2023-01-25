@@ -1,5 +1,5 @@
-[version]v7.93[/version]
-[updaterVersion]v1.5[/updaterVersion]
+[version]v7.94[/version]
+[updaterVersion]v1.6[/updaterVersion]
 [update]CalumetGui.jar[/update]
 [additional][/additional]
 [history]
@@ -19,6 +19,11 @@
   version 7.93
   - CustomField Usage is now splitted per recordRtype (Thanks Joel)
   - New tabs addes to manage testSuite (Thanks to Mehdi)
+  - Minor bugs fixed
+
+  version 7.94
+  - Deletion is now possible for custom metadata
+  - Added the ability to mass modify Profiles from retrieve tab
   - Minor bugs fixed
 
 **********End of ChangeLog : *****************
