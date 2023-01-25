@@ -1,9 +1,6 @@
-[version]v1[/version]
+[version]v1.6[/version]
 [update]CalumetUpdater.jar[/update]
 [additional][/additional]
 [history]ChangeLog :
-  - Org config has been fixed.Save button will close properly the window now 
-  - Retrieve Tab has been lifted
-  - Tables display improved
-  - small UI changes
+  - libs updated
 [/history]
