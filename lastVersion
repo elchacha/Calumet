@@ -1,4 +1,4 @@
-[version]v7.94[/version]
+[version]v7.95[/version]
 [updaterVersion]v1.6[/updaterVersion]
 [update]CalumetGui.jar[/update]
 [additional][/additional]
@@ -26,5 +26,10 @@
   - Added the ability to mass modify Profiles from retrieve tab
   - Minor bugs fixed
 
+  version 7.95
+  - Profile information displayed in Retrieve is properly working now. Deletion is not yet available
+  - Picklist dependencies is now relying on api name properly and will detect any issue prior to deployment
+  - Minor bugs fixed
+  
 **********End of ChangeLog : *****************
 [/history]
