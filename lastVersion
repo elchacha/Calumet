@@ -1,9 +1,12 @@
-[version]v7.96[/version]
+[version]v7.97[/version]
 [updaterVersion]v1.6[/updaterVersion]
 [update]CalumetGui.jar[/update]
 [additional][/additional]
 [history]
 **********ChangeLog : *****************
+
+  version 7.97
+  - Minor bugs fixed
 
   version 7.96
   - Fix CTL+A
