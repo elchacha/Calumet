@@ -5,6 +5,14 @@
 [history]
 **********ChangeLog : *****************
 
+  version 8
+  - TestSuite screen refactored (Mehdi, it's for you)
+  - Added a new button to create org. (Thanks Regis for asking)
+  - TestSuite are supported for deployement and will be reflected in the test classes to run
+  - Added a screen that is scanning the method that seems unused in apex (private or public)
+  - Fix a bug with bulkV2
+
+
   version 7.97
   - Minor bugs fixed
 
