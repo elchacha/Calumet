@@ -6,6 +6,7 @@
 **********ChangeLog : *****************
 
   verions 8.1
+  - Support of Api 58. 
   - improved oauth connection( cancel authentification is now enabled while creating a new org)
   - @CHRONOPOST : validation doesn't disable backup injection anymore by default
   - SOQL fixed issue : when switching from one org to another, the cache was not always properly set during autocompletion
