@@ -1,9 +1,21 @@
-[version]v8[/version]
+[version]v81[/version]
 [updaterVersion]v1.6[/updaterVersion]
 [update]CalumetGui.jar[/update]
 [additional][/additional]
 [history]
 **********ChangeLog : *****************
+
+  verions 8.1
+  - improved oauth connection( cancel authentification is now enabled while creating a new org)
+  - @CHRONOPOST : validation doesn't disable backup injection anymore by default
+  - SOQL fixed issue : when switching from one org to another, the cache was not always properly set during autocompletion
+  - Icons have been improved
+  - Permission set tab display the number of rights inside permSet and it's possible to filter permset to look for those containing a specific right
+  - New icon to connect to Community experience cloud on the top next to dev console icon
+  - @Mac User : Delete button is now also mapped on the backspace button on keyboard as Del is not always present on Mac
+  - new feature (Beta mode) : All Relations is describing all relations used in the org( Lookup n Hierarchy and MasterDetail)
+  - new feature (Beta mode) : Object limits show all the limits for all the object in one table
+
 
   version 8
   - TestSuite screen refactored (Mehdi, it's for you)
