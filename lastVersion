@@ -1,9 +1,15 @@
-[version]v8.1[/version]
+[version]v8.2[/version]
 [updaterVersion]v1.6[/updaterVersion]
 [update]CalumetGui.jar[/update]
 [additional][/additional]
 [history]
 **********ChangeLog : *****************
+
+  verions 8.2
+  - SOQL function is now supporing tabs feature. You can have multiple queries open now
+  - New function added on retrieve screen. can analyse a package to see if some dependency are missing 
+  - Search is now working fine for LWC and starts to work for flow (still beta)
+  - Log analysis has support for flow now and default masking 0 is now not filtering anymore the logs
 
   verions 8.1
   - Support of Api 58. 
