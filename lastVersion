@@ -5,6 +5,13 @@
 [history]
 **********ChangeLog : *****************
 
+  verions 8.3
+  - SOQL function enhanced (Capitalize fucntion and add Select * from by default)
+  - SOQL queries are saved on quit and reloaded automatically 
+  - Log analyser have been rewritten to have a better display and a way to see only the process without apex 
+  - Search on flow is working as expected now
+
+
   verions 8.2
   - SOQL function is now supporing tabs feature. You can have multiple queries open now
   - New function added on retrieve screen. can analyse a package to see if some dependency are missing 
