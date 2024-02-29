@@ -1,9 +1,15 @@
-[version]v8.3[/version]
+[version]v8.4[/version]
 [updaterVersion]v1.6[/updaterVersion]
 [update]CalumetGui.jar[/update]
 [additional][/additional]
 [history]
 **********ChangeLog : *****************
+
+  verions 8.4
+  - SOQL now order by desc Id by default
+  - Improved log analyser
+  - Search for flow and apex is now properly using the cache mechanism 
+
 
   verions 8.3
   - SOQL function enhanced (Capitalize fucntion and add Select * from by default)
