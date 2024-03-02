@@ -5,7 +5,11 @@
 [history]
 **********ChangeLog : *****************
 
-  verions 8.4
+verions 8.5
+  - Fix for a bug related to tab preferences
+  - No more licenses are required starting from this version !!!!  
+
+verions 8.4
   - SOQL now order by desc Id by default
   - Improved log analyser
   - Search for flow and apex is now properly using the cache mechanism 
