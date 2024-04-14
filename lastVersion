@@ -5,6 +5,12 @@
 [history]
 **********ChangeLog : *****************
 
+verions 8.6
+  - Fix for Select * 
+  - By default, select is sorted by LastModifiedDate desc if no order by 
+  - Added a beta version of a log analyser for flow
+  - Added an extract option from MetadataChooser
+
 verions 8.5
   - Fix for a bug related to tab preferences
   - No more licenses are required starting from this version !!!!  
