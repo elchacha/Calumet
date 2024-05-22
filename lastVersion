@@ -9,6 +9,7 @@ verions 8.7
   - Soql filter now support multi criteria separated with a ";"
   - Soql enable record deletion by selecting id and pressing the del key. By default, the feature is disabled on prod org and must be enabled in the  Preference>CalumetConfig> tab Soql 
   - Project/Org are now sorted by alphabetical order 
+  - TestSuite tab has been reworked and and help button added to explain how to work with this component
 
 verions 8.6
   - Fix for Select * 
