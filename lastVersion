@@ -4,6 +4,11 @@
 [additional][/additional]
 [history]
 **********ChangeLog : *****************
+verions 8.7
+  - Soql is sorted by default by lastModifiedDate desc (if the field exist). It can be changed or remove by modifyng the value in Preference>CalumetConfig> tab Soql 
+  - Soql filter now support multi criteria separated with a ";"
+  - Soql enable record deletion by selecting id and pressing the del key. By default, the feature is disabled on prod org and must be enabled in the  Preference>CalumetConfig> tab Soql 
+  - Project/Org are now sorted by alphabetical order 
 
 verions 8.6
   - Fix for Select * 
