@@ -4,6 +4,13 @@
 [additional][/additional]
 [history]
 **********ChangeLog : *****************
+
+verions 8.8
+  - Fix an issue with select * from people using Calumet since a old version
+  - Permission Set tab is rebuilt to display more information (beta version)
+  - Improved Profile comparison ordering mode
+  - Fix a huge issue preventing new version of Calumet to start properly due to wrong library
+
 verions 8.7
   - Soql is sorted by default by lastModifiedDate desc (if the field exist). It can be changed or remove by modifyng the value in Preference>CalumetConfig> tab Soql 
   - Soql filter now support multi criteria separated with a ";"
