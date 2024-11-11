@@ -1,9 +1,16 @@
-[version]v8.8[/version]
+[version]v8.9[/version]
 [updaterVersion]v1.7[/updaterVersion]
 [update]CalumetGui.jar[/update]
 [additional][/additional]
 [history]
 **********ChangeLog : *****************
+
+verions 8.9
+  - SOQL is now able to identify number column during sorting
+  - Improve the detection of unused method in Apex classes
+  - CustomMetadata can be deleted from SOQL editor 
+  - TraceFlag is now created when connecting to an org by default
+  - CTL+key works as expected on Mac
 
 verions 8.8
   - Fix an issue with select * from people using Calumet since a old version
