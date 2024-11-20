@@ -1,9 +1,12 @@
-[version]v8.9[/version]
+[version]v8.91[/version]
 [updaterVersion]v1.7[/updaterVersion]
 [update]CalumetGui.jar[/update]
 [additional][/additional]
 [history]
 **********ChangeLog : *****************
+
+verions 8.91
+  -TBD
 
 verions 8.9
   - SOQL is now able to identify number column during sorting
