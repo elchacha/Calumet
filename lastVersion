@@ -6,7 +6,10 @@
 **********ChangeLog : *****************
 
 verions 8.91
-  -TBD
+  - Quick fix for some performance issue on certain orgs
+  - Added a way to change deployment reason with a bigger description
+  - Added a way to indicate that org are using MFA so that authenticator is only requested once
+  - Execute anonymous is working now as expected since the beginning
 
 verions 8.9
   - SOQL is now able to identify number column during sorting
