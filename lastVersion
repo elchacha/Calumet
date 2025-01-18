@@ -1,9 +1,14 @@
-[version]v8.91[/version]
-[updaterVersion]v1.7[/updaterVersion]
+[version]v9[/version]
+[updaterVersion]v9[/updaterVersion]
 [update]CalumetGui.jar[/update]
 [additional][/additional]
 [history]
 **********ChangeLog : *****************
+
+verions 9
+  - Support for Api up to 63
+  - SOQL improvement/fix
+  - Colors added to orgs selection
 
 verions 8.91
   - Quick fix for some performance issue on certain orgs
