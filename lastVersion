@@ -1,9 +1,14 @@
-[version]v9[/version]
+[version]v9.1[/version]
 [updaterVersion]v9[/updaterVersion]
 [update]CalumetGui.jar[/update]
 [additional][/additional]
 [history]
 **********ChangeLog : *****************
+
+verions 9.1
+  - Tab Flow added to managed flow including deletion of old versions, invokable detection and subflow helper
+  - Tab LastRecords added : allow to easily monitor records modified recently
+  - all sfdx command have been migrated to sf commands
 
 verions 9
   - Support for Api up to 63
