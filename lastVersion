@@ -5,6 +5,11 @@
 [history]
 **********ChangeLog : *****************
 
+WARNING : THIS UPDATE CAN NOT BE APPLIED AUTOMATICALLY.
+YOU NEED TO BE ABLE TO LAUNCH BELOW COMMAND (FROM THE CALUMET FOLDER) MANUALLY TO UPDATE CALUMET :
+.\jre\bin\java -jar CalumetToolUpdater.jar
+
+
 verions 9.1
   - Tab Flow added to managed flow including deletion of old versions, invokable detection and subflow helper
   - Tab LastRecords added : allow to easily monitor records modified recently
