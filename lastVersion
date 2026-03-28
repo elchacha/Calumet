@@ -1,9 +1,22 @@
-[version]v9.1[/version]
-[updaterVersion]v9.3[/updaterVersion]
-[update]CalumetGui.jar[/update]
+[version]v9.4[/version]
+[update]dist/CalumetGui-9.4.jar[/update]
+[exe]dist/Calumet-9.4.exe[/exe]
+[updaterVersion]2.2[/updaterVersion]
 [additional][/additional]
 [history]
 **********ChangeLog : *****************
+[history]
+- feat(UI): blue/orange buttons, Tab69/71 cache+spinner, Tab25 progress
+- Tab66: add Delete button and auto-refresh on tab focus / org change
+- feat(ui): badges Tab52/Tab73, styled Execute/SelectConfig buttons + fixes
+- fix(soql): interrupt SOQL pagination on cancel + DataSeeding improvements
+- feat(Tab9,Tab74,Tab54): managed objects filter, excluded objects popup, cache progress bar
+- feat(Tab74): add 'Hide standard objects' filter checkbox
+- feat(Tab27,Tab66): add spinners, cache, and icon badges
+- feat(Tab16): add badges to Relation and Type columns
+- feat(Tab76): split Groups tab into Groups/Queue/Others + fix SOQL cancel
+- feat(Tab76): add "Active only" checkbox to hide inactive users
+[/history]
 
 verions 9.2
   - New Tab to extract all picklist from an object
