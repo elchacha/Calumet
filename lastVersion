@@ -6,6 +6,7 @@
 [history]
 **********ChangeLog : *****************
 [history]
+version 9.3
 - feat(UI): blue/orange buttons, Tab69/71 cache+spinner, Tab25 progress
 - Tab66: add Delete button and auto-refresh on tab focus / org change
 - feat(ui): badges Tab52/Tab73, styled Execute/SelectConfig buttons + fixes
