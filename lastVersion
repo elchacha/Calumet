@@ -1,11 +1,15 @@
-[version]v9.7[/version]
-[update]dist/CalumetGui-9.7.jar[/update]
-[exe]dist/Calumet-9.7.exe[/exe]
-[updaterVersion]2.4[/updaterVersion]
+[version]v9.8[/version]
+[update]dist/CalumetGui-9.8.jar[/update]
+[exe]dist/Calumet-9.8.exe[/exe]
+[updaterVersion]2.5[/updaterVersion]
 [additional][/additional]
 [history]
 **********ChangeLog : *****************
 [history]
+version 9.8
+- maintenance: remove obsolete Salesforce API v64/v65 JARs from distribution (apex, metadata, partner, tooling v64 and wsc v65)
+[/history]
+
 version 9.7
 - fix(updater): correct lib path in UpdateLibs (libs -> lib) and simplify Updater main signature
 - fix(updater): CalumetUpdater no longer overwrites updaterVersion file on each launch
