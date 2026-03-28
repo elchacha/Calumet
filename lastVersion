@@ -1,7 +1,7 @@
 [version]v9.4[/version]
 [update]dist/CalumetGui-9.4.jar[/update]
 [exe]dist/Calumet-9.4.exe[/exe]
-[updaterVersion]2.2[/updaterVersion]
+[updaterVersion]2.3[/updaterVersion]
 [additional][/additional]
 [history]
 **********ChangeLog : *****************
