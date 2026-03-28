@@ -1,12 +1,19 @@
-[version]v9.4[/version]
-[update]dist/CalumetGui-9.4.jar[/update]
-[exe]dist/Calumet-9.4.exe[/exe]
-[updaterVersion]2.2[/updaterVersion]
+[version]v9.7[/version]
+[update]dist/CalumetGui-9.7.jar[/update]
+[exe]dist/Calumet-9.7.exe[/exe]
+[updaterVersion]2.3[/updaterVersion]
 [additional][/additional]
 [history]
 **********ChangeLog : *****************
 [history]
-version 9.3
+version 9.7
+- fix(updater): correct lib path in UpdateLibs (libs -> lib) and simplify Updater main signature
+- fix(updater): CalumetUpdater no longer overwrites updaterVersion file on each launch
+- fix(SalesforceGuiController): isIdelaunch only set true when IDE classpath detected
+- fix(Tab50): null-check ecfg before accessing envMonitored in storage history panel
+[/history]
+
+version 9.4
 - feat(UI): blue/orange buttons, Tab69/71 cache+spinner, Tab25 progress
 - Tab66: add Delete button and auto-refresh on tab focus / org change
 - feat(ui): badges Tab52/Tab73, styled Execute/SelectConfig buttons + fixes
@@ -17,7 +24,6 @@ version 9.3
 - feat(Tab16): add badges to Relation and Type columns
 - feat(Tab76): split Groups tab into Groups/Queue/Others + fix SOQL cancel
 - feat(Tab76): add "Active only" checkbox to hide inactive users
-[/history]
 
 verions 9.2
   - New Tab to extract all picklist from an object
@@ -35,117 +41,5 @@ verions 9
   - SOQL improvement/fix
   - Colors added to orgs selection
 
-verions 8.91
-  - Quick fix for some performance issue on certain orgs
-  - Added a way to change deployment reason with a bigger description
-  - Added a way to indicate that org are using MFA so that authenticator is only requested once
-  - Execute anonymous is working now as expected since the beginning
-
-verions 8.9
-  - SOQL is now able to identify number column during sorting
-  - Improve the detection of unused method in Apex classes
-  - CustomMetadata can be deleted from SOQL editor 
-  - TraceFlag is now created when connecting to an org by default
-  - CTL+key works as expected on Mac
-
-verions 8.8
-  - Fix an issue with select * from people using Calumet since a old version
-  - Permission Set tab is rebuilt to display more information (beta version)
-  - Improved Profile comparison ordering mode
-  - Fix a huge issue preventing new version of Calumet to start properly due to wrong library
-
-verions 8.7
-  - Soql is sorted by default by lastModifiedDate desc (if the field exist). It can be changed or remove by modifyng the value in Preference>CalumetConfig> tab Soql 
-  - Soql filter now support multi criteria separated with a ";"
-  - Soql enable record deletion by selecting id and pressing the del key. By default, the feature is disabled on prod org and must be enabled in the  Preference>CalumetConfig> tab Soql 
-  - Project/Org are now sorted by alphabetical order 
-  - TestSuite tab has been reworked and and help button added to explain how to work with this component
-
-verions 8.6
-  - Fix for Select * 
-  - By default, select is sorted by LastModifiedDate desc if no order by 
-  - Added a beta version of a log analyser for flow
-  - Added an extract option from MetadataChooser
-
-verions 8.5
-  - Fix for a bug related to tab preferences
-  - No more licenses are required starting from this version !!!!  
-
-verions 8.4
-  - SOQL now order by desc Id by default
-  - Improved log analyser
-  - Search for flow and apex is now properly using the cache mechanism 
-
-
-  verions 8.3
-  - SOQL function enhanced (Capitalize fucntion and add Select * from by default)
-  - SOQL queries are saved on quit and reloaded automatically 
-  - Log analyser have been rewritten to have a better display and a way to see only the process without apex 
-  - Search on flow is working as expected now
-
-
-  verions 8.2
-  - SOQL function is now supporing tabs feature. You can have multiple queries open now
-  - New function added on retrieve screen. can analyse a package to see if some dependency are missing 
-  - Search is now working fine for LWC and starts to work for flow (still beta)
-  - Log analysis has support for flow now and default masking 0 is now not filtering anymore the logs
-
-  verions 8.1
-  - Support of Api 58. 
-  - improved oauth connection( cancel authentification is now enabled while creating a new org)
-  - @CHRONOPOST : validation doesn't disable backup injection anymore by default
-  - SOQL fixed issue : when switching from one org to another, the cache was not always properly set during autocompletion
-  - Icons have been improved
-  - Permission set tab display the number of rights inside permSet and it's possible to filter permset to look for those containing a specific right
-  - New icon to connect to Community experience cloud on the top next to dev console icon
-  - @Mac User : Delete button is now also mapped on the backspace button on keyboard as Del is not always present on Mac
-  - new feature (Beta mode) : All Relations is describing all relations used in the org( Lookup n Hierarchy and MasterDetail)
-  - new feature (Beta mode) : Object limits show all the limits for all the object in one table
-
-
-  version 8
-  - TestSuite screen refactored (Mehdi, it's for you)
-  - Added a new button to create org. (Thanks Regis for asking)
-  - TestSuite are supported for deployement and will be reflected in the test classes to run
-  - Added a screen that is scanning the method that seems unused in apex (private or public)
-  - Fix a bug with bulkV2
-
-
-  version 7.97
-  - Minor bugs fixed
-
-  version 7.96
-  - Fix CTL+A
-  
-  version 7.95
-  - Profile information displayed in Retrieve is properly working now. Deletion is not yet available
-  - Picklist dependencies is now relying on api name properly and will detect any issue prior to deployment
-  - Minor bugs fixed
-
-  version 7.94
-  - Deletion is now possible for custom metadata
-  - Added the ability to mass modify Profiles from retrieve tab
-  - Minor bugs fixed
-
-  version 7.93
-  - CustomField Usage is now splitted per recordRtype (Thanks Joel)
-  - New tabs addes to manage testSuite (Thanks to Mehdi)
-  - Minor bugs fixed
-
-  version 7.92
-  - improved selection of word with double click
-  - improved the customFieldUsage analyser with more detail information
-
-  version 7.9
-  - ChangeTracker is now using Source Tracking if available
-  - New tab to quickly modify customMetadata with excel file (CustomMetadata Updater)
-  - New tab to find the usage of custom fields for any object (CustomField Usage)
-  - Improved autocompletion
-  - Field Not Used can now use the results of CustomField Usage feature to enhanced informations
-  
-
-
-
-  
 **********End of ChangeLog : *****************
 [/history]
