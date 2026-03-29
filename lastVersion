@@ -1,49 +1,8 @@
 [version]v9.8[/version]
+[history]
+- CSS button styles unified: primary actions now use consistent blue, secondary actions use green
+- Permission Sets — a status message now appears during cache loading for clearer feedback
+[/history]
 [update]dist/CalumetGui-9.8.jar[/update]
 [exe]dist/Calumet-9.8.exe[/exe]
-[updaterVersion]2.5[/updaterVersion]
-[additional][/additional]
-[history]
-**********ChangeLog : *****************
-[history]
-version 9.8
-- maintenance: remove obsolete Salesforce API v64/v65 JARs from distribution (apex, metadata, partner, tooling v64 and wsc v65)
-[/history]
-
-version 9.7
-- fix(updater): correct lib path in UpdateLibs (libs -> lib) and simplify Updater main signature
-- fix(updater): CalumetUpdater no longer overwrites updaterVersion file on each launch
-- fix(SalesforceGuiController): isIdelaunch only set true when IDE classpath detected
-- fix(Tab50): null-check ecfg before accessing envMonitored in storage history panel
-[/history]
-
-version 9.4
-- feat(UI): blue/orange buttons, Tab69/71 cache+spinner, Tab25 progress
-- Tab66: add Delete button and auto-refresh on tab focus / org change
-- feat(ui): badges Tab52/Tab73, styled Execute/SelectConfig buttons + fixes
-- fix(soql): interrupt SOQL pagination on cancel + DataSeeding improvements
-- feat(Tab9,Tab74,Tab54): managed objects filter, excluded objects popup, cache progress bar
-- feat(Tab74): add 'Hide standard objects' filter checkbox
-- feat(Tab27,Tab66): add spinners, cache, and icon badges
-- feat(Tab16): add badges to Relation and Type columns
-- feat(Tab76): split Groups tab into Groups/Queue/Others + fix SOQL cancel
-- feat(Tab76): add "Active only" checkbox to hide inactive users
-
-verions 9.2
-  - New Tab to extract all picklist from an object
-  - new Tab to delete all Roles and dependencies
-  - Disable org will not allow action on other orgs as before
-  - Spinner is starting to be added to indicate when Calumet is running a long process
-
-verions 9.1
-  - Tab Flow added to managed flow including deletion of old versions, invokable detection and subflow helper
-  - Tab LastRecords added : allow to easily monitor records modified recently
-  - all sfdx command have been migrated to sf commands
-
-verions 9
-  - Support for Api up to 63
-  - SOQL improvement/fix
-  - Colors added to orgs selection
-
-**********End of ChangeLog : *****************
-[/history]
+[updaterVersion]2.6[/updaterVersion]
