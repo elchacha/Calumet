@@ -1,8 +1,8 @@
-[version]v9.8[/version]
+[version]v9.9[/version]
 [history]
-- CSS button styles unified: primary actions now use consistent blue, secondary actions use green
-- Permission Sets — a status message now appears during cache loading for clearer feedback
+- Button styles unified across all screens: primary actions are now blue, secondary actions are green
+- Permission Sets — a status message now appears while the cache is loading for clearer feedback
 [/history]
-[update]dist/CalumetGui-9.8.jar[/update]
-[exe]dist/Calumet-9.8.exe[/exe]
-[updaterVersion]2.6[/updaterVersion]
+[update]dist/CalumetGui-9.9.jar[/update]
+[exe]dist/Calumet-9.9.exe[/exe]
+[updaterVersion]2.7[/updaterVersion]
