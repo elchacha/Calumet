@@ -145,6 +145,20 @@ body{font-family:"Segoe UI",system-ui,sans-serif;background:#14161f;
 
 /* parse error */
 .parse-err{color:#e74c3c;font-style:italic;font-size:11px;padding:4px}
+
+/* ── SPA: sections hidden until nav click ── */
+.sec{display:none}
+.sec.on{display:block}
+
+/* ── Welcome screen ── */
+#welcome{flex:1;display:flex;align-items:center;justify-content:center;overflow-y:auto;
+  min-height:100%;padding:40px 20px}
+#welcome.h{display:none!important}
+.wlc{max-width:600px;text-align:center}
+.wlc h1{font-size:38px;font-weight:800;color:#fff;letter-spacing:-1px;margin-bottom:4px}
+.wlc-version{font-size:13px;color:var(--smut);margin-bottom:24px}
+.wlc-desc{font-size:14px;color:#a8b4c8;line-height:1.8;margin-bottom:20px;text-align:left}
+.wlc-hint{font-size:12px;color:var(--smut);margin-top:28px;font-style:italic}
 </style>
 </head>
 <body>
@@ -154,9 +168,27 @@ body{font-family:"Segoe UI",system-ui,sans-serif;background:#14161f;
     <small>v9.2 &mdash; User Documentation</small>
     <input id="sb-search" type="text" placeholder="Search..." autocomplete="off">
   </div>
-  <nav id="sb-nav"><div class="cat">Deployment &amp; Metadata</div><div><a class="nav-a" href="#s1">Project<span class="n">#1</span></a><a class="nav-a" href="#s2">Retrieve<span class="n">#2</span></a><a class="nav-a" href="#s3">Deploy<span class="n">#3</span></a><a class="nav-a" href="#s5">Roll Back<span class="n">#5</span></a><a class="nav-a" href="#s7">Metadata<span class="n">#7</span></a><a class="nav-a" href="#s8">Retrieve All<span class="n">#8</span></a><a class="nav-a" href="#s42">Roll Back (B)<span class="n">#42</span></a></div><div class="cat">Change Tracking</div><div><a class="nav-a" href="#s4">Change Tracker<span class="n">#4</span></a><a class="nav-a" href="#s25">Search<span class="n">#25</span></a><a class="nav-a" href="#s44">Org Comparison<span class="n">#44</span></a><a class="nav-a" href="#s53">Change Tracker (B)<span class="n">#53</span></a></div><div class="cat">Apex &amp; Testing</div><div><a class="nav-a" href="#s6">Test Classes<span class="n">#6</span></a><a class="nav-a" href="#s9">Audit<span class="n">#9</span></a><a class="nav-a" href="#s21">Apex<span class="n">#21</span></a><a class="nav-a" href="#s23">Debug<span class="n">#23</span></a><a class="nav-a" href="#s26">Dead Code<span class="n">#26</span></a><a class="nav-a" href="#s27">SOQL Counter<span class="n">#27</span></a><a class="nav-a" href="#s56">Test Suite Manager<span class="n">#56</span></a><a class="nav-a" href="#s57">Method Analyser<span class="n">#57</span></a></div><div class="cat">Data &amp; SOQL</div><div><a class="nav-a" href="#s11">SOQL Editor<span class="n">#11</span></a><a class="nav-a" href="#s12">SOQL Executor<span class="n">#12</span></a><a class="nav-a" href="#s31">CVS<span class="n">#31</span></a><a class="nav-a" href="#s50">Historical Storage<span class="n">#50</span></a><a class="nav-a" href="#s58">Object Comparator<span class="n">#58</span></a><a class="nav-a" href="#s59">Relation Explorer<span class="n">#59</span></a><a class="nav-a" href="#s60">Object Limits<span class="n">#60</span></a><a class="nav-a" href="#s61">SOQL Bulk Executor<span class="n">#61</span></a><a class="nav-a" href="#s63">Relation Extractor<span class="n">#63</span></a></div><div class="cat">Metadata Analysis</div><div><a class="nav-a" href="#s13">Custom Labels<span class="n">#13</span></a><a class="nav-a" href="#s14">New Fields<span class="n">#14</span></a><a class="nav-a" href="#s15">Object Diff<span class="n">#15</span></a><a class="nav-a" href="#s16">Relations<span class="n">#16</span></a><a class="nav-a" href="#s32">Formula<span class="n">#32</span></a><a class="nav-a" href="#s33">Field History<span class="n">#33</span></a><a class="nav-a" href="#s34">Flows<span class="n">#34</span></a><a class="nav-a" href="#s34">Invokable Actions<span class="n">#34</span></a><a class="nav-a" href="#s34">Subflows<span class="n">#34</span></a><a class="nav-a" href="#s35">VS Code<span class="n">#35</span></a><a class="nav-a" href="#s38">Picklist Dependencies<span class="n">#38</span></a><a class="nav-a" href="#s43">List Views<span class="n">#43</span></a><a class="nav-a" href="#s47">Org Documentation<span class="n">#47</span></a><a class="nav-a" href="#s48">Remover Helper<span class="n">#48</span></a></div><div class="cat">Security &amp; Access</div><div><a class="nav-a" href="#s17">Login As<span class="n">#17</span></a><a class="nav-a" href="#s28">ACL<span class="n">#28</span></a><a class="nav-a" href="#s29">Profiles Modification<span class="n">#29</span></a><a class="nav-a" href="#s30">Field-Level Security<span class="n">#30</span></a><a class="nav-a" href="#s37">Security<span class="n">#37</span></a><a class="nav-a" href="#s49">Permission Sets<span class="n">#49</span></a><a class="nav-a" href="#s51">Profile Comparison<span class="n">#51</span></a><a class="nav-a" href="#s55">Field Usage by Record Type<span class="n">#55</span></a><a class="nav-a" href="#s62">Access Score<span class="n">#62</span></a><a class="nav-a" href="#s64">Profile Diff<span class="n">#64</span></a><a class="nav-a" href="#s65">App Assignments<span class="n">#65</span></a><a class="nav-a" href="#s66">Roles Explorer<span class="n">#66</span></a><a class="nav-a" href="#s67">Profile List<span class="n">#67</span></a><a class="nav-a" href="#s68">Profile Search<span class="n">#68</span></a><a class="nav-a" href="#s69">User Privilege Assessment<span class="n">#69</span></a><a class="nav-a" href="#s70">Security Optimisation<span class="n">#70</span></a><a class="nav-a" href="#s71">License Optimisation<span class="n">#71</span></a><a class="nav-a" href="#s72">User Explorer<span class="n">#72</span></a></div><div class="cat">Monitoring &amp; Admin</div><div><a class="nav-a" href="#s18">Formula Field Tester<span class="n">#18</span></a><a class="nav-a" href="#s19">Org Limits<span class="n">#19</span></a><a class="nav-a" href="#s20">Debug Logs<span class="n">#20</span></a><a class="nav-a" href="#s24">Storage<span class="n">#24</span></a><a class="nav-a" href="#s39">Scheduled Jobs<span class="n">#39</span></a><a class="nav-a" href="#s40">Streaming API<span class="n">#40</span></a><a class="nav-a" href="#s41">Orgs Management<span class="n">#41</span></a><a class="nav-a" href="#s46">Streaming (B)<span class="n">#46</span></a></div><div class="cat">Tools</div><div><a class="nav-a" href="#s22">SFDX<span class="n">#22</span></a><a class="nav-a" href="#s36">Workspace<span class="n">#36</span></a><a class="nav-a" href="#s45">Dev Console (B)<span class="n">#45</span></a></div><div class="cat">Data Seeding</div><div><a class="nav-a" href="#s77">Data Seeding<span class="n">#77</span></a></div><div class="cat">Other</div><div><a class="nav-a" href="#s10">History — Search<span class="n">#10</span></a><a class="nav-a" href="#s10">History — Display<span class="n">#10</span></a><a class="nav-a" href="#s52">Object Relations<span class="n">#52</span></a><a class="nav-a" href="#s54">Change Set Helper<span class="n">#54</span></a><a class="nav-a" href="#s73">Public Groups &amp; Perm Sets<span class="n">#73</span></a><a class="nav-a" href="#s74">Event Log<span class="n">#74</span></a><a class="nav-a" href="#s75">Platform Events<span class="n">#75</span></a><a class="nav-a" href="#s76">Sharing Explorer<span class="n">#76</span></a><a class="nav-a" href="#s78">Tooling Explorer<span class="n">#78</span></a></div></nav>
+  <nav id="sb-nav"><div class="cat">Deployment &amp; Metadata</div><div><a class="nav-a" data-sid="s1" onclick="nav('s1')">Project<span class="n">#1</span></a><a class="nav-a" data-sid="s2" onclick="nav('s2')">Retrieve<span class="n">#2</span></a><a class="nav-a" data-sid="s3" onclick="nav('s3')">Deploy<span class="n">#3</span></a><a class="nav-a" data-sid="s5" onclick="nav('s5')">Roll Back<span class="n">#5</span></a><a class="nav-a" data-sid="s7" onclick="nav('s7')">Metadata<span class="n">#7</span></a><a class="nav-a" data-sid="s8" onclick="nav('s8')">Retrieve All<span class="n">#8</span></a><a class="nav-a" data-sid="s42" onclick="nav('s42')">Roll Back (B)<span class="n">#42</span></a></div><div class="cat">Change Tracking</div><div><a class="nav-a" data-sid="s4" onclick="nav('s4')">Change Tracker<span class="n">#4</span></a><a class="nav-a" data-sid="s25" onclick="nav('s25')">Search<span class="n">#25</span></a><a class="nav-a" data-sid="s44" onclick="nav('s44')">Org Comparison<span class="n">#44</span></a><a class="nav-a" data-sid="s53" onclick="nav('s53')">Change Tracker (B)<span class="n">#53</span></a></div><div class="cat">Apex &amp; Testing</div><div><a class="nav-a" data-sid="s6" onclick="nav('s6')">Test Classes<span class="n">#6</span></a><a class="nav-a" data-sid="s9" onclick="nav('s9')">Audit<span class="n">#9</span></a><a class="nav-a" data-sid="s21" onclick="nav('s21')">Apex<span class="n">#21</span></a><a class="nav-a" data-sid="s23" onclick="nav('s23')">Debug<span class="n">#23</span></a><a class="nav-a" data-sid="s26" onclick="nav('s26')">Dead Code<span class="n">#26</span></a><a class="nav-a" data-sid="s27" onclick="nav('s27')">SOQL Counter<span class="n">#27</span></a><a class="nav-a" data-sid="s56" onclick="nav('s56')">Test Suite Manager<span class="n">#56</span></a><a class="nav-a" data-sid="s57" onclick="nav('s57')">Method Analyser<span class="n">#57</span></a></div><div class="cat">Data &amp; SOQL</div><div><a class="nav-a" data-sid="s11" onclick="nav('s11')">SOQL Editor<span class="n">#11</span></a><a class="nav-a" data-sid="s12" onclick="nav('s12')">SOQL Executor<span class="n">#12</span></a><a class="nav-a" data-sid="s31" onclick="nav('s31')">CVS<span class="n">#31</span></a><a class="nav-a" data-sid="s50" onclick="nav('s50')">Historical Storage<span class="n">#50</span></a><a class="nav-a" data-sid="s58" onclick="nav('s58')">Object Comparator<span class="n">#58</span></a><a class="nav-a" data-sid="s59" onclick="nav('s59')">Relation Explorer<span class="n">#59</span></a><a class="nav-a" data-sid="s60" onclick="nav('s60')">Object Limits<span class="n">#60</span></a><a class="nav-a" data-sid="s61" onclick="nav('s61')">SOQL Bulk Executor<span class="n">#61</span></a><a class="nav-a" data-sid="s63" onclick="nav('s63')">Relation Extractor<span class="n">#63</span></a></div><div class="cat">Metadata Analysis</div><div><a class="nav-a" data-sid="s13" onclick="nav('s13')">Custom Labels<span class="n">#13</span></a><a class="nav-a" data-sid="s14" onclick="nav('s14')">New Fields<span class="n">#14</span></a><a class="nav-a" data-sid="s15" onclick="nav('s15')">Object Diff<span class="n">#15</span></a><a class="nav-a" data-sid="s16" onclick="nav('s16')">Relations<span class="n">#16</span></a><a class="nav-a" data-sid="s32" onclick="nav('s32')">Formula<span class="n">#32</span></a><a class="nav-a" data-sid="s33" onclick="nav('s33')">Field History<span class="n">#33</span></a><a class="nav-a" data-sid="s34" onclick="nav('s34')">Flows<span class="n">#34</span></a><a class="nav-a" data-sid="s34" onclick="nav('s34')">Invokable Actions<span class="n">#34</span></a><a class="nav-a" data-sid="s34" onclick="nav('s34')">Subflows<span class="n">#34</span></a><a class="nav-a" data-sid="s35" onclick="nav('s35')">VS Code<span class="n">#35</span></a><a class="nav-a" data-sid="s38" onclick="nav('s38')">Picklist Dependencies<span class="n">#38</span></a><a class="nav-a" data-sid="s43" onclick="nav('s43')">List Views<span class="n">#43</span></a><a class="nav-a" data-sid="s47" onclick="nav('s47')">Org Documentation<span class="n">#47</span></a><a class="nav-a" data-sid="s48" onclick="nav('s48')">Remover Helper<span class="n">#48</span></a></div><div class="cat">Security &amp; Access</div><div><a class="nav-a" data-sid="s17" onclick="nav('s17')">Login As<span class="n">#17</span></a><a class="nav-a" data-sid="s28" onclick="nav('s28')">ACL<span class="n">#28</span></a><a class="nav-a" data-sid="s29" onclick="nav('s29')">Profiles Modification<span class="n">#29</span></a><a class="nav-a" data-sid="s30" onclick="nav('s30')">Field-Level Security<span class="n">#30</span></a><a class="nav-a" data-sid="s37" onclick="nav('s37')">Security<span class="n">#37</span></a><a class="nav-a" data-sid="s49" onclick="nav('s49')">Permission Sets<span class="n">#49</span></a><a class="nav-a" data-sid="s51" onclick="nav('s51')">Profile Comparison<span class="n">#51</span></a><a class="nav-a" data-sid="s55" onclick="nav('s55')">Field Usage by Record Type<span class="n">#55</span></a><a class="nav-a" data-sid="s62" onclick="nav('s62')">Access Score<span class="n">#62</span></a><a class="nav-a" data-sid="s64" onclick="nav('s64')">Profile Diff<span class="n">#64</span></a><a class="nav-a" data-sid="s65" onclick="nav('s65')">App Assignments<span class="n">#65</span></a><a class="nav-a" data-sid="s66" onclick="nav('s66')">Roles Explorer<span class="n">#66</span></a><a class="nav-a" data-sid="s67" onclick="nav('s67')">Profile List<span class="n">#67</span></a><a class="nav-a" data-sid="s68" onclick="nav('s68')">Profile Search<span class="n">#68</span></a><a class="nav-a" data-sid="s69" onclick="nav('s69')">User Privilege Assessment<span class="n">#69</span></a><a class="nav-a" data-sid="s70" onclick="nav('s70')">Security Optimisation<span class="n">#70</span></a><a class="nav-a" data-sid="s71" onclick="nav('s71')">License Optimisation<span class="n">#71</span></a><a class="nav-a" data-sid="s72" onclick="nav('s72')">User Explorer<span class="n">#72</span></a></div><div class="cat">Monitoring &amp; Admin</div><div><a class="nav-a" data-sid="s18" onclick="nav('s18')">Formula Field Tester<span class="n">#18</span></a><a class="nav-a" data-sid="s19" onclick="nav('s19')">Org Limits<span class="n">#19</span></a><a class="nav-a" data-sid="s20" onclick="nav('s20')">Debug Logs<span class="n">#20</span></a><a class="nav-a" data-sid="s24" onclick="nav('s24')">Storage<span class="n">#24</span></a><a class="nav-a" data-sid="s39" onclick="nav('s39')">Scheduled Jobs<span class="n">#39</span></a><a class="nav-a" data-sid="s40" onclick="nav('s40')">Streaming API<span class="n">#40</span></a><a class="nav-a" data-sid="s41" onclick="nav('s41')">Orgs Management<span class="n">#41</span></a><a class="nav-a" data-sid="s46" onclick="nav('s46')">Streaming (B)<span class="n">#46</span></a></div><div class="cat">Tools</div><div><a class="nav-a" data-sid="s22" onclick="nav('s22')">SFDX<span class="n">#22</span></a><a class="nav-a" data-sid="s36" onclick="nav('s36')">Workspace<span class="n">#36</span></a><a class="nav-a" data-sid="s45" onclick="nav('s45')">Dev Console (B)<span class="n">#45</span></a></div><div class="cat">Data Seeding</div><div><a class="nav-a" data-sid="s77" onclick="nav('s77')">Data Seeding<span class="n">#77</span></a></div><div class="cat">Other</div><div><a class="nav-a" data-sid="s10" onclick="nav('s10')">History — Search<span class="n">#10</span></a><a class="nav-a" data-sid="s10" onclick="nav('s10')">History — Display<span class="n">#10</span></a><a class="nav-a" data-sid="s52" onclick="nav('s52')">Object Relations<span class="n">#52</span></a><a class="nav-a" data-sid="s54" onclick="nav('s54')">Change Set Helper<span class="n">#54</span></a><a class="nav-a" data-sid="s73" onclick="nav('s73')">Public Groups &amp; Perm Sets<span class="n">#73</span></a><a class="nav-a" data-sid="s74" onclick="nav('s74')">Event Log<span class="n">#74</span></a><a class="nav-a" data-sid="s75" onclick="nav('s75')">Platform Events<span class="n">#75</span></a><a class="nav-a" data-sid="s76" onclick="nav('s76')">Sharing Explorer<span class="n">#76</span></a><a class="nav-a" data-sid="s78" onclick="nav('s78')">Tooling Explorer<span class="n">#78</span></a></div></nav>
 </aside>
 <main id="main">
+
+<div id="welcome">
+  <div class="wlc">
+    <h1>Calumet</h1>
+    <p class="wlc-version">v9.2 &mdash; Salesforce Administration Suite</p>
+    <p class="wlc-desc">
+      Calumet is a desktop application for Salesforce administrators and developers.
+      It provides a unified interface for:<br><br>
+      &bull; <strong>Metadata management</strong> &mdash; retrieve, deploy, compare and roll back metadata across orgs<br>
+      &bull; <strong>Apex &amp; testing</strong> &mdash; code coverage, test suites, debug log analysis, dead code detection<br>
+      &bull; <strong>Security &amp; access</strong> &mdash; profile analysis, permission sets, sharing rules, field-level access<br>
+      &bull; <strong>Data operations</strong> &mdash; SOQL explorer, record browser, picklist management<br>
+      &bull; <strong>Org-to-org data migration</strong> &mdash; export, import and clean records while preserving all relationships
+    </p>
+    <p class="wlc-hint">Select a feature from the left sidebar to explore the documentation.</p>
+  </div>
+</div>
+
 <section class="sec" id="s1">
   <div class="sum">
     <div class="sum-title">
@@ -1002,7 +1034,374 @@ body{font-family:"Segoe UI",system-ui,sans-serif;background:#14161f;
     <p class="sum-desc">Org-to-org data migration tool. Export records from a source org and import them into a target org, preserving relationships and handling cyclic dependencies automatically.</p>
   </div>
   <div class="mockup-wrap">
-    <div class="mockup"><div class="vbox" style="gap:0px"><div class="hbox" style="padding:6px 12px 6px 12px;gap:10px;align-items:center"><span class="cal-lbl" style="font-weight:bold">Active config:</span><select class="cal-cb" data-tip="Select a saved configuration to apply it to all DataSeeding operations" style="width:200.0px;"><option class="ph">— select a configuration —</option></select><div class="vsep"></div><span class="cal-lbl" style="font-weight:bold">Source:</span><div class="vsep"></div><span class="cal-lbl" style="font-weight:bold">Target:</span><div class="vsep"></div><button class="cal-btn btn-d" data-tip="Open the main folder of the active configuration" disabled>Open</button><div class="spacer"></div><button class="cal-btn btn-d" data-tip="Open Data Seeding documentation">?</button></div><div class="anchor"><div class="m-tabpane" id="tp31"><div class="m-tabbar"><div class="m-tab act" onclick="sw('tp31',0)">Config</div><div class="m-tab" onclick="sw('tp31',1)">Community Users</div><div class="m-tab" onclick="sw('tp31',2)">Objects</div><div class="m-tab" onclick="sw('tp31',3)">Prepare</div><div class="m-tab" onclick="sw('tp31',4)">Export</div><div class="m-tab" onclick="sw('tp31',5)">Automation</div><div class="m-tab" onclick="sw('tp31',6)">Import</div><div class="m-tab" onclick="sw('tp31',7)">Clean</div><div class="m-tab" onclick="sw('tp31',8)">IDs Export</div><div class="m-tab" onclick="sw('tp31',9)">Debug Import</div></div><div class="m-body"><div class="m-panel act" id="tp31-0"><div class="anchor"><div class="hbox" style="gap:8px;align-items:center"><span class="cal-lbl">Config directory:</span><input class="cal-tf cal-grow" placeholder="Choose a directory to store configurations…" style="" readonly><button class="cal-btn btn-d">Browse…</button></div><div class="vbox" style="gap:6px"><span class="cal-lbl">Configurations</span><div class="hbox" style="gap:6px;align-items:center"><button class="cal-btn btn-d">New</button><button class="cal-btn btn-d">Delete</button></div><div class="cal-listview"></div></div><div class="vsep"></div><div class="scroll-pane"><div class="vbox" style="padding:12px 12px 12px 12px;gap:8px"><span class="cal-lbl">New configuration</span><div class="hbox" style="gap:10px;align-items:center"><span class="cal-lbl">Name</span><input class="cal-tf" placeholder="e.g. SmallExport" style="width:180.0px;" readonly><span class="cal-lbl" style="padding:0px 0px 0px 6px">Max depth</span><input class="cal-tf" placeholder="" data-tip="Maximum traversal depth (higher = more relations resolved)" style="width:52.0px;" readonly></div><div class="hbox" style="gap:10px;align-items:center"><span class="cal-lbl">Source org</span><select class="cal-cb cal-grow" style=""><option class="ph">Select source org…</option></select><span class="cal-lbl" style="padding:0px 0px 0px 6px">Target org</span><select class="cal-cb cal-grow" style=""><option class="ph">Select target org…</option></select></div><div class="hbox" style="gap:10px;align-items:center"><span class="cal-lbl">Main path</span><input class="cal-tf cal-grow" placeholder="Root export directory" style="" readonly><button class="cal-btn btn-d" data-tip="Choose main path directory">…</button></div><div class="hbox" style="padding:4px 0px 0px 0px;gap:24px;align-items:center"><label class="cal-chk" data-tip="Include queries with category SYSTEM in the traversal plan"><input type="checkbox" disabled> Include system queries</label><label class="cal-chk" data-tip="Shows the Community Users tab when enabled"><input type="checkbox" disabled> Community users (Experience Cloud)</label></div><label class="cal-chk"><input type="checkbox" disabled> Enable debug mode (one CSV per query, IDs analyser and import debugger)</label><div class="hbox" style="padding:2px 0px 0px 0px;gap:10px;align-items:flex-start"><span class="cal-lbl" style="padding:4px 0px 0px 0px">Start query</span><textarea class="cal-ta" placeholder="SELECT Id FROM MyObject__c WHERE … LIMIT 10" rows="3" readonly></textarea></div><div class="hbox" style="padding:2px 0px 0px 0px;gap:10px;align-items:center"><span class="cal-lbl" style="padding:4px 0px 0px 0px">Import after</span><select class="cal-cb cal-grow" data-tip="If set, import will pre-load oldNewIds from this config and skip records already imported there" style=""><option class="ph">None (independent import)</option></select></div><div class="hbox" style="padding:2px 0px 0px 0px;gap:8px;align-items:center"><button class="cal-btn btn-d">Create</button><button class="cal-btn btn-d">Cancel</button></div></div></div></div></div><div class="m-panel" id="tp31-1"><div class="anchor"><span class="cal-lbl" style="color:#7f8c8d;font-style:italic">Please select a configuration to use this tab.</span></div></div><div class="m-panel" id="tp31-2"><div class="anchor"><div class="vbox" style="padding:10px 10px 10px 10px;gap:8px"><div class="hbox" style="gap:8px;align-items:center"><div class="vsep"></div><label class="cal-chk" data-tip="Hide ignored objects from the table"><input type="checkbox" disabled> Hide ignored</label><div class="vsep"></div><label class="cal-chk" data-tip="Hide objects that have no parent and no child relations"><input type="checkbox" disabled> Hide no-relation</label><label class="cal-chk" data-tip="Hide objects that have at least one parent relation"><input type="checkbox" disabled> Hide with parents</label><label class="cal-chk" data-tip="Hide objects that have at least one child relation"><input type="checkbox" disabled> Hide with children</label><div class="vsep"></div><button class="cal-btn btn-g" data-tip="Open the ignore list manager">Ignore list…</button></div><div class="hbox" style="gap:8px;align-items:center"><span class="cal-lbl" style="color:#7f8c8d">Ignore profile</span><select class="cal-cb" data-tip="Named snapshots of the ignore list, stored per source org in ignoreObjectProfiles/" style="width:200.0px;"><option class="ph">Profile name…</option></select><button class="cal-btn btn-b" data-tip="Replace active ignore list with this profile">Load</button><button class="cal-btn btn-g" data-tip="Save current ignore list under this profile name (creates or overwrites)">Save</button><button class="cal-btn btn-r" data-tip="Delete this profile (does not affect the active ignore list)">Delete</button></div><div class="split-pane"><div class="split-panel"><div class="tbl-wrap"><table class="cal-tbl"><thead><tr><th style="width:55.0px">Export</th><th style="width:200.0px">API Name</th><th style="width:180.0px">Label</th><th style="width:85.0px">Records</th><th style="width:70.0px">Parents</th><th style="width:70.0px">Children</th></tr></thead><tbody><tr><td colspan="20" class="tbl-empty"></td></tr></tbody></table></div></div></div></div></div></div><div class="m-panel" id="tp31-3"><div class="anchor"><span class="cal-lbl" style="color:#7f8c8d;font-style:italic">Please select a configuration to use this tab.</span></div></div><div class="m-panel" id="tp31-4"><div class="anchor"><span class="cal-lbl" style="color:#7f8c8d;font-style:italic">Please select a configuration to use this tab.</span></div></div><div class="m-panel" id="tp31-5"><div class="anchor"><span class="cal-lbl" style="color:#7f8c8d;font-style:italic">Please select a configuration to use this tab.</span></div></div><div class="m-panel" id="tp31-6"><div class="anchor"><span class="cal-lbl" style="color:#7f8c8d;font-style:italic">Please select a configuration to use this tab.</span></div></div><div class="m-panel" id="tp31-7"><div class="anchor"><div class="vbox" style="padding:10px 10px 10px 10px;gap:10px"><div class="hbox" style="gap:10px;align-items:center"><button class="cal-btn btn-r" data-tip="Delete all records from the target org (CleanOrg.cleanAll)" disabled>Clean org</button><label class="cal-chk" data-tip="If checked, only deletes records for objects that have an exported CSV file"><input type="checkbox" checked disabled> Imported objects only</label><div class="vsep"></div><label class="cal-chk" data-tip="Show only objects targeted for deletion (hide skipped objects)"><input type="checkbox" checked disabled> Deletable only</label><div class="vsep"></div><span class="cal-lbl" style="color:#7f8c8d">Stop after</span><input class="cal-tf" placeholder="" data-tip="Stop deleting an object when this many errors are reached and show 500+ in After column" style="width:55.0px;" readonly><span class="cal-lbl" style="color:#7f8c8d">errors</span><div class="vsep"></div><span class="cal-lbl" style="color:#7f8c8d">Created after</span><input class="cal-tf" placeholder="2026-04-27T14:23:29Z (optional)" data-tip="If set, only delete records created after this datetime (SOQL format: yyyy-MM-ddTHH:mm:ssZ)" style="width:230.0px;" readonly><button class="cal-btn btn-d" data-tip="Fill &#x27;Created after&#x27; with current UTC datetime">Now</button><div class="vsep"></div><span class="cal-lbl" style="color:#7f8c8d">Created before</span><input class="cal-tf" placeholder="2026-04-27T14:23:29Z (optional)" data-tip="If set, only delete records created before this datetime (SOQL format: yyyy-MM-ddTHH:mm:ssZ)" style="width:230.0px;" readonly></div><div class="vbox" style="gap:4px"><span class="cal-lbl">Clean results</span><div class="tbl-wrap"><table class="cal-tbl"><thead><tr><th style="width:220.0px">Object</th><th style="width:80.0px">Records</th><th style="width:75.0px">Delete?</th><th style="width:80.0px">After</th><th style="width:70.0px">Errors</th></tr></thead><tbody><tr><td colspan="20" class="tbl-empty"></td></tr></tbody></table></div></div></div></div></div><div class="m-panel" id="tp31-8"><div class="anchor"><span class="cal-lbl" style="color:#7f8c8d;font-style:italic">Please select a configuration to use this tab.</span></div></div><div class="m-panel" id="tp31-9"><div class="anchor"><span class="cal-lbl" style="color:#7f8c8d;font-style:italic">Please select a configuration to use this tab.</span></div></div></div></div></div></div></div>
+    <div class="mockup">
+<div class="hbox" style="padding:6px 12px;gap:10px;align-items:center;background:#EDF3F7;border-bottom:1px solid #9AABBF;flex-wrap:wrap">
+  <span class="cal-lbl" style="font-weight:bold">Active config:</span>
+  <select class="cal-cb" style="width:180px"><option>SmallSandbox</option><option>FullProd</option><option>QuickTest</option></select>
+  <button class="cal-btn btn-b">Apply</button>
+  <div class="vsep" style="align-self:stretch"></div>
+  <span class="cal-lbl" style="color:#888;font-size:11px">Source:</span>
+  <span class="cal-lbl" style="font-weight:bold;color:#1A5276">myproject_source</span>
+  <div class="vsep" style="align-self:stretch"></div>
+  <span class="cal-lbl" style="color:#888;font-size:11px">Target:</span>
+  <span class="cal-lbl" style="font-weight:bold;color:#1e8a4a">myproject_sandbox</span>
+</div>
+<div class="m-tabpane" id="t77">
+  <div class="m-tabbar">
+    <div class="m-tab act" onclick="sw('t77',0)">Config</div>
+    <div class="m-tab" onclick="sw('t77',1)">Community Users</div>
+    <div class="m-tab" onclick="sw('t77',2)">Objects</div>
+    <div class="m-tab" onclick="sw('t77',3)">Prepare</div>
+    <div class="m-tab" onclick="sw('t77',4)">Export</div>
+    <div class="m-tab" onclick="sw('t77',5)">Automation</div>
+    <div class="m-tab" onclick="sw('t77',6)">Import</div>
+    <div class="m-tab" onclick="sw('t77',7)">Clean</div>
+    <div class="m-tab" onclick="sw('t77',8)">IDs Export</div>
+    <div class="m-tab" onclick="sw('t77',9)">Debug Import</div>
+  </div>
+  <div class="m-body">
+
+    <!-- ── Config ── -->
+    <div class="m-panel act" id="t77-0">
+      <div class="hbox" style="gap:16px;align-items:flex-start">
+        <div class="vbox" style="gap:6px;min-width:200px">
+          <div class="hbox" style="gap:4px">
+            <input class="cal-tf" value="C:/seeding" style="flex:1" readonly>
+            <button class="cal-btn btn-d">Browse</button>
+          </div>
+          <div style="border:1px solid #9AABBF;border-radius:3px;overflow:hidden">
+            <div style="padding:5px 10px;background:#D5F5E3;color:#1a5226;font-weight:bold;font-size:11px;cursor:pointer">SmallSandbox</div>
+            <div style="padding:5px 10px;font-size:11px;cursor:pointer;color:#1a2a35">FullProd</div>
+            <div style="padding:5px 10px;font-size:11px;cursor:pointer;color:#1a2a35">QuickTest</div>
+          </div>
+          <div class="hbox" style="gap:4px">
+            <button class="cal-btn btn-g" style="flex:1">New</button>
+            <button class="cal-btn btn-r">Delete</button>
+          </div>
+        </div>
+        <div class="vbox" style="gap:6px;flex:1">
+          <span class="cal-lbl" style="font-weight:bold;font-size:13px">Edit: SmallSandbox</span>
+          <hr class="hsep">
+          <div class="hbox" style="gap:8px;align-items:center">
+            <span class="cal-lbl" style="width:90px">Name</span>
+            <input class="cal-tf" value="SmallSandbox" style="width:160px" readonly>
+          </div>
+          <div class="hbox" style="gap:8px;align-items:center">
+            <span class="cal-lbl" style="width:90px">Source org</span>
+            <select class="cal-cb" style="width:190px"><option>myproject_source</option></select>
+            <span class="cal-lbl" style="width:80px">Target org</span>
+            <select class="cal-cb" style="width:190px"><option>myproject_sandbox</option></select>
+          </div>
+          <div class="hbox" style="gap:8px;align-items:center">
+            <span class="cal-lbl" style="width:90px">Main path</span>
+            <input class="cal-tf" value="C:/seeding/SmallSandbox" style="flex:1" readonly>
+            <button class="cal-btn btn-d">Open</button>
+          </div>
+          <div class="hbox" style="gap:8px;align-items:center">
+            <span class="cal-lbl" style="width:90px">Max depth</span>
+            <input class="cal-tf" value="5" style="width:50px" readonly>
+          </div>
+          <div class="vbox" style="gap:4px">
+            <span class="cal-lbl">Start query</span>
+            <textarea class="cal-ta" rows="2" readonly>SELECT Id FROM Account WHERE Type = 'Customer' LIMIT 100</textarea>
+          </div>
+          <div class="hbox" style="gap:8px;align-items:center">
+            <span class="cal-lbl" style="width:90px">Import after</span>
+            <select class="cal-cb" style="width:220px"><option>None (independent import)</option></select>
+          </div>
+          <label class="cal-chk"><input type="checkbox" disabled> Include system queries</label>
+          <label class="cal-chk"><input type="checkbox" disabled> Community users (Experience Cloud)</label>
+          <label class="cal-chk"><input type="checkbox" disabled> Enable debug mode</label>
+          <div class="hbox" style="gap:6px;margin-top:4px">
+            <button class="cal-btn btn-g">Save</button>
+            <button class="cal-btn btn-d">Cancel</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Community Users ── -->
+    <div class="m-panel" id="t77-1">
+      <div class="vbox" style="gap:8px">
+        <div class="hbox" style="gap:8px;align-items:center">
+          <span class="cal-lbl" style="color:#888">Community profile:</span>
+          <select class="cal-cb" style="width:220px"><option>Customer Community Login User</option></select>
+          <span class="cal-lbl" style="color:#888">Username suffix:</span>
+          <input class="cal-tf" value="myorg_sandbox" style="width:140px" readonly>
+        </div>
+        <div class="hbox" style="gap:8px">
+          <button class="cal-btn btn-b">Export Community</button>
+          <button class="cal-btn btn-g">Import Community</button>
+        </div>
+        <span class="cal-lbl" style="color:#27ae60">Last export: 12 community users &mdash; 2026-04-01 14:24:10</span>
+        <span class="cal-lbl" style="color:#27ae60">Last import: 12 community users &mdash; 2026-04-01 14:26:33</span>
+      </div>
+    </div>
+
+    <!-- ── Objects ── -->
+    <div class="m-panel" id="t77-2">
+      <div class="vbox" style="gap:8px">
+        <div class="hbox" style="gap:8px;align-items:center;flex-wrap:wrap">
+          <button class="cal-btn btn-b" data-tip="Load the object relationship graph from the source org">Load Objects</button>
+          <button class="cal-btn btn-d">Select All</button>
+          <label class="cal-chk"><input type="checkbox" disabled> Hide ignored</label>
+          <label class="cal-chk"><input type="checkbox" disabled> Hide no-relation</label>
+          <label class="cal-chk"><input type="checkbox" disabled> Hide with parents</label>
+          <label class="cal-chk"><input type="checkbox" disabled> Hide with children</label>
+          <button class="cal-btn btn-o">Ignore list</button>
+          <div class="spacer"></div>
+          <span class="cal-lbl" style="color:#888;font-size:11px">Ignore profile:</span>
+          <select class="cal-cb" style="width:160px"><option>DefaultIgnore</option></select>
+          <button class="cal-btn btn-d">Load</button>
+          <button class="cal-btn btn-d">Save</button>
+          <button class="cal-btn btn-r">Delete</button>
+        </div>
+        <div class="hbox" style="gap:8px;align-items:flex-start">
+          <div class="tbl-wrap" style="flex:2">
+            <table class="cal-tbl">
+              <thead><tr><th style="width:180px">Object</th><th style="width:70px">Parents</th><th style="width:70px">Children</th><th style="width:70px">Records</th><th style="width:55px">Export</th><th style="width:55px">Ignore</th></tr></thead>
+              <tbody>
+                <tr><td>Account</td><td>0</td><td>6</td><td>1 247</td><td><input type="checkbox" checked disabled></td><td><input type="checkbox" disabled></td></tr>
+                <tr><td>Contact</td><td>1</td><td>4</td><td>3 891</td><td><input type="checkbox" checked disabled></td><td><input type="checkbox" disabled></td></tr>
+                <tr><td>Opportunity</td><td>1</td><td>3</td><td>654</td><td><input type="checkbox" checked disabled></td><td><input type="checkbox" disabled></td></tr>
+                <tr><td>OpportunityLineItem</td><td>2</td><td>0</td><td>1 102</td><td><input type="checkbox" checked disabled></td><td><input type="checkbox" disabled></td></tr>
+                <tr><td>Product2</td><td>0</td><td>1</td><td>88</td><td><input type="checkbox" checked disabled></td><td><input type="checkbox" disabled></td></tr>
+                <tr><td>PricebookEntry</td><td>2</td><td>1</td><td>88</td><td><input type="checkbox" checked disabled></td><td><input type="checkbox" disabled></td></tr>
+                <tr style="color:#999"><td>User</td><td>0</td><td>0</td><td>45</td><td><input type="checkbox" disabled></td><td><input type="checkbox" checked disabled></td></tr>
+                <tr style="color:#999"><td>ContentDocument</td><td>0</td><td>0</td><td>&mdash;</td><td><input type="checkbox" disabled></td><td><input type="checkbox" checked disabled></td></tr>
+                <tr><td>Custom__c</td><td>1</td><td>2</td><td>203</td><td><input type="checkbox" checked disabled></td><td><input type="checkbox" disabled></td></tr>
+                <tr><td>CustomLine__c</td><td>1</td><td>0</td><td>891</td><td><input type="checkbox" checked disabled></td><td><input type="checkbox" disabled></td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="vbox" style="gap:6px;min-width:160px">
+            <span class="cal-lbl" style="font-weight:bold">Account</span>
+            <span class="cal-lbl" style="color:#888;font-size:11px">Parents: 0</span>
+            <span class="cal-lbl" style="color:#1A5276;font-size:11px;font-weight:bold">Children: 6</span>
+            <div style="padding:4px 8px;background:#fff;border:1px solid #9AABBF;border-radius:3px;font-size:11px;line-height:1.8">
+              <div>&rarr; Contact</div><div>&rarr; Opportunity</div><div>&rarr; Custom__c</div>
+              <div>&rarr; Case</div><div>&rarr; Contract</div><div>&rarr; AccountHistory</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Prepare ── -->
+    <div class="m-panel" id="t77-3">
+      <div class="vbox" style="gap:8px">
+        <div class="hbox" style="gap:8px;align-items:center;flex-wrap:wrap">
+          <button class="cal-btn btn-b" data-tip="Extract Salesforce metadata (describe) for all selected objects">1 &mdash; Extract Metadata</button>
+          <button class="cal-btn btn-b" data-tip="Generate SOQL queries based on object relationships">2 &mdash; Generate Relation Queries</button>
+          <button class="cal-btn btn-d">Save limits</button>
+          <button class="cal-btn btn-d">Load limits</button>
+          <button class="cal-btn btn-d">Reload plan</button>
+          <button class="cal-btn btn-o">Add limits</button>
+        </div>
+        <div class="hbox" style="gap:20px;padding:6px 4px">
+          <span class="cal-lbl"><strong>Total:</strong> 1 247 queries</span>
+          <span class="cal-lbl"><strong>Main:</strong> 623</span>
+          <span class="cal-lbl"><strong>Out of list:</strong> 14</span>
+          <span class="cal-lbl"><strong>System:</strong> 0</span>
+        </div>
+        <span class="cal-lbl" style="color:#888;font-size:11px">Start query: SELECT Id FROM Account WHERE Type = 'Customer' LIMIT 100</span>
+        <hr class="hsep">
+        <textarea class="cal-ta" rows="7" readonly>[INFO] Extracting metadata for Account...
+[INFO] Extracting metadata for Contact...
+[INFO] Extracting metadata for Opportunity...
+[INFO] 10 objects processed
+[INFO] Generating relation queries...
+[INFO]   Account -> Contact : 87 relations
+[INFO]   Account -> Opportunity : 34 relations
+[INFO]   Opportunity -> OpportunityLineItem : 102 relations
+[OK]  Plan generated: 1 247 queries total</textarea>
+        <hr class="hsep">
+        <span class="cal-lbl" style="font-weight:bold">Query detail: Account</span>
+        <textarea class="cal-ta" rows="2" readonly>SELECT Id, Name, Type, BillingCity, OwnerId FROM Account WHERE Type = 'Customer' LIMIT 100</textarea>
+      </div>
+    </div>
+
+    <!-- ── Export ── -->
+    <div class="m-panel" id="t77-4">
+      <div class="vbox" style="gap:8px">
+        <div class="hbox" style="gap:8px;align-items:center;flex-wrap:wrap">
+          <button class="cal-btn btn-b" data-tip="Export records from the source org to CSV files">Export Records</button>
+          <button class="cal-btn btn-b" data-tip="Count records only, without exporting">Count Records</button>
+          <span class="cal-lbl" style="color:#888;font-size:11px">Source:</span>
+          <span class="cal-lbl" style="font-weight:bold">myproject_source</span>
+          <div class="spacer"></div>
+          <button class="cal-btn btn-d">Cancel</button>
+          <button class="cal-btn btn-d" data-tip="Verify that exported IDs still exist in the source org">Check IDs</button>
+          <button class="cal-btn btn-d" data-tip="Verify user mapping between source and target orgs">Check Users</button>
+        </div>
+        <span class="cal-lbl" style="color:#27ae60;font-weight:bold">Export completed &mdash; 2026-04-01 14:28:44 &nbsp; (516 records, 8 objects)</span>
+        <div class="tbl-wrap">
+          <table class="cal-tbl">
+            <thead><tr><th style="width:200px">Object</th><th style="width:80px">Records</th><th style="width:70px">Queries</th><th style="width:80px">Duration</th><th>Status</th></tr></thead>
+            <tbody>
+              <tr><td>Account</td><td>25</td><td>1</td><td>0.8 s</td><td style="color:#27ae60">&#10003; Done</td></tr>
+              <tr><td>Contact</td><td>87</td><td>1</td><td>1.2 s</td><td style="color:#27ae60">&#10003; Done</td></tr>
+              <tr><td>Opportunity</td><td>34</td><td>1</td><td>0.6 s</td><td style="color:#27ae60">&#10003; Done</td></tr>
+              <tr><td>OpportunityLineItem</td><td>102</td><td>3</td><td>1.5 s</td><td style="color:#27ae60">&#10003; Done</td></tr>
+              <tr><td>Product2</td><td>12</td><td>1</td><td>0.3 s</td><td style="color:#27ae60">&#10003; Done</td></tr>
+              <tr><td>PricebookEntry</td><td>12</td><td>1</td><td>0.3 s</td><td style="color:#27ae60">&#10003; Done</td></tr>
+              <tr><td>Custom__c</td><td>41</td><td>2</td><td>0.7 s</td><td style="color:#27ae60">&#10003; Done</td></tr>
+              <tr><td>CustomLine__c</td><td>203</td><td>5</td><td>2.1 s</td><td style="color:#27ae60">&#10003; Done</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <textarea class="cal-ta" rows="3" readonly>[INFO] Exporting Account (1/8)... 25 records
+[INFO] Exporting Contact (2/8)... 87 records
+[OK]  Export complete. Total: 516 records across 8 objects.</textarea>
+      </div>
+    </div>
+
+    <!-- ── Automation ── -->
+    <div class="m-panel" id="t77-5">
+      <div class="vbox" style="gap:10px">
+        <div class="hbox" style="gap:8px;align-items:center">
+          <button class="cal-btn btn-b">Check status</button>
+          <span class="cal-lbl" style="color:#888">Target:</span>
+          <span class="cal-lbl" style="font-weight:bold">myproject_sandbox</span>
+        </div>
+        <div style="padding:10px 14px;background:#D5F5E3;border:1px solid #27ae60;border-radius:4px">
+          <span class="cal-lbl" style="color:#1a5226;font-weight:bold">Automations are currently DISABLED on myproject_sandbox</span><br>
+          <span class="cal-lbl" style="color:#888;font-size:11px">Last checked: 2026-04-01 14:23:29</span>
+        </div>
+        <div class="hbox" style="gap:8px;align-items:center">
+          <span class="cal-lbl">Retrieve path:</span>
+          <input class="cal-tf" value="C:/seeding/SmallSandbox/automations" style="flex:1" readonly>
+          <button class="cal-btn btn-d">Open</button>
+        </div>
+        <div class="hbox" style="gap:8px">
+          <button class="cal-btn btn-r" data-tip="Disable all Flows and Process Builders on target org before import">Disable automations</button>
+          <button class="cal-btn btn-g" data-tip="Re-enable automations after import is complete">Re-enable automations</button>
+          <button class="cal-btn btn-d">View log</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Import ── -->
+    <div class="m-panel" id="t77-6">
+      <div class="vbox" style="gap:8px">
+        <div class="hbox" style="gap:8px;align-items:center;flex-wrap:wrap">
+          <button class="cal-btn btn-g" data-tip="Import exported CSV files into the target org">Run Import</button>
+          <span class="cal-lbl" style="color:#888;font-size:11px">Target:</span>
+          <span class="cal-lbl" style="font-weight:bold">myproject_sandbox</span>
+          <div class="spacer"></div>
+          <span class="cal-lbl" style="color:#27ae60;font-weight:bold">Import completed &mdash; 2026-04-01 14:28:45</span>
+        </div>
+        <div class="tbl-wrap">
+          <table class="cal-tbl">
+            <thead><tr><th style="width:200px">Object</th><th style="width:80px">Exported</th><th style="width:80px">Imported</th><th style="width:65px">Skipped</th><th style="width:65px">Errors</th><th>Status</th></tr></thead>
+            <tbody>
+              <tr><td>Account</td><td>25</td><td>25</td><td>0</td><td>0</td><td style="color:#27ae60">&#10003; OK</td></tr>
+              <tr><td>Contact</td><td>87</td><td>85</td><td>0</td><td>2</td><td style="color:#e67e22">&#9888; Partial</td></tr>
+              <tr><td>Opportunity</td><td>34</td><td>34</td><td>0</td><td>0</td><td style="color:#27ae60">&#10003; OK</td></tr>
+              <tr><td>OpportunityLineItem</td><td>102</td><td>102</td><td>0</td><td>0</td><td style="color:#27ae60">&#10003; OK</td></tr>
+              <tr><td>Product2</td><td>12</td><td>0</td><td>12</td><td>0</td><td style="color:#888">&mdash; Already exists</td></tr>
+              <tr><td>PricebookEntry</td><td>12</td><td>0</td><td>12</td><td>0</td><td style="color:#888">&mdash; Already exists</td></tr>
+              <tr><td>Custom__c</td><td>41</td><td>41</td><td>0</td><td>0</td><td style="color:#27ae60">&#10003; OK</td></tr>
+              <tr><td>CustomLine__c</td><td>203</td><td>201</td><td>0</td><td>2</td><td style="color:#e67e22">&#9888; Partial</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <textarea class="cal-ta" rows="4" readonly>[INFO] Importing Account (1/8)... 25/25 inserted
+[INFO] Importing Contact (2/8)... 85/87 inserted, 2 errors
+[WARN] 003Qy000002ABC: REQUIRED_FIELD_MISSING [Email]
+[OK]  Import complete. 488/516 records, 4 errors.</textarea>
+      </div>
+    </div>
+
+    <!-- ── Clean ── -->
+    <div class="m-panel" id="t77-7">
+      <div class="vbox" style="gap:8px">
+        <div class="hbox" style="gap:8px;align-items:center;flex-wrap:wrap">
+          <button class="cal-btn btn-r" data-tip="Delete all seeded records from the target org">Clean org</button>
+          <span class="cal-lbl" style="color:#888;font-size:11px">Target:</span>
+          <span class="cal-lbl" style="font-weight:bold">myproject_sandbox</span>
+          <div class="spacer"></div>
+          <label class="cal-chk"><input type="checkbox" checked disabled> Imported objects only</label>
+          <label class="cal-chk"><input type="checkbox" disabled> Deletable only</label>
+          <label class="cal-chk"><input type="checkbox" disabled> With remaining records</label>
+        </div>
+        <div class="hbox" style="gap:12px;align-items:center;flex-wrap:wrap">
+          <span class="cal-lbl">Error threshold:</span>
+          <input class="cal-tf" value="500" style="width:55px" readonly>
+          <span class="cal-lbl">Created after:</span>
+          <input class="cal-tf" value="2026-04-01T14:23:29.123Z" style="width:215px" readonly>
+          <button class="cal-btn btn-d" data-tip="Set to current timestamp">Now</button>
+          <span class="cal-lbl">Created before:</span>
+          <input class="cal-tf" value="2026-04-01T14:28:45.456Z" style="width:215px" readonly>
+          <button class="cal-btn btn-d" data-tip="Set to current timestamp">Now</button>
+        </div>
+        <div class="tbl-wrap">
+          <table class="cal-tbl">
+            <thead><tr><th style="width:200px">Object</th><th style="width:75px">Before</th><th style="width:75px">After</th><th style="width:70px">Deleted</th><th style="width:70px">Errors</th><th>Status</th></tr></thead>
+            <tbody>
+              <tr><td>CustomLine__c</td><td>203</td><td>0</td><td>203</td><td>0</td><td style="color:#27ae60">&#10003; Done</td></tr>
+              <tr><td>Custom__c</td><td>41</td><td>0</td><td>41</td><td>0</td><td style="color:#27ae60">&#10003; Done</td></tr>
+              <tr><td>OpportunityLineItem</td><td>102</td><td>0</td><td>102</td><td>0</td><td style="color:#27ae60">&#10003; Done</td></tr>
+              <tr><td>Opportunity</td><td>34</td><td>0</td><td>34</td><td>0</td><td style="color:#27ae60">&#10003; Done</td></tr>
+              <tr><td>Contact</td><td>87</td><td>2</td><td>85</td><td>2</td><td style="color:#e67e22">&#9888; Partial</td></tr>
+              <tr><td>Account</td><td>25</td><td>0</td><td>25</td><td>0</td><td style="color:#27ae60">&#10003; Done</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── IDs Export ── -->
+    <div class="m-panel" id="t77-8">
+      <div class="vbox" style="gap:8px">
+        <div class="hbox" style="gap:8px;align-items:center">
+          <button class="cal-btn btn-d">Reload</button>
+          <span class="cal-lbl" style="color:#27ae60">oldNewIds.csv &mdash; 516 mappings loaded</span>
+        </div>
+        <div class="tbl-wrap">
+          <table class="cal-tbl">
+            <thead><tr><th style="width:200px">Old ID (source)</th><th style="width:200px">New ID (target)</th><th style="width:150px">Object</th></tr></thead>
+            <tbody>
+              <tr><td style="font-family:monospace;font-size:10px">001Qy000001AAAAIAA</td><td style="font-family:monospace;font-size:10px">001Qy000009XXXXIAA</td><td>Account</td></tr>
+              <tr><td style="font-family:monospace;font-size:10px">001Qy000001BBBBIAA</td><td style="font-family:monospace;font-size:10px">001Qy000009YYYYIAA</td><td>Account</td></tr>
+              <tr><td style="font-family:monospace;font-size:10px">003Qy000002CCCCIAA</td><td style="font-family:monospace;font-size:10px">003Qy000009ZZZZIAA</td><td>Contact</td></tr>
+              <tr><td style="font-family:monospace;font-size:10px">003Qy000002DDDDIAA</td><td style="font-family:monospace;font-size:10px">003Qy000009WWWWIAA</td><td>Contact</td></tr>
+              <tr><td colspan="3" style="color:#888;text-align:center;font-style:italic;font-size:11px">&#8230; 512 more rows &#8230;</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Debug Import ── -->
+    <div class="m-panel" id="t77-9">
+      <div class="vbox" style="gap:8px">
+        <div class="hbox" style="gap:8px;align-items:center">
+          <button class="cal-btn btn-d">Load oldNewIds</button>
+          <button class="cal-btn btn-d">Load User Remap</button>
+          <span class="cal-lbl" style="color:#27ae60">516 ID mappings loaded</span>
+        </div>
+        <div class="hbox" style="gap:8px;align-items:center">
+          <span class="cal-lbl">Filter by ID:</span>
+          <input class="cal-tf" placeholder="Filter by ID (old or new)..." style="width:280px" readonly>
+        </div>
+        <div class="tbl-wrap">
+          <table class="cal-tbl">
+            <thead><tr><th style="width:120px">Object</th><th style="width:170px">Old ID</th><th style="width:170px">New ID</th><th>Error</th></tr></thead>
+            <tbody>
+              <tr><td>Contact</td><td style="font-family:monospace;font-size:10px">003Qy000002EEEEIAA</td><td style="color:#E74C3C;font-style:italic">not imported</td><td style="color:#E74C3C;font-size:11px">REQUIRED_FIELD_MISSING: Email</td></tr>
+              <tr><td>Contact</td><td style="font-family:monospace;font-size:10px">003Qy000002FFFFIAA</td><td style="color:#E74C3C;font-style:italic">not imported</td><td style="color:#E74C3C;font-size:11px">REQUIRED_FIELD_MISSING: Email</td></tr>
+              <tr><td>CustomLine__c</td><td style="font-family:monospace;font-size:10px">a0BQy00000GGGGIAA</td><td style="color:#E74C3C;font-style:italic">not imported</td><td style="color:#E74C3C;font-size:11px">FIELD_INTEGRITY_EXCEPTION: Related record deleted</td></tr>
+              <tr><td>CustomLine__c</td><td style="font-family:monospace;font-size:10px">a0BQy00000HHHH1AA</td><td style="color:#E74C3C;font-style:italic">not imported</td><td style="color:#E74C3C;font-size:11px">FIELD_INTEGRITY_EXCEPTION: Related record deleted</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+</div>
   </div>
 </section><section class="sec" id="s78">
   <div class="sum">
@@ -1018,11 +1417,21 @@ body{font-family:"Segoe UI",system-ui,sans-serif;background:#14161f;
 </section>
 </main>
 <script>
-// Tab switcher for mockup
+// Mockup inner tab switcher
 function sw(id,idx){
   var tp=document.getElementById(id);
   tp.querySelectorAll('.m-tab').forEach(function(t,i){t.classList.toggle('act',i===idx)});
   tp.querySelectorAll('.m-panel').forEach(function(p,i){p.classList.toggle('act',i===idx)});
+}
+// SPA navigation — show one section at a time
+function nav(sid){
+  document.querySelectorAll('.sec').forEach(function(s){s.classList.remove('on')});
+  document.getElementById('welcome').classList.add('h');
+  var s=document.getElementById(sid);
+  if(s){s.classList.add('on');document.getElementById('main').scrollTop=0}
+  document.querySelectorAll('.nav-a').forEach(function(a){a.classList.remove('on')});
+  var a=document.querySelector('.nav-a[data-sid="'+sid+'"]');
+  if(a){a.classList.add('on');a.scrollIntoView({block:'nearest'})}
 }
 // Sidebar search
 var sb=document.getElementById('sb-search');
@@ -1038,19 +1447,6 @@ sb.addEventListener('input',function(){
     if(grp)grp.classList.toggle('hidden',!!q&&!vis);
   });
 });
-// Active nav on scroll
-var sections=document.querySelectorAll('.sec');
-var navs=document.querySelectorAll('.nav-a');
-var obs=new IntersectionObserver(function(entries){
-  entries.forEach(function(e){
-    if(e.isIntersecting){
-      navs.forEach(function(n){n.classList.remove('on')});
-      var a=document.querySelector('.nav-a[href="#'+e.target.id+'"]');
-      if(a){a.classList.add('on');a.scrollIntoView({block:'nearest',behavior:'smooth'})}
-    }
-  });
-},{threshold:0.15,rootMargin:'-40px 0px -60% 0px'});
-sections.forEach(function(s){obs.observe(s)});
 </script>
 </body>
 </html>
