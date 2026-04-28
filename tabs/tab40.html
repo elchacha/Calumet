@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Streaming API — Calumet</title>
+<link rel="stylesheet" href="../shared.css">
+</head>
+<body class="tab-page">
+<div class="sum">
+  <div class="sum-title">
+    <h2>Streaming API</h2>
+    <span class="sum-badge">Tab 40</span>
+  </div>
+  <p class="sum-desc">Subscribe to Salesforce Platform Events and PushTopics in real time via the Streaming API.</p>
+</div>
+<div class="mockup-wrap">
+  <div class="mockup"><div class="vbox" style="gap:0px"><div class="anchor"><button class="cal-btn btn-b">Extract FlexiPage information</button><div class="tbl-wrap"><table class="cal-tbl"><thead><tr><th>ObjectName</th><th>Page Label</th><th>Path</th><th>Type</th><th>Filter</th><th>Rules</th><th>Label</th></tr></thead><tbody><tr><td colspan="20" class="tbl-empty"></td></tr></tbody></table></div><input class="cal-tf" placeholder="" style="" readonly><button class="cal-btn btn-d">Export to xlsx</button><label class="cal-chk"><input type="checkbox" disabled> open File</label></div></div></div>
+</div>
+<script>
+function sw(id,idx){
+  var tp=document.getElementById(id);
+  tp.querySelectorAll('.m-tab').forEach(function(t,i){t.classList.toggle('act',i===idx)});
+  tp.querySelectorAll('.m-panel').forEach(function(p,i){p.classList.toggle('act',i===idx)});
+}
+</script>
+</body>
+</html>

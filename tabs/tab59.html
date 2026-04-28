@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Relation Explorer — Calumet</title>
+<link rel="stylesheet" href="../shared.css">
+</head>
+<body class="tab-page">
+<div class="sum">
+  <div class="sum-title">
+    <h2>Relation Explorer</h2>
+    <span class="sum-badge">Tab 59</span>
+  </div>
+  <p class="sum-desc">Explore all relationships (lookup, MD, self) for a given SObject. Filter by type and field.</p>
+</div>
+<div class="mockup-wrap">
+  <div class="mockup"><div class="vbox" style="gap:0px"><div class="anchor"><div class="hbox" style="gap:8.0px;align-items:center"><button class="cal-btn btn-b">Search</button><span class="cal-lbl">Type:</span><select class="cal-cb" style="width:130.0px;"><option class="ph">Select...</option></select><span class="cal-lbl">Object:</span><input class="cal-tf" placeholder="Object name..." style="width:150.0px;" readonly><span class="cal-lbl">Field Label:</span><input class="cal-tf" placeholder="Field label..." style="width:150.0px;" readonly><span class="cal-lbl">Reference:</span><input class="cal-tf" placeholder="Reference..." style="width:150.0px;" readonly></div><div class="tbl-wrap"><table class="cal-tbl"><thead><tr><th>Relation Type</th><th>Nillable</th><th>Object Name</th><th>Object Label</th><th>Field Name</th><th>Field Label</th><th>Reference</th><th>RollupFields</th></tr></thead><tbody><tr><td colspan="20" class="tbl-empty"></td></tr></tbody></table></div></div></div></div>
+</div>
+<script>
+function sw(id,idx){
+  var tp=document.getElementById(id);
+  tp.querySelectorAll('.m-tab').forEach(function(t,i){t.classList.toggle('act',i===idx)});
+  tp.querySelectorAll('.m-panel').forEach(function(p,i){p.classList.toggle('act',i===idx)});
+}
+</script>
+</body>
+</html>

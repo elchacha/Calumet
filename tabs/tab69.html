@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>User Privilege Assessment — Calumet</title>
+<link rel="stylesheet" href="../shared.css">
+</head>
+<body class="tab-page">
+<div class="sum">
+  <div class="sum-title">
+    <h2>User Privilege Assessment</h2>
+    <span class="sum-badge">Tab 69</span>
+  </div>
+  <p class="sum-desc">Assess user privilege levels. Users are ranked by access score and color-coded from Minimal to CRITICAL.</p>
+</div>
+<div class="mockup-wrap">
+  <div class="mockup"><div class="vbox" style="gap:0px"><div class="anchor"><span class="cal-lbl">Filter by privilege level:</span><button class="cal-btn btn-d">Start</button><div class="hbox" style="gap:60.0px;align-items:center"><div class="anchor"><label class="cal-chk"><input type="checkbox" disabled> include permset to filter</label><label class="cal-chk"><input type="checkbox" disabled> exact word</label><div class="tbl-wrap"><table class="cal-tbl"><thead><tr><th style="width:60.0px">Rank</th><th>Username</th><th>Profil</th><th>Alias</th><th>Profile Score</th><th>PermSet Score</th><th>Object Score</th><th>Score</th><th>Score(M)</th></tr></thead><tbody><tr><td colspan="20" class="tbl-empty"></td></tr></tbody></table></div></div><div class="anchor"><button class="cal-btn btn-r">Assign</button><button class="cal-btn btn-r">UnAssign</button><div class="tbl-wrap"><table class="cal-tbl"><thead><tr><th>Type</th><th>Name</th><th>Score</th><th>User1</th><th>user2</th><th>user3</th><th>user4</th><th>user5</th></tr></thead><tbody><tr><td colspan="20" class="tbl-empty"></td></tr></tbody></table></div></div></div><button class="cal-btn btn-d">show detail</button><div class="hbox" style="gap:10.0px;align-items:center"><label class="cal-chk"><input type="checkbox" checked disabled> Minimal (0-20%)</label><label class="cal-chk"><input type="checkbox" checked disabled> Moderate (20-50%)</label><label class="cal-chk"><input type="checkbox" checked disabled> High (50-80%)</label><label class="cal-chk"><input type="checkbox" checked disabled> Very High (80-95%)</label><label class="cal-chk"><input type="checkbox" checked disabled> CRITICAL (95-100%)</label></div></div></div></div>
+</div>
+<script>
+function sw(id,idx){
+  var tp=document.getElementById(id);
+  tp.querySelectorAll('.m-tab').forEach(function(t,i){t.classList.toggle('act',i===idx)});
+  tp.querySelectorAll('.m-panel').forEach(function(p,i){p.classList.toggle('act',i===idx)});
+}
+</script>
+</body>
+</html>

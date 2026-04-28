@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Formula Field Tester — Calumet</title>
+<link rel="stylesheet" href="../shared.css">
+</head>
+<body class="tab-page">
+<div class="sum">
+  <div class="sum-title">
+    <h2>Formula Field Tester</h2>
+    <span class="sum-badge">Tab 18</span>
+  </div>
+  <p class="sum-desc">Test formula field expressions against real org data and validate their output before deployment.</p>
+</div>
+<div class="mockup-wrap">
+  <div class="mockup"><div class="vbox" style="gap:0px"><div class="anchor"><textarea class="cal-ta" placeholder="" rows="4" readonly></textarea><span class="cal-lbl">Only use this option if your query timeout after 2mn</span><input class="cal-tf" placeholder="Date..." readonly><input class="cal-tf" placeholder="Date..." readonly><span class="cal-lbl">min Start Date :</span><span class="cal-lbl">max End Date :</span><button class="cal-btn btn-b">Search</button><span class="cal-lbl">nb records founds :</span><span class="cal-lbl">Queries to be run :</span><span class="cal-lbl">0</span><span class="cal-lbl">Type your where clause below (you can put the entire query but only the where clause will be used)</span><span class="cal-lbl">Choose an object :</span></div></div></div>
+</div>
+<script>
+function sw(id,idx){
+  var tp=document.getElementById(id);
+  tp.querySelectorAll('.m-tab').forEach(function(t,i){t.classList.toggle('act',i===idx)});
+  tp.querySelectorAll('.m-panel').forEach(function(p,i){p.classList.toggle('act',i===idx)});
+}
+</script>
+</body>
+</html>

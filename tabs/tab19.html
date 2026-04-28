@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Org Limits — Calumet</title>
+<link rel="stylesheet" href="../shared.css">
+</head>
+<body class="tab-page">
+<div class="sum">
+  <div class="sum-title">
+    <h2>Org Limits</h2>
+    <span class="sum-badge">Tab 19</span>
+  </div>
+  <p class="sum-desc">Display real-time Salesforce org governor limits: API calls, storage, data usage, and more.</p>
+</div>
+<div class="mockup-wrap">
+  <div class="mockup"><div class="vbox" style="gap:0px"><div class="anchor"><div class="m-tabpane" id="tp5"><div class="m-tabbar"><div class="m-tab act" onclick="sw('tp5',0)">Test</div><div class="m-tab" onclick="sw('tp5',1)">Explode</div></div><div class="m-body"><div class="m-panel act" id="tp5-0"><div class="anchor"><div class="hbox" style="gap:8.0px;align-items:center"><span class="cal-lbl">Field type</span><select class="cal-cb" data-tip="Return type expected from the formula" style="width:150.0px;"><option class="ph">Select...</option></select><div class="vsep"></div><span class="cal-lbl">Object ID</span><input class="cal-tf" placeholder="15 or 18-char record Id" data-tip="Salesforce record Id used as context for formula evaluation" style="width:210.0px;" readonly><div class="spacer"></div></div><div class="hbox" style="gap:8.0px;align-items:center"><span class="cal-lbl">Optional query</span><input class="cal-tf cal-grow" placeholder="SOQL filter applied before formula evaluation" data-tip="Optional SOQL WHERE clause to narrow the target records" style="" readonly></div><div class="hbox" style="gap:10.0px;align-items:center"><button class="cal-btn btn-d" data-tip="Evaluate all formulas against the provided record Id">Execute formulas</button><div class="vsep"></div><span class="cal-lbl">Formulas</span><input class="cal-tf" placeholder="" data-tip="Number of formula inputs to display" style="width:50.0px;" readonly><label class="cal-chk" data-tip="Split a compound formula on &amp;&amp; into individual sub-formulas"><input type="checkbox" disabled> Explode formula (Beta)</label></div><div class="scroll-pane"><div class="vbox" style="padding:4px 0px 4px 0px;gap:10.0px"></div></div></div></div><div class="m-panel" id="tp5-1"><div class="anchor"><div class="hbox" style="gap:8.0px;align-items:center"><span class="cal-lbl">Formula to expand</span><div class="spacer"></div><button class="cal-btn btn-d" data-tip="Format and expand the pasted formula into a readable structure">Expand formula</button></div><textarea class="cal-ta" placeholder="Paste your formula here…" data-tip="Paste the raw Salesforce formula to expand" rows="5" readonly></textarea><textarea class="cal-ta" placeholder="Expanded formula will appear here…" data-tip="Formatted and expanded formula" rows="3" readonly></textarea></div></div></div></div></div></div></div>
+</div>
+<script>
+function sw(id,idx){
+  var tp=document.getElementById(id);
+  tp.querySelectorAll('.m-tab').forEach(function(t,i){t.classList.toggle('act',i===idx)});
+  tp.querySelectorAll('.m-panel').forEach(function(p,i){p.classList.toggle('act',i===idx)});
+}
+</script>
+</body>
+</html>

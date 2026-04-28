@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Object Diff — Calumet</title>
+<link rel="stylesheet" href="../shared.css">
+</head>
+<body class="tab-page">
+<div class="sum">
+  <div class="sum-title">
+    <h2>Object Diff</h2>
+    <span class="sum-badge">Tab 15</span>
+  </div>
+  <p class="sum-desc">Compare two Salesforce objects field-by-field to highlight structural differences between orgs.</p>
+</div>
+<div class="mockup-wrap">
+  <div class="mockup"><div class="vbox" style="gap:0px"><div class="anchor"><button class="cal-btn btn-b">Read Profiles</button><label class="cal-chk"><input type="checkbox" disabled> useCachedValues</label><div class="hbox" style="gap:10.0px;align-items:center"><div class="vbox" style="gap:10.0px"><input class="cal-tf" placeholder="" style="width:150.0px;" readonly><div class="scroll-pane"><div class="vbox" style="gap:10.0px"></div></div></div><div class="vbox" style="gap:10.0px"><div class="hbox" style="gap:10.0px;align-items:center"><input class="cal-tf" placeholder="" style="width:200.0px;" readonly><label class="cal-chk"><input type="checkbox" checked disabled> Global</label><label class="cal-chk"><input type="checkbox" checked disabled> Object</label><label class="cal-chk"><input type="checkbox" checked disabled> Field</label><label class="cal-chk"><input type="checkbox" checked disabled> Others</label></div><div class="tbl-wrap"><table class="cal-tbl"><thead><tr><th>C1</th><th>C2</th></tr></thead><tbody><tr><td colspan="20" class="tbl-empty"></td></tr></tbody></table></div></div></div><label class="cal-chk"><input type="checkbox" disabled> containingActiveUsers</label></div></div></div>
+</div>
+<script>
+function sw(id,idx){
+  var tp=document.getElementById(id);
+  tp.querySelectorAll('.m-tab').forEach(function(t,i){t.classList.toggle('act',i===idx)});
+  tp.querySelectorAll('.m-panel').forEach(function(p,i){p.classList.toggle('act',i===idx)});
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Sharing Explorer — Calumet</title>
+<link rel="stylesheet" href="../shared.css">
+</head>
+<body class="tab-page">
+<div class="sum">
+  <div class="sum-title">
+    <h2>Sharing Explorer</h2>
+    <span class="sum-badge">Tab 76</span>
+  </div>
+  <p class="sum-desc">Explore sharing rules, public groups, queues and other sharing mechanisms across the org.</p>
+</div>
+<div class="mockup-wrap">
+  <div class="mockup"><div class="vbox" style="gap:0px"><div class="anchor"><div class="m-tabpane" id="tp30"><div class="m-tabbar"><div class="m-tab act" onclick="sw('tp30',0)">Users</div><div class="m-tab" onclick="sw('tp30',1)">Groups</div><div class="m-tab" onclick="sw('tp30',2)">Queue</div><div class="m-tab" onclick="sw('tp30',3)">Others</div></div><div class="m-body"><div class="m-panel act" id="tp30-0"></div><div class="m-panel" id="tp30-1"></div><div class="m-panel" id="tp30-2"></div><div class="m-panel" id="tp30-3"></div></div></div></div></div></div>
+</div>
+<script>
+function sw(id,idx){
+  var tp=document.getElementById(id);
+  tp.querySelectorAll('.m-tab').forEach(function(t,i){t.classList.toggle('act',i===idx)});
+  tp.querySelectorAll('.m-panel').forEach(function(p,i){p.classList.toggle('act',i===idx)});
+}
+</script>
+</body>
+</html>

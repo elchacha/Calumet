@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Test Suite Manager — Calumet</title>
+<link rel="stylesheet" href="../shared.css">
+</head>
+<body class="tab-page">
+<div class="sum">
+  <div class="sum-title">
+    <h2>Test Suite Manager</h2>
+    <span class="sum-badge">Tab 56</span>
+  </div>
+  <p class="sum-desc">Build and manage Apex test suites. Move test classes between suites and synchronise with VS Code.</p>
+</div>
+<div class="mockup-wrap">
+  <div class="mockup"><div class="vbox" style="gap:0px"><div class="anchor"><div class="hbox" style="gap:6.0px;align-items:center"><button class="cal-btn btn-d" data-tip="Load test classes from the local vsCode project">Read from vsCode</button><button class="cal-btn btn-d" data-tip="Load test classes from the connected Salesforce org">Read from Org</button><div class="vsep"></div><button class="cal-btn btn-d" data-tip="Open a .testSuite-meta.xml file from the vsCode project">Open TestSuite</button><button class="cal-btn btn-d" data-tip="Save the current suite to the vsCode project">Save TestSuite</button><div class="vsep"></div><button class="cal-btn btn-d" data-tip="Deploy the TestSuite to the connected org">Deploy</button><button class="cal-btn btn-d" data-tip="Run the TestSuite on the connected org">Run</button><button class="cal-btn btn-d" data-tip="Load TestSuite classes from the org">Load from Org</button><div class="spacer"></div></div><div class="hbox" style="gap:12.0px;align-items:center"><span class="cal-lbl">TestSuite :</span><input class="cal-tf" placeholder="TestSuite name" data-tip="Name of the TestSuite (without extension)" style="width:200.0px;" readonly><div class="vsep"></div><span class="cal-lbl">vsCode :</span><span class="cal-lbl" style="font-weight:bold">not yet created</span><div class="vsep"></div><span class="cal-lbl">Org :</span><span class="cal-lbl" style="font-weight:bold">not in org</span></div><div class="hbox" style="gap:0.0px;align-items:center"><div class="vbox" style="gap:4.0px"><span class="cal-lbl" style="font-weight:bold;font-size:13px">Test classes to add</span><input class="cal-tf" placeholder="search class…" data-tip="Filter the list of available test classes" style="" readonly><div class="cal-listview"></div></div><div class="vbox" style="gap:12.0px"><button class="cal-btn btn-d" data-tip="Move selected classes to the TestSuite (or double-click)">Add ▶</button><button class="cal-btn btn-d" data-tip="Remove selected classes from the TestSuite (or double-click)">◀ Remove</button></div><div class="vbox" style="gap:4.0px"><span class="cal-lbl" style="font-weight:bold;font-size:13px">TestSuite classes</span><div class="cal-listview"></div></div></div></div></div></div>
+</div>
+<script>
+function sw(id,idx){
+  var tp=document.getElementById(id);
+  tp.querySelectorAll('.m-tab').forEach(function(t,i){t.classList.toggle('act',i===idx)});
+  tp.querySelectorAll('.m-panel').forEach(function(p,i){p.classList.toggle('act',i===idx)});
+}
+</script>
+</body>
+</html>

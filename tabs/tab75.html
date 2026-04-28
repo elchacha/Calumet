@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Platform Events — Calumet</title>
+<link rel="stylesheet" href="../shared.css">
+</head>
+<body class="tab-page">
+<div class="sum">
+  <div class="sum-title">
+    <h2>Platform Events</h2>
+    <span class="sum-badge">Tab 75</span>
+  </div>
+  <p class="sum-desc">Monitor and publish Salesforce Platform Events. View recent event payloads in real time.</p>
+</div>
+<div class="mockup-wrap">
+  <div class="mockup"><div class="vbox" style="gap:0px"><div class="anchor"><div class="hbox" style="gap:10.0px;align-items:center"><span class="cal-lbl">Org :</span><span class="cal-lbl">FlexiPage :</span><select class="cal-cb" data-tip="FlexiPage to compare from the main org" style="width:320.0px;"><option class="ph">Loading…</option></select></div><div class="hbox" style="gap:10.0px;align-items:center"><span class="cal-lbl">Org 2 :</span><select class="cal-cb" data-tip="Salesforce org for Version 2" style="width:180.0px;"><option class="ph">Select org…</option></select><span class="cal-lbl">FlexiPage :</span><select class="cal-cb" data-tip="FlexiPage to compare from Org 2" style="width:320.0px;"><option class="ph">Select org first…</option></select></div><div class="hbox" style="gap:10.0px;align-items:center"><button class="cal-btn btn-d" data-tip="Compare the two selected FlexiPages">Compare</button><div class="spacer"></div></div></div></div></div>
+</div>
+<script>
+function sw(id,idx){
+  var tp=document.getElementById(id);
+  tp.querySelectorAll('.m-tab').forEach(function(t,i){t.classList.toggle('act',i===idx)});
+  tp.querySelectorAll('.m-panel').forEach(function(p,i){p.classList.toggle('act',i===idx)});
+}
+</script>
+</body>
+</html>

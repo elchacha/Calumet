@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Search — Calumet</title>
+<link rel="stylesheet" href="../shared.css">
+</head>
+<body class="tab-page">
+<div class="sum">
+  <div class="sum-title">
+    <h2>Search</h2>
+    <span class="sum-badge">Tab 25</span>
+  </div>
+  <p class="sum-desc">Full-text search across metadata (classes, triggers, fields) to locate references and usages.</p>
+</div>
+<div class="mockup-wrap">
+  <div class="mockup"><div class="vbox" style="gap:0px"><div class="anchor"><div class="m-tabpane" id="tp11"><div class="m-tabbar"><div class="m-tab act" onclick="sw('tp11',0)">Extract</div><div class="m-tab" onclick="sw('tp11',1)">Display</div></div><div class="m-body"><div class="m-panel act" id="tp11-0"><div class="anchor"><div class="hbox" style="gap:8.0px;align-items:center"><span class="cal-lbl">Available data —</span><span class="cal-lbl">start date</span><span class="cal-lbl">/</span><span class="cal-lbl">end date</span></div><div class="hbox" style="gap:8.0px;align-items:center"><span class="cal-lbl">Selected by default</span><input class="cal-tf cal-grow" placeholder="Comma-separated object names pre-selected on the chart" data-tip="Objects pre-checked when the chart opens in the Display tab" style="" readonly><button class="cal-btn btn-d" data-tip="Edit the list of tracked objects">Edit selection</button><div class="vsep"></div><button class="cal-btn btn-d" data-tip="Choose which Salesforce objects to track">Choose objects</button></div><div class="hbox" style="gap:8.0px;align-items:center"><span class="cal-lbl">Extract from</span><input class="cal-tf" placeholder="Date..." data-tip="Start date for the storage extraction" readonly><span class="cal-lbl">to</span><input class="cal-tf" placeholder="Date..." data-tip="End date for the storage extraction" readonly><button class="cal-btn btn-b" data-tip="Run storage extraction for the selected period and objects" disabled>Extract</button></div><div class="cal-listview" data-tip="Salesforce objects currently tracked for storage evolution"></div></div></div><div class="m-panel" id="tp11-1"><div class="anchor"><div class="hbox" style="gap:8.0px;align-items:center"><span class="cal-lbl">From</span><input class="cal-tf" placeholder="Date..." data-tip="Start of the date range shown on the chart" readonly><span class="cal-lbl">to</span><input class="cal-tf" placeholder="Date..." data-tip="End of the date range shown on the chart" readonly><div class="spacer"></div><button class="cal-btn btn-b" data-tip="Render the storage evolution chart for the selected date range" disabled>Display evolution</button></div></div></div></div></div></div></div></div>
+</div>
+<script>
+function sw(id,idx){
+  var tp=document.getElementById(id);
+  tp.querySelectorAll('.m-tab').forEach(function(t,i){t.classList.toggle('act',i===idx)});
+  tp.querySelectorAll('.m-panel').forEach(function(p,i){p.classList.toggle('act',i===idx)});
+}
+</script>
+</body>
+</html>

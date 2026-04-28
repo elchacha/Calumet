@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Debug Logs — Calumet</title>
+<link rel="stylesheet" href="../shared.css">
+</head>
+<body class="tab-page">
+<div class="sum">
+  <div class="sum-title">
+    <h2>Debug Logs</h2>
+    <span class="sum-badge">Tab 20</span>
+  </div>
+  <p class="sum-desc">Manage Apex debug logs: set trace flags, download and view logs, filter by user or log level.</p>
+</div>
+<div class="mockup-wrap">
+  <div class="mockup"><div class="vbox" style="gap:0px"><div class="anchor"><button class="cal-btn btn-b">Display</button><label class="cal-chk"><input type="checkbox" disabled> Hide unused</label><div class="tbl-wrap"><table class="cal-tbl"><thead><tr><th>Name</th><th>Type</th><th>Delay</th><th>Used</th><th>Remain</th><th>Max</th><th>\% Used</th></tr></thead><tbody><tr><td colspan="20" class="tbl-empty"></td></tr></tbody></table></div></div></div></div>
+</div>
+<script>
+function sw(id,idx){
+  var tp=document.getElementById(id);
+  tp.querySelectorAll('.m-tab').forEach(function(t,i){t.classList.toggle('act',i===idx)});
+  tp.querySelectorAll('.m-panel').forEach(function(p,i){p.classList.toggle('act',i===idx)});
+}
+</script>
+</body>
+</html>

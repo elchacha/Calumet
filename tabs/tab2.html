@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Retrieve — Calumet</title>
+<link rel="stylesheet" href="../shared.css">
+</head>
+<body class="tab-page">
+<div class="sum">
+  <div class="sum-title">
+    <h2>Retrieve</h2>
+    <span class="sum-badge">Tab 2</span>
+  </div>
+  <p class="sum-desc">Retrieve metadata from the connected Salesforce org into your local project folder using the Metadata API.</p>
+</div>
+<div class="mockup-wrap">
+  <div class="mockup"><div class="vbox" style="gap:0px"><div class="anchor"><div class="vbox" style="gap:0px"><div class="anchor"><button class="cal-btn btn-g">Display package</button><button class="cal-btn btn-g">Display retrieve folder</button><button class="cal-btn btn-d">check dependencies</button></div><div class="anchor"><button class="cal-btn btn-b">Retrieve</button><label class="cal-chk"><input type="checkbox" disabled> pushToVscode</label><label class="cal-chk"><input type="checkbox" disabled> cleanVsCodeWorkspace</label></div><div class="anchor"><div class="hbox" style="gap:10.0px;align-items:center"><label class="cal-chk"><input type="checkbox" checked disabled> retrieve Profile change</label><label class="cal-chk"><input type="checkbox" checked disabled> Retrieve AssignmentLayout</label></div></div><div class="anchor"><hr class="hsep"><span class="cal-lbl">Retrieve option</span><label class="cal-chk"><input type="checkbox" checked disabled> Clean folder</label><label class="cal-chk"><input type="checkbox" disabled> Decrypt resource (if any)</label></div><div class="anchor"><hr class="hsep"><span class="cal-lbl">SFDX Project  (let you push an already retrieved package to vscode)</span><button class="cal-btn btn-d">pushToVsCode</button><label class="cal-chk"><input type="checkbox" disabled> cleanVsCodeWorkspace</label><label class="cal-chk"><input type="checkbox" disabled> folderize</label></div><div class="anchor"><hr class="hsep"><span class="cal-lbl">Prepare Deployment</span><button class="cal-btn btn-d">Copy to &gt;</button><select class="cal-cb" style="width:150.0px;"><option class="ph">Select...</option></select><label class="cal-chk"><input type="checkbox" checked disabled> open Control</label><label class="cal-chk"><input type="checkbox" disabled> open deploy</label><label class="cal-chk"><input type="checkbox" checked disabled> Clean target folder</label></div><div class="anchor"><hr class="hsep"><span class="cal-lbl">Project :</span><button class="cal-btn btn-d">Cancel</button><button class="cal-btn btn-d">Save package</button><span class="cal-lbl">Create a named zip file to be kept</span><select class="cal-cb" style="width:222.0px;"><option class="ph">Select...</option></select><button class="cal-btn btn-d">keep</button><span class="cal-lbl">To use selected package.xml , please click keep button</span><button class="cal-btn btn-d">Merge zipped package.xml</button></div></div><div class="m-tabpane" id="tp6"><div class="m-tabbar"><div class="m-tab act" onclick="sw('tp6',0)">Package(0)</div><div class="m-tab" onclick="sw('tp6',1)">Profiles (0)</div><div class="m-tab" onclick="sw('tp6',2)">Layout Assign(0)</div><div class="m-tab" onclick="sw('tp6',3)">Api Version</div></div><div class="m-body"><div class="m-panel act" id="tp6-0"><div class="anchor"><span class="cal-lbl">Members : 0</span><button class="cal-btn btn-d">See All</button><button class="cal-btn btn-d">Hide All</button><button class="cal-btn btn-d">Refresh</button><button class="cal-btn btn-d">Remove</button><span class="cal-lbl">Package :</span></div></div><div class="m-panel" id="tp6-1"><div class="anchor"><div class="tbl-wrap"><table class="cal-tbl"><thead><tr><th>Profile</th><th>Parent</th><th>ObjectLabel</th><th>Type</th><th>Old Value</th><th>New Value</th><th>ModifiedBy</th><th>LastModifiedDate</th></tr></thead><tbody><tr><td colspan="20" class="tbl-empty"></td></tr></tbody></table></div></div></div><div class="m-panel" id="tp6-2"><div class="anchor"><div class="tbl-wrap"><table class="cal-tbl"><thead><tr><th>Profile</th><th>Object</th><th>RecordType</th><th>Old Layout</th><th>New Layout</th><th>LastModifyBy</th><th>LastModifyDate</th></tr></thead><tbody><tr><td colspan="20" class="tbl-empty"></td></tr></tbody></table></div><span class="cal-lbl">list of the assignment changed found. They will be added to profile (if missing) during retrieve if action is selected</span><button class="cal-btn btn-d">Remove selected assignement</button></div></div><div class="m-panel" id="tp6-3"><div class="anchor"><button class="cal-btn btn-d">Refresh</button><button class="cal-btn btn-d" disabled>Update selected to current</button><span class="cal-lbl">Scans retrieve/classes and retrieve/triggers folders</span><div class="tbl-wrap"><table class="cal-tbl"><thead><tr><th style="width:90.0px">Type</th><th style="width:250.0px">Name</th><th style="width:100.0px">Api Version</th></tr></thead><tbody><tr><td colspan="20" class="tbl-empty"></td></tr></tbody></table></div></div></div></div></div></div></div></div>
+</div>
+<script>
+function sw(id,idx){
+  var tp=document.getElementById(id);
+  tp.querySelectorAll('.m-tab').forEach(function(t,i){t.classList.toggle('act',i===idx)});
+  tp.querySelectorAll('.m-panel').forEach(function(p,i){p.classList.toggle('act',i===idx)});
+}
+</script>
+</body>
+</html>

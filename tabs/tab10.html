@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>History — Search — Calumet</title>
+<link rel="stylesheet" href="../shared.css">
+</head>
+<body class="tab-page">
+<div class="sum">
+  <div class="sum-title">
+    <h2>History — Search</h2>
+    <span class="sum-badge">Tab 10</span>
+  </div>
+  <p class="sum-desc">Search the org&#x27;s field history tracking records by object and field across a date range.</p>
+</div>
+<div class="mockup-wrap">
+  <div class="mockup"><div class="anchor"><div class="m-tabpane" id="tp1"><div class="m-tabbar"><div class="m-tab act" onclick="sw('tp1',0)">Search</div><div class="m-tab" onclick="sw('tp1',1)">Display</div></div><div class="m-body"><div class="m-panel act" id="tp1-0"><div class="vbox" style="gap:0px"><div class="anchor"><div class="hbox" style="gap:0px;align-items:center"><div class="anchor"><div class="hbox" style="gap:8.0px;align-items:center"><button class="cal-btn btn-b" data-tip="Load all backup projects for the current org">Search org projects</button><div class="vsep"></div><span class="cal-lbl">Search metadata</span><input class="cal-tf cal-grow" placeholder="metadata name (case sensitive)" data-tip="Filter the project list to those containing this metadata" style="" readonly></div><div class="hbox" style="gap:8.0px;align-items:center"><span class="cal-lbl">Filter projects</span><input class="cal-tf cal-grow" placeholder="filter by name, author or date…" data-tip="Narrow the project list in real time" style="" readonly></div><div class="hbox" style="gap:8.0px;align-items:center"><select class="cal-cb" data-tip="Target org for deploying the selected project" style="width:160.0px;"><option class="ph">Select...</option></select><button class="cal-btn btn-d" data-tip="Unzip the selected backup into the target org&#x27;s deploy folder">Unzip to deploy</button><label class="cal-chk" data-tip="Delete the backup sub-folder after unzipping"><input type="checkbox" disabled> Remove backup folder</label></div><div class="tbl-wrap"><table class="cal-tbl"><thead><tr><th>Name</th><th>Author</th><th>Date</th></tr></thead><tbody><tr><td colspan="20" class="tbl-empty"></td></tr></tbody></table></div></div><div class="vsep"></div><div class="vbox" style="padding:8px 8px 8px 12px;gap:6.0px"><span class="cal-lbl" style="font-weight:bold">Comment</span><textarea class="cal-ta" placeholder="Project comment…" data-tip="Free-text comment stored with the selected backup project" rows="6" readonly></textarea><button class="cal-btn btn-d" data-tip="Save the comment for the selected project">Update comment</button><hr class="hsep"><span class="cal-lbl" style="font-weight:bold">Package contents</span></div></div></div></div></div><div class="m-panel" id="tp1-1"><div class="vbox" style="gap:0px"><div class="anchor"><div class="hbox" style="gap:8.0px;align-items:center"><button class="cal-btn btn-d" data-tip="Load history from the current retrieve package.xml">Use retrieve package</button><button class="cal-btn btn-d" data-tip="Load history from the current deploy package.xml">Use deploy package</button><button class="cal-btn btn-d" data-tip="Browse for a specific package.xml to load history from">Select a project package</button><div class="vsep"></div><input class="cal-tf" placeholder="class or trigger name" data-tip="Name of the class or trigger to search across all projects" style="width:220.0px;" readonly><button class="cal-btn btn-d" data-tip="Search the change history for the specified class or trigger">Class search</button></div><span class="cal-lbl" style="font-style:italic;color:#5b9bac;font-size:11px">Search all changes made on classes/triggers through backup projects — double-click a row to see details</span><div class="tbl-wrap"><table class="cal-tbl"><thead><tr><th style="width:130.0px">Type</th><th style="width:320.0px">Name</th><th style="width:200.0px">User</th><th style="width:140.0px">Date</th><th style="width:250.0px">Project</th><th style="width:34.0px">Hist</th><th style="width:26.0px">Ok</th></tr></thead><tbody><tr><td colspan="20" class="tbl-empty"></td></tr></tbody></table></div></div></div></div></div></div></div></div>
+</div>
+<script>
+function sw(id,idx){
+  var tp=document.getElementById(id);
+  tp.querySelectorAll('.m-tab').forEach(function(t,i){t.classList.toggle('act',i===idx)});
+  tp.querySelectorAll('.m-panel').forEach(function(p,i){p.classList.toggle('act',i===idx)});
+}
+</script>
+</body>
+</html>

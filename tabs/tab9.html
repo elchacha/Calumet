@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Audit — Calumet</title>
+<link rel="stylesheet" href="../shared.css">
+</head>
+<body class="tab-page">
+<div class="sum">
+  <div class="sum-title">
+    <h2>Audit</h2>
+    <span class="sum-badge">Tab 9</span>
+  </div>
+  <p class="sum-desc">Audit Apex classes and triggers: analyse code quality, detect issues, and review modification history.</p>
+</div>
+<div class="mockup-wrap">
+  <div class="mockup"><div class="vbox" style="gap:0px"><div class="anchor"><div class="m-tabpane" id="tp32"><div class="m-tabbar"><div class="m-tab act" onclick="sw('tp32',0)">Results</div><div class="m-tab" onclick="sw('tp32',1)">View Total per object</div></div><div class="m-body"><div class="m-panel act" id="tp32-0"><div class="anchor"><span class="cal-lbl">This screen is retrieving the latest records modified accroing to below criteria (date or userId can be empty)</span><span class="cal-lbl">Production Org Detected , the search will consume lot of api ()</span><span class="cal-lbl">nb records max</span><span class="cal-lbl">after (yyyy-mm-dd)</span><span class="cal-lbl">userId</span><input class="cal-tf" placeholder="" style="width:103.0px;" readonly><button class="cal-btn btn-b">Search</button><label class="cal-chk" data-tip="Ignore objects belonging to a managed package (NamespacePrefix not null)"><input type="checkbox" disabled> Hide Managed Objects</label><input class="cal-tf" placeholder="" style="width:40.0px;" readonly><button class="cal-btn btn-d">Manage excluded objects</button><div class="tbl-wrap"><table class="cal-tbl"><thead><tr><th>Id</th><th>Object</th><th>ModifyBy</th><th>Modified</th><th>CreatedBy</th><th>Created</th></tr></thead><tbody><tr><td colspan="20" class="tbl-empty"></td></tr></tbody></table></div><span class="cal-lbl">records :</span></div></div><div class="m-panel" id="tp32-1"><div class="anchor"><div class="hbox" style="gap:50.0px;align-items:center"><div class="tbl-wrap"><table class="cal-tbl"><thead><tr><th>ObjectName</th><th>Modified</th><th>Created</th></tr></thead><tbody><tr><td colspan="20" class="tbl-empty"></td></tr></tbody></table></div><div class="anchor"></div></div></div></div></div></div></div></div></div>
+</div>
+<script>
+function sw(id,idx){
+  var tp=document.getElementById(id);
+  tp.querySelectorAll('.m-tab').forEach(function(t,i){t.classList.toggle('act',i===idx)});
+  tp.querySelectorAll('.m-panel').forEach(function(p,i){p.classList.toggle('act',i===idx)});
+}
+</script>
+</body>
+</html>

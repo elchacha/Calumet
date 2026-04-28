@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Public Groups &amp; Perm Sets — Calumet</title>
+<link rel="stylesheet" href="../shared.css">
+</head>
+<body class="tab-page">
+<div class="sum">
+  <div class="sum-title">
+    <h2>Public Groups &amp; Perm Sets</h2>
+    <span class="sum-badge">Tab 73</span>
+  </div>
+  <p class="sum-desc">Browse public groups and permission set groups: members, roles, and assignment details.</p>
+</div>
+<div class="mockup-wrap">
+  <div class="mockup"><div class="vbox" style="gap:0px"><div class="anchor"><div class="vbox" style="gap:4.0px"><div class="hbox" style="padding:8px 8px 0px 8px;gap:8.0px;align-items:center"><span class="cal-lbl">User</span><button class="cal-btn btn-d" data-tip="Add this user to the comparison basket" disabled>Add</button><button class="cal-btn btn-d" data-tip="Remove all users from the basket">Clear all</button></div><div class="scroll-pane"></div><div class="hbox" style="padding:0px 8px 0px 8px;gap:8.0px;align-items:center"><button class="cal-btn btn-d" data-tip="Retrieve role, permission sets and group memberships for the user(s) in the basket" disabled>Retrieve</button></div><div class="hbox" style="padding:0px 8px 0px 8px;gap:6.0px;align-items:center"><span class="cal-lbl" style="font-weight:bold">Role:</span><span class="cal-lbl">—</span></div><div class="m-tabpane" id="tp29"><div class="m-tabbar"><div class="m-tab act" onclick="sw('tp29',0)">Permission Sets</div><div class="m-tab" onclick="sw('tp29',1)">Groups</div></div><div class="m-body"><div class="m-panel act" id="tp29-0"><div class="anchor"></div></div><div class="m-panel" id="tp29-1"><div class="anchor"></div></div></div></div></div></div></div></div>
+</div>
+<script>
+function sw(id,idx){
+  var tp=document.getElementById(id);
+  tp.querySelectorAll('.m-tab').forEach(function(t,i){t.classList.toggle('act',i===idx)});
+  tp.querySelectorAll('.m-panel').forEach(function(p,i){p.classList.toggle('act',i===idx)});
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SOQL Editor — Calumet</title>
+<link rel="stylesheet" href="../shared.css">
+</head>
+<body class="tab-page">
+<div class="sum">
+  <div class="sum-title">
+    <h2>SOQL Editor</h2>
+    <span class="sum-badge">Tab 11</span>
+  </div>
+  <p class="sum-desc">Write and execute SOQL queries with syntax highlighting. Results are displayed in a sortable table.</p>
+</div>
+<div class="mockup-wrap">
+  <div class="mockup"><div class="vbox" style="gap:0px"><div class="anchor"><div class="hbox" style="gap:8.0px;align-items:center"><span class="cal-lbl">Start date</span><input class="cal-tf" placeholder="Date..." data-tip="Start date of the audit period" readonly><span class="cal-lbl">End date</span><input class="cal-tf" placeholder="Date..." data-tip="End date of the audit period" readonly><button class="cal-btn btn-b" data-tip="Extract audit trail from Salesforce for the selected date range">Extract</button><button class="cal-btn btn-d" data-tip="Open the extracted audit Excel file">Open audit</button><div class="spacer"></div><label class="cal-chk" data-tip="Apply saved exclusion filters when displaying results"><input type="checkbox" disabled> Apply Filters</label><button class="cal-btn btn-d" data-tip="Define exclusion filters for actions, sections and display values">Manage Filters</button></div><div class="hbox" style="gap:8.0px;align-items:center"><span class="cal-lbl">Action</span><input class="cal-tf" placeholder="filter..." data-tip="Filter by action (contains)" style="width:150.0px;" readonly><div class="vsep"></div><span class="cal-lbl">User</span><select class="cal-cb" data-tip="Filter by user" style="width:180.0px;"><option class="ph">Select...</option></select><div class="vsep"></div><span class="cal-lbl">Section</span><select class="cal-cb" data-tip="Filter by section" style="width:150.0px;"><option class="ph">Select...</option></select><div class="vsep"></div><span class="cal-lbl">Display</span><input class="cal-tf" placeholder="filter..." data-tip="Filter by display value (contains)" style="width:200.0px;" readonly><div class="spacer"></div><button class="cal-btn btn-d" data-tip="Reset all column filters">Clear filters</button></div><div class="tbl-wrap"><table class="cal-tbl"><thead><tr><th style="width:120.0px">Action</th><th style="width:150.0px">User</th><th style="width:160.0px">Date</th><th style="width:180.0px">Section</th><th style="width:350.0px">Display</th></tr></thead><tbody><tr><td colspan="20" class="tbl-empty"></td></tr></tbody></table></div></div></div></div>
+</div>
+<script>
+function sw(id,idx){
+  var tp=document.getElementById(id);
+  tp.querySelectorAll('.m-tab').forEach(function(t,i){t.classList.toggle('act',i===idx)});
+  tp.querySelectorAll('.m-panel').forEach(function(p,i){p.classList.toggle('act',i===idx)});
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Historical Storage — Calumet</title>
+<link rel="stylesheet" href="../shared.css">
+</head>
+<body class="tab-page">
+<div class="sum">
+  <div class="sum-title">
+    <h2>Historical Storage</h2>
+    <span class="sum-badge">Tab 50</span>
+  </div>
+  <p class="sum-desc">Track org storage evolution over time using saved snapshots. Identify growth trends.</p>
+</div>
+<div class="mockup-wrap">
+  <div class="mockup"><div class="vbox" style="gap:0px"><div class="anchor"><div class="m-tabpane" id="tp25"><div class="m-tabbar"><div class="m-tab act" onclick="sw('tp25',0)">Data</div><div class="m-tab" onclick="sw('tp25',1)">Evolution</div></div><div class="m-body"><div class="m-panel act" id="tp25-0"><div class="anchor"><div class="cal-listview"></div><div class="tbl-wrap"><table class="cal-tbl"><thead><tr><th>Object</th><th>Label</th><th>nb 1</th><th>deleted</th><th>size</th><th>nb 2</th><th>size</th><th>diff</th><th>size</th><th>evol(%)</th></tr></thead><tbody><tr><td colspan="20" class="tbl-empty"></td></tr></tbody></table></div><div class="hbox" style="gap:0px;align-items:center"><button class="cal-btn btn-d">Harmonize Values</button><button class="cal-btn btn-d">Refresh Daily</button></div><span class="cal-lbl">isMonitored</span></div></div><div class="m-panel" id="tp25-1"><div class="anchor"><div class="hbox" style="gap:8.0px;align-items:center"><span class="cal-lbl">From</span><input class="cal-tf" placeholder="Date..." data-tip="Start of the period shown on the chart" readonly><span class="cal-lbl">to</span><input class="cal-tf" placeholder="Date..." data-tip="End of the period shown on the chart" readonly><div class="spacer"></div><button class="cal-btn btn-b" data-tip="Show storage evolution chart for the selected period" disabled>Display evolution</button></div></div></div></div></div></div></div></div>
+</div>
+<script>
+function sw(id,idx){
+  var tp=document.getElementById(id);
+  tp.querySelectorAll('.m-tab').forEach(function(t,i){t.classList.toggle('act',i===idx)});
+  tp.querySelectorAll('.m-panel').forEach(function(p,i){p.classList.toggle('act',i===idx)});
+}
+</script>
+</body>
+</html>

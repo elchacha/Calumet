@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Debug — Calumet</title>
+<link rel="stylesheet" href="../shared.css">
+</head>
+<body class="tab-page">
+<div class="sum">
+  <div class="sum-title">
+    <h2>Debug</h2>
+    <span class="sum-badge">Tab 23</span>
+  </div>
+  <p class="sum-desc">Execute anonymous Apex code directly in the org and view the debug output in real time.</p>
+</div>
+<div class="mockup-wrap">
+  <div class="mockup"><div class="vbox" style="gap:0px"><div class="anchor"><div class="m-tabpane" id="tp9"><div class="m-tabbar"><div class="m-tab act" onclick="sw('tp9',0)">Orgs</div></div><div class="m-body"><div class="m-panel act" id="tp9-0"><div class="anchor"><div class="tbl-wrap"><table class="cal-tbl"><thead><tr><th style="width:110.0px">Alias</th><th style="width:300.0px">Alias</th><th style="width:150.0px">Status</th><th style="width:80.0px">DevHub</th><th style="width:80.0px">Def Hub</th><th style="width:80.0px">Def User</th><th style="width:150.0px">Scratch</th></tr></thead><tbody><tr><td colspan="20" class="tbl-empty"></td></tr></tbody></table></div><button class="cal-btn btn-d">Refresh orgs</button><button class="cal-btn btn-d">Create Scratch Org</button></div></div></div></div></div></div></div>
+</div>
+<script>
+function sw(id,idx){
+  var tp=document.getElementById(id);
+  tp.querySelectorAll('.m-tab').forEach(function(t,i){t.classList.toggle('act',i===idx)});
+  tp.querySelectorAll('.m-panel').forEach(function(p,i){p.classList.toggle('act',i===idx)});
+}
+</script>
+</body>
+</html>

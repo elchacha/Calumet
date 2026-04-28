@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SOQL Counter — Calumet</title>
+<link rel="stylesheet" href="../shared.css">
+</head>
+<body class="tab-page">
+<div class="sum">
+  <div class="sum-title">
+    <h2>SOQL Counter</h2>
+    <span class="sum-badge">Tab 27</span>
+  </div>
+  <p class="sum-desc">Count SOQL queries executed by Apex code to help identify governor limit risks.</p>
+</div>
+<div class="mockup-wrap">
+  <div class="mockup"><div class="vbox" style="gap:0px"><div class="anchor"><span class="cal-lbl">Object :</span><div class="hbox" style="gap:6.0px;align-items:center"><span class="cal-lbl">Loading...</span></div><div class="hbox" style="gap:20.0px;align-items:center"><button class="cal-btn btn-b">Extract</button><button class="cal-btn btn-d">Export to Excel</button><button class="cal-btn btn-d">Import Excel File</button><div class="hbox" style="gap:5.0px;align-items:center"><span class="cal-lbl">Value</span><span class="cal-lbl" style="font-size:11px;color:#555">= default value</span></div></div><span class="cal-lbl">Warning : Only active values can be extracted and currently, it&#x27;s not working for production org (SF issue)</span></div></div></div>
+</div>
+<script>
+function sw(id,idx){
+  var tp=document.getElementById(id);
+  tp.querySelectorAll('.m-tab').forEach(function(t,i){t.classList.toggle('act',i===idx)});
+  tp.querySelectorAll('.m-panel').forEach(function(p,i){p.classList.toggle('act',i===idx)});
+}
+</script>
+</body>
+</html>

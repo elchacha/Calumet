@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Field-Level Security — Calumet</title>
+<link rel="stylesheet" href="../shared.css">
+</head>
+<body class="tab-page">
+<div class="sum">
+  <div class="sum-title">
+    <h2>Field-Level Security</h2>
+    <span class="sum-badge">Tab 30</span>
+  </div>
+  <p class="sum-desc">Review and manage field-level security (FLS) across profiles and permission sets for any object.</p>
+</div>
+<div class="mockup-wrap">
+  <div class="mockup"><div class="vbox" style="gap:0px"><div class="anchor"><div class="m-tabpane" id="tp14"><div class="m-tabbar"><div class="m-tab act" onclick="sw('tp14',0)">FLS Profile or User</div><div class="m-tab" onclick="sw('tp14',1)">User</div></div><div class="m-body"><div class="m-panel act" id="tp14-0"><div class="anchor"><input class="cal-tf" placeholder="" style="width:262.0px;" readonly><span class="cal-lbl">Profile</span><span class="cal-lbl">User Name</span><span class="cal-lbl">Object</span><div class="tbl-wrap"><table class="cal-tbl"><thead><tr><th style="width:177.0px">Name</th><th style="width:263.0px">Label</th><th style="width:23.0px">R</th><th style="width:23.0px">W</th><th style="width:235.0px">PermSet</th><th style="width:235.0px">Profile</th></tr></thead><tbody><tr><td colspan="20" class="tbl-empty"></td></tr></tbody></table></div><span class="cal-lbl">profileName</span><button class="cal-btn btn-b">Search</button><input class="cal-tf" placeholder="" style="width:179.0px;" readonly><span class="cal-lbl">Filter  :</span><span class="cal-lbl">P: Indicates if you can change the permission and how if you can</span><span class="cal-lbl">Field</span><button class="cal-btn btn-b">Search</button></div></div><div class="m-panel" id="tp14-1"><div class="anchor"><div class="m-tabpane" id="tp13"><div class="m-tabbar"><div class="m-tab act" onclick="sw('tp13',0)">System</div><div class="m-tab" onclick="sw('tp13',1)">Objects</div><div class="m-tab" onclick="sw('tp13',2)">Fields</div></div><div class="m-body"><div class="m-panel act" id="tp13-0"><div class="anchor"><div class="tbl-wrap"><table class="cal-tbl"><thead><tr><th>Permission</th><th>Label</th><th>Perm set name</th><th>Profile name</th></tr></thead><tbody><tr><td colspan="20" class="tbl-empty"></td></tr></tbody></table></div></div></div><div class="m-panel" id="tp13-1"><div class="anchor"><div class="tbl-wrap"><table class="cal-tbl"><thead><tr><th>Object name</th><th>Create</th><th>Read</th><th>Edit</th><th>Delete</th><th>View all</th><th>Edit all</th><th>perm set</th><th>profile</th></tr></thead><tbody><tr><td colspan="20" class="tbl-empty"></td></tr></tbody></table></div></div></div><div class="m-panel" id="tp13-2"><div class="anchor"><div class="tbl-wrap"><table class="cal-tbl"><thead><tr><th>Object type</th><th>Field name</th><th>Read</th><th>Edit</th><th>Perm set</th><th>Profile</th></tr></thead><tbody><tr><td colspan="20" class="tbl-empty"></td></tr></tbody></table></div><input class="cal-tf" placeholder="" style="width:229.0px;" readonly><label class="cal-chk"><input type="checkbox" disabled> Edit</label><label class="cal-chk"><input type="checkbox" disabled> Perm Set</label><label class="cal-chk"><input type="checkbox" disabled> Profile</label></div></div></div></div><span class="cal-lbl">UserName :</span><span class="cal-lbl">Object :</span><button class="cal-btn btn-b">Search</button></div></div></div></div></div></div></div>
+</div>
+<script>
+function sw(id,idx){
+  var tp=document.getElementById(id);
+  tp.querySelectorAll('.m-tab').forEach(function(t,i){t.classList.toggle('act',i===idx)});
+  tp.querySelectorAll('.m-panel').forEach(function(p,i){p.classList.toggle('act',i===idx)});
+}
+</script>
+</body>
+</html>

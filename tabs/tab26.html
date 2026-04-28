@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Dead Code — Calumet</title>
+<link rel="stylesheet" href="../shared.css">
+</head>
+<body class="tab-page">
+<div class="sum">
+  <div class="sum-title">
+    <h2>Dead Code</h2>
+    <span class="sum-badge">Tab 26</span>
+  </div>
+  <p class="sum-desc">Detect unused Apex classes, triggers and methods that are never referenced in the org.</p>
+</div>
+<div class="mockup-wrap">
+  <div class="mockup"><div class="vbox" style="gap:0px"><div class="anchor"><label class="cal-chk"><input type="checkbox" disabled> Reuse Current backup</label><label class="cal-chk"><input type="checkbox" disabled> Hide not changed object</label><label class="cal-chk"><input type="checkbox" disabled> Hide changed object</label><label class="cal-chk"><input type="checkbox" disabled> Hide new object</label><button class="cal-btn btn-d">Check Package</button><div class="tbl-wrap"><table class="cal-tbl"><thead><tr><th>New</th><th>Ok</th><th>Insert</th><th>Update</th><th>Delete</th><th>Type</th><th>Name</th><th>ModifiedBy</th><th>LastModifiedDate</th></tr></thead><tbody><tr><td colspan="20" class="tbl-empty"></td></tr></tbody></table></div><span class="cal-lbl">lbl Check diff</span><label class="cal-chk"><input type="checkbox" disabled> hide Profile</label></div></div></div>
+</div>
+<script>
+function sw(id,idx){
+  var tp=document.getElementById(id);
+  tp.querySelectorAll('.m-tab').forEach(function(t,i){t.classList.toggle('act',i===idx)});
+  tp.querySelectorAll('.m-panel').forEach(function(p,i){p.classList.toggle('act',i===idx)});
+}
+</script>
+</body>
+</html>

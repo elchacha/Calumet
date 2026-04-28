@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>CVS — Calumet</title>
+<link rel="stylesheet" href="../shared.css">
+</head>
+<body class="tab-page">
+<div class="sum">
+  <div class="sum-title">
+    <h2>CVS</h2>
+    <span class="sum-badge">Tab 31</span>
+  </div>
+  <p class="sum-desc">CSV/Excel data import and export utility for Salesforce records using Bulk API v2.</p>
+</div>
+<div class="mockup-wrap">
+  <div class="mockup"><div class="vbox" style="gap:0px"><div class="anchor"><div class="hbox" style="gap:8.0px;align-items:center"><span class="cal-lbl">Object</span><button class="cal-btn btn-b" data-tip="Load dependent picklists for the selected object">Search</button><div class="vsep"></div><button class="cal-btn btn-d" data-tip="Export as Excel workbook">Excel (.xls)</button><button class="cal-btn btn-d" data-tip="Export as comma-separated values">CSV</button><div class="spacer"></div><span class="cal-lbl">Picklist founds : 0</span><button class="cal-btn btn-d" data-tip="Go back to the picklist selection panel">Show selection</button></div><div class="hbox" style="gap:10.0px;align-items:center"><button class="cal-btn btn-b" data-tip="Extract dependent picklist values for the selected fields">Extract</button><button class="cal-btn btn-d" data-tip="Write the extracted values to an Excel file">Export to Excel</button><button class="cal-btn btn-d" data-tip="Import picklist dependencies from an Excel file (single field only)">Import Excel File</button><div class="spacer"></div><span class="cal-lbl" style="font-style:italic;color:#5b9bac">Import is available only when a single field is selected</span></div><div class="hbox" style="gap:8.0px;align-items:center"><span class="cal-lbl">Export to</span><input class="cal-tf cal-grow" placeholder="" data-tip="Destination folder for exported files" style="" readonly><button class="cal-btn btn-d" data-tip="Browse for an export folder">Select</button><button class="cal-btn btn-d" data-tip="Open the export folder in the file explorer">Open folder</button></div><div class="vbox" style="gap:8.0px"></div></div></div></div>
+</div>
+<script>
+function sw(id,idx){
+  var tp=document.getElementById(id);
+  tp.querySelectorAll('.m-tab').forEach(function(t,i){t.classList.toggle('act',i===idx)});
+  tp.querySelectorAll('.m-panel').forEach(function(p,i){p.classList.toggle('act',i===idx)});
+}
+</script>
+</body>
+</html>

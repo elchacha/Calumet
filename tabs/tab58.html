@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Object Comparator — Calumet</title>
+<link rel="stylesheet" href="../shared.css">
+</head>
+<body class="tab-page">
+<div class="sum">
+  <div class="sum-title">
+    <h2>Object Comparator</h2>
+    <span class="sum-badge">Tab 58</span>
+  </div>
+  <p class="sum-desc">Compare two Salesforce records by ID side-by-side to detect field-level data differences.</p>
+</div>
+<div class="mockup-wrap">
+  <div class="mockup"><div class="vbox" style="gap:0px"><div class="anchor"><input class="cal-tf" placeholder="" style="" readonly><input class="cal-tf" placeholder="" style="" readonly><span class="cal-lbl">First id</span><span class="cal-lbl">Second id</span><span class="cal-lbl">Use those feature to compare 2 objects or twice the same object</span><button class="cal-btn btn-d">Save</button><button class="cal-btn btn-d">Compare to itself</button><button class="cal-btn btn-d">Compare</button><span class="cal-lbl">Type d&#x27;objet :</span><div class="tbl-wrap"><table class="cal-tbl"><thead><tr><th style="width:187.0px">Field</th><th style="width:204.0px">Value first object</th><th style="width:301.0px">Value second object</th></tr></thead><tbody><tr><td colspan="20" class="tbl-empty"></td></tr></tbody></table></div><span class="cal-lbl">objectType</span><select class="cal-cb" style="width:150.0px;"><option class="ph">Select...</option></select><span class="cal-lbl">action</span><input class="cal-tf" placeholder="" style="width:241.0px;" readonly></div></div></div>
+</div>
+<script>
+function sw(id,idx){
+  var tp=document.getElementById(id);
+  tp.querySelectorAll('.m-tab').forEach(function(t,i){t.classList.toggle('act',i===idx)});
+  tp.querySelectorAll('.m-panel').forEach(function(p,i){p.classList.toggle('act',i===idx)});
+}
+</script>
+</body>
+</html>

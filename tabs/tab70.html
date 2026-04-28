@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Security Optimisation — Calumet</title>
+<link rel="stylesheet" href="../shared.css">
+</head>
+<body class="tab-page">
+<div class="sum">
+  <div class="sum-title">
+    <h2>Security Optimisation</h2>
+    <span class="sum-badge">Tab 70</span>
+  </div>
+  <p class="sum-desc">Identify unused or under-utilised profiles and permission sets. Color-coded: Keep / Review / Remove.</p>
+</div>
+<div class="mockup-wrap">
+  <div class="mockup"><div class="vbox" style="gap:0px"><div class="hbox" style="background:#f0f0f0;padding:10px;gap:15.0px;align-items:center"><span class="cal-lbl">Type Filter:</span><select class="cal-cb" style="width:150.0px;"><option class="ph">Select...</option></select><span class="cal-lbl">Search:</span><input class="cal-tf" placeholder="Filter by name or description..." style="width:200.0px;" readonly><button class="cal-btn btn-b">Start Analysis</button><button class="cal-btn btn-d">Export Excel</button></div><div class="vbox" style="background:#f8f8f8;padding:8px;gap:5.0px"><div class="hbox" style="gap:20.0px;align-items:center"><span class="cal-lbl" style="font-weight:bold">Show:</span><label class="cal-chk"><input type="checkbox" checked disabled> Keep</label><label class="cal-chk"><input type="checkbox" checked disabled> Review</label><label class="cal-chk"><input type="checkbox" checked disabled> Safe to Remove</label><div class="vsep"></div><label class="cal-chk"><input type="checkbox" checked disabled> Custom only</label></div><span class="cal-lbl" style="color:#7f8c8d">No data analyzed yet</span></div><div class="tbl-wrap"><table class="cal-tbl"><thead><tr><th>Permission Type</th><th>Name</th><th>nb Users</th><th>Active</th><th>Score</th><th>Recommendation</th><th>Created</th><th>Analysis Details</th><th>Description</th></tr></thead><tbody><tr><td colspan="20" class="tbl-empty"></td></tr></tbody></table></div></div></div>
+</div>
+<script>
+function sw(id,idx){
+  var tp=document.getElementById(id);
+  tp.querySelectorAll('.m-tab').forEach(function(t,i){t.classList.toggle('act',i===idx)});
+  tp.querySelectorAll('.m-panel').forEach(function(p,i){p.classList.toggle('act',i===idx)});
+}
+</script>
+</body>
+</html>

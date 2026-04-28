@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Login As — Calumet</title>
+<link rel="stylesheet" href="../shared.css">
+</head>
+<body class="tab-page">
+<div class="sum">
+  <div class="sum-title">
+    <h2>Login As</h2>
+    <span class="sum-badge">Tab 17</span>
+  </div>
+  <p class="sum-desc">Generate a login URL to impersonate any user in the org (requires the Login As permission).</p>
+</div>
+<div class="mockup-wrap">
+  <div class="mockup"><div class="vbox" style="gap:0px"><div class="anchor"><div class="split-pane"><div class="split-panel"><div class="anchor"><span class="cal-lbl">User criteria :</span><button class="cal-btn btn-b">Search</button><span class="cal-lbl">Target id :</span><input class="cal-tf" placeholder="" style="" readonly><span class="cal-lbl">Optional id, use it to directly open salesforce with the specified object id</span><label class="cal-chk"><input type="checkbox" disabled> Mode console</label><label class="cal-chk"><input type="checkbox" disabled> Debug user for</label><input class="cal-tf" placeholder="" style="width:43.0px;" readonly><span class="cal-lbl">minutes</span><select class="cal-cb" style="width:186.0px;"><option class="ph">Select...</option></select><span class="cal-lbl">Chrome Profile</span><label class="cal-chk"><input type="checkbox" disabled> CommunityLogin</label></div><div class="anchor"><div class="m-tabpane" id="tp4"><div class="m-tabbar"><div class="m-tab act" onclick="sw('tp4',0)">Favorites</div><div class="m-tab" onclick="sw('tp4',1)">Search</div></div><div class="m-body"><div class="m-panel act" id="tp4-0"><div class="anchor"><div class="tbl-wrap"><table class="cal-tbl"><thead><tr><th style="width:75.0px">UserName</th><th style="width:75.0px">ChromeProfile</th></tr></thead><tbody><tr><td colspan="20" class="tbl-empty"></td></tr></tbody></table></div></div></div><div class="m-panel" id="tp4-1"><div class="anchor"><div class="tbl-wrap"><table class="cal-tbl"><thead><tr><th>User name</th><th>Profile</th></tr></thead><tbody><tr><td colspan="20" class="tbl-empty"></td></tr></tbody></table></div></div></div></div></div></div></div></div></div></div></div>
+</div>
+<script>
+function sw(id,idx){
+  var tp=document.getElementById(id);
+  tp.querySelectorAll('.m-tab').forEach(function(t,i){t.classList.toggle('act',i===idx)});
+  tp.querySelectorAll('.m-panel').forEach(function(p,i){p.classList.toggle('act',i===idx)});
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Remover Helper — Calumet</title>
+<link rel="stylesheet" href="../shared.css">
+</head>
+<body class="tab-page">
+<div class="sum">
+  <div class="sum-title">
+    <h2>Remover Helper</h2>
+    <span class="sum-badge">Tab 48</span>
+  </div>
+  <p class="sum-desc">Assist in identifying and safely removing obsolete metadata before packaging for deployment.</p>
+</div>
+<div class="mockup-wrap">
+  <div class="mockup"><div class="vbox" style="gap:0px"><div class="anchor"><div class="anchor"><div class="tbl-wrap"><table class="cal-tbl"><thead><tr><th>Object Name</th><th>Record Id</th><th>Access Right</th></tr></thead><tbody><tr><td colspan="20" class="tbl-empty"></td></tr></tbody></table></div><button class="cal-btn btn-d">Search child record access</button><input class="cal-tf" placeholder="" style="width:181.0px;" readonly><span class="cal-lbl">Record Id</span><span class="cal-lbl">UserId</span><input class="cal-tf" placeholder="" style="width:231.0px;" readonly><span class="cal-lbl">objectType :</span><label class="cal-chk"><input type="checkbox" disabled> diplayNoAccess</label></div></div></div></div>
+</div>
+<script>
+function sw(id,idx){
+  var tp=document.getElementById(id);
+  tp.querySelectorAll('.m-tab').forEach(function(t,i){t.classList.toggle('act',i===idx)});
+  tp.querySelectorAll('.m-panel').forEach(function(p,i){p.classList.toggle('act',i===idx)});
+}
+</script>
+</body>
+</html>

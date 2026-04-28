@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Change Tracker (B) — Calumet</title>
+<link rel="stylesheet" href="../shared.css">
+</head>
+<body class="tab-page">
+<div class="sum">
+  <div class="sum-title">
+    <h2>Change Tracker (B)</h2>
+    <span class="sum-badge">Tab 53</span>
+  </div>
+  <p class="sum-desc">Secondary change tracking view for monitoring a different org or metadata scope simultaneously.</p>
+</div>
+<div class="mockup-wrap">
+  <div class="mockup"><div class="vbox" style="gap:0px"><div class="anchor"><span class="cal-lbl">Custom metadata type</span><button class="cal-btn btn-b">Export all records</button><button class="cal-btn btn-b">Generate empty xlsx file</button><button class="cal-btn btn-o">Upsert Values</button><div class="tbl-wrap"><table class="cal-tbl"><thead><tr><th style="width:75.0px">Name</th><th style="width:75.0px">Label</th><th style="width:75.0px">field1</th><th style="width:75.0px">field2</th><th style="width:75.0px">ect ...</th></tr></thead><tbody><tr><td colspan="20" class="tbl-empty"></td></tr></tbody></table></div><button class="cal-btn btn-b">Display</button><span class="cal-lbl">records</span><input class="cal-tf" placeholder="" style="width:288.0px;" readonly><button class="cal-btn btn-d">Delete Selection</button><button class="cal-btn btn-d">Export Selection</button></div></div></div>
+</div>
+<script>
+function sw(id,idx){
+  var tp=document.getElementById(id);
+  tp.querySelectorAll('.m-tab').forEach(function(t,i){t.classList.toggle('act',i===idx)});
+  tp.querySelectorAll('.m-panel').forEach(function(p,i){p.classList.toggle('act',i===idx)});
+}
+</script>
+</body>
+</html>

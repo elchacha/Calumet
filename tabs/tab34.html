@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Flows — Calumet</title>
+<link rel="stylesheet" href="../shared.css">
+</head>
+<body class="tab-page">
+<div class="sum">
+  <div class="sum-title">
+    <h2>Flows</h2>
+    <span class="sum-badge">Tab 34</span>
+  </div>
+  <p class="sum-desc">List, activate, deactivate and analyse Salesforce Flows. Filter by type, status or process.</p>
+</div>
+<div class="mockup-wrap">
+  <div class="mockup"><div class="anchor"><div class="m-tabpane" id="tp15"><div class="m-tabbar"><div class="m-tab act" onclick="sw('tp15',0)">Flows</div><div class="m-tab" onclick="sw('tp15',1)">Invokable</div><div class="m-tab" onclick="sw('tp15',2)">SubFlows</div></div><div class="m-body"><div class="m-panel act" id="tp15-0"><div class="vbox" style="gap:0px"><div class="anchor"><div class="tbl-wrap"><table class="cal-tbl"><thead><tr><th>Flow Name</th><th>Flow Label</th><th>Vers</th><th>Status</th><th>Type</th><th>Trigger Type</th><th>Operation</th><th>Last Modify by</th><th>Last modified</th><th>Object Name</th><th>Object Label</th></tr></thead><tbody><tr><td colspan="20" class="tbl-empty"></td></tr></tbody></table></div><button class="cal-btn btn-d">search</button><input class="cal-tf" placeholder="" style="width:342.0px;" readonly><label class="cal-chk"><input type="checkbox" checked disabled> flow active</label><label class="cal-chk"><input type="checkbox" disabled> search Text in flow</label><label class="cal-chk"><input type="checkbox" checked disabled> autoLaunched</label><label class="cal-chk"><input type="checkbox" checked disabled> Flow</label><label class="cal-chk"><input type="checkbox" checked disabled> Workflow</label><label class="cal-chk"><input type="checkbox" checked disabled> Trigger</label><label class="cal-chk"><input type="checkbox" checked disabled> Routing</label><label class="cal-chk"><input type="checkbox" checked disabled> Invokable</label></div></div></div><div class="m-panel" id="tp15-1"><div class="vbox" style="gap:0px"><div class="anchor"><div class="tbl-wrap"><table class="cal-tbl"><thead><tr><th>Apex Class</th><th>Flow Name</th><th>Flow Label</th><th>Invokable Name</th><th>Invokable Label</th><th>Flow active</th></tr></thead><tbody><tr><td colspan="20" class="tbl-empty"></td></tr></tbody></table></div><button class="cal-btn btn-b">Search</button><input class="cal-tf" placeholder="" style="width:356.0px;" readonly><label class="cal-chk"><input type="checkbox" checked disabled> display active only</label></div></div></div><div class="m-panel" id="tp15-2"><div class="vbox" style="gap:0px"><div class="anchor"><div class="tbl-wrap"><table class="cal-tbl"><thead><tr><th>SubFlow Name</th><th>SubFlow Label</th><th>Flow Parent Name</th><th>Flow Parent Label</th></tr></thead><tbody><tr><td colspan="20" class="tbl-empty"></td></tr></tbody></table></div><button class="cal-btn btn-b">Search</button><input class="cal-tf" placeholder="" style="width:356.0px;" readonly><label class="cal-chk"><input type="checkbox" checked disabled> display active only</label></div></div></div></div></div></div></div>
+</div>
+<script>
+function sw(id,idx){
+  var tp=document.getElementById(id);
+  tp.querySelectorAll('.m-tab').forEach(function(t,i){t.classList.toggle('act',i===idx)});
+  tp.querySelectorAll('.m-panel').forEach(function(p,i){p.classList.toggle('act',i===idx)});
+}
+</script>
+</body>
+</html>

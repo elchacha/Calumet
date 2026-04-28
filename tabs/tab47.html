@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Org Documentation — Calumet</title>
+<link rel="stylesheet" href="../shared.css">
+</head>
+<body class="tab-page">
+<div class="sum">
+  <div class="sum-title">
+    <h2>Org Documentation</h2>
+    <span class="sum-badge">Tab 47</span>
+  </div>
+  <p class="sum-desc">Auto-generate documentation for the org&#x27;s data model: objects, fields, relationships and picklists.</p>
+</div>
+<div class="mockup-wrap">
+  <div class="mockup"><div class="vbox" style="gap:0px"><div class="anchor"><div class="m-tabpane" id="tp22"><div class="m-tabbar"><div class="m-tab act" onclick="sw('tp22',0)">Global</div><div class="m-tab" onclick="sw('tp22',1)">Detailed</div></div><div class="m-body"><div class="m-panel act" id="tp22-0"><div class="vbox" style="gap:0px"><div class="anchor"><button class="cal-btn btn-b">extract</button><div class="tbl-wrap"><table class="cal-tbl"><thead><tr><th>AppName</th><th>Label</th><th>CreatedDate</th><th>CreatedBy</th><th>LastUsedDate</th><th>Usage</th><th>Users</th><th>AdminControlled</th><th>Description</th></tr></thead><tbody><tr><td colspan="20" class="tbl-empty"></td></tr></tbody></table></div><input class="cal-tf" placeholder="" style="width:253.0px;" readonly></div></div></div><div class="m-panel" id="tp22-1"><div class="vbox" style="gap:0px"><div class="anchor"><button class="cal-btn btn-b">extract</button><div class="tbl-wrap"><table class="cal-tbl"><thead><tr><th>AppName</th><th>CreatedDate</th><th>LastUsedDate</th><th>UserName</th><th>Active</th><th>Profile</th><th>Usage</th><th>AdminControlled</th></tr></thead><tbody><tr><td colspan="20" class="tbl-empty"></td></tr></tbody></table></div><input class="cal-tf" placeholder="" style="width:253.0px;" readonly><span class="cal-lbl">filters</span><span class="cal-lbl">count</span><button class="cal-btn btn-d">revoke selected token</button></div></div></div></div></div></div></div></div>
+</div>
+<script>
+function sw(id,idx){
+  var tp=document.getElementById(id);
+  tp.querySelectorAll('.m-tab').forEach(function(t,i){t.classList.toggle('act',i===idx)});
+  tp.querySelectorAll('.m-panel').forEach(function(p,i){p.classList.toggle('act',i===idx)});
+}
+</script>
+</body>
+</html>

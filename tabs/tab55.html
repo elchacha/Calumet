@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Field Usage by Record Type — Calumet</title>
+<link rel="stylesheet" href="../shared.css">
+</head>
+<body class="tab-page">
+<div class="sum">
+  <div class="sum-title">
+    <h2>Field Usage by Record Type</h2>
+    <span class="sum-badge">Tab 55</span>
+  </div>
+  <p class="sum-desc">Analyse custom field usage broken down by Record Type to identify unused or underused fields.</p>
+</div>
+<div class="mockup-wrap">
+  <div class="mockup"><div class="vbox" style="gap:0px"><div class="anchor"><div class="hbox" style="gap:8.0px;align-items:center"><span class="cal-lbl">Object</span><button class="cal-btn btn-b" data-tip="Load field metadata and last analysis results for this object">Display</button><div class="vsep"></div><span class="cal-lbl" style="color:#7f8c8d">Threads</span><input class="cal-tf" placeholder="" data-tip="Number of parallel threads for analysis (recommended: ≤ 25)" style="width:50.0px;" readonly><span class="cal-lbl" style="color:#aab0b5;font-size:11px">(max 25)</span></div><div class="hbox" style="gap:10.0px;align-items:center"><select class="cal-cb" data-tip="Filter analysis by RecordType" style="width:240.0px;"><option class="ph">Select...</option></select><div class="spacer"></div><button class="cal-btn btn-b" data-tip="Run field usage analysis for all records of this object">Analyse</button><button class="cal-btn btn-d" data-tip="Export analysis results to an Excel file">Export</button></div><div class="hbox" style="gap:12.0px;align-items:center"><div class="vsep"></div><div class="vsep"></div></div><div class="hbox" style="gap:8.0px;align-items:center"><div class="tbl-wrap"><table class="cal-tbl"><thead><tr><th style="width:160.0px">Field Name</th><th style="width:160.0px">Label</th><th style="width:140.0px">Last Modified</th><th style="width:140.0px">Type</th><th style="width:80.0px">Usage</th><th style="width:90.0px">Percent</th><th style="width:90.0px">Score</th></tr></thead><tbody><tr><td colspan="20" class="tbl-empty"></td></tr></tbody></table></div><div class="tbl-wrap"><table class="cal-tbl"><thead><tr><th style="width:180.0px">Label</th><th style="width:80.0px">Usage</th><th style="width:80.0px">Percent</th><th style="width:130.0px">Modified</th><th style="width:60.0px">Active</th><th style="width:60.0px">Default</th></tr></thead><tbody><tr><td colspan="20" class="tbl-empty"></td></tr></tbody></table></div><div class="tbl-wrap"><table class="cal-tbl"><thead><tr><th style="width:180.0px">RecordType</th><th style="width:80.0px">Usage</th><th style="width:80.0px">Total</th></tr></thead><tbody><tr><td colspan="20" class="tbl-empty"></td></tr></tbody></table></div></div></div></div></div>
+</div>
+<script>
+function sw(id,idx){
+  var tp=document.getElementById(id);
+  tp.querySelectorAll('.m-tab').forEach(function(t,i){t.classList.toggle('act',i===idx)});
+  tp.querySelectorAll('.m-panel').forEach(function(p,i){p.classList.toggle('act',i===idx)});
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Dev Console (B) — Calumet</title>
+<link rel="stylesheet" href="../shared.css">
+</head>
+<body class="tab-page">
+<div class="sum">
+  <div class="sum-title">
+    <h2>Dev Console (B)</h2>
+    <span class="sum-badge">Tab 45</span>
+  </div>
+  <p class="sum-desc">Alternative developer console view: execute SOQL, run Apex, and inspect debug logs.</p>
+</div>
+<div class="mockup-wrap">
+  <div class="mockup"><div class="vbox" style="gap:0px"><div class="anchor"><button class="cal-btn btn-b">extract</button><div class="tbl-wrap"><table class="cal-tbl"><thead><tr><th>CreatedDate</th><th>LastModifyDate</th><th>lastModifyBy</th><th>ObjectName</th><th>MasterLabel</th><th>Name</th><th>Comment</th></tr></thead><tbody><tr><td colspan="20" class="tbl-empty"></td></tr></tbody></table></div><input class="cal-tf" placeholder="" style="" readonly></div></div></div>
+</div>
+<script>
+function sw(id,idx){
+  var tp=document.getElementById(id);
+  tp.querySelectorAll('.m-tab').forEach(function(t,i){t.classList.toggle('act',i===idx)});
+  tp.querySelectorAll('.m-panel').forEach(function(p,i){p.classList.toggle('act',i===idx)});
+}
+</script>
+</body>
+</html>

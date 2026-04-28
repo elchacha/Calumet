@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Field History — Calumet</title>
+<link rel="stylesheet" href="../shared.css">
+</head>
+<body class="tab-page">
+<div class="sum">
+  <div class="sum-title">
+    <h2>Field History</h2>
+    <span class="sum-badge">Tab 33</span>
+  </div>
+  <p class="sum-desc">Configure field history tracking on objects. Enable or disable tracking per field.</p>
+</div>
+<div class="mockup-wrap">
+  <div class="mockup"><div class="vbox" style="gap:0px"><div class="anchor"><div class="tbl-wrap"><table class="cal-tbl"><thead><tr><th>colRight</th><th>colType</th><th>colReason</th><th>colUserOrGroupName</th><th>colGrpRelatedName</th></tr></thead><tbody><tr><td colspan="20" class="tbl-empty"></td></tr></tbody></table></div><input class="cal-tf" placeholder="" style="width:187.0px;" readonly><button class="cal-btn btn-b">Search</button><span class="cal-lbl">recordId</span><button class="cal-btn btn-d">OpenUrl</button></div></div></div>
+</div>
+<script>
+function sw(id,idx){
+  var tp=document.getElementById(id);
+  tp.querySelectorAll('.m-tab').forEach(function(t,i){t.classList.toggle('act',i===idx)});
+  tp.querySelectorAll('.m-panel').forEach(function(p,i){p.classList.toggle('act',i===idx)});
+}
+</script>
+</body>
+</html>

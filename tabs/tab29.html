@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Profiles Modification — Calumet</title>
+<link rel="stylesheet" href="../shared.css">
+</head>
+<body class="tab-page">
+<div class="sum">
+  <div class="sum-title">
+    <h2>Profiles Modification</h2>
+    <span class="sum-badge">Tab 29</span>
+  </div>
+  <p class="sum-desc">Edit and compare Salesforce profiles. Manage object, field and system permissions in bulk.</p>
+</div>
+<div class="mockup-wrap">
+  <div class="mockup"><div class="vbox" style="gap:0px"><div class="anchor"><input class="cal-tf" placeholder="Date..." readonly><input class="cal-tf" placeholder="Date..." readonly><span class="cal-lbl">Start date</span><span class="cal-lbl">End date</span><button class="cal-btn btn-b">Search</button><label class="cal-chk"><input type="checkbox" disabled> Display full history</label><span class="cal-lbl">Filters :</span><input class="cal-tf" placeholder="" style="width:261.0px;" readonly><span class="cal-lbl">nbRecords : 0</span><span class="cal-lbl">add ; to filter on multi crirteria (ex : Administrative Permissions;Api)</span><button class="cal-btn btn-d">Add to Retrieve</button><button class="cal-btn btn-d">Save in Project</button><div class="tbl-wrap"><table class="cal-tbl"><thead><tr><th>Profile</th><th>Parent</th><th>ObjectLabel</th><th>Type</th><th>Modified by</th><th>Modified</th><th>Old Value</th><th>New Value</th></tr></thead><tbody><tr><td colspan="20" class="tbl-empty"></td></tr></tbody></table></div><label class="cal-chk"><input type="checkbox" disabled> clean target first</label></div></div></div>
+</div>
+<script>
+function sw(id,idx){
+  var tp=document.getElementById(id);
+  tp.querySelectorAll('.m-tab').forEach(function(t,i){t.classList.toggle('act',i===idx)});
+  tp.querySelectorAll('.m-panel').forEach(function(p,i){p.classList.toggle('act',i===idx)});
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Object Relations — Calumet</title>
+<link rel="stylesheet" href="../shared.css">
+</head>
+<body class="tab-page">
+<div class="sum">
+  <div class="sum-title">
+    <h2>Object Relations</h2>
+    <span class="sum-badge">Tab 52</span>
+  </div>
+  <p class="sum-desc">Map all lookup and master-detail relationships for a selected SObject across the org.</p>
+</div>
+<div class="mockup-wrap">
+  <div class="mockup"><div class="vbox" style="gap:0px"><div class="anchor"><button class="cal-btn btn-b">Search</button><div class="hbox" style="gap:50.0px;align-items:center"><div class="tbl-wrap"><table class="cal-tbl"><thead><tr><th>Object</th><th>Rel</th></tr></thead><tbody><tr><td colspan="20" class="tbl-empty"></td></tr></tbody></table></div><div class="tbl-wrap"><table class="cal-tbl"><thead><tr><th>Field</th><th>Relation</th><th style="width:120.0px">RelationType</th></tr></thead><tbody><tr><td colspan="20" class="tbl-empty"></td></tr></tbody></table></div></div><label class="cal-chk"><input type="checkbox" disabled> Display single relations only</label></div></div></div>
+</div>
+<script>
+function sw(id,idx){
+  var tp=document.getElementById(id);
+  tp.querySelectorAll('.m-tab').forEach(function(t,i){t.classList.toggle('act',i===idx)});
+  tp.querySelectorAll('.m-panel').forEach(function(p,i){p.classList.toggle('act',i===idx)});
+}
+</script>
+</body>
+</html>

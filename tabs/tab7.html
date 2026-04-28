@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Metadata — Calumet</title>
+<link rel="stylesheet" href="../shared.css">
+</head>
+<body class="tab-page">
+<div class="sum">
+  <div class="sum-title">
+    <h2>Metadata</h2>
+    <span class="sum-badge">Tab 7</span>
+  </div>
+  <p class="sum-desc">Browse all supported Salesforce metadata types, view members, and build retrieve or deploy packages.</p>
+</div>
+<div class="mockup-wrap">
+  <div class="mockup"><div class="vbox" style="gap:0px"><div class="anchor"><div class="m-tabpane" id="tp28"><div class="m-tabbar"><div class="m-tab act" onclick="sw('tp28',0)">Object Permission</div><div class="m-tab" onclick="sw('tp28',1)">Sharings</div></div><div class="m-body"><div class="m-panel act" id="tp28-0"><div class="anchor"><div class="tbl-wrap"><table class="cal-tbl"><thead><tr><th>Object Name</th><th>Security Name</th><th>Security Type</th><th>IsCutom</th><th>isUsed</th><th>Users</th><th>Create</th><th>Read</th><th>Edit</th><th>Delete</th><th>View All</th><th>Modify All</th></tr></thead><tbody><tr><td colspan="20" class="tbl-empty"></td></tr></tbody></table></div><button class="cal-btn btn-b">Search</button><button class="cal-btn btn-b">Refresh</button><button class="cal-btn btn-d">Export</button><span class="cal-lbl">Nb records :</span><span class="cal-lbl">Object Name:</span><input class="cal-tf" placeholder="filter by object name…" style="width:356.0px;" readonly><label class="cal-chk"><input type="checkbox" checked disabled> hide unused</label><label class="cal-chk"><input type="checkbox" checked disabled> display profile</label><label class="cal-chk"><input type="checkbox" checked disabled> display permset</label></div></div><div class="m-panel" id="tp28-1"><div class="anchor"><div class="tbl-wrap"><table class="cal-tbl"><thead><tr><th>Object Name</th><th>Sharing Name</th><th>Sharing Label</th><th>Acess Level</th><th>Criterias</th><th>SharedTo</th><th>Modify By</th><th>Modified Date</th></tr></thead><tbody><tr><td colspan="20" class="tbl-empty"></td></tr></tbody></table></div><button class="cal-btn btn-b">Search</button><button class="cal-btn btn-b">Refresh</button><span class="cal-lbl">Object Name:</span><input class="cal-tf" placeholder="filter…" style="width:356.0px;" readonly></div></div></div></div></div></div></div>
+</div>
+<script>
+function sw(id,idx){
+  var tp=document.getElementById(id);
+  tp.querySelectorAll('.m-tab').forEach(function(t,i){t.classList.toggle('act',i===idx)});
+  tp.querySelectorAll('.m-panel').forEach(function(p,i){p.classList.toggle('act',i===idx)});
+}
+</script>
+</body>
+</html>

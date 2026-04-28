@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Roles Explorer — Calumet</title>
+<link rel="stylesheet" href="../shared.css">
+</head>
+<body class="tab-page">
+<div class="sum">
+  <div class="sum-title">
+    <h2>Roles Explorer</h2>
+    <span class="sum-badge">Tab 66</span>
+  </div>
+  <p class="sum-desc">Browse the role hierarchy: parent/child roles, active/inactive status and last modified date.</p>
+</div>
+<div class="mockup-wrap">
+  <div class="mockup"><div class="vbox" style="gap:0px"><div class="anchor"><button class="cal-btn btn-b">Refresh</button><button class="cal-btn btn-r" data-tip="Delete selected role(s)" disabled>Delete</button><div class="hbox" style="gap:6.0px;align-items:center"><span class="cal-lbl">Loading...</span></div><label class="cal-chk"><input type="checkbox" checked disabled> hide non deletable roles</label><span class="cal-lbl">records</span><div class="tbl-wrap"><table class="cal-tbl"><thead><tr><th>Name</th><th>Parent</th><th>Active</th><th>Inactive</th><th>LastModified</th><th>Depth</th><th>Children</th><th>Description</th><th>UsedBy</th><th>Can Delete</th></tr></thead><tbody><tr><td colspan="20" class="tbl-empty"></td></tr></tbody></table></div></div></div></div>
+</div>
+<script>
+function sw(id,idx){
+  var tp=document.getElementById(id);
+  tp.querySelectorAll('.m-tab').forEach(function(t,i){t.classList.toggle('act',i===idx)});
+  tp.querySelectorAll('.m-panel').forEach(function(p,i){p.classList.toggle('act',i===idx)});
+}
+</script>
+</body>
+</html>

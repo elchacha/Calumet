@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Data Seeding — Calumet</title>
+<link rel="stylesheet" href="../shared.css">
+</head>
+<body class="tab-page">
+<div class="sum">
+  <div class="sum-title">
+    <h2>Data Seeding</h2>
+    <span class="sum-badge">Tab 77</span>
+  </div>
+  <p class="sum-desc">Org-to-org data migration tool. Export records from a source org and import them into a target org, preserving relationships and handling cyclic dependencies automatically.</p>
+</div>
+<div class="mockup-wrap">
+  <div class="mockup">
+<div class="hbox" style="padding:6px 12px;gap:10px;align-items:center;background:#EDF3F7;border-bottom:1px solid #9AABBF;flex-wrap:wrap">
+  <span class="cal-lbl" style="font-weight:bold">Active config:</span>
+  <select class="cal-cb" style="width:180px"><option>SmallSandbox</option><option>FullProd</option><option>QuickTest</option></select>
+  <button class="cal-btn btn-b">Apply</button>
+  <div class="vsep" style="align-self:stretch"></div>
+  <span class="cal-lbl" style="color:#888;font-size:11px">Source:</span>
+  <span class="cal-lbl" style="font-weight:bold;color:#1A5276">myproject_source</span>
+  <div class="vsep" style="align-self:stretch"></div>
+  <span class="cal-lbl" style="color:#888;font-size:11px">Target:</span>
+  <span class="cal-lbl" style="font-weight:bold;color:#1e8a4a">myproject_sandbox</span>
+</div>
+<div class="m-tabpane" id="t77">
+  <div class="m-tabbar">
+    <div class="m-tab act" onclick="sw('t77',0)">Config</div>
+    <div class="m-tab" onclick="sw('t77',1)">Community Users</div>
+    <div class="m-tab" onclick="sw('t77',2)">Objects</div>
+    <div class="m-tab" onclick="sw('t77',3)">Prepare</div>
+    <div class="m-tab" onclick="sw('t77',4)">Export</div>
+    <div class="m-tab" onclick="sw('t77',5)">Automation</div>
+    <div class="m-tab" onclick="sw('t77',6)">Import</div>
+    <div class="m-tab" onclick="sw('t77',7)">Clean</div>
+    <div class="m-tab" onclick="sw('t77',8)">IDs Export</div>
+    <div class="m-tab" onclick="sw('t77',9)">Debug Import</div>
+  </div>
+  <div class="m-body">
+
+    <!-- ── Config ── -->
+    <div class="m-panel act" id="t77-0">
+      <div class="hbox" style="gap:16px;align-items:flex-start">
+        <div class="vbox" style="gap:6px;min-width:200px">
+          <div class="hbox" style="gap:4px">
+            <input class="cal-tf" value="C:/seeding" style="flex:1" readonly>
+            <button class="cal-btn btn-d">Browse</button>
+          </div>
+          <div style="border:1px solid #9AABBF;border-radius:3px;overflow:hidden">
+            <div style="padding:5px 10px;background:#D5F5E3;color:#1a5226;font-weight:bold;font-size:11px;cursor:pointer">SmallSandbox</div>
+            <div style="padding:5px 10px;font-size:11px;cursor:pointer;color:#1a2a35">FullProd</div>
+            <div style="padding:5px 10px;font-size:11px;cursor:pointer;color:#1a2a35">QuickTest</div>
+          </div>
+          <div class="hbox" style="gap:4px">
+            <button class="cal-btn btn-g" style="flex:1">New</button>
+            <button class="cal-btn btn-r">Delete</button>
+          </div>
+        </div>
+        <div class="vbox" style="gap:6px;flex:1">
+          <span class="cal-lbl" style="font-weight:bold;font-size:13px">Edit: SmallSandbox</span>
+          <hr class="hsep">
+          <div class="hbox" style="gap:8px;align-items:center">
+            <span class="cal-lbl" style="width:90px">Name</span>
+            <input class="cal-tf" value="SmallSandbox" style="width:160px" readonly>
+          </div>
+          <div class="hbox" style="gap:8px;align-items:center">
+            <span class="cal-lbl" style="width:90px">Source org</span>
+            <select class="cal-cb" style="width:190px"><option>myproject_source</option></select>
+            <span class="cal-lbl" style="width:80px">Target org</span>
+            <select class="cal-cb" style="width:190px"><option>myproject_sandbox</option></select>
+          </div>
+          <div class="hbox" style="gap:8px;align-items:center">
+            <span class="cal-lbl" style="width:90px">Main path</span>
+            <input class="cal-tf" value="C:/seeding/SmallSandbox" style="flex:1" readonly>
+            <button class="cal-btn btn-d">Open</button>
+          </div>
+          <div class="hbox" style="gap:8px;align-items:center">
+            <span class="cal-lbl" style="width:90px">Max depth</span>
+            <input class="cal-tf" value="5" style="width:50px" readonly>
+          </div>
+          <div class="vbox" style="gap:4px">
+            <span class="cal-lbl">Start query</span>
+            <textarea class="cal-ta" rows="2" readonly>SELECT Id FROM Account WHERE Type = 'Customer' LIMIT 100</textarea>
+          </div>
+          <div class="hbox" style="gap:8px;align-items:center">
+            <span class="cal-lbl" style="width:90px">Import after</span>
+            <select class="cal-cb" style="width:220px"><option>None (independent import)</option></select>
+          </div>
+          <label class="cal-chk"><input type="checkbox" disabled> Include system queries</label>
+          <label class="cal-chk"><input type="checkbox" disabled> Community users (Experience Cloud)</label>
+          <label class="cal-chk"><input type="checkbox" disabled> Enable debug mode</label>
+          <div class="hbox" style="gap:6px;margin-top:4px">
+            <button class="cal-btn btn-g">Save</button>
+            <button class="cal-btn btn-d">Cancel</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Community Users ── -->
+    <div class="m-panel" id="t77-1">
+      <div class="vbox" style="gap:8px">
+        <div class="hbox" style="gap:8px;align-items:center">
+          <span class="cal-lbl" style="color:#888">Community profile:</span>
+          <select class="cal-cb" style="width:220px"><option>Customer Community Login User</option></select>
+          <span class="cal-lbl" style="color:#888">Username suffix:</span>
+          <input class="cal-tf" value="myorg_sandbox" style="width:140px" readonly>
+        </div>
+        <div class="hbox" style="gap:8px">
+          <button class="cal-btn btn-b">Export Community</button>
+          <button class="cal-btn btn-g">Import Community</button>
+        </div>
+        <span class="cal-lbl" style="color:#27ae60">Last export: 12 community users &mdash; 2026-04-01 14:24:10</span>
+        <span class="cal-lbl" style="color:#27ae60">Last import: 12 community users &mdash; 2026-04-01 14:26:33</span>
+      </div>
+    </div>
+
+    <!-- ── Objects ── -->
+    <div class="m-panel" id="t77-2">
+      <div class="vbox" style="gap:8px">
+        <div class="hbox" style="gap:8px;align-items:center;flex-wrap:wrap">
+          <button class="cal-btn btn-b" data-tip="Load the object relationship graph from the source org">Load Objects</button>
+          <button class="cal-btn btn-d">Select All</button>
+          <label class="cal-chk"><input type="checkbox" disabled> Hide ignored</label>
+          <label class="cal-chk"><input type="checkbox" disabled> Hide no-relation</label>
+          <label class="cal-chk"><input type="checkbox" disabled> Hide with parents</label>
+          <label class="cal-chk"><input type="checkbox" disabled> Hide with children</label>
+          <button class="cal-btn btn-o">Ignore list</button>
+          <div class="spacer"></div>
+          <span class="cal-lbl" style="color:#888;font-size:11px">Ignore profile:</span>
+          <select class="cal-cb" style="width:160px"><option>DefaultIgnore</option></select>
+          <button class="cal-btn btn-d">Load</button>
+          <button class="cal-btn btn-d">Save</button>
+          <button class="cal-btn btn-r">Delete</button>
+        </div>
+        <div class="hbox" style="gap:8px;align-items:flex-start">
+          <div class="tbl-wrap" style="flex:2">
+            <table class="cal-tbl">
+              <thead><tr><th style="width:180px">Object</th><th style="width:70px">Parents</th><th style="width:70px">Children</th><th style="width:70px">Records</th><th style="width:55px">Export</th><th style="width:55px">Ignore</th></tr></thead>
+              <tbody>
+                <tr><td>Account</td><td>0</td><td>6</td><td>1 247</td><td><input type="checkbox" checked disabled></td><td><input type="checkbox" disabled></td></tr>
+                <tr><td>Contact</td><td>1</td><td>4</td><td>3 891</td><td><input type="checkbox" checked disabled></td><td><input type="checkbox" disabled></td></tr>
+                <tr><td>Opportunity</td><td>1</td><td>3</td><td>654</td><td><input type="checkbox" checked disabled></td><td><input type="checkbox" disabled></td></tr>
+                <tr><td>OpportunityLineItem</td><td>2</td><td>0</td><td>1 102</td><td><input type="checkbox" checked disabled></td><td><input type="checkbox" disabled></td></tr>
+                <tr><td>Product2</td><td>0</td><td>1</td><td>88</td><td><input type="checkbox" checked disabled></td><td><input type="checkbox" disabled></td></tr>
+                <tr><td>PricebookEntry</td><td>2</td><td>1</td><td>88</td><td><input type="checkbox" checked disabled></td><td><input type="checkbox" disabled></td></tr>
+                <tr style="color:#999"><td>User</td><td>0</td><td>0</td><td>45</td><td><input type="checkbox" disabled></td><td><input type="checkbox" checked disabled></td></tr>
+                <tr style="color:#999"><td>ContentDocument</td><td>0</td><td>0</td><td>&mdash;</td><td><input type="checkbox" disabled></td><td><input type="checkbox" checked disabled></td></tr>
+                <tr><td>Custom__c</td><td>1</td><td>2</td><td>203</td><td><input type="checkbox" checked disabled></td><td><input type="checkbox" disabled></td></tr>
+                <tr><td>CustomLine__c</td><td>1</td><td>0</td><td>891</td><td><input type="checkbox" checked disabled></td><td><input type="checkbox" disabled></td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="vbox" style="gap:6px;min-width:160px">
+            <span class="cal-lbl" style="font-weight:bold">Account</span>
+            <span class="cal-lbl" style="color:#888;font-size:11px">Parents: 0</span>
+            <span class="cal-lbl" style="color:#1A5276;font-size:11px;font-weight:bold">Children: 6</span>
+            <div style="padding:4px 8px;background:#fff;border:1px solid #9AABBF;border-radius:3px;font-size:11px;line-height:1.8">
+              <div>&rarr; Contact</div><div>&rarr; Opportunity</div><div>&rarr; Custom__c</div>
+              <div>&rarr; Case</div><div>&rarr; Contract</div><div>&rarr; AccountHistory</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Prepare ── -->
+    <div class="m-panel" id="t77-3">
+      <div class="vbox" style="gap:8px">
+        <div class="hbox" style="gap:8px;align-items:center;flex-wrap:wrap">
+          <button class="cal-btn btn-b" data-tip="Extract Salesforce metadata (describe) for all selected objects">1 &mdash; Extract Metadata</button>
+          <button class="cal-btn btn-b" data-tip="Generate SOQL queries based on object relationships">2 &mdash; Generate Relation Queries</button>
+          <button class="cal-btn btn-d">Save limits</button>
+          <button class="cal-btn btn-d">Load limits</button>
+          <button class="cal-btn btn-d">Reload plan</button>
+          <button class="cal-btn btn-o">Add limits</button>
+        </div>
+        <div class="hbox" style="gap:20px;padding:6px 4px">
+          <span class="cal-lbl"><strong>Total:</strong> 1 247 queries</span>
+          <span class="cal-lbl"><strong>Main:</strong> 623</span>
+          <span class="cal-lbl"><strong>Out of list:</strong> 14</span>
+          <span class="cal-lbl"><strong>System:</strong> 0</span>
+        </div>
+        <span class="cal-lbl" style="color:#888;font-size:11px">Start query: SELECT Id FROM Account WHERE Type = 'Customer' LIMIT 100</span>
+        <hr class="hsep">
+        <textarea class="cal-ta" rows="7" readonly>[INFO] Extracting metadata for Account...
+[INFO] Extracting metadata for Contact...
+[INFO] Extracting metadata for Opportunity...
+[INFO] 10 objects processed
+[INFO] Generating relation queries...
+[INFO]   Account -> Contact : 87 relations
+[INFO]   Account -> Opportunity : 34 relations
+[INFO]   Opportunity -> OpportunityLineItem : 102 relations
+[OK]  Plan generated: 1 247 queries total</textarea>
+        <hr class="hsep">
+        <span class="cal-lbl" style="font-weight:bold">Query detail: Account</span>
+        <textarea class="cal-ta" rows="2" readonly>SELECT Id, Name, Type, BillingCity, OwnerId FROM Account WHERE Type = 'Customer' LIMIT 100</textarea>
+      </div>
+    </div>
+
+    <!-- ── Export ── -->
+    <div class="m-panel" id="t77-4">
+      <div class="vbox" style="gap:8px">
+        <div class="hbox" style="gap:8px;align-items:center;flex-wrap:wrap">
+          <button class="cal-btn btn-b" data-tip="Export records from the source org to CSV files">Export Records</button>
+          <button class="cal-btn btn-b" data-tip="Count records only, without exporting">Count Records</button>
+          <span class="cal-lbl" style="color:#888;font-size:11px">Source:</span>
+          <span class="cal-lbl" style="font-weight:bold">myproject_source</span>
+          <div class="spacer"></div>
+          <button class="cal-btn btn-d">Cancel</button>
+          <button class="cal-btn btn-d" data-tip="Verify that exported IDs still exist in the source org">Check IDs</button>
+          <button class="cal-btn btn-d" data-tip="Verify user mapping between source and target orgs">Check Users</button>
+        </div>
+        <span class="cal-lbl" style="color:#27ae60;font-weight:bold">Export completed &mdash; 2026-04-01 14:28:44 &nbsp; (516 records, 8 objects)</span>
+        <div class="tbl-wrap">
+          <table class="cal-tbl">
+            <thead><tr><th style="width:200px">Object</th><th style="width:80px">Records</th><th style="width:70px">Queries</th><th style="width:80px">Duration</th><th>Status</th></tr></thead>
+            <tbody>
+              <tr><td>Account</td><td>25</td><td>1</td><td>0.8 s</td><td style="color:#27ae60">&#10003; Done</td></tr>
+              <tr><td>Contact</td><td>87</td><td>1</td><td>1.2 s</td><td style="color:#27ae60">&#10003; Done</td></tr>
+              <tr><td>Opportunity</td><td>34</td><td>1</td><td>0.6 s</td><td style="color:#27ae60">&#10003; Done</td></tr>
+              <tr><td>OpportunityLineItem</td><td>102</td><td>3</td><td>1.5 s</td><td style="color:#27ae60">&#10003; Done</td></tr>
+              <tr><td>Product2</td><td>12</td><td>1</td><td>0.3 s</td><td style="color:#27ae60">&#10003; Done</td></tr>
+              <tr><td>PricebookEntry</td><td>12</td><td>1</td><td>0.3 s</td><td style="color:#27ae60">&#10003; Done</td></tr>
+              <tr><td>Custom__c</td><td>41</td><td>2</td><td>0.7 s</td><td style="color:#27ae60">&#10003; Done</td></tr>
+              <tr><td>CustomLine__c</td><td>203</td><td>5</td><td>2.1 s</td><td style="color:#27ae60">&#10003; Done</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <textarea class="cal-ta" rows="3" readonly>[INFO] Exporting Account (1/8)... 25 records
+[INFO] Exporting Contact (2/8)... 87 records
+[OK]  Export complete. Total: 516 records across 8 objects.</textarea>
+      </div>
+    </div>
+
+    <!-- ── Automation ── -->
+    <div class="m-panel" id="t77-5">
+      <div class="vbox" style="gap:10px">
+        <div class="hbox" style="gap:8px;align-items:center">
+          <button class="cal-btn btn-b">Check status</button>
+          <span class="cal-lbl" style="color:#888">Target:</span>
+          <span class="cal-lbl" style="font-weight:bold">myproject_sandbox</span>
+        </div>
+        <div style="padding:10px 14px;background:#D5F5E3;border:1px solid #27ae60;border-radius:4px">
+          <span class="cal-lbl" style="color:#1a5226;font-weight:bold">Automations are currently DISABLED on myproject_sandbox</span><br>
+          <span class="cal-lbl" style="color:#888;font-size:11px">Last checked: 2026-04-01 14:23:29</span>
+        </div>
+        <div class="hbox" style="gap:8px;align-items:center">
+          <span class="cal-lbl">Retrieve path:</span>
+          <input class="cal-tf" value="C:/seeding/SmallSandbox/automations" style="flex:1" readonly>
+          <button class="cal-btn btn-d">Open</button>
+        </div>
+        <div class="hbox" style="gap:8px">
+          <button class="cal-btn btn-r" data-tip="Disable all Flows and Process Builders on target org before import">Disable automations</button>
+          <button class="cal-btn btn-g" data-tip="Re-enable automations after import is complete">Re-enable automations</button>
+          <button class="cal-btn btn-d">View log</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Import ── -->
+    <div class="m-panel" id="t77-6">
+      <div class="vbox" style="gap:8px">
+        <div class="hbox" style="gap:8px;align-items:center;flex-wrap:wrap">
+          <button class="cal-btn btn-g" data-tip="Import exported CSV files into the target org">Run Import</button>
+          <span class="cal-lbl" style="color:#888;font-size:11px">Target:</span>
+          <span class="cal-lbl" style="font-weight:bold">myproject_sandbox</span>
+          <div class="spacer"></div>
+          <span class="cal-lbl" style="color:#27ae60;font-weight:bold">Import completed &mdash; 2026-04-01 14:28:45</span>
+        </div>
+        <div class="tbl-wrap">
+          <table class="cal-tbl">
+            <thead><tr><th style="width:200px">Object</th><th style="width:80px">Exported</th><th style="width:80px">Imported</th><th style="width:65px">Skipped</th><th style="width:65px">Errors</th><th>Status</th></tr></thead>
+            <tbody>
+              <tr><td>Account</td><td>25</td><td>25</td><td>0</td><td>0</td><td style="color:#27ae60">&#10003; OK</td></tr>
+              <tr><td>Contact</td><td>87</td><td>85</td><td>0</td><td>2</td><td style="color:#e67e22">&#9888; Partial</td></tr>
+              <tr><td>Opportunity</td><td>34</td><td>34</td><td>0</td><td>0</td><td style="color:#27ae60">&#10003; OK</td></tr>
+              <tr><td>OpportunityLineItem</td><td>102</td><td>102</td><td>0</td><td>0</td><td style="color:#27ae60">&#10003; OK</td></tr>
+              <tr><td>Product2</td><td>12</td><td>0</td><td>12</td><td>0</td><td style="color:#888">&mdash; Already exists</td></tr>
+              <tr><td>PricebookEntry</td><td>12</td><td>0</td><td>12</td><td>0</td><td style="color:#888">&mdash; Already exists</td></tr>
+              <tr><td>Custom__c</td><td>41</td><td>41</td><td>0</td><td>0</td><td style="color:#27ae60">&#10003; OK</td></tr>
+              <tr><td>CustomLine__c</td><td>203</td><td>201</td><td>0</td><td>2</td><td style="color:#e67e22">&#9888; Partial</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <textarea class="cal-ta" rows="4" readonly>[INFO] Importing Account (1/8)... 25/25 inserted
+[INFO] Importing Contact (2/8)... 85/87 inserted, 2 errors
+[WARN] 003Qy000002ABC: REQUIRED_FIELD_MISSING [Email]
+[OK]  Import complete. 488/516 records, 4 errors.</textarea>
+      </div>
+    </div>
+
+    <!-- ── Clean ── -->
+    <div class="m-panel" id="t77-7">
+      <div class="vbox" style="gap:8px">
+        <div class="hbox" style="gap:8px;align-items:center;flex-wrap:wrap">
+          <button class="cal-btn btn-r" data-tip="Delete all seeded records from the target org">Clean org</button>
+          <span class="cal-lbl" style="color:#888;font-size:11px">Target:</span>
+          <span class="cal-lbl" style="font-weight:bold">myproject_sandbox</span>
+          <div class="spacer"></div>
+          <label class="cal-chk"><input type="checkbox" checked disabled> Imported objects only</label>
+          <label class="cal-chk"><input type="checkbox" disabled> Deletable only</label>
+          <label class="cal-chk"><input type="checkbox" disabled> With remaining records</label>
+        </div>
+        <div class="hbox" style="gap:12px;align-items:center;flex-wrap:wrap">
+          <span class="cal-lbl">Error threshold:</span>
+          <input class="cal-tf" value="500" style="width:55px" readonly>
+          <span class="cal-lbl">Created after:</span>
+          <input class="cal-tf" value="2026-04-01T14:23:29.123Z" style="width:215px" readonly>
+          <button class="cal-btn btn-d" data-tip="Set to current timestamp">Now</button>
+          <span class="cal-lbl">Created before:</span>
+          <input class="cal-tf" value="2026-04-01T14:28:45.456Z" style="width:215px" readonly>
+          <button class="cal-btn btn-d" data-tip="Set to current timestamp">Now</button>
+        </div>
+        <div class="tbl-wrap">
+          <table class="cal-tbl">
+            <thead><tr><th style="width:200px">Object</th><th style="width:75px">Before</th><th style="width:75px">After</th><th style="width:70px">Deleted</th><th style="width:70px">Errors</th><th>Status</th></tr></thead>
+            <tbody>
+              <tr><td>CustomLine__c</td><td>203</td><td>0</td><td>203</td><td>0</td><td style="color:#27ae60">&#10003; Done</td></tr>
+              <tr><td>Custom__c</td><td>41</td><td>0</td><td>41</td><td>0</td><td style="color:#27ae60">&#10003; Done</td></tr>
+              <tr><td>OpportunityLineItem</td><td>102</td><td>0</td><td>102</td><td>0</td><td style="color:#27ae60">&#10003; Done</td></tr>
+              <tr><td>Opportunity</td><td>34</td><td>0</td><td>34</td><td>0</td><td style="color:#27ae60">&#10003; Done</td></tr>
+              <tr><td>Contact</td><td>87</td><td>2</td><td>85</td><td>2</td><td style="color:#e67e22">&#9888; Partial</td></tr>
+              <tr><td>Account</td><td>25</td><td>0</td><td>25</td><td>0</td><td style="color:#27ae60">&#10003; Done</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── IDs Export ── -->
+    <div class="m-panel" id="t77-8">
+      <div class="vbox" style="gap:8px">
+        <div class="hbox" style="gap:8px;align-items:center">
+          <button class="cal-btn btn-d">Reload</button>
+          <span class="cal-lbl" style="color:#27ae60">oldNewIds.csv &mdash; 516 mappings loaded</span>
+        </div>
+        <div class="tbl-wrap">
+          <table class="cal-tbl">
+            <thead><tr><th style="width:200px">Old ID (source)</th><th style="width:200px">New ID (target)</th><th style="width:150px">Object</th></tr></thead>
+            <tbody>
+              <tr><td style="font-family:monospace;font-size:10px">001Qy000001AAAAIAA</td><td style="font-family:monospace;font-size:10px">001Qy000009XXXXIAA</td><td>Account</td></tr>
+              <tr><td style="font-family:monospace;font-size:10px">001Qy000001BBBBIAA</td><td style="font-family:monospace;font-size:10px">001Qy000009YYYYIAA</td><td>Account</td></tr>
+              <tr><td style="font-family:monospace;font-size:10px">003Qy000002CCCCIAA</td><td style="font-family:monospace;font-size:10px">003Qy000009ZZZZIAA</td><td>Contact</td></tr>
+              <tr><td style="font-family:monospace;font-size:10px">003Qy000002DDDDIAA</td><td style="font-family:monospace;font-size:10px">003Qy000009WWWWIAA</td><td>Contact</td></tr>
+              <tr><td colspan="3" style="color:#888;text-align:center;font-style:italic;font-size:11px">&#8230; 512 more rows &#8230;</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Debug Import ── -->
+    <div class="m-panel" id="t77-9">
+      <div class="vbox" style="gap:8px">
+        <div class="hbox" style="gap:8px;align-items:center">
+          <button class="cal-btn btn-d">Load oldNewIds</button>
+          <button class="cal-btn btn-d">Load User Remap</button>
+          <span class="cal-lbl" style="color:#27ae60">516 ID mappings loaded</span>
+        </div>
+        <div class="hbox" style="gap:8px;align-items:center">
+          <span class="cal-lbl">Filter by ID:</span>
+          <input class="cal-tf" placeholder="Filter by ID (old or new)..." style="width:280px" readonly>
+        </div>
+        <div class="tbl-wrap">
+          <table class="cal-tbl">
+            <thead><tr><th style="width:120px">Object</th><th style="width:170px">Old ID</th><th style="width:170px">New ID</th><th>Error</th></tr></thead>
+            <tbody>
+              <tr><td>Contact</td><td style="font-family:monospace;font-size:10px">003Qy000002EEEEIAA</td><td style="color:#E74C3C;font-style:italic">not imported</td><td style="color:#E74C3C;font-size:11px">REQUIRED_FIELD_MISSING: Email</td></tr>
+              <tr><td>Contact</td><td style="font-family:monospace;font-size:10px">003Qy000002FFFFIAA</td><td style="color:#E74C3C;font-style:italic">not imported</td><td style="color:#E74C3C;font-size:11px">REQUIRED_FIELD_MISSING: Email</td></tr>
+              <tr><td>CustomLine__c</td><td style="font-family:monospace;font-size:10px">a0BQy00000GGGGIAA</td><td style="color:#E74C3C;font-style:italic">not imported</td><td style="color:#E74C3C;font-size:11px">FIELD_INTEGRITY_EXCEPTION: Related record deleted</td></tr>
+              <tr><td>CustomLine__c</td><td style="font-family:monospace;font-size:10px">a0BQy00000HHHH1AA</td><td style="color:#E74C3C;font-style:italic">not imported</td><td style="color:#E74C3C;font-size:11px">FIELD_INTEGRITY_EXCEPTION: Related record deleted</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+</div>
+</div>
+<script>
+function sw(id,idx){
+  var tp=document.getElementById(id);
+  tp.querySelectorAll('.m-tab').forEach(function(t,i){t.classList.toggle('act',i===idx)});
+  tp.querySelectorAll('.m-panel').forEach(function(p,i){p.classList.toggle('act',i===idx)});
+}
+</script>
+</body>
+</html>

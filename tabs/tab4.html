@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Change Tracker — Calumet</title>
+<link rel="stylesheet" href="../shared.css">
+</head>
+<body class="tab-page">
+<div class="sum">
+  <div class="sum-title">
+    <h2>Change Tracker</h2>
+    <span class="sum-badge">Tab 4</span>
+  </div>
+  <p class="sum-desc">Track metadata changes in the org. Compare the current state with a saved snapshot to detect modifications.</p>
+</div>
+<div class="mockup-wrap">
+  <div class="mockup"><div class="vbox" style="gap:0px"><div class="anchor"><div class="hbox" style="gap:0px;align-items:center"><div class="vbox" style="gap:4.0px"><div class="grid-pane"><span class="cal-lbl">Start Date</span><span class="cal-lbl">End Date</span><input class="cal-tf" placeholder="Date..." readonly><input class="cal-tf" placeholder="Date..." readonly><input class="cal-tf" placeholder="HH" style="width:32.0px;" readonly><input class="cal-tf" placeholder="HH" style="width:32.0px;" readonly><input class="cal-tf" placeholder="MM" style="width:32.0px;" readonly><input class="cal-tf" placeholder="MM" style="width:32.0px;" readonly><input class="cal-tf" placeholder="ss" style="width:32.0px;" readonly><input class="cal-tf" placeholder="ss" style="width:32.0px;" readonly></div><hr class="hsep"><div class="vbox" style="gap:0px"><div class="anchor"><span class="cal-lbl">User</span><input class="cal-tf" placeholder="" style="width:215.0px;" readonly><label class="cal-chk"><input type="checkbox" disabled> Retrieve your only modification</label><label class="cal-chk"><input type="checkbox" checked disabled> Exclude metaData from managed package</label><label class="cal-chk"><input type="checkbox" disabled> Extract EmailTemplate/Report modifications</label><button class="cal-btn btn-b">Extract</button><button class="cal-btn btn-d">Open csv file</button><label class="cal-chk"><input type="checkbox" disabled> useCache</label><button class="cal-btn btn-d">Choose Metadatas</button><label class="cal-chk"><input type="checkbox" disabled> retrieve CustomMetadata</label><label class="cal-chk"><input type="checkbox" disabled> useCache</label></div><div class="anchor"><button class="cal-btn btn-b">Extract</button><label class="cal-chk"><input type="checkbox" checked disabled> Only your modification</label></div></div></div><div class="m-tabpane" id="tp20"><div class="m-tabbar"><div class="m-tab act" onclick="sw('tp20',0)">Metadata(0)</div><div class="m-tab" onclick="sw('tp20',1)">Conflicts</div><div class="m-tab" onclick="sw('tp20',2)">CustomSettings (0)</div><div class="m-tab" onclick="sw('tp20',3)">Profiles (0)</div><div class="m-tab" onclick="sw('tp20',4)">Layout Assignments (0)</div></div><div class="m-body"><div class="m-panel act" id="tp20-0"><div class="anchor"><div class="tbl-wrap"><table class="cal-tbl"><thead><tr><th style="width:130.0px">Type</th><th style="width:250.0px">Name</th><th style="width:200.0px">Parent</th><th>LastModifiedDate</th><th style="width:150.0px">ModifiedBy</th></tr></thead><tbody><tr><td colspan="20" class="tbl-empty"></td></tr></tbody></table></div></div></div><div class="m-panel" id="tp20-1"><div class="anchor"><span class="cal-lbl">Warning: the following classes have also been modified by someone else.</span><div class="tbl-wrap"><table class="cal-tbl"><thead><tr><th style="width:111.0px">Type</th><th style="width:250.0px">Object</th><th style="width:146.0px">Modified By</th><th style="width:180.0px">Last Date</th></tr></thead><tbody><tr><td colspan="20" class="tbl-empty"></td></tr></tbody></table></div></div></div><div class="m-panel" id="tp20-2"><div class="anchor"><div class="tbl-wrap"><table class="cal-tbl"><thead><tr><th style="width:200.0px">CustomSetting</th><th style="width:200.0px">InstanceName</th><th style="width:150.0px">ModifiedBy</th><th style="width:150.0px">LastModifiedDate</th></tr></thead><tbody><tr><td colspan="20" class="tbl-empty"></td></tr></tbody></table></div></div></div><div class="m-panel" id="tp20-3"><div class="anchor"><div class="tbl-wrap"><table class="cal-tbl"><thead><tr><th style="width:140.0px">Profile</th><th style="width:140.0px">Parent</th><th style="width:140.0px">ObjectLabel</th><th style="width:100.0px">Type</th><th style="width:140.0px">ModifiedBy</th><th>LastModifiedDate</th><th style="width:120.0px">Old Value</th><th style="width:120.0px">New Value</th></tr></thead><tbody><tr><td colspan="20" class="tbl-empty"></td></tr></tbody></table></div></div></div><div class="m-panel" id="tp20-4"><div class="anchor"><span class="cal-lbl">Layout assignments changed — they will be added to the profile during retrieve if selected.</span><button class="cal-btn btn-d">Remove selected</button><div class="tbl-wrap"><table class="cal-tbl"><thead><tr><th style="width:130.0px">Profile</th><th style="width:130.0px">Object</th><th style="width:130.0px">RecordType</th><th style="width:150.0px">Old Layout</th><th style="width:150.0px">New Layout</th><th style="width:130.0px">LastModifyBy</th><th>LastModifyDate</th></tr></thead><tbody><tr><td colspan="20" class="tbl-empty"></td></tr></tbody></table></div></div></div></div></div></div></div></div></div>
+</div>
+<script>
+function sw(id,idx){
+  var tp=document.getElementById(id);
+  tp.querySelectorAll('.m-tab').forEach(function(t,i){t.classList.toggle('act',i===idx)});
+  tp.querySelectorAll('.m-panel').forEach(function(p,i){p.classList.toggle('act',i===idx)});
+}
+</script>
+</body>
+</html>

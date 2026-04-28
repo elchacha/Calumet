@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Event Log — Calumet</title>
+<link rel="stylesheet" href="../shared.css">
+</head>
+<body class="tab-page">
+<div class="sum">
+  <div class="sum-title">
+    <h2>Event Log</h2>
+    <span class="sum-badge">Tab 74</span>
+  </div>
+  <p class="sum-desc">Query and analyse Salesforce Event Log File data to monitor user activity and performance.</p>
+</div>
+<div class="mockup-wrap">
+  <div class="mockup"><div class="vbox" style="gap:0px"><div class="anchor"><div class="hbox" style="gap:8.0px;align-items:center"><button class="cal-btn btn-b" data-tip="Query all objects to find their last creation and modification dates (may take several minutes on large orgs)">Analyse</button><div class="vsep"></div><label class="cal-chk" data-tip="Hide Active objects — show only stale and empty ones"><input type="checkbox" disabled> Show stale only</label><div class="vsep"></div><label class="cal-chk" data-tip="Show only custom objects (QualifiedApiName contains __)"><input type="checkbox" disabled> Hide standard objects</label><div class="vsep"></div><label class="cal-chk" data-tip="Hide objects belonging to a managed package (NamespacePrefix is non-empty)"><input type="checkbox" disabled> Hide Managed Objects</label><div class="vsep"></div><span class="cal-lbl">Filter</span><input class="cal-tf" placeholder="object name…" data-tip="Filter results by object name (contains, case-insensitive)" style="width:200.0px;" readonly></div><div class="hbox" style="gap:0px;align-items:center"></div><div class="hbox" style="gap:16.0px;align-items:center"><div class="vsep"></div><div class="vsep"></div><div class="vsep"></div></div><div class="tbl-wrap"><table class="cal-tbl"><thead><tr><th style="width:220.0px">Object</th><th style="width:110.0px">Total Records</th><th style="width:120.0px">Last Created</th><th style="width:120.0px">Last Modified</th><th style="width:110.0px">Days inactive</th><th style="width:110.0px">Status</th></tr></thead><tbody><tr><td colspan="20" class="tbl-empty"></td></tr></tbody></table></div></div></div></div>
+</div>
+<script>
+function sw(id,idx){
+  var tp=document.getElementById(id);
+  tp.querySelectorAll('.m-tab').forEach(function(t,i){t.classList.toggle('act',i===idx)});
+  tp.querySelectorAll('.m-panel').forEach(function(p,i){p.classList.toggle('act',i===idx)});
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Permission Sets — Calumet</title>
+<link rel="stylesheet" href="../shared.css">
+</head>
+<body class="tab-page">
+<div class="sum">
+  <div class="sum-title">
+    <h2>Permission Sets</h2>
+    <span class="sum-badge">Tab 49</span>
+  </div>
+  <p class="sum-desc">Analyse permission sets: view object/field access granted per permission set and user assignments.</p>
+</div>
+<div class="mockup-wrap">
+  <div class="mockup"><div class="vbox" style="gap:0px"><div class="anchor"><span class="cal-lbl">User Name</span><div class="m-tabpane" id="tp23"><div class="m-tabbar"><div class="m-tab act" onclick="sw('tp23',0)">Objects</div><div class="m-tab" onclick="sw('tp23',1)">Sharing</div></div><div class="m-body"><div class="m-panel act" id="tp23-0"><div class="anchor"><div class="tbl-wrap"><table class="cal-tbl"><thead><tr><th>Object Name</th><th>Create</th><th>Read</th><th>Edit</th><th>Delete</th><th>View All</th><th>Edit All</th></tr></thead><tbody><tr><td colspan="20" class="tbl-empty"></td></tr></tbody></table></div></div></div><div class="m-panel" id="tp23-1"><div class="anchor"><div class="tbl-wrap"><table class="cal-tbl"><thead><tr><th>Object Name</th><th>Sharing Rule Name</th><th>Access Level</th><th>Criteria</th><th>Reason</th></tr></thead><tbody><tr><td colspan="20" class="tbl-empty"></td></tr></tbody></table></div></div></div></div></div><button class="cal-btn btn-d">search</button><span class="cal-lbl">Please choose a user</span><button class="cal-btn btn-d">Manage Object Filter</button></div></div></div>
+</div>
+<script>
+function sw(id,idx){
+  var tp=document.getElementById(id);
+  tp.querySelectorAll('.m-tab').forEach(function(t,i){t.classList.toggle('act',i===idx)});
+  tp.querySelectorAll('.m-panel').forEach(function(p,i){p.classList.toggle('act',i===idx)});
+}
+</script>
+</body>
+</html>

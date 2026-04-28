@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Roll Back — Calumet</title>
+<link rel="stylesheet" href="../shared.css">
+</head>
+<body class="tab-page">
+<div class="sum">
+  <div class="sum-title">
+    <h2>Roll Back</h2>
+    <span class="sum-badge">Tab 5</span>
+  </div>
+  <p class="sum-desc">Restore previously saved metadata snapshots to revert org changes quickly and safely.</p>
+</div>
+<div class="mockup-wrap">
+  <div class="mockup"><div class="vbox" style="gap:0px"><div class="anchor"><div class="m-tabpane" id="tp24"><div class="m-tabbar"><div class="m-tab act" onclick="sw('tp24',0)">Restore</div><div class="m-tab" onclick="sw('tp24',1)">Delete</div><div class="m-tab" onclick="sw('tp24',2)">Unknown</div><div class="m-tab" onclick="sw('tp24',3)">ProfileNotClean(0)</div></div><div class="m-body"><div class="m-panel act" id="tp24-0"><div class="anchor"><span class="cal-lbl">Members : 0</span><button class="cal-btn btn-d">See All</button><button class="cal-btn btn-d">Hide All</button></div></div><div class="m-panel" id="tp24-1"><div class="anchor"><span class="cal-lbl">Members : 0</span><button class="cal-btn btn-d">See All</button><button class="cal-btn btn-d">Hide All</button></div></div><div class="m-panel" id="tp24-2"><div class="anchor"><div class="cal-listview"></div></div></div><div class="m-panel" id="tp24-3"><div class="anchor"><div class="cal-listview"></div></div></div></div></div><button class="cal-btn btn-d">Restore backup</button><button class="cal-btn btn-d">RollBack prep</button><button class="cal-btn btn-d">Launch deletion</button><span class="cal-lbl">info</span><button class="cal-btn btn-d">clear</button><button class="cal-btn btn-d">clear</button></div></div></div>
+</div>
+<script>
+function sw(id,idx){
+  var tp=document.getElementById(id);
+  tp.querySelectorAll('.m-tab').forEach(function(t,i){t.classList.toggle('act',i===idx)});
+  tp.querySelectorAll('.m-panel').forEach(function(p,i){p.classList.toggle('act',i===idx)});
+}
+</script>
+</body>
+</html>

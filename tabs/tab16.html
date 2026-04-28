@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Relations — Calumet</title>
+<link rel="stylesheet" href="../shared.css">
+</head>
+<body class="tab-page">
+<div class="sum">
+  <div class="sum-title">
+    <h2>Relations</h2>
+    <span class="sum-badge">Tab 16</span>
+  </div>
+  <p class="sum-desc">Visualise object relationships: lookup, master-detail and hierarchical links between SObjects.</p>
+</div>
+<div class="mockup-wrap">
+  <div class="mockup"><div class="vbox" style="gap:0px"><div class="anchor"><button class="cal-btn btn-b">Extract</button><span class="cal-lbl">Object to query</span><div class="tbl-wrap"><table class="cal-tbl"><thead><tr><th style="width:80.0px">Relation</th><th>Object type</th><th>Object Label</th><th>Relation name</th><th>Field name</th><th>CD</th><th>RD</th><th style="width:150.0px">Type</th></tr></thead><tbody><tr><td colspan="20" class="tbl-empty"></td></tr></tbody></table></div><label class="cal-chk"><input type="checkbox" disabled> Hide parent Relations</label><label class="cal-chk"><input type="checkbox" disabled> Hide child Relations</label><span class="cal-lbl">CD : Cascade delete    RD : Restricted delete</span><select class="cal-cb" style="width:253.0px;"><option class="ph">Select...</option></select><button class="cal-btn btn-d">Export</button><label class="cal-chk"><input type="checkbox" checked disabled> hide Standard User Relations</label><label class="cal-chk"><input type="checkbox" checked disabled> hide standard Relations</label></div></div></div>
+</div>
+<script>
+function sw(id,idx){
+  var tp=document.getElementById(id);
+  tp.querySelectorAll('.m-tab').forEach(function(t,i){t.classList.toggle('act',i===idx)});
+  tp.querySelectorAll('.m-panel').forEach(function(p,i){p.classList.toggle('act',i===idx)});
+}
+</script>
+</body>
+</html>
