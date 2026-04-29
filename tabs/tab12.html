@@ -56,13 +56,27 @@
   cursor:pointer;border:1px solid #c03a2b;font-family:inherit;white-space:nowrap
 }
 
-/* inline Select * config doc panel */
-.star-doc-panel{
-  display:none;background:#fffbe6;border:1px solid #f0c040;border-radius:4px;
-  padding:10px 14px;margin-top:4px;font-size:11px;color:#3d2f00;line-height:1.6
-}
-.star-doc-panel.show{display:block}
-.star-doc-panel strong{color:#7a5000}
+/* Select * config modal */
+#star-cfg-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:300;
+  align-items:center;justify-content:center}
+#star-cfg-modal.show{display:flex}
+.star-cfg-box{background:#fff;border:1px solid #9AABBF;border-radius:6px;padding:18px 22px;
+  width:540px;max-width:96vw;box-shadow:0 8px 32px rgba(0,0,0,.3);max-height:90vh;overflow-y:auto}
+.star-cfg-box h3{font-size:14px;font-weight:700;color:#1A5276;margin-bottom:10px}
+.star-cfg-tbl{width:100%;border-collapse:collapse;font-size:11px;margin-bottom:4px}
+.star-cfg-tbl th{background:#b8d5e3;color:#1A5276;font-weight:700;padding:4px 8px;
+  text-align:left;border-right:1px solid #9AABBF;white-space:nowrap}
+.star-cfg-tbl th:last-child{border-right:none}
+.star-cfg-tbl td{padding:3px 6px;border-top:1px solid #d8e8f0;vertical-align:middle}
+.field-cell{cursor:default;min-width:200px}
+.field-cell.editing{background:#fffbe6}
+.field-cell input{border:1px solid #7aabcf;border-radius:3px;font-size:11px;
+  padding:1px 5px;width:100%;font-family:inherit;box-sizing:border-box}
+.cfg-btn{padding:2px 8px;border-radius:3px;font-size:11px;font-weight:700;cursor:pointer;
+  border:1px solid #9AABBF;background:#E8EEF2;color:#2C3E50;font-family:inherit;white-space:nowrap}
+.cfg-btn-r{background:#E74C3C;color:#fff;border-color:#c03a2b}
+.cfg-btn-r:hover{background:#c0392b}
+.cfg-legend{font-size:10px;color:#555;font-style:italic;margin-top:4px;margin-bottom:8px}
 
 /* status row */
 .status-bar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;
@@ -184,22 +198,7 @@
           <button class="cal-btn btn-d" data-tip="Open the saved query folder">Open query folder</button>
           <button class="cal-btn btn-d" data-tip="Reload the saved query list">Refresh list</button>
           <button class="btn-blink-red" data-tip="Configure priority columns for SELECT * queries"
-                  onclick="toggleStarDoc()">Select * config</button>
-        </div>
-
-        <!-- Select * config inline doc panel -->
-        <div class="star-doc-panel" id="starDocPanel">
-          <strong>What does Select * config do?</strong><br>
-          When you run <code>SELECT * FROM ObjectName</code>, Calumet replaces <code>*</code> with
-          <em>all fields</em> returned by the describe API — but reorders the result columns so your
-          <strong>priority fields</strong> always appear first, regardless of the API order.<br><br>
-          <strong>How to use it:</strong> open this dialog, pick an object (e.g. <em>Account</em>),
-          then drag fields into the priority list. On the next <code>SELECT *</code> execution,
-          those columns will be shown in the leftmost positions of the result table.<br><br>
-          <em>Priority fields are also highlighted with a blue header (&#9733; marker) in the result table.</em>
-          <div style="margin-top:8px">
-            <button class="cal-btn btn-d" onclick="toggleStarDoc()">Close</button>
-          </div>
+                  onclick="openStarConfig('account')">Select * config</button>
         </div>
 
         <!-- status + filter row -->
@@ -336,22 +335,7 @@
           <button class="cal-btn btn-d" data-tip="Open the saved query folder">Open query folder</button>
           <button class="cal-btn btn-d" data-tip="Reload the saved query list">Refresh list</button>
           <button class="btn-blink-red" data-tip="Configure priority columns for SELECT * queries"
-                  onclick="toggleStarDoc2()">Select * config</button>
-        </div>
-
-        <!-- Select * config inline doc panel (opportunity tab copy) -->
-        <div class="star-doc-panel" id="starDocPanel2">
-          <strong>What does Select * config do?</strong><br>
-          When you run <code>SELECT * FROM ObjectName</code>, Calumet replaces <code>*</code> with
-          <em>all fields</em> returned by the describe API — but reorders the result columns so your
-          <strong>priority fields</strong> always appear first, regardless of the API order.<br><br>
-          <strong>How to use it:</strong> open this dialog, pick an object (e.g. <em>Opportunity</em>),
-          then drag fields into the priority list. On the next <code>SELECT *</code> execution,
-          those columns will be shown in the leftmost positions of the result table.<br><br>
-          <em>Priority fields are also highlighted with a blue header (&#9733; marker) in the result table.</em>
-          <div style="margin-top:8px">
-            <button class="cal-btn btn-d" onclick="toggleStarDoc2()">Close</button>
-          </div>
+                  onclick="openStarConfig('opportunity')">Select * config</button>
         </div>
 
         <!-- status + filter row -->
@@ -472,6 +456,42 @@
   </div><!-- end mockup -->
 </div><!-- end mockup-wrap -->
 
+<!-- ── Select * config modal ── -->
+<div id="star-cfg-modal" onclick="if(event.target===this)closeStarConfig()">
+  <div class="star-cfg-box">
+    <h3>Select * config &mdash; Priority Fields</h3>
+    <div class="hbox" style="gap:8px;align-items:center;margin-bottom:10px">
+      <span class="cal-lbl">Object:</span>
+      <select class="cal-cb" id="star-obj-sel" style="width:210px" onchange="loadObjFields()">
+        <option value="account">Account</option>
+        <option value="opportunity">Opportunity</option>
+        <option value="contact">Contact</option>
+        <option value="lead">Lead</option>
+      </select>
+    </div>
+    <table class="star-cfg-tbl">
+      <thead>
+        <tr>
+          <th style="width:28px;text-align:center">#</th>
+          <th>Field Name</th>
+          <th style="width:68px;text-align:center">Remove</th>
+          <th style="width:36px;text-align:center">&#11014;</th>
+          <th style="width:36px;text-align:center">&#11015;</th>
+        </tr>
+      </thead>
+      <tbody id="star-field-body"></tbody>
+    </table>
+    <div class="cfg-legend">&#128161; Double-click a cell to edit it</div>
+    <div class="hbox" style="gap:6px;align-items:center;margin-top:4px">
+      <input class="cal-tf" id="star-add-input" placeholder="Field name to add..." style="width:200px"
+             onkeydown="if(event.key==='Enter')addCfgField()">
+      <button class="cfg-btn" onclick="addCfgField()">Add</button>
+      <div class="spacer"></div>
+      <button class="cal-btn btn-d" onclick="closeStarConfig()">Close</button>
+    </div>
+  </div>
+</div>
+
 <script>
 function sw(id,idx){
   var tp=document.getElementById(id);
@@ -480,25 +500,98 @@ function sw(id,idx){
 }
 
 function qsw(name){
-  document.querySelectorAll('.q-tab').forEach(function(t){
-    t.classList.remove('act');
-  });
-  document.querySelectorAll('.q-panel').forEach(function(p){
-    p.classList.remove('act');
-  });
-  var tab = document.getElementById('qt-'+name);
-  var panel = document.getElementById('qp-'+name);
-  if(tab) tab.classList.add('act');
-  if(panel) panel.classList.add('act');
+  document.querySelectorAll('.q-tab').forEach(function(t){t.classList.remove('act')});
+  document.querySelectorAll('.q-panel').forEach(function(p){p.classList.remove('act')});
+  var tab=document.getElementById('qt-'+name);
+  var panel=document.getElementById('qp-'+name);
+  if(tab)tab.classList.add('act');
+  if(panel)panel.classList.add('act');
 }
 
-function toggleStarDoc(){
-  var p = document.getElementById('starDocPanel');
-  p.classList.toggle('show');
+/* ── Select * config modal ── */
+var starData={
+  account:  ['Id','Name','AccountSource','Account_Data_Quality__c','Account_Region__c','Account_UID__c'],
+  opportunity:['Id','Name','StageName','CloseDate','Amount','AccountId','OwnerId'],
+  contact:  ['Id','LastName','FirstName','Email','Phone','AccountId'],
+  lead:     ['Id','LastName','FirstName','Company','Status','Email']
+};
+
+function openStarConfig(obj){
+  var sel=document.getElementById('star-obj-sel');
+  if(obj&&sel.querySelector('option[value="'+obj+'"]')) sel.value=obj;
+  renderCfgTable();
+  document.getElementById('star-cfg-modal').classList.add('show');
 }
-function toggleStarDoc2(){
-  var p = document.getElementById('starDocPanel2');
-  p.classList.toggle('show');
+function closeStarConfig(){
+  document.getElementById('star-cfg-modal').classList.remove('show');
+}
+function loadObjFields(){ renderCfgTable(); }
+
+function renderCfgTable(){
+  var obj=document.getElementById('star-obj-sel').value;
+  var fields=starData[obj]||[];
+  var tbody=document.getElementById('star-field-body');
+  tbody.innerHTML='';
+  fields.forEach(function(f,i){
+    var tr=document.createElement('tr');
+    tr.innerHTML=
+      '<td style="text-align:center;color:#888;font-size:10px">'+(i+1)+'</td>'+
+      '<td class="field-cell" ondblclick="editCfgCell(this)">'+escHtml(f)+'</td>'+
+      '<td style="text-align:center"><button class="cfg-btn cfg-btn-r" onclick="removeCfgField('+i+')">Remove</button></td>'+
+      '<td style="text-align:center"><button class="cfg-btn" title="Move up" onclick="moveCfgField('+i+',-1)">&#11014;</button></td>'+
+      '<td style="text-align:center"><button class="cfg-btn" title="Move down" onclick="moveCfgField('+i+',1)">&#11015;</button></td>';
+    tbody.appendChild(tr);
+  });
+}
+
+function escHtml(s){
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function editCfgCell(td){
+  if(td.querySelector('input')) return;
+  var val=td.textContent.trim();
+  td.classList.add('editing');
+  var inp=document.createElement('input');
+  inp.type='text'; inp.value=val;
+  inp.onblur=function(){ saveCfgCell(inp,td); };
+  inp.onkeydown=function(e){ if(e.key==='Enter')inp.blur(); if(e.key==='Escape'){td.classList.remove('editing');td.textContent=val;} };
+  td.textContent='';
+  td.appendChild(inp);
+  inp.focus(); inp.select();
+}
+
+function saveCfgCell(inp,td){
+  var obj=document.getElementById('star-obj-sel').value;
+  var row=td.parentElement.rowIndex-1;
+  starData[obj][row]=inp.value.trim()||starData[obj][row];
+  td.classList.remove('editing');
+  renderCfgTable();
+}
+
+function removeCfgField(idx){
+  var obj=document.getElementById('star-obj-sel').value;
+  starData[obj].splice(idx,1);
+  renderCfgTable();
+}
+
+function moveCfgField(idx,dir){
+  var obj=document.getElementById('star-obj-sel').value;
+  var arr=starData[obj];
+  var j=idx+dir;
+  if(j<0||j>=arr.length) return;
+  var tmp=arr[idx]; arr[idx]=arr[j]; arr[j]=tmp;
+  renderCfgTable();
+}
+
+function addCfgField(){
+  var inp=document.getElementById('star-add-input');
+  var val=inp.value.trim();
+  if(!val) return;
+  var obj=document.getElementById('star-obj-sel').value;
+  (starData[obj]=starData[obj]||[]).push(val);
+  inp.value='';
+  renderCfgTable();
 }
 </script>
 </body>
