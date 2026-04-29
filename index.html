@@ -66,7 +66,13 @@ document.getElementById('pane').addEventListener('load',function(){
     var doc=this.contentDocument;
     var sum=doc.querySelector('.sum');
     var panel=document.getElementById('desc-panel');
-    if(sum){panel.innerHTML=sum.innerHTML}else{panel.innerHTML=''}
+    if(sum){panel.innerHTML=sum.innerHTML;sum.style.display='none';}else{panel.innerHTML='';}
+    var s=doc.createElement('style');
+    s.textContent='.scr-gallery,.scr-card,.scr-caption,.scr-grid,.scr-item,.scr-section,'
+      +'.screenshot-block,.screenshot-cap,.screenshot-caption,.screenshot-section,.screenshot-wrap'
+      +'{display:none!important}'
+      +'img[src*="screenshot"]{display:none!important}';
+    doc.head.appendChild(s);
     this.contentWindow.scrollTo(0,0);
   }catch(e){}
 });
