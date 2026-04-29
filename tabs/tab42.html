@@ -42,16 +42,10 @@
   font-size:10.5px;color:#555;padding:4px 0;
 }
 
-/* screenshot section */
-.scr-section { padding:24px 28px;border-bottom:1px solid var(--sborder); }
 .scr-section h3 { font-size:13px;font-weight:700;color:var(--smut);
   text-transform:uppercase;letter-spacing:.8px;margin-bottom:14px; }
-.scr-grid { display:flex;flex-direction:column;gap:20px; }
-.scr-item { display:flex;flex-direction:column;gap:8px; }
 .scr-item img { width:100%;border:1px solid var(--sborder);border-radius:6px;
   box-shadow:0 2px 12px rgba(0,0,0,.35); }
-.scr-caption { font-size:11px;color:var(--smut);font-style:italic; }
-
 /* feature list */
 .feat-list { list-style:none;display:flex;flex-direction:column;gap:6px; }
 .feat-list li { font-size:12.5px;color:#a8b4c8;line-height:1.6;padding-left:16px;position:relative; }
@@ -100,23 +94,16 @@
   </ul>
 </div>
 
-<!-- ── Screenshots ── -->
 <div class="scr-section">
   <h3>Screenshots</h3>
   <div class="scr-grid">
     <div class="scr-item">
-      <img src="../screenshot/tab42-FlexiPages/aYaLxAaVbo.png"
-           alt="Profile Overrides tab showing FlexiPage assignments per profile and record type">
       <span class="scr-caption">Profile Overrides — each row is a profile/action/record-type override. The FD badge shows the legacy component count for that Lightning page. Blue "View" action badges indicate the page is shown on the record view action.</span>
     </div>
     <div class="scr-item">
-      <img src="../screenshot/tab42-FlexiPages/MuhHox4pww.png"
-           alt="FlexiPages tab with FD and CL scores and the Layout Dependencies side panel">
       <span class="scr-caption">FlexiPages tab — the main table lists every Lightning page with its FD and CL scores. Selecting a row populates the Layout Dependencies panel on the right with the names of all Classic layouts still referenced.</span>
     </div>
     <div class="scr-item">
-      <img src="../screenshot/tab42-FlexiPages/kM6upLbaLP.png"
-           alt="Flexi Unused tab listing unassigned Lightning pages">
       <span class="scr-caption">Flexi Unused — Lightning pages that are not assigned to any profile or Lightning app. The Object Related column links the page back to its Salesforce object, making cleanup straightforward.</span>
     </div>
   </div>
