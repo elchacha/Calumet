@@ -1,0 +1,1 @@
+Place screenshots for tab64-ComparePermissionSet in this directory.

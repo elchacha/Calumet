@@ -1,0 +1,1 @@
+Place screenshots for tab60-ObjectLimits in this directory.

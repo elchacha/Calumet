@@ -1,0 +1,1 @@
+Place screenshots for tab7-SharingSettings in this directory.

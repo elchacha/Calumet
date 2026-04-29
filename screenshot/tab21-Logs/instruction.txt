@@ -1,0 +1,1 @@
+Place screenshots for tab21-Logs in this directory.

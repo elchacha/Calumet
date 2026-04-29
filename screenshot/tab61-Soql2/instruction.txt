@@ -1,0 +1,1 @@
+Place screenshots for tab61-Soql2 in this directory.

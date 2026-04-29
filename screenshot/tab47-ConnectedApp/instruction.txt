@@ -1,0 +1,1 @@
+Place screenshots for tab47-ConnectedApp in this directory.

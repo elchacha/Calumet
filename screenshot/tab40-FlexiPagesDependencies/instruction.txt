@@ -1,0 +1,1 @@
+Place screenshots for tab40-FlexiPagesDependencies in this directory.

@@ -1,0 +1,1 @@
+Place screenshots for tab12-Soql in this directory.

@@ -1,0 +1,1 @@
+Place screenshots for tab78-CustomAppDiff in this directory.

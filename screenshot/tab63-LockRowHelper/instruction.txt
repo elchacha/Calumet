@@ -1,0 +1,1 @@
+Place screenshots for tab63-LockRowHelper in this directory.

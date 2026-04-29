@@ -1,0 +1,1 @@
+Place screenshots for tab73-UserAccessComparison in this directory.

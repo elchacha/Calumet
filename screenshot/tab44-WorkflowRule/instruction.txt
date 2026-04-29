@@ -1,0 +1,1 @@
+Place screenshots for tab44-WorkflowRule in this directory.
