@@ -3,25 +3,395 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>SOQL Counter — Calumet</title>
+<title>Picklists — Calumet</title>
 <link rel="stylesheet" href="../shared.css">
+<style>
+  .badge-default{
+    display:inline-block;background:#27ae60;color:#fff;
+    padding:2px 8px;border-radius:10px;font-size:10px;font-weight:700;
+    white-space:nowrap;
+  }
+  .warn-bar{
+    background:#fff8e1;border:1px solid #f0c040;border-radius:3px;
+    padding:5px 10px;font-size:11px;color:#7a5800;
+  }
+  .field-tabs{
+    display:flex;flex-wrap:wrap;gap:2px;border-bottom:1px solid #9AABBF;
+    background:#D8E6EE;padding:4px 4px 0 4px;
+  }
+  .field-tab{
+    padding:4px 11px;cursor:pointer;font-size:10px;font-weight:700;
+    color:#2C3E50;border:1px solid transparent;border-bottom:none;
+    border-radius:3px 3px 0 0;background:#c8dae6;white-space:nowrap;
+    user-select:none;
+  }
+  .field-tab:hover{background:#b8cdd8;}
+  .field-tab.act{background:#F8F8F8;color:#1A5276;border-color:#9AABBF;
+    border-bottom-color:#F8F8F8;margin-bottom:-1px;z-index:1;}
+  .field-panel{display:none;padding:0;}
+  .field-panel.act{display:block;}
+  .screenshot-wrap{
+    margin:14px 0 4px 0;border:1px solid #9AABBF;border-radius:4px;
+    overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.15);
+  }
+  .screenshot-wrap img{display:block;width:100%;height:auto;}
+  .screenshot-cap{
+    background:#D8E6EE;border-top:1px solid #9AABBF;
+    padding:5px 10px;font-size:10px;color:#2C3E50;font-style:italic;
+  }
+</style>
 </head>
 <body class="tab-page">
+
 <div class="sum">
   <div class="sum-title">
-    <h2>SOQL Counter</h2>
+    <h2>Picklists</h2>
     <span class="sum-badge">Tab 27</span>
   </div>
-  <p class="sum-desc">Count SOQL queries executed by Apex code to help identify governor limit risks.</p>
+  <p class="sum-desc">
+    Extract and browse all picklist fields from any Salesforce object, including their allowed
+    values per Record Type. Each picklist field is shown in its own sub-tab with a matrix view:
+    rows are picklist values (API name + label), columns are Record Types. Default values are
+    highlighted with a green badge. Results can be exported to Excel for offline review or
+    change-management documentation.
+  </p>
 </div>
+
 <div class="mockup-wrap">
-  <div class="mockup"><div class="vbox" style="gap:0px"><div class="anchor"><span class="cal-lbl">Object :</span><div class="hbox" style="gap:6.0px;align-items:center"><span class="cal-lbl">Loading...</span></div><div class="hbox" style="gap:20.0px;align-items:center"><button class="cal-btn btn-b">Extract</button><button class="cal-btn btn-d">Export to Excel</button><button class="cal-btn btn-d">Import Excel File</button><div class="hbox" style="gap:5.0px;align-items:center"><span class="cal-lbl">Value</span><span class="cal-lbl" style="font-size:11px;color:#555">= default value</span></div></div><span class="cal-lbl">Warning : Only active values can be extracted and currently, it&#x27;s not working for production org (SF issue)</span></div></div></div>
-</div>
+  <div class="mockup">
+
+    <!-- Warning bar -->
+    <div style="padding:8px 10px 0 10px;">
+      <div class="warn-bar">
+        Warning : Only active values can be extracted and currently, it's not working for production org (SF issue)
+      </div>
+    </div>
+
+    <!-- Object selector + buttons -->
+    <div class="anchor" style="padding:8px 10px 6px 10px;gap:6px;">
+      <div class="hbox" style="gap:10px;align-items:center;">
+        <span class="cal-lbl">Object :</span>
+        <input class="cal-tf" style="width:240px;" value="Opportunity (Opportunity)" readonly
+               data-tip="Type an object name to auto-complete. Selecting triggers extraction automatically.">
+        <!-- loading bar (hidden in post-extract state) -->
+      </div>
+      <div class="hbox" style="gap:16px;align-items:center;">
+        <button class="cal-btn btn-b" data-tip="Extract all picklist fields and their values by Record Type">Extract</button>
+        <button class="cal-btn btn-d" data-tip="Export all picklist tabs to a multi-sheet Excel workbook">Export to Excel</button>
+        <div class="hbox" style="gap:5px;align-items:center;">
+          <span class="badge-default">Value</span>
+          <span style="font-size:11px;color:#555;">= default value</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Results TabPane (one tab per picklist field) -->
+    <div style="padding:0 10px 10px 10px;">
+      <div id="fp">
+        <!-- Field-level tab bar -->
+        <div class="field-tabs">
+          <div class="field-tab act"  onclick="swf(0)">Stage</div>
+          <div class="field-tab"      onclick="swf(1)">Type</div>
+          <div class="field-tab"      onclick="swf(2)">LeadSource</div>
+          <div class="field-tab"      onclick="swf(3)">StageName</div>
+          <div class="field-tab"      onclick="swf(4)">ForecastCategoryName</div>
+          <div class="field-tab"      onclick="swf(5)">DeliveryInstallationStatus__c</div>
+          <div class="field-tab"      onclick="swf(6)">CloseReason__c</div>
+        </div>
+
+        <!-- ── Stage ── -->
+        <div class="field-panel act" id="fp-0">
+          <div class="tbl-wrap" style="margin:0;border-top:none;border-radius:0;">
+            <table class="cal-tbl">
+              <thead>
+                <tr>
+                  <th style="width:170px;">Name</th>
+                  <th style="width:200px;">Label</th>
+                  <th style="width:130px;">Standard</th>
+                  <th style="width:130px;">Enterprise</th>
+                  <th style="width:130px;">SMB</th>
+                  <th style="width:130px;">Partner</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Prospecting</td><td>Prospecting</td>
+                  <td><span class="badge-default">Prospecting</span></td>
+                  <td><span class="badge-default">Prospecting</span></td>
+                  <td><span class="badge-default">Prospecting</span></td>
+                  <td><span class="badge-default">Prospecting</span></td>
+                </tr>
+                <tr>
+                  <td>Qualification</td><td>Qualification</td>
+                  <td>Qualification</td><td>Qualification</td><td>Qualification</td><td>Qualification</td>
+                </tr>
+                <tr>
+                  <td>Needs Analysis</td><td>Needs Analysis</td>
+                  <td>Needs Analysis</td><td>Needs Analysis</td><td></td><td></td>
+                </tr>
+                <tr>
+                  <td>Value Proposition</td><td>Value Proposition</td>
+                  <td>Value Proposition</td><td>Value Proposition</td><td></td><td></td>
+                </tr>
+                <tr>
+                  <td>Id. Decision Makers</td><td>Id. Decision Makers</td>
+                  <td></td><td>Id. Decision Makers</td><td></td><td></td>
+                </tr>
+                <tr>
+                  <td>Perception Analysis</td><td>Perception Analysis</td>
+                  <td></td><td>Perception Analysis</td><td></td><td></td>
+                </tr>
+                <tr>
+                  <td>Proposal/Price Quote</td><td>Proposal / Price Quote</td>
+                  <td>Proposal/Price Quote</td><td>Proposal/Price Quote</td><td>Proposal/Price Quote</td><td>Proposal/Price Quote</td>
+                </tr>
+                <tr>
+                  <td>Negotiation/Review</td><td>Negotiation / Review</td>
+                  <td>Negotiation/Review</td><td>Negotiation/Review</td><td>Negotiation/Review</td><td></td>
+                </tr>
+                <tr>
+                  <td>Closed Won</td><td>Closed Won</td>
+                  <td>Closed Won</td><td>Closed Won</td><td>Closed Won</td><td>Closed Won</td>
+                </tr>
+                <tr>
+                  <td>Closed Lost</td><td>Closed Lost</td>
+                  <td>Closed Lost</td><td>Closed Lost</td><td>Closed Lost</td><td>Closed Lost</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ── Type ── -->
+        <div class="field-panel" id="fp-1">
+          <div class="tbl-wrap" style="margin:0;border-top:none;border-radius:0;">
+            <table class="cal-tbl">
+              <thead>
+                <tr>
+                  <th style="width:200px;">Name</th>
+                  <th style="width:220px;">Label</th>
+                  <th style="width:130px;">Standard</th>
+                  <th style="width:130px;">Enterprise</th>
+                  <th style="width:130px;">SMB</th>
+                  <th style="width:130px;">Partner</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>New Business</td><td>New Business</td>
+                  <td><span class="badge-default">New Business</span></td>
+                  <td><span class="badge-default">New Business</span></td>
+                  <td><span class="badge-default">New Business</span></td>
+                  <td><span class="badge-default">New Business</span></td>
+                </tr>
+                <tr>
+                  <td>Existing Business - Upgrade</td><td>Existing Business - Upgrade</td>
+                  <td>Existing Business - Upgrade</td><td>Existing Business - Upgrade</td><td>Existing Business - Upgrade</td><td></td>
+                </tr>
+                <tr>
+                  <td>Existing Business - Renewal</td><td>Existing Business - Renewal</td>
+                  <td>Existing Business - Renewal</td><td>Existing Business - Renewal</td><td>Existing Business - Renewal</td><td>Existing Business - Renewal</td>
+                </tr>
+                <tr>
+                  <td>Existing Business - Downgrade</td><td>Existing Business - Downgrade</td>
+                  <td></td><td>Existing Business - Downgrade</td><td></td><td></td>
+                </tr>
+                <tr>
+                  <td>Partner Sourced</td><td>Partner Sourced</td>
+                  <td></td><td></td><td></td><td>Partner Sourced</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ── LeadSource ── -->
+        <div class="field-panel" id="fp-2">
+          <div class="tbl-wrap" style="margin:0;border-top:none;border-radius:0;">
+            <table class="cal-tbl">
+              <thead>
+                <tr>
+                  <th style="width:200px;">Name</th>
+                  <th style="width:220px;">Label</th>
+                  <th style="width:130px;">Standard</th>
+                  <th style="width:130px;">Enterprise</th>
+                  <th style="width:130px;">SMB</th>
+                  <th style="width:130px;">Partner</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td>Web</td><td>Web</td><td>Web</td><td>Web</td><td>Web</td><td></td></tr>
+                <tr><td>Phone Inquiry</td><td>Phone Inquiry</td><td>Phone Inquiry</td><td>Phone Inquiry</td><td>Phone Inquiry</td><td></td></tr>
+                <tr><td>Partner Referral</td><td>Partner Referral</td><td></td><td>Partner Referral</td><td></td><td>Partner Referral</td></tr>
+                <tr><td>Purchased List</td><td>Purchased List</td><td>Purchased List</td><td>Purchased List</td><td></td><td></td></tr>
+                <tr><td>Other</td><td>Other</td>
+                  <td><span class="badge-default">Other</span></td>
+                  <td><span class="badge-default">Other</span></td>
+                  <td><span class="badge-default">Other</span></td>
+                  <td><span class="badge-default">Other</span></td>
+                </tr>
+                <tr><td>Trade Show</td><td>Trade Show</td><td>Trade Show</td><td>Trade Show</td><td></td><td></td></tr>
+                <tr><td>Internal</td><td>Internal</td><td></td><td>Internal</td><td>Internal</td><td></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ── StageName ── -->
+        <div class="field-panel" id="fp-3">
+          <div class="tbl-wrap" style="margin:0;border-top:none;border-radius:0;">
+            <table class="cal-tbl">
+              <thead>
+                <tr>
+                  <th style="width:200px;">Name</th>
+                  <th style="width:220px;">Label</th>
+                  <th style="width:130px;">Standard</th>
+                  <th style="width:130px;">Enterprise</th>
+                  <th style="width:130px;">SMB</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td>01 - Discovery</td><td>01 - Discovery</td>
+                  <td><span class="badge-default">01 - Discovery</span></td>
+                  <td><span class="badge-default">01 - Discovery</span></td>
+                  <td><span class="badge-default">01 - Discovery</span></td>
+                </tr>
+                <tr><td>02 - Qualification</td><td>02 - Qualification</td>
+                  <td>02 - Qualification</td><td>02 - Qualification</td><td>02 - Qualification</td>
+                </tr>
+                <tr><td>03 - Demo</td><td>03 - Demo</td>
+                  <td>03 - Demo</td><td>03 - Demo</td><td></td>
+                </tr>
+                <tr><td>04 - Proposal</td><td>04 - Proposal</td>
+                  <td>04 - Proposal</td><td>04 - Proposal</td><td>04 - Proposal</td>
+                </tr>
+                <tr><td>05 - Negotiation</td><td>05 - Negotiation</td>
+                  <td>05 - Negotiation</td><td>05 - Negotiation</td><td></td>
+                </tr>
+                <tr><td>06 - Closed Won</td><td>06 - Closed Won</td>
+                  <td>06 - Closed Won</td><td>06 - Closed Won</td><td>06 - Closed Won</td>
+                </tr>
+                <tr><td>07 - Closed Lost</td><td>07 - Closed Lost</td>
+                  <td>07 - Closed Lost</td><td>07 - Closed Lost</td><td>07 - Closed Lost</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ── ForecastCategoryName ── -->
+        <div class="field-panel" id="fp-4">
+          <div class="tbl-wrap" style="margin:0;border-top:none;border-radius:0;">
+            <table class="cal-tbl">
+              <thead>
+                <tr>
+                  <th style="width:200px;">Name</th>
+                  <th style="width:220px;">Label</th>
+                  <th style="width:130px;">Standard</th>
+                  <th style="width:130px;">Enterprise</th>
+                  <th style="width:130px;">SMB</th>
+                  <th style="width:130px;">Partner</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td>Omitted</td><td>Omitted</td><td>Omitted</td><td>Omitted</td><td>Omitted</td><td>Omitted</td></tr>
+                <tr><td>Pipeline</td><td>Pipeline</td>
+                  <td><span class="badge-default">Pipeline</span></td>
+                  <td><span class="badge-default">Pipeline</span></td>
+                  <td><span class="badge-default">Pipeline</span></td>
+                  <td><span class="badge-default">Pipeline</span></td>
+                </tr>
+                <tr><td>BestCase</td><td>Best Case</td><td>Best Case</td><td>Best Case</td><td></td><td></td></tr>
+                <tr><td>Commit</td><td>Commit</td><td>Commit</td><td>Commit</td><td>Commit</td><td>Commit</td></tr>
+                <tr><td>Closed</td><td>Closed</td><td>Closed</td><td>Closed</td><td>Closed</td><td>Closed</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ── DeliveryInstallationStatus__c ── -->
+        <div class="field-panel" id="fp-5">
+          <div class="tbl-wrap" style="margin:0;border-top:none;border-radius:0;">
+            <table class="cal-tbl">
+              <thead>
+                <tr>
+                  <th style="width:220px;">Name</th>
+                  <th style="width:240px;">Label</th>
+                  <th style="width:130px;">Standard</th>
+                  <th style="width:130px;">Enterprise</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td>In progress</td><td>In progress</td>
+                  <td><span class="badge-default">In progress</span></td>
+                  <td><span class="badge-default">In progress</span></td>
+                </tr>
+                <tr><td>Yet to begin</td><td>Yet to begin</td><td>Yet to begin</td><td>Yet to begin</td></tr>
+                <tr><td>Completed</td><td>Completed</td><td>Completed</td><td>Completed</td></tr>
+                <tr><td>On hold</td><td>On hold</td><td></td><td>On hold</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ── CloseReason__c ── -->
+        <div class="field-panel" id="fp-6">
+          <div class="tbl-wrap" style="margin:0;border-top:none;border-radius:0;">
+            <table class="cal-tbl">
+              <thead>
+                <tr>
+                  <th style="width:220px;">Name</th>
+                  <th style="width:240px;">Label</th>
+                  <th style="width:130px;">Standard</th>
+                  <th style="width:130px;">Enterprise</th>
+                  <th style="width:130px;">SMB</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td>Price</td><td>Price</td><td>Price</td><td>Price</td><td>Price</td></tr>
+                <tr><td>Competitor</td><td>Competitor</td><td>Competitor</td><td>Competitor</td><td></td></tr>
+                <tr><td>No Budget</td><td>No Budget</td><td>No Budget</td><td>No Budget</td><td>No Budget</td></tr>
+                <tr><td>No Decision</td><td>No Decision</td>
+                  <td><span class="badge-default">No Decision</span></td>
+                  <td><span class="badge-default">No Decision</span></td>
+                  <td><span class="badge-default">No Decision</span></td>
+                </tr>
+                <tr><td>Timing</td><td>Timing</td><td>Timing</td><td>Timing</td><td>Timing</td></tr>
+                <tr><td>Other</td><td>Other</td><td>Other</td><td>Other</td><td>Other</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div><!-- #fp -->
+    </div>
+
+    <!-- Screenshot section -->
+    <div style="padding:4px 10px 14px 10px;">
+      <div class="screenshot-wrap">
+        <img src="../screenshot/tab27-Picklists/seeDfOJTzc.png"
+             alt="Picklists tab — Deal__c object with Deal_Type__c field active">
+        <div class="screenshot-cap">
+          Screenshot — Deal__c object, Deal_Type__c picklist field with Record Type matrix.
+          Green badges mark the default value per Record Type.
+          Double-clicking a cell opens the corresponding picklist setup page in Salesforce.
+        </div>
+      </div>
+    </div>
+
+  </div><!-- .mockup -->
+</div><!-- .mockup-wrap -->
+
 <script>
 function sw(id,idx){
   var tp=document.getElementById(id);
   tp.querySelectorAll('.m-tab').forEach(function(t,i){t.classList.toggle('act',i===idx)});
   tp.querySelectorAll('.m-panel').forEach(function(p,i){p.classList.toggle('act',i===idx)});
+}
+function swf(idx){
+  var fp=document.getElementById('fp');
+  fp.querySelectorAll('.field-tab').forEach(function(t,i){t.classList.toggle('act',i===idx)});
+  fp.querySelectorAll('.field-panel').forEach(function(p,i){p.classList.toggle('act',i===idx)});
 }
 </script>
 </body>

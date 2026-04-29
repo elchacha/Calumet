@@ -3,20 +3,224 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Change Tracker (B) — Calumet</title>
+<title>Custom Metadata Updater — Calumet</title>
 <link rel="stylesheet" href="../shared.css">
 </head>
 <body class="tab-page">
 <div class="sum">
   <div class="sum-title">
-    <h2>Change Tracker (B)</h2>
+    <h2>Custom Metadata Updater</h2>
     <span class="sum-badge">Tab 53</span>
   </div>
-  <p class="sum-desc">Secondary change tracking view for monitoring a different org or metadata scope simultaneously.</p>
+  <p class="sum-desc">
+    Browse, edit, and mass-upsert records of any Custom Metadata Type directly from an Excel file.
+    Select a <code style="background:#1f2438;padding:1px 5px;border-radius:3px;color:#a8e6cf">__mdt</code> type,
+    display all its records in a dynamic table, export them to an <code style="background:#1f2438;padding:1px 5px;border-radius:3px;color:#a8e6cf">.xlsx</code> workbook,
+    edit values offline, then push them back with a single Upsert. Supports row-level deletion and
+    filtered exports from the current selection.
+  </p>
 </div>
+
+<!-- Screenshot section -->
+<div style="padding:20px 28px 10px;background:#1a1d2e;border-bottom:1px solid #1f2438;">
+  <div style="font-size:11px;color:#8892a4;text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;font-weight:700;">Screenshot — live application</div>
+  <img src="../screenshot/tab53-CustomMetadataUpdater/RqNIJMdCBX.png"
+       alt="Custom Metadata Updater screenshot"
+       style="max-width:100%;border:1px solid #2a2e45;border-radius:5px;display:block;">
+</div>
+
 <div class="mockup-wrap">
-  <div class="mockup"><div class="vbox" style="gap:0px"><div class="anchor"><span class="cal-lbl">Custom metadata type</span><button class="cal-btn btn-b">Export all records</button><button class="cal-btn btn-b">Generate empty xlsx file</button><button class="cal-btn btn-o">Upsert Values</button><div class="tbl-wrap"><table class="cal-tbl"><thead><tr><th style="width:75.0px">Name</th><th style="width:75.0px">Label</th><th style="width:75.0px">field1</th><th style="width:75.0px">field2</th><th style="width:75.0px">ect ...</th></tr></thead><tbody><tr><td colspan="20" class="tbl-empty"></td></tr></tbody></table></div><button class="cal-btn btn-b">Display</button><span class="cal-lbl">records</span><input class="cal-tf" placeholder="" style="width:288.0px;" readonly><button class="cal-btn btn-d">Delete Selection</button><button class="cal-btn btn-d">Export Selection</button></div></div></div>
+  <div class="mockup" style="padding:10px;">
+
+    <!-- Row 1: type selector + Display button -->
+    <div class="hbox" style="gap:8px;align-items:center;margin-bottom:6px;">
+      <span class="cal-lbl">Custom metadata type</span>
+      <input class="cal-tf cal-grow" value="BatchParam__mdt" readonly
+             data-tip="Start typing a __mdt name — autocomplete suggests all available types in the org">
+      <button class="cal-btn btn-b"
+              data-tip="Query all records for the selected Custom Metadata Type and populate the table">
+        Display
+      </button>
+    </div>
+
+    <!-- Row 2: action buttons -->
+    <div class="hbox" style="gap:8px;align-items:center;margin-bottom:6px;">
+      <button class="cal-btn btn-b"
+              data-tip="Export all records of this type to an Excel (.xlsx) file">
+        Export all records
+      </button>
+      <button class="cal-btn btn-b"
+              data-tip="Generate an empty Excel template with the correct column headers for this type">
+        Generate empty xlsx file
+      </button>
+      <button class="cal-btn btn-o"
+              data-tip="Pick an Excel file and upsert its rows into Salesforce via the Metadata API">
+        Upsert Values
+      </button>
+      <span class="vsep"></span>
+      <button class="cal-btn btn-r"
+              data-tip="Delete the selected rows from Salesforce (DEL / Backspace also triggers this)">
+        Delete Selection
+      </button>
+      <button class="cal-btn btn-d"
+              data-tip="Export only the selected rows to an Excel file">
+        Export Selection
+      </button>
+    </div>
+
+    <!-- Row 3: filter + record count -->
+    <div class="hbox" style="gap:8px;align-items:center;margin-bottom:4px;">
+      <input class="cal-tf" style="width:288px;" placeholder="Filter rows... (semicolon-separated for AND)" readonly
+             data-tip="Type to filter displayed rows in real time. Use ; to add multiple AND conditions.">
+      <span class="cal-lbl" style="color:#1A5276;font-weight:700;">records (6)</span>
+    </div>
+
+    <!-- Main table -->
+    <div class="tbl-wrap">
+      <table class="cal-tbl">
+        <thead>
+          <tr>
+            <th style="width:230px;">DeveloperName</th>
+            <th style="width:230px;">Label</th>
+            <th style="width:90px;">BatchSize__c</th>
+            <th style="width:260px;">Description__c</th>
+            <th style="width:190px;">ErrorMailTo__c</th>
+            <th style="width:160px;">Param1__c</th>
+            <th style="width:120px;">IsActive__c</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>BatchPublicCommunityAccountSearch</td>
+            <td>BatchPublicCommunityAccountSearch</td>
+            <td style="text-align:right;">200.0</td>
+            <td style="color:#888;font-style:italic;"></td>
+            <td>platform@cathay.fr</td>
+            <td style="color:#888;font-style:italic;"></td>
+            <td style="color:#27ae60;">true</td>
+          </tr>
+          <tr>
+            <td>BatchSPDCreationFromFSPEorDeal</td>
+            <td>BatchSPDCreationFromFSPEorDeal</td>
+            <td style="text-align:right;">500.0</td>
+            <td>batch size parameter. Value can range up to 2000 if needed</td>
+            <td>jurgen.palsma@cathay.fr</td>
+            <td style="color:#888;font-style:italic;"></td>
+            <td style="color:#27ae60;">true</td>
+          </tr>
+          <tr>
+            <td>BatchSendEmailVerticalPost</td>
+            <td>BatchSendEmailVerticalPost</td>
+            <td style="text-align:right;">10.0</td>
+            <td>Max emails per execution context</td>
+            <td>jurgen.palsma@cathay.fr</td>
+            <td>New Vertical Insight</td>
+            <td style="color:#27ae60;">true</td>
+          </tr>
+          <tr>
+            <td>BatchUpdateCommunityAccountSearch</td>
+            <td>BatchUpdateCommunityAccountSearch</td>
+            <td style="text-align:right;">200.0</td>
+            <td style="color:#888;font-style:italic;"></td>
+            <td>platform@cathay.fr</td>
+            <td style="color:#888;font-style:italic;"></td>
+            <td style="color:#27ae60;">true</td>
+          </tr>
+          <tr>
+            <td>BatchLeadConversionNightly</td>
+            <td>BatchLeadConversionNightly</td>
+            <td style="text-align:right;">100.0</td>
+            <td>Nightly lead conversion sweep — runs at 01:00 UTC</td>
+            <td>admin@cathay.fr</td>
+            <td>LeadSource=Web</td>
+            <td style="color:#e67e22;">false</td>
+          </tr>
+          <tr>
+            <td>BatchOpportunityStageSync</td>
+            <td>BatchOpportunityStageSync</td>
+            <td style="text-align:right;">1000.0</td>
+            <td>Syncs stage changes to downstream ERP system</td>
+            <td>platform@cathay.fr</td>
+            <td>ERP_ENDPOINT=https://erp.internal</td>
+            <td style="color:#27ae60;">true</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Double-click hint -->
+    <div style="font-size:10px;color:#888;margin-top:5px;font-style:italic;">
+      Double-click a row to open the record in Salesforce Setup (Lightning UI)
+    </div>
+
+  </div>
 </div>
+
+<!-- Feature details -->
+<div style="padding:20px 28px 28px;background:#14161f;">
+
+  <div style="font-size:11px;color:#8892a4;text-transform:uppercase;letter-spacing:1px;margin-bottom:16px;font-weight:700;">Key features</div>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;max-width:900px;">
+
+    <div style="background:#1a1d2e;border:1px solid #1f2438;border-radius:6px;padding:14px;">
+      <div style="font-size:12px;font-weight:700;color:#a8e6cf;margin-bottom:8px;">Autocomplete type selector</div>
+      <div style="font-size:12px;color:#a8b4c8;line-height:1.7;">
+        The type field uses an <strong>AutoCompleteTextField</strong> populated with all
+        <code style="background:#0e1018;padding:1px 4px;border-radius:3px;">__mdt</code> types found in the connected org.
+        Selecting a type immediately triggers a Display query.
+      </div>
+    </div>
+
+    <div style="background:#1a1d2e;border:1px solid #1f2438;border-radius:6px;padding:14px;">
+      <div style="font-size:12px;font-weight:700;color:#a8e6cf;margin-bottom:8px;">Live row filtering</div>
+      <div style="font-size:12px;color:#a8b4c8;line-height:1.7;">
+        The filter field applies a 500 ms debounce and searches all column values case-insensitively.
+        Separate multiple terms with <code style="background:#0e1018;padding:1px 4px;border-radius:3px;">;</code>
+        for AND-style narrowing. The record count label updates in real time.
+      </div>
+    </div>
+
+    <div style="background:#1a1d2e;border:1px solid #1f2438;border-radius:6px;padding:14px;">
+      <div style="font-size:12px;font-weight:700;color:#a8e6cf;margin-bottom:8px;">Excel-based upsert workflow</div>
+      <div style="font-size:12px;color:#a8b4c8;line-height:1.7;">
+        Export all records (or just a template), edit values in Excel, then use
+        <strong>Upsert Values</strong> to push changes back. The Metadata API processes all rows and reports
+        per-record success or issues in an alert dialog.
+      </div>
+    </div>
+
+    <div style="background:#1a1d2e;border:1px solid #1f2438;border-radius:6px;padding:14px;">
+      <div style="font-size:12px;font-weight:700;color:#a8e6cf;margin-bottom:8px;">Context-sensitive buttons</div>
+      <div style="font-size:12px;color:#a8b4c8;line-height:1.7;">
+        <strong>Delete Selection</strong> and <strong>Export Selection</strong> appear only when one or more
+        rows are selected. <kbd style="background:#0e1018;padding:1px 5px;border-radius:3px;font-size:10px;">DEL</kbd>
+        and <kbd style="background:#0e1018;padding:1px 5px;border-radius:3px;font-size:10px;">Backspace</kbd>
+        also trigger deletion from the keyboard.
+      </div>
+    </div>
+
+    <div style="background:#1a1d2e;border:1px solid #1f2438;border-radius:6px;padding:14px;">
+      <div style="font-size:12px;font-weight:700;color:#a8e6cf;margin-bottom:8px;">Direct Salesforce navigation</div>
+      <div style="font-size:12px;color:#a8b4c8;line-height:1.7;">
+        Double-clicking any row resolves the record's <code style="background:#0e1018;padding:1px 4px;border-radius:3px;">Id</code>
+        from the org and opens the Lightning Setup page for that specific record in the default browser —
+        no copy-paste required.
+      </div>
+    </div>
+
+    <div style="background:#1a1d2e;border:1px solid #1f2438;border-radius:6px;padding:14px;">
+      <div style="font-size:12px;font-weight:700;color:#a8e6cf;margin-bottom:8px;">Dynamic column layout</div>
+      <div style="font-size:12px;color:#a8b4c8;line-height:1.7;">
+        Columns are generated at runtime from the metadata type's field list. Every custom field is
+        included. Column widths auto-resize to content after each display, and the table supports
+        multi-row selection with Ctrl+C copy.
+      </div>
+    </div>
+
+  </div>
+</div>
+
 <script>
 function sw(id,idx){
   var tp=document.getElementById(id);

@@ -5,18 +5,641 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>SOQL Executor — Calumet</title>
 <link rel="stylesheet" href="../shared.css">
+<style>
+/* ── Code-editor mockup ── */
+.soql-editor{
+  background:#1e2330;border:1px solid #9AABBF;border-radius:3px;
+  font-family:"Consolas","Courier New",monospace;font-size:12px;
+  padding:10px 12px;min-height:80px;line-height:1.6;
+}
+.kw{color:#569cd6;font-weight:bold}
+.fn{color:#dcdcaa}
+.obj{color:#4ec9b0}
+.fld{color:#9cdcfe}
+.cst{color:#ce9178}
+.num{color:#b5cea8}
+
+/* query-tab bar (inner, within a SoqlExecutor panel) */
+.q-tab-wrap{border:1px solid #9AABBF;border-radius:3px;overflow:hidden;margin-bottom:0}
+.q-tab-bar{display:flex;background:#d8e6ee;border-bottom:1px solid #9AABBF}
+.q-tab{padding:4px 12px;font-size:11px;font-weight:700;color:#2C3E50;
+  border-right:1px solid #b0c8d8;cursor:pointer;display:flex;align-items:center;gap:6px}
+.q-tab.act{background:#F8F8F8;color:#1A5276;border-bottom:2px solid #F8F8F8;margin-bottom:-1px}
+.q-tab .q-close{color:#888;font-size:9px;cursor:pointer}
+.q-tab.add-tab{font-size:15px;padding:2px 10px;color:#5b9bac;font-weight:700}
+
+/* result table — horizontal scroll */
+.res-wrap{overflow-x:auto;border:1px solid #9AABBF;border-radius:3px;margin-top:4px;max-height:220px;overflow-y:auto}
+.res-tbl{border-collapse:collapse;font-size:11px;min-width:900px}
+.res-tbl th{background:#b8d5e3;color:#1A5276;font-weight:700;
+  padding:3px 8px;text-align:left;border-right:1px solid #9AABBF;
+  white-space:nowrap;position:sticky;top:0}
+.res-tbl th:first-child{width:30px;text-align:center}
+.res-tbl td{padding:3px 8px;border-top:1px solid #d8e8f0;white-space:nowrap}
+.res-tbl tr:hover td{background:#eef5fa}
+.row-num{text-align:center;color:#888;font-size:10px}
+.id-cell{color:#1A5276;font-family:monospace;font-size:10px}
+
+/* screenshot */
+.screenshot-block{margin:16px 0;border:1px solid #9AABBF;border-radius:4px;overflow:hidden}
+.screenshot-block img{width:100%;display:block}
+.screenshot-caption{background:#d8e6ee;padding:6px 12px;font-size:11px;color:#2C3E50;font-style:italic}
+
+/* feature list */
+.feature-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:10px 0}
+.feat-card{background:#eef5fa;border:1px solid #9AABBF;border-radius:4px;padding:8px 12px}
+.feat-card .feat-title{font-weight:700;font-size:11px;color:#1A5276;margin-bottom:3px}
+.feat-card p{font-size:11px;color:#2C3E50;line-height:1.5}
+
+/* separator line */
+.section-title{font-weight:700;font-size:11px;color:#1A5276;
+  border-bottom:1px solid #9AABBF;padding-bottom:3px;margin:10px 0 6px}
+
+/* status row pill */
+.pill{display:inline-block;padding:1px 7px;border-radius:10px;font-size:10px;font-weight:700}
+.pill-ok{background:#d4edda;color:#155724}
+.pill-warn{background:#fff3cd;color:#856404}
+.pill-err{background:#f8d7da;color:#721c24}
+</style>
 </head>
 <body class="tab-page">
+
+<!-- ══ Summary card ══ -->
 <div class="sum">
   <div class="sum-title">
     <h2>SOQL Executor</h2>
     <span class="sum-badge">Tab 12</span>
   </div>
-  <p class="sum-desc">Batch SOQL executor for running multiple queries and exporting results to Excel.</p>
+  <p class="sum-desc">
+    A multi-tab interactive SOQL query editor with syntax highlighting, auto-complete,
+    and live result display. Run queries against both the Partner API and Tooling API,
+    apply real-time filters on results, export to CSV / Excel, and delete selected records
+    directly from the result grid. Each query runs in its own closable tab; tabs are
+    automatically restored from the previous session.
+  </p>
 </div>
+
+<!-- ══ Screenshot ══ -->
 <div class="mockup-wrap">
-  <div class="mockup"><div class="vbox" style="gap:0px"><div class="anchor"></div></div></div>
-</div>
+  <div class="mockup" style="padding:12px">
+
+    <div class="section-title">Application Screenshot</div>
+    <div class="screenshot-block">
+      <img src="../screenshot/tab12-Soql/XkK6fx9MEI.png" alt="SOQL Executor — screenshot">
+      <div class="screenshot-caption">
+        SOQL Executor running a SELECT * FROM Account LIMIT 10 query — result grid shows
+        3 records with all standard and custom fields. The tab bar shows the active query
+        tab labelled "account" (auto-named from the FROM object).
+      </div>
+    </div>
+
+    <!-- ══ Feature overview ══ -->
+    <div class="section-title" style="margin-top:14px">Key Features</div>
+    <div class="feature-grid">
+      <div class="feat-card">
+        <div class="feat-title">Syntax-highlighted SOQL editor</div>
+        <p>Built on RichTextFX CodeArea. Keywords, functions, object name, resolved fields,
+        and string literals are each coloured distinctly. Highlighting re-runs 500 ms after
+        the user stops typing.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-title">Ctrl+Space auto-complete</div>
+        <p>Pressing Ctrl+Space (or pausing mid-word) triggers a dropdown with all fields and
+        relationship paths for the detected FROM object, sourced from the cached FieldHelper
+        metadata.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-title">Multi-tab queries</div>
+        <p>Each query lives in its own closable tab. Click "+" to open a new blank tab.
+        On application exit, open queries are saved to a <code>queryBackup</code> file and
+        restored on next launch.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-title">Partner API &amp; Tooling API</div>
+        <p>Toggle "Tooling" to switch between the standard Partner API (sObjects) and the
+        Salesforce Tooling API (ApexClass, Flow, etc.). Syntax highlighting adapts to the
+        selected API's schema.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-title">Bulk Mode (API v2)</div>
+        <p>Enable "Bulk Mode" for large datasets. The header shows the daily Bulk V2 job
+        quota (used/max). Results can still be exported from the CSV file produced by the
+        bulk job.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-title">SELECT * expansion</div>
+        <p>Queries starting with <code>SELECT *</code> are automatically expanded to all
+        fields. The "Select * config" popup lets you define priority columns that appear
+        first in the result grid.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-title">Fast Count</div>
+        <p>Check "Fast Count" to run an approximate COUNT() instead of fetching all records.
+        Useful for quickly gauging dataset sizes before running a full query.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-title">Record deletion</div>
+        <p>Select one or more ID cells in the result grid and press Delete. A confirmation
+        popup appears before the deletion is executed. Production orgs require explicit
+        enablement in the global config.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-title">Live filter</div>
+        <p>The filter bar (bottom of the result pane) narrows displayed rows in real time
+        (500 ms debounce). Multiple terms can be combined with ";". The "Apply filter"
+        checkbox re-applies the filter after each new query execution.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-title">CSV / Excel export</div>
+        <p>Export results to CSV (configurable separator, optional double-quoting) or
+        directly to .xls Excel format via Apache POI. For bulk-mode queries, the raw CSV
+        file produced by the bulk job is exported instead.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-title">Saved queries</div>
+        <p>Type a name in the combo box and click "Save query" to persist the current query
+        to <code>soqlSaved/&lt;name&gt;.sql</code>. "Open query folder" reveals the folder
+        in the OS file manager. "Refresh list" rescans saved files.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-title">Record double-click navigation</div>
+        <p>Double-clicking a 15/18-character Salesforce ID opens a detail popup for that
+        record. Right-double-click opens the record URL in the browser. Alt+click also
+        triggers URL navigation.</p>
+      </div>
+    </div>
+
+    <!-- ══ Interactive mockup ══ -->
+    <div class="section-title" style="margin-top:14px">Interactive Mockup</div>
+
+    <!-- Outer tab pane (Tab12 — one SOQL executor instance per inner tab) -->
+    <div class="m-tabpane" id="tp12" style="border:1px solid #9AABBF;border-radius:3px">
+      <div class="m-tabbar">
+        <div class="m-tab act" onclick="sw('tp12',0)">Opportunity <span style="font-size:9px;color:#888">✕</span></div>
+        <div class="m-tab" onclick="sw('tp12',1)">Contact <span style="font-size:9px;color:#888">✕</span></div>
+        <div class="m-tab" onclick="sw('tp12',2)">Case <span style="font-size:9px;color:#888">✕</span></div>
+        <div class="m-tab" style="font-size:15px;padding:2px 12px;color:#5b9bac;font-weight:700">+</div>
+      </div>
+
+      <!-- ══ Tab 1: Opportunity ══ -->
+      <div class="m-panel act" id="tp12-0" style="padding:8px">
+
+        <!-- SOQL editor -->
+        <div class="soql-editor" style="margin-bottom:8px">
+          <span class="kw">SELECT</span> <span class="fld">Id</span>, <span class="fld">Name</span>,
+          <span class="fld">StageName</span>, <span class="fld">Amount</span>,
+          <span class="fld">CloseDate</span>, <span class="fld">Owner</span>.<span class="fld">Name</span>,
+          <span class="fld">Account</span>.<span class="fld">Name</span>,
+          <span class="fld">Probability</span>
+          <span class="kw">FROM</span> <span class="obj">Opportunity</span>
+          <span class="kw">WHERE</span> <span class="fld">StageName</span> != <span class="cst">'Closed Lost'</span>
+          <span class="kw">AND</span> <span class="fld">CloseDate</span> &gt;= <span class="fn">THIS_YEAR</span>
+          <span class="kw">ORDER BY</span> <span class="fld">CloseDate</span> <span class="kw">ASC</span>
+          <span class="kw">LIMIT</span> <span class="num">500</span>
+        </div>
+
+        <!-- Toolbar row 1 -->
+        <div class="hbox" style="gap:6px;align-items:center;margin-bottom:4px">
+          <input class="cal-tf" value="0" style="width:52px" readonly
+                 data-tip="Query timeout in seconds (0 = unlimited)">
+          <input class="cal-tf" value="10000" style="width:70px" readonly
+                 data-tip="Maximum rows displayed in the table">
+          <button class="cal-btn btn-b" data-tip="Execute the SOQL query (Ctrl+Enter)">Execute</button>
+          <label class="cal-chk" data-tip="Use COUNT() for a fast approximate record count">
+            <input type="checkbox" disabled> Fast count
+          </label>
+          <label class="cal-chk" data-tip="Use the Bulk API v2 for large datasets">
+            <input type="checkbox" disabled> Bulk Mode
+          </label>
+          <label class="cal-chk" data-tip="Apply the default sort field configured globally">
+            <input type="checkbox" disabled> Default ordering
+          </label>
+          <div class="spacer"></div>
+          <select class="cal-cb" style="width:200px" disabled>
+            <option>account_report_q1</option>
+          </select>
+          <button class="cal-btn btn-d" data-tip="Save the current query">Save query</button>
+        </div>
+
+        <!-- Toolbar row 2 -->
+        <div class="hbox" style="gap:6px;align-items:center;margin-bottom:4px">
+          <label class="cal-chk" data-tip="Switch to the Tooling API instead of Partner API">
+            <input type="checkbox" disabled> Tooling
+          </label>
+          <label class="cal-chk" data-tip="Filter out SELECT * queries automatically">
+            <input type="checkbox" checked disabled> Filter * query
+          </label>
+          <div class="vsep"></div>
+          <span class="cal-lbl">Max *</span>
+          <input class="cal-tf" value="100000" style="width:68px" readonly
+                 data-tip="Row limit applied to SELECT * queries">
+          <span class="cal-lbl">Max</span>
+          <input class="cal-tf" value="500000" style="width:68px" readonly
+                 data-tip="Maximum records retrieved by any query">
+          <label class="cal-chk" data-tip="Disable Max and Max * limits">
+            <input type="checkbox" disabled> No Check
+          </label>
+          <div class="spacer"></div>
+          <button class="cal-btn btn-d" data-tip="Show the generated star query">Show query</button>
+          <button class="cal-btn btn-d" data-tip="Open the saved queries folder in Explorer">Open query folder</button>
+          <button class="cal-btn btn-d" data-tip="Reload the saved query list from disk">Refresh list</button>
+          <button class="cal-btn btn-g" data-tip="Configure priority columns for SELECT * queries">Select * config</button>
+        </div>
+
+        <!-- Toolbar row 3 (status + filter + export) -->
+        <div class="hbox" style="gap:6px;align-items:center;margin-bottom:6px">
+          <span class="cal-lbl">number of records :</span>
+          <strong style="font-size:12px;color:#1A5276">8</strong>
+          <label class="cal-chk" data-tip="Re-apply the filter after each query execution">
+            <input type="checkbox" disabled> Apply filter
+          </label>
+          <input class="cal-tf" placeholder="filter" style="width:190px" readonly>
+          <div class="spacer"></div>
+          <span class="cal-lbl">Separator</span>
+          <select class="cal-cb" style="width:55px" disabled>
+            <option>;</option>
+            <option>,</option>
+            <option>xls</option>
+          </select>
+          <button class="cal-btn btn-o" data-tip="Export results to CSV or Excel">Extract</button>
+          <label class="cal-chk" data-tip="Wrap values in double-quotes in the CSV">
+            <input type="checkbox" disabled> Add " " to value
+          </label>
+        </div>
+
+        <!-- Result table -->
+        <div class="res-wrap">
+          <table class="res-tbl">
+            <thead>
+              <tr>
+                <th></th>
+                <th>Id</th>
+                <th>Name</th>
+                <th>StageName</th>
+                <th>Amount</th>
+                <th>CloseDate</th>
+                <th>Owner.Name</th>
+                <th>Account.Name</th>
+                <th>Probability</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="row-num">1</td>
+                <td class="id-cell">0065g00000AbC12AAE</td>
+                <td>GlobalBank — Platform Renewal 2026</td>
+                <td><span style="color:#27ae60">Proposal/Price Quote</span></td>
+                <td style="text-align:right">248,000</td>
+                <td>2026-06-30</td>
+                <td>Sarah Mitchell</td>
+                <td>GlobalBank Corp</td>
+                <td style="text-align:right">65</td>
+              </tr>
+              <tr>
+                <td class="row-num">2</td>
+                <td class="id-cell">0065g00000AbC34BBF</td>
+                <td>Innovatech — New License Q2</td>
+                <td><span style="color:#e67e22">Negotiation/Review</span></td>
+                <td style="text-align:right">95,500</td>
+                <td>2026-05-15</td>
+                <td>James Dupont</td>
+                <td>Innovatech SAS</td>
+                <td style="text-align:right">80</td>
+              </tr>
+              <tr>
+                <td class="row-num">3</td>
+                <td class="id-cell">0065g00000AbC56CCG</td>
+                <td>MediCo — Support Extension</td>
+                <td><span style="color:#27ae60">Value Proposition</span></td>
+                <td style="text-align:right">42,000</td>
+                <td>2026-07-31</td>
+                <td>Sarah Mitchell</td>
+                <td>MediCo Holdings</td>
+                <td style="text-align:right">50</td>
+              </tr>
+              <tr>
+                <td class="row-num">4</td>
+                <td class="id-cell">0065g00000AbC78DDH</td>
+                <td>RetailChain — Expansion Pack</td>
+                <td><span style="color:#27ae60">Closed Won</span></td>
+                <td style="text-align:right">310,000</td>
+                <td>2026-03-31</td>
+                <td>Pierre Leroy</td>
+                <td>RetailChain Europe</td>
+                <td style="text-align:right">100</td>
+              </tr>
+              <tr>
+                <td class="row-num">5</td>
+                <td class="id-cell">0065g00000AbC90EEI</td>
+                <td>BuildPro — Initial Deployment</td>
+                <td><span style="color:#e67e22">Perception Analysis</span></td>
+                <td style="text-align:right">78,200</td>
+                <td>2026-08-20</td>
+                <td>James Dupont</td>
+                <td>BuildPro GmbH</td>
+                <td style="text-align:right">40</td>
+              </tr>
+              <tr>
+                <td class="row-num">6</td>
+                <td class="id-cell">0065g00000AbD12FFJ</td>
+                <td>AgroTech — Annual Subscription</td>
+                <td><span style="color:#27ae60">Id. Decision Makers</span></td>
+                <td style="text-align:right">55,000</td>
+                <td>2026-09-15</td>
+                <td>Lena Farber</td>
+                <td>AgroTech Ltd</td>
+                <td style="text-align:right">30</td>
+              </tr>
+              <tr>
+                <td class="row-num">7</td>
+                <td class="id-cell">0065g00000AbD34GGK</td>
+                <td>FinEdge — Audit Tooling Licence</td>
+                <td><span style="color:#27ae60">Needs Analysis</span></td>
+                <td style="text-align:right">128,750</td>
+                <td>2026-10-01</td>
+                <td>Pierre Leroy</td>
+                <td>FinEdge SA</td>
+                <td style="text-align:right">20</td>
+              </tr>
+              <tr>
+                <td class="row-num">8</td>
+                <td class="id-cell">0065g00000AbD56HHL</td>
+                <td>SmartCity — IoT Integration</td>
+                <td><span style="color:#e67e22">Qualification</span></td>
+                <td style="text-align:right">640,000</td>
+                <td>2026-12-31</td>
+                <td>Lena Farber</td>
+                <td>SmartCity Solutions</td>
+                <td style="text-align:right">15</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div><!-- /panel 0 -->
+
+      <!-- ══ Tab 2: Contact ══ -->
+      <div class="m-panel" id="tp12-1" style="padding:8px">
+
+        <!-- SOQL editor -->
+        <div class="soql-editor" style="margin-bottom:8px">
+          <span class="kw">SELECT</span> <span class="fld">Id</span>, <span class="fld">FirstName</span>,
+          <span class="fld">LastName</span>, <span class="fld">Email</span>,
+          <span class="fld">Phone</span>, <span class="fld">Title</span>,
+          <span class="fld">Account</span>.<span class="fld">Name</span>,
+          <span class="fld">LastModifiedDate</span>
+          <span class="kw">FROM</span> <span class="obj">Contact</span>
+          <span class="kw">WHERE</span> <span class="fld">LastModifiedDate</span> &gt; <span class="fn">LAST_N_DAYS:30</span>
+          <span class="kw">LIMIT</span> <span class="num">200</span>
+        </div>
+
+        <!-- Toolbar (condensed) -->
+        <div class="hbox" style="gap:6px;align-items:center;margin-bottom:4px">
+          <input class="cal-tf" value="30" style="width:52px" readonly data-tip="Timeout in seconds">
+          <input class="cal-tf" value="10000" style="width:70px" readonly data-tip="Max rows displayed">
+          <button class="cal-btn btn-b">Execute</button>
+          <label class="cal-chk"><input type="checkbox" disabled> Fast count</label>
+          <label class="cal-chk"><input type="checkbox" disabled> Bulk Mode</label>
+          <label class="cal-chk"><input type="checkbox" checked disabled> Default ordering</label>
+          <div class="spacer"></div>
+          <select class="cal-cb" style="width:200px" disabled><option>contact_modified_30d</option></select>
+          <button class="cal-btn btn-d">Save query</button>
+        </div>
+        <div class="hbox" style="gap:6px;align-items:center;margin-bottom:4px">
+          <label class="cal-chk"><input type="checkbox" disabled> Tooling</label>
+          <label class="cal-chk"><input type="checkbox" checked disabled> Filter * query</label>
+          <div class="vsep"></div>
+          <span class="cal-lbl">Max *</span>
+          <input class="cal-tf" value="100000" style="width:68px" readonly>
+          <span class="cal-lbl">Max</span>
+          <input class="cal-tf" value="500000" style="width:68px" readonly>
+          <div class="spacer"></div>
+          <button class="cal-btn btn-d">Open query folder</button>
+          <button class="cal-btn btn-d">Refresh list</button>
+          <button class="cal-btn btn-g">Select * config</button>
+        </div>
+        <div class="hbox" style="gap:6px;align-items:center;margin-bottom:6px">
+          <span class="cal-lbl">number of records :</span>
+          <strong style="font-size:12px;color:#1A5276">5</strong>
+          <label class="cal-chk"><input type="checkbox" disabled> Apply filter</label>
+          <input class="cal-tf" value="Mitchell" style="width:190px" readonly>
+          <span style="font-size:10px;color:#e67e22;margin-left:4px">displayed 2</span>
+          <div class="spacer"></div>
+          <span class="cal-lbl">Separator</span>
+          <select class="cal-cb" style="width:55px" disabled><option>;</option></select>
+          <button class="cal-btn btn-o">Extract</button>
+          <label class="cal-chk"><input type="checkbox" checked disabled> Add " " to value</label>
+        </div>
+
+        <!-- Result table (filtered) -->
+        <div class="res-wrap">
+          <table class="res-tbl">
+            <thead>
+              <tr>
+                <th></th>
+                <th>Id</th>
+                <th>FirstName</th>
+                <th>LastName</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>Title</th>
+                <th>Account.Name</th>
+                <th>LastModifiedDate</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="row-num">1</td>
+                <td class="id-cell">0035g00000Km1ABBBQ</td>
+                <td>Sarah</td>
+                <td style="color:#1A5276;font-weight:bold">Mitchell</td>
+                <td>s.mitchell@globalbank.com</td>
+                <td>+44 20 7946 0123</td>
+                <td>VP Sales</td>
+                <td>GlobalBank Corp</td>
+                <td>2026-04-22 09:14:35</td>
+              </tr>
+              <tr>
+                <td class="row-num">3</td>
+                <td class="id-cell">0035g00000Km3CDDEQ</td>
+                <td>Robert</td>
+                <td style="color:#1A5276;font-weight:bold">Mitchell</td>
+                <td>r.mitchell@medicoh.com</td>
+                <td>+1 212 555 0198</td>
+                <td>CTO</td>
+                <td>MediCo Holdings</td>
+                <td>2026-04-25 14:30:00</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div style="font-size:10px;color:#888;margin-top:4px;font-style:italic">
+          Filter "Mitchell" active — showing 2 of 5 records. Clear the filter box to see all results.
+        </div>
+      </div><!-- /panel 1 -->
+
+      <!-- ══ Tab 3: Case (Tooling API example) ══ -->
+      <div class="m-panel" id="tp12-2" style="padding:8px">
+
+        <!-- SOQL editor (Tooling API) -->
+        <div class="soql-editor" style="margin-bottom:8px">
+          <span class="kw">SELECT</span> <span class="fld">Id</span>, <span class="fld">Name</span>,
+          <span class="fld">ApiVersion</span>, <span class="fld">Status</span>,
+          <span class="fld">LengthWithoutComments</span>, <span class="fld">LastModifiedBy</span>.<span class="fld">Name</span>,
+          <span class="fld">LastModifiedDate</span>
+          <span class="kw">FROM</span> <span class="obj">ApexClass</span>
+          <span class="kw">WHERE</span> <span class="fld">Status</span> = <span class="cst">'Active'</span>
+          <span class="kw">ORDER BY</span> <span class="fld">LastModifiedDate</span> <span class="kw">DESC</span>
+          <span class="kw">LIMIT</span> <span class="num">50</span>
+        </div>
+
+        <!-- Toolbar (Tooling API mode ON) -->
+        <div class="hbox" style="gap:6px;align-items:center;margin-bottom:4px">
+          <input class="cal-tf" value="0" style="width:52px" readonly>
+          <input class="cal-tf" value="500" style="width:70px" readonly>
+          <button class="cal-btn btn-b">Execute</button>
+          <label class="cal-chk"><input type="checkbox" disabled> Fast count</label>
+          <label class="cal-chk">
+            <input type="checkbox" disabled style="accent-color:#27ae60"> Mono Queries
+          </label>
+          <div class="spacer"></div>
+          <select class="cal-cb" style="width:200px" disabled><option>apex_active_classes</option></select>
+          <button class="cal-btn btn-d">Save query</button>
+        </div>
+        <div class="hbox" style="gap:6px;align-items:center;margin-bottom:4px">
+          <label class="cal-chk" style="font-weight:bold;color:#1A5276">
+            <input type="checkbox" checked disabled> Tooling
+          </label>
+          <label class="cal-chk"><input type="checkbox" checked disabled> Filter * query</label>
+          <div class="vsep"></div>
+          <span style="font-size:10px;color:#888;font-style:italic">Max * and Max limits disabled in Tooling mode</span>
+          <div class="spacer"></div>
+          <button class="cal-btn btn-d">Open query folder</button>
+          <button class="cal-btn btn-d">Refresh list</button>
+          <button class="cal-btn btn-g">Select * config</button>
+        </div>
+        <div class="hbox" style="gap:6px;align-items:center;margin-bottom:6px">
+          <span class="cal-lbl">number of records :</span>
+          <strong style="font-size:12px;color:#1A5276">6</strong>
+          <label class="cal-chk"><input type="checkbox" disabled> Apply filter</label>
+          <input class="cal-tf" placeholder="filter" style="width:190px" readonly>
+          <div class="spacer"></div>
+          <span class="cal-lbl">Separator</span>
+          <select class="cal-cb" style="width:55px" disabled><option>xls</option><option>;</option></select>
+          <button class="cal-btn btn-o">Extract</button>
+          <label class="cal-chk"><input type="checkbox" disabled> Truncate &gt; 32K</label>
+        </div>
+
+        <!-- Result table -->
+        <div class="res-wrap">
+          <table class="res-tbl">
+            <thead>
+              <tr>
+                <th></th>
+                <th>Id</th>
+                <th>Name</th>
+                <th>ApiVersion</th>
+                <th>Status</th>
+                <th>LengthWithoutComments</th>
+                <th>LastModifiedBy.Name</th>
+                <th>LastModifiedDate</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="row-num">1</td>
+                <td class="id-cell">01p5g00000AqRst</td>
+                <td>AccountService</td>
+                <td>64.0</td>
+                <td><span class="pill pill-ok">Active</span></td>
+                <td style="text-align:right">2,814</td>
+                <td>Fabrice Challier</td>
+                <td>2026-04-28 16:42:10</td>
+              </tr>
+              <tr>
+                <td class="row-num">2</td>
+                <td class="id-cell">01p5g00000AqRuv</td>
+                <td>ContactTriggerHandler</td>
+                <td>64.0</td>
+                <td><span class="pill pill-ok">Active</span></td>
+                <td style="text-align:right">1,530</td>
+                <td>Marie Fontaine</td>
+                <td>2026-04-25 11:18:05</td>
+              </tr>
+              <tr>
+                <td class="row-num">3</td>
+                <td class="id-cell">01p5g00000AqRwx</td>
+                <td>LeadScoringBatch</td>
+                <td>62.0</td>
+                <td><span class="pill pill-ok">Active</span></td>
+                <td style="text-align:right">4,210</td>
+                <td>Fabrice Challier</td>
+                <td>2026-04-22 09:00:00</td>
+              </tr>
+              <tr>
+                <td class="row-num">4</td>
+                <td class="id-cell">01p5g00000AqRyz</td>
+                <td>OpportunityRollupScheduler</td>
+                <td>64.0</td>
+                <td><span class="pill pill-ok">Active</span></td>
+                <td style="text-align:right">980</td>
+                <td>Admin</td>
+                <td>2026-03-14 14:55:30</td>
+              </tr>
+              <tr>
+                <td class="row-num">5</td>
+                <td class="id-cell">01p5g00000AqS0a</td>
+                <td>CaseEscalationUtil</td>
+                <td>60.0</td>
+                <td><span class="pill pill-warn">Inactive</span></td>
+                <td style="text-align:right">660</td>
+                <td>Marie Fontaine</td>
+                <td>2026-02-10 08:30:12</td>
+              </tr>
+              <tr>
+                <td class="row-num">6</td>
+                <td class="id-cell">01p5g00000AqS1b</td>
+                <td>IntegrationCalloutHelper</td>
+                <td>64.0</td>
+                <td><span class="pill pill-ok">Active</span></td>
+                <td style="text-align:right">3,145</td>
+                <td>Fabrice Challier</td>
+                <td>2026-01-30 17:22:48</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div style="font-size:10px;color:#5b9bac;margin-top:4px">
+          Tooling API mode — double-click any DurableId cell to open the metadata dump inspector.
+        </div>
+      </div><!-- /panel 2 -->
+
+    </div><!-- /m-tabpane -->
+
+    <!-- ══ Keyboard shortcuts reference ══ -->
+    <div class="section-title" style="margin-top:16px">Keyboard Shortcuts &amp; Tips</div>
+    <div class="tbl-wrap">
+      <table class="cal-tbl">
+        <thead>
+          <tr><th style="width:180px">Shortcut / Action</th><th>Effect</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>Ctrl + Space</code></td><td>Trigger field / object auto-complete at the caret position</td></tr>
+          <tr><td><code>Enter</code> (in filter box)</td><td>Apply filter to result table immediately</td></tr>
+          <tr><td><code>Ctrl + D</code> (in editor)</td><td>Insert the current date at the caret position</td></tr>
+          <tr><td>Double-click ID cell</td><td>Open the record detail popup for that Salesforce ID</td></tr>
+          <tr><td>Right-double-click ID cell</td><td>Open the record in the Salesforce web UI (browser)</td></tr>
+          <tr><td>Alt + click ID cell</td><td>Open the record URL in the browser</td></tr>
+          <tr><td><code>Delete</code> (on selected cells)</td><td>Prompt to delete the records whose IDs are in the selection</td></tr>
+          <tr><td><code>Ctrl + C</code> (on selected cells)</td><td>Copy cell values to clipboard (tab-separated)</td></tr>
+          <tr><td>Tab title</td><td>Automatically set to the FROM object name after each query execution</td></tr>
+          <tr><td>Filter with ";"</td><td>Combine multiple filter terms (AND logic) — e.g. "Mitchell;GlobalBank"</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div><!-- /mockup -->
+</div><!-- /mockup-wrap -->
+
 <script>
 function sw(id,idx){
   var tp=document.getElementById(id);

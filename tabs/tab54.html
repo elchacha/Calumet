@@ -3,20 +3,584 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Change Set Helper — Calumet</title>
+<title>Permission Sets — Calumet</title>
 <link rel="stylesheet" href="../shared.css">
+<style>
+/* ── Badge styles for PS / PSG types ── */
+.badge-ps{
+  display:inline-block;padding:1px 7px;border-radius:3px;font-size:10px;font-weight:700;
+  background:#2980b9;color:#fff;white-space:nowrap}
+.badge-psg{
+  display:inline-block;padding:1px 7px;border-radius:3px;font-size:10px;font-weight:700;
+  background:#1a5276;color:#fff;white-space:nowrap}
+/* PSG rows get a slightly darker tint */
+.row-psg td{background:#e3eff8!important}
+/* green checkmark cell */
+.chk-green{color:#27ae60;font-size:13px;text-align:center}
+/* custom column centered */
+.col-center{text-align:center}
+/* Detail popup mockup */
+.popup-box{
+  border:1px solid #9AABBF;border-radius:4px;background:#fff;
+  box-shadow:2px 3px 10px rgba(0,0,0,.18);margin-top:14px}
+.popup-title{background:#D8E6EE;padding:7px 12px;font-weight:700;font-size:13px;
+  border-bottom:1px solid #9AABBF;display:flex;align-items:center;gap:10px}
+.popup-body{padding:10px}
+/* screenshot block */
+.ss-block{margin:16px 0}
+.ss-block img{max-width:100%;border:1px solid #9AABBF;border-radius:4px;
+  box-shadow:0 2px 8px rgba(0,0,0,.15)}
+.ss-caption{font-size:11px;color:#555;margin-top:5px;font-style:italic}
+/* progress bar mockup */
+.m-progress{height:10px;background:#d0e8f4;border-radius:5px;overflow:hidden;width:200px;display:inline-block;vertical-align:middle}
+.m-progress-bar{height:100%;background:#2980b9;border-radius:5px;animation:prog 2s linear infinite alternate}
+@keyframes prog{from{width:20%}to{width:85%}}
+/* cache warning */
+.cache-warn{color:#d01912;font-weight:700;font-size:12px}
+/* info italic */
+.info-italic{font-style:italic;font-size:11px;color:#1a73e8}
+</style>
 </head>
 <body class="tab-page">
+
+<!-- ── Summary card ── -->
 <div class="sum">
   <div class="sum-title">
-    <h2>Change Set Helper</h2>
+    <h2>Permission Sets</h2>
     <span class="sum-badge">Tab 54</span>
   </div>
-  <p class="sum-desc">Identify metadata members impacted by recent changes and build outbound change sets automatically.</p>
+  <p class="sum-desc">
+    Browse and analyse all Permission Sets and Permission Set Groups in the connected Salesforce org.
+    Filter by name, description, or content (objects/fields granted); see how many users are assigned,
+    how many rights each set carries, and which groups it belongs to.
+    Double-click any row to open a detailed popup showing assignees, object permissions, field permissions,
+    system permissions, and other settings. Export the full list to Excel with one click.
+  </p>
 </div>
+
+<!-- ── Mockup ── -->
 <div class="mockup-wrap">
-  <div class="mockup"><div class="vbox" style="gap:0px"><div class="anchor"><input class="cal-tf" placeholder="" style="width:375.0px;" readonly><div class="tbl-wrap"><table class="cal-tbl"><thead><tr><th>Custom</th><th>Type</th><th>Name</th><th>desc</th><th>modified</th><th>users</th><th>rights</th><th>ns</th><th>Children</th><th>In Group</th><th>Parents</th></tr></thead><tbody><tr><td colspan="20" class="tbl-empty"></td></tr></tbody></table></div><label class="cal-chk"><input type="checkbox" disabled> search content</label><label class="cal-chk"><input type="checkbox" disabled> search user</label><span class="cal-lbl">double click on a line to display the detail of the permission set / permission set group</span><label class="cal-chk"><input type="checkbox" checked disabled> hide standard permSet</label><label class="cal-chk"><input type="checkbox" disabled> hide managed permSet</label><label class="cal-chk"><input type="checkbox" disabled> search Strict content</label><div class="hbox" style="gap:10.0px;align-items:center"><button class="cal-btn btn-d">export</button><button class="cal-btn btn-b">update Cache</button><button class="cal-btn btn-b">Clear Cache</button></div></div></div></div>
-</div>
+<div class="mockup" style="padding:10px 14px 18px;">
+
+  <!-- ── Screenshot 1: main list ── -->
+  <div class="ss-block">
+    <img src="../screenshot/tab54-PermissionSet/msGjotiaYo.png"
+         alt="Permission Sets main list screenshot">
+    <div class="ss-caption">Main list — Permission Sets and Permission Set Groups, sorted by last modified date (descending). PSG rows are highlighted in blue. The cache is loading in the background.</div>
+  </div>
+
+  <!-- ── Toolbar row ── -->
+  <div class="hbox" style="gap:8px;align-items:center;flex-wrap:nowrap;margin-bottom:6px;">
+    <input class="cal-tf" style="width:360px;" placeholder="filter" readonly
+           data-tip="Type to filter by name, user, or content — 500 ms debounce">
+    <button class="cal-btn btn-d" data-tip="Export the full list to an Excel file">export</button>
+    <button class="cal-btn btn-b" data-tip="Force refresh — queries Salesforce and rebuilds the local cache">update Cache</button>
+    <button class="cal-btn btn-b" data-tip="Delete the local permission-set cache for this org">Clear Cache</button>
+    <span class="info-italic">Loading cache…</span>
+    <span class="m-progress"><span class="m-progress-bar"></span></span>
+  </div>
+
+  <!-- ── Filter checkboxes ── -->
+  <div class="hbox" style="gap:14px;align-items:center;margin-bottom:4px;">
+    <label class="cal-chk" data-tip="Filter: only show permission sets whose object/field rights contain the search term"><input type="checkbox" disabled> search content</label>
+    <label class="cal-chk" data-tip="Strict match: content must exactly contain the search term"><input type="checkbox" disabled> search Strict content</label>
+    <label class="cal-chk" data-tip="Include assigned user names in the search"><input type="checkbox" disabled> search user</label>
+    <label class="cal-chk" data-tip="Remove standard (non-custom) permission sets from the list"><input type="checkbox" checked disabled> hide standard permSet</label>
+    <label class="cal-chk" data-tip="Remove managed-package permission sets from the list"><input type="checkbox" disabled> hide managed permSet</label>
+  </div>
+
+  <!-- hint -->
+  <div style="font-style:italic;font-weight:700;font-size:11px;color:#555;margin-bottom:6px;">
+    double click on a line to display the detail of the permission set / permission set group
+  </div>
+
+  <!-- ── Permission Sets table ── -->
+  <div class="tbl-wrap">
+    <table class="cal-tbl">
+      <thead>
+        <tr>
+          <th style="width:52px;">Custom</th>
+          <th style="width:52px;">Type</th>
+          <th style="width:240px;">Name</th>
+          <th style="width:320px;">desc</th>
+          <th style="width:150px;">modified ▼</th>
+          <th style="width:50px;text-align:center">users</th>
+          <th style="width:50px;text-align:center">rights</th>
+          <th style="width:90px;">ns</th>
+          <th style="width:200px;">Children</th>
+          <th style="width:65px;text-align:center">In Group</th>
+          <th style="width:180px;">Parents</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- PSG row -->
+        <tr class="row-psg">
+          <td class="chk-green">&#10003;</td>
+          <td class="col-center"><span class="badge-psg">PSG</span></td>
+          <td>Notes_feature</td>
+          <td></td>
+          <td>2026-01-11 22:11:16</td>
+          <td style="text-align:center">82</td>
+          <td style="text-align:center">0</td>
+          <td></td>
+          <td style="font-size:10px;color:#555">Notes<br>Record Page views<br>AI Search</td>
+          <td></td>
+          <td></td>
+        </tr>
+        <!-- PSG row -->
+        <tr class="row-psg">
+          <td class="chk-green">&#10003;</td>
+          <td class="col-center"><span class="badge-psg">PSG</span></td>
+          <td>Knowledge_Platform_Internal</td>
+          <td></td>
+          <td>2026-01-11 22:11:10</td>
+          <td style="text-align:center">45</td>
+          <td style="text-align:center">0</td>
+          <td></td>
+          <td style="font-size:10px;color:#555">Send deal notifications<br>Synch companies with pitchbook<br>weekly meetings<br>Meeting Transcription<br>AI Search</td>
+          <td></td>
+          <td></td>
+        </tr>
+        <!-- PSG row -->
+        <tr class="row-psg">
+          <td class="chk-green">&#10003;</td>
+          <td class="col-center"><span class="badge-psg">PSG</span></td>
+          <td>Knowledge_Platform_Set</td>
+          <td></td>
+          <td>2026-01-11 22:11:01</td>
+          <td style="text-align:center">42</td>
+          <td style="text-align:center">0</td>
+          <td></td>
+          <td style="font-size:10px;color:#555">Knowledge Platform</td>
+          <td></td>
+          <td></td>
+        </tr>
+        <!-- PS rows -->
+        <tr>
+          <td class="chk-green">&#10003;</td>
+          <td class="col-center"><span class="badge-ps">PS</span></td>
+          <td>sfdc_activityplatform</td>
+          <td>Permset for the 'sfdc.activityplatform' C2C integration</td>
+          <td>2026-01-12 16:37:13</td>
+          <td style="text-align:center">1</td>
+          <td style="text-align:center">0</td>
+          <td style="color:#888">sfdcInternalInt</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr>
+          <td class="chk-green">&#10003;</td>
+          <td class="col-center"><span class="badge-ps">PS</span></td>
+          <td>Manage_Innovation_Strategic_Partners</td>
+          <td>Manage Innovation Strategic Partners</td>
+          <td>2026-01-11 00:10:54</td>
+          <td style="text-align:center">13</td>
+          <td style="text-align:center">0</td>
+          <td></td>
+          <td></td>
+          <td class="chk-green" style="text-align:center">&#10003;</td>
+          <td style="color:#555;font-size:10px">Knowledge_Platform_Set</td>
+        </tr>
+        <tr>
+          <td class="chk-green">&#10003;</td>
+          <td class="col-center"><span class="badge-ps">PS</span></td>
+          <td>sfdc_nc_constraints_engine_deploy</td>
+          <td>Create and manage constraint types and rules in Advanced Configurator.</td>
+          <td>2026-01-10 06:16:38</td>
+          <td style="text-align:center">1</td>
+          <td style="text-align:center">0</td>
+          <td style="color:#888">sfdcInternalInt</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr>
+          <td class="chk-green">&#10003;</td>
+          <td class="col-center"><span class="badge-ps">PS</span></td>
+          <td>AllFieldWriteAccess</td>
+          <td></td>
+          <td>2025-12-23 20:13:41</td>
+          <td style="text-align:center">0</td>
+          <td style="text-align:center">0</td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr>
+          <td class="chk-green">&#10003;</td>
+          <td class="col-center"><span class="badge-ps">PS</span></td>
+          <td>SourceScrubAccess</td>
+          <td>Give access to specific fields for Contact/Account</td>
+          <td>2025-12-16 21:03:04</td>
+          <td style="text-align:center">77</td>
+          <td style="text-align:center">0</td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr>
+          <td class="chk-green">&#10003;</td>
+          <td class="col-center"><span class="badge-ps">PS</span></td>
+          <td>SAPIM_Admin</td>
+          <td></td>
+          <td>2025-12-07 10:58:30</td>
+          <td style="text-align:center">1</td>
+          <td style="text-align:center">0</td>
+          <td style="color:#888">sapim</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr>
+          <td class="chk-green">&#10003;</td>
+          <td class="col-center"><span class="badge-ps">PS</span></td>
+          <td>SAPIM_User</td>
+          <td></td>
+          <td>2025-12-07 10:58:30</td>
+          <td style="text-align:center">0</td>
+          <td style="text-align:center">0</td>
+          <td style="color:#888">sapim</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr>
+          <td class="chk-green">&#10003;</td>
+          <td class="col-center"><span class="badge-ps">PS</span></td>
+          <td>sinequaPermission</td>
+          <td>provide view all to integration user sinequa</td>
+          <td>2025-12-06 19:27:10</td>
+          <td style="text-align:center">1</td>
+          <td style="text-align:center">0</td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr>
+          <td class="chk-green">&#10003;</td>
+          <td class="col-center"><span class="badge-ps">PS</span></td>
+          <td>CongaUserAccess</td>
+          <td>give access to conga app</td>
+          <td>2025-12-04 18:24:04</td>
+          <td style="text-align:center">1</td>
+          <td style="text-align:center">0</td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr>
+          <td class="chk-green">&#10003;</td>
+          <td class="col-center"><span class="badge-ps">PS</span></td>
+          <td>Surfe_Permission</td>
+          <td>give the rights to use Surfe on LinkedIn</td>
+          <td>2025-11-04 14:54:35</td>
+          <td style="text-align:center">4</td>
+          <td style="text-align:center">0</td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr>
+          <td class="chk-green">&#10003;</td>
+          <td class="col-center"><span class="badge-ps">PS</span></td>
+          <td>Connected_App_Access_Allocation_Workbench</td>
+          <td>users are enabled to connect to Workbench</td>
+          <td>2025-10-02 14:36:23</td>
+          <td style="text-align:center">1</td>
+          <td style="text-align:center">0</td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr>
+          <td class="chk-green">&#10003;</td>
+          <td class="col-center"><span class="badge-ps">PS</span></td>
+          <td>manage_Chatter_Group_Community</td>
+          <td></td>
+          <td>2025-09-04 17:59:16</td>
+          <td style="text-align:center">2</td>
+          <td style="text-align:center">0</td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr>
+          <td class="chk-green">&#10003;</td>
+          <td class="col-center"><span class="badge-ps">PS</span></td>
+          <td>NoMfaRequired</td>
+          <td></td>
+          <td>2025-06-24 16:13:01</td>
+          <td style="text-align:center">0</td>
+          <td style="text-align:center">0</td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr>
+          <td class="chk-green">&#10003;</td>
+          <td class="col-center"><span class="badge-ps">PS</span></td>
+          <td>SourceScrubApiOnlyAccess</td>
+          <td></td>
+          <td>2025-05-26 15:51:49</td>
+          <td style="text-align:center">1</td>
+          <td style="text-align:center">0</td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr>
+          <td class="chk-green">&#10003;</td>
+          <td class="col-center"><span class="badge-ps">PS</span></td>
+          <td>MEA_For_user</td>
+          <td></td>
+          <td>2025-04-25 11:46:13</td>
+          <td style="text-align:center">91</td>
+          <td style="text-align:center">0</td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+      </tbody>
+    </table>
+  </div><!-- /tbl-wrap -->
+
+  <!-- ── Detail popup mockup (shown when user double-clicks a row) ── -->
+  <div class="popup-box" style="max-width:580px;">
+    <div class="popup-title">
+      PermissionSet : Notes_feature
+      <button class="cal-btn btn-d" style="margin-left:auto;">open</button>
+      <span style="margin-left:14px;font-size:11px;font-weight:400;color:#888;font-style:italic;">
+        you can double click an element to open it in Salesforce
+      </span>
+    </div>
+    <div class="popup-body">
+      <div class="m-tabpane" id="tp1">
+        <div class="m-tabbar">
+          <div class="m-tab act" onclick="sw('tp1',0)">assignees(82)</div>
+          <div class="m-tab" onclick="sw('tp1',1)">system(0)</div>
+          <div class="m-tab" onclick="sw('tp1',2)">objects(8)</div>
+          <div class="m-tab" onclick="sw('tp1',3)">fields(85)</div>
+          <div class="m-tab" onclick="sw('tp1',4)">others(18)</div>
+        </div>
+        <div class="m-body">
+
+          <!-- ASSIGNEES tab -->
+          <div class="m-panel act" id="tp1-0">
+            <div class="tbl-wrap" style="max-height:260px;overflow-y:auto;">
+              <table class="cal-tbl">
+                <thead>
+                  <tr>
+                    <th style="width:200px">UserName</th>
+                    <th style="width:220px">Profile</th>
+                    <th style="width:55px">Active</th>
+                    <th style="width:130px">PsGroup</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><td>Catherine Chen</td><td>System Administrator</td><td style="color:#27ae60">true</td><td>Notes_feature</td></tr>
+                  <tr><td>Fabrice Challier</td><td>System Administrator</td><td style="color:#27ae60">true</td><td>Notes_feature</td></tr>
+                  <tr><td>Cathay Administrator (Tech Team)</td><td>System Administrator</td><td style="color:#27ae60">true</td><td>Notes_feature</td></tr>
+                  <tr><td>Alban Vendeuvre</td><td>Deal Cathay Innovation</td><td style="color:#27ae60">true</td><td>Notes_feature</td></tr>
+                  <tr><td>Antoine Dauphin</td><td>Assistant Fundraising</td><td style="color:#27ae60">true</td><td>Notes_feature</td></tr>
+                  <tr><td>Benjamin Jacquard</td><td>Deal Cathay Innovation</td><td style="color:#27ae60">true</td><td>Notes_feature</td></tr>
+                  <tr><td>Benoit SERINGE</td><td>Fundraising Cathay</td><td style="color:#27ae60">true</td><td>Notes_feature</td></tr>
+                  <tr><td>Bertrand UCHAN</td><td>Deal Cathay</td><td style="color:#27ae60">true</td><td>Notes_feature</td></tr>
+                  <tr><td>Bruno BEZARD</td><td>Fundraising Cathay</td><td style="color:#27ae60">true</td><td>Notes_feature</td></tr>
+                  <tr><td>Bruno Delahaye</td><td>Fundraising Cathay Innovation</td><td style="color:#27ae60">true</td><td>Notes_feature</td></tr>
+                  <tr><td>Caroline Folleas</td><td>Fundraising Cathay</td><td style="color:#27ae60">true</td><td>Notes_feature</td></tr>
+                  <tr><td>Chao Yue</td><td>Tech team</td><td style="color:#27ae60">true</td><td>Notes_feature</td></tr>
+                  <tr><td>Charlie Naudy</td><td>Deal Cathay Innovation</td><td style="color:#27ae60">true</td><td>Notes_feature</td></tr>
+                  <tr><td>Colombe Moinet</td><td>Deal Cathay Innovation</td><td style="color:#27ae60">true</td><td>Notes_feature</td></tr>
+                  <tr><td>Costanza Carissimo</td><td>Deal Cathay Innovation</td><td style="color:#27ae60">true</td><td>Notes_feature</td></tr>
+                  <tr><td>Daniel BALMISSE</td><td>Fundraising Cathay Innovation</td><td style="color:#27ae60">true</td><td>Notes_feature</td></tr>
+                  <tr><td>Daniela Caserotto-leibert</td><td>Deal Cathay Innovation</td><td style="color:#27ae60">true</td><td>Notes_feature</td></tr>
+                  <tr><td>Denis BARRIER</td><td>Fundraising Cathay Innovation</td><td style="color:#27ae60">true</td><td>Notes_feature</td></tr>
+                  <tr><td>Edouard MOINET</td><td>Fundraising Cathay</td><td style="color:#27ae60">true</td><td>Notes_feature</td></tr>
+                  <tr><td>Elijah Yi</td><td>Deal Cathay Innovation</td><td style="color:#27ae60">true</td><td>Notes_feature</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- SYSTEM tab -->
+          <div class="m-panel" id="tp1-1">
+            <div class="tbl-wrap">
+              <table class="cal-tbl">
+                <thead><tr><th>System Permission</th><th style="width:70px;text-align:center">Enabled</th></tr></thead>
+                <tbody>
+                  <tr><td colspan="2" class="tbl-empty">No system permissions granted</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- OBJECTS tab -->
+          <div class="m-panel" id="tp1-2">
+            <div class="tbl-wrap">
+              <table class="cal-tbl">
+                <thead>
+                  <tr>
+                    <th style="width:180px">Object</th>
+                    <th style="width:55px;text-align:center">Read</th>
+                    <th style="width:55px;text-align:center">Create</th>
+                    <th style="width:55px;text-align:center">Edit</th>
+                    <th style="width:55px;text-align:center">Delete</th>
+                    <th style="width:65px;text-align:center">ViewAll</th>
+                    <th style="width:65px;text-align:center">ModifyAll</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><td>Note__c</td>
+                    <td style="text-align:center"><input type="checkbox" checked disabled></td>
+                    <td style="text-align:center"><input type="checkbox" checked disabled></td>
+                    <td style="text-align:center"><input type="checkbox" checked disabled></td>
+                    <td style="text-align:center"><input type="checkbox" disabled></td>
+                    <td style="text-align:center"><input type="checkbox" disabled></td>
+                    <td style="text-align:center"><input type="checkbox" disabled></td>
+                  </tr>
+                  <tr><td>NoteShare</td>
+                    <td style="text-align:center"><input type="checkbox" checked disabled></td>
+                    <td style="text-align:center"><input type="checkbox" disabled></td>
+                    <td style="text-align:center"><input type="checkbox" disabled></td>
+                    <td style="text-align:center"><input type="checkbox" disabled></td>
+                    <td style="text-align:center"><input type="checkbox" disabled></td>
+                    <td style="text-align:center"><input type="checkbox" disabled></td>
+                  </tr>
+                  <tr><td>ContentNote</td>
+                    <td style="text-align:center"><input type="checkbox" checked disabled></td>
+                    <td style="text-align:center"><input type="checkbox" checked disabled></td>
+                    <td style="text-align:center"><input type="checkbox" checked disabled></td>
+                    <td style="text-align:center"><input type="checkbox" disabled></td>
+                    <td style="text-align:center"><input type="checkbox" disabled></td>
+                    <td style="text-align:center"><input type="checkbox" disabled></td>
+                  </tr>
+                  <tr><td>ContentDocumentLink</td>
+                    <td style="text-align:center"><input type="checkbox" checked disabled></td>
+                    <td style="text-align:center"><input type="checkbox" checked disabled></td>
+                    <td style="text-align:center"><input type="checkbox" disabled></td>
+                    <td style="text-align:center"><input type="checkbox" checked disabled></td>
+                    <td style="text-align:center"><input type="checkbox" disabled></td>
+                    <td style="text-align:center"><input type="checkbox" disabled></td>
+                  </tr>
+                  <tr><td>LinkedArticle</td>
+                    <td style="text-align:center"><input type="checkbox" checked disabled></td>
+                    <td style="text-align:center"><input type="checkbox" disabled></td>
+                    <td style="text-align:center"><input type="checkbox" disabled></td>
+                    <td style="text-align:center"><input type="checkbox" disabled></td>
+                    <td style="text-align:center"><input type="checkbox" disabled></td>
+                    <td style="text-align:center"><input type="checkbox" disabled></td>
+                  </tr>
+                  <tr><td>CollaborationGroup</td>
+                    <td style="text-align:center"><input type="checkbox" checked disabled></td>
+                    <td style="text-align:center"><input type="checkbox" checked disabled></td>
+                    <td style="text-align:center"><input type="checkbox" checked disabled></td>
+                    <td style="text-align:center"><input type="checkbox" disabled></td>
+                    <td style="text-align:center"><input type="checkbox" disabled></td>
+                    <td style="text-align:center"><input type="checkbox" disabled></td>
+                  </tr>
+                  <tr><td>RecordPageView__c</td>
+                    <td style="text-align:center"><input type="checkbox" checked disabled></td>
+                    <td style="text-align:center"><input type="checkbox" checked disabled></td>
+                    <td style="text-align:center"><input type="checkbox" checked disabled></td>
+                    <td style="text-align:center"><input type="checkbox" disabled></td>
+                    <td style="text-align:center"><input type="checkbox" disabled></td>
+                    <td style="text-align:center"><input type="checkbox" disabled></td>
+                  </tr>
+                  <tr><td>KnowledgeArticle</td>
+                    <td style="text-align:center"><input type="checkbox" checked disabled></td>
+                    <td style="text-align:center"><input type="checkbox" disabled></td>
+                    <td style="text-align:center"><input type="checkbox" disabled></td>
+                    <td style="text-align:center"><input type="checkbox" disabled></td>
+                    <td style="text-align:center"><input type="checkbox" checked disabled></td>
+                    <td style="text-align:center"><input type="checkbox" disabled></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- FIELDS tab -->
+          <div class="m-panel" id="tp1-3">
+            <div class="tbl-wrap" style="max-height:260px;overflow-y:auto;">
+              <table class="cal-tbl">
+                <thead>
+                  <tr>
+                    <th style="width:200px">Object</th>
+                    <th style="width:200px">Field</th>
+                    <th style="width:60px;text-align:center">Read</th>
+                    <th style="width:60px;text-align:center">Edit</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><td>Note__c</td><td>Title__c</td><td style="text-align:center"><input type="checkbox" checked disabled></td><td style="text-align:center"><input type="checkbox" checked disabled></td></tr>
+                  <tr><td>Note__c</td><td>Body__c</td><td style="text-align:center"><input type="checkbox" checked disabled></td><td style="text-align:center"><input type="checkbox" checked disabled></td></tr>
+                  <tr><td>Note__c</td><td>IsPrivate__c</td><td style="text-align:center"><input type="checkbox" checked disabled></td><td style="text-align:center"><input type="checkbox" disabled></td></tr>
+                  <tr><td>Note__c</td><td>RelatedTo__c</td><td style="text-align:center"><input type="checkbox" checked disabled></td><td style="text-align:center"><input type="checkbox" checked disabled></td></tr>
+                  <tr><td>RecordPageView__c</td><td>ObjectType__c</td><td style="text-align:center"><input type="checkbox" checked disabled></td><td style="text-align:center"><input type="checkbox" checked disabled></td></tr>
+                  <tr><td>RecordPageView__c</td><td>ViewedDate__c</td><td style="text-align:center"><input type="checkbox" checked disabled></td><td style="text-align:center"><input type="checkbox" checked disabled></td></tr>
+                  <tr><td>RecordPageView__c</td><td>RecordId__c</td><td style="text-align:center"><input type="checkbox" checked disabled></td><td style="text-align:center"><input type="checkbox" checked disabled></td></tr>
+                  <tr><td>RecordPageView__c</td><td>UserId__c</td><td style="text-align:center"><input type="checkbox" checked disabled></td><td style="text-align:center"><input type="checkbox" disabled></td></tr>
+                  <tr><td>CollaborationGroup</td><td>Name</td><td style="text-align:center"><input type="checkbox" checked disabled></td><td style="text-align:center"><input type="checkbox" checked disabled></td></tr>
+                  <tr><td>CollaborationGroup</td><td>Description</td><td style="text-align:center"><input type="checkbox" checked disabled></td><td style="text-align:center"><input type="checkbox" checked disabled></td></tr>
+                  <tr><td>CollaborationGroup</td><td>CollaborationType</td><td style="text-align:center"><input type="checkbox" checked disabled></td><td style="text-align:center"><input type="checkbox" disabled></td></tr>
+                  <tr><td>ContentNote</td><td>Title</td><td style="text-align:center"><input type="checkbox" checked disabled></td><td style="text-align:center"><input type="checkbox" checked disabled></td></tr>
+                  <tr><td>ContentNote</td><td>Content</td><td style="text-align:center"><input type="checkbox" checked disabled></td><td style="text-align:center"><input type="checkbox" checked disabled></td></tr>
+                  <tr><td>KnowledgeArticle</td><td>Title</td><td style="text-align:center"><input type="checkbox" checked disabled></td><td style="text-align:center"><input type="checkbox" disabled></td></tr>
+                  <tr><td>KnowledgeArticle</td><td>Summary</td><td style="text-align:center"><input type="checkbox" checked disabled></td><td style="text-align:center"><input type="checkbox" disabled></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- OTHERS tab -->
+          <div class="m-panel" id="tp1-4">
+            <div class="tbl-wrap">
+              <table class="cal-tbl">
+                <thead>
+                  <tr>
+                    <th style="width:220px">Setting</th>
+                    <th style="width:60px;text-align:center">Enabled</th>
+                    <th>Details</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><td>Apex Class Access</td><td style="text-align:center"><input type="checkbox" checked disabled></td><td style="color:#555">NoteService, NoteController (2)</td></tr>
+                  <tr><td>Visualforce Page Access</td><td style="text-align:center"><input type="checkbox" checked disabled></td><td style="color:#555">NoteDetailPage (1)</td></tr>
+                  <tr><td>Custom Permission</td><td style="text-align:center"><input type="checkbox" checked disabled></td><td style="color:#555">Can_Manage_Notes (1)</td></tr>
+                  <tr><td>Custom Setting</td><td style="text-align:center"><input type="checkbox" disabled></td><td style="color:#888">—</td></tr>
+                  <tr><td>Record Type Access</td><td style="text-align:center"><input type="checkbox" checked disabled></td><td style="color:#555">Note__c.Standard, Note__c.Confidential (2)</td></tr>
+                  <tr><td>Tab Visibility</td><td style="text-align:center"><input type="checkbox" checked disabled></td><td style="color:#555">Notes tab — DefaultOn (1)</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+        </div><!-- /m-body -->
+      </div><!-- /m-tabpane -->
+    </div><!-- /popup-body -->
+  </div><!-- /popup-box -->
+
+  <!-- ── Screenshot 2: detail popup (assignees list) ── -->
+  <div class="ss-block">
+    <img src="../screenshot/tab54-PermissionSet/VderFVEoM5.png"
+         alt="Permission Set detail popup — assignees tab">
+    <div class="ss-caption">Detail popup for the "Notes_feature" Permission Set Group — Assignees tab listing all 82 users with their profile and the permission set group they joined through.</div>
+  </div>
+
+</div><!-- /mockup -->
+</div><!-- /mockup-wrap -->
+
 <script>
 function sw(id,idx){
   var tp=document.getElementById(id);
