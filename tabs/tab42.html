@@ -3,616 +3,426 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>FlexiPages — Calumet</title>
+<title>FlexiPages &amp; Profile Overrides — Calumet</title>
 <link rel="stylesheet" href="../shared.css">
 <style>
-/* ── Badge pills for FD / CL columns ── */
-.badge-fd {
-  display:inline-block;padding:1px 7px;border-radius:10px;font-size:10px;
-  font-weight:700;border:1px solid transparent;
-}
-.badge-clean  { background:#27ae60;color:#fff;border-color:#1e8a4a; }
-.badge-ok     { background:#2ecc71;color:#fff;border-color:#27ae60; }
-.badge-warn   { background:#e67e22;color:#fff;border-color:#b8621a; }
-.badge-error  { background:#E74C3C;color:#fff;border-color:#c03a2b; }
-.badge-dash   { background:#5b9bac;color:#fff;border-color:#4a7f8e; }
-
-/* action badges */
-.badge-view    { display:inline-block;padding:1px 8px;border-radius:10px;font-size:10px;font-weight:700;background:#2980b9;color:#fff; }
-.badge-edit    { display:inline-block;padding:1px 8px;border-radius:10px;font-size:10px;font-weight:700;background:#8e44ad;color:#fff; }
-.badge-new     { display:inline-block;padding:1px 8px;border-radius:10px;font-size:10px;font-weight:700;background:#27ae60;color:#fff; }
-.badge-tab     { display:inline-block;padding:1px 8px;border-radius:10px;font-size:10px;font-weight:700;background:#e67e22;color:#fff; }
-.badge-default { display:inline-block;padding:1px 8px;border-radius:10px;font-size:10px;font-weight:700;background:#7f8c8d;color:#fff; }
-
-/* layout deps panel */
-.deps-panel {
-  min-width:180px;max-width:240px;background:#fafafa;border:1px solid #cdd8e0;
-  border-radius:4px;padding:8px;display:flex;flex-direction:column;gap:6px;
-  font-size:11px;
-}
-.deps-panel .deps-title {
-  font-weight:700;color:#2c3e50;font-size:11px;border-bottom:1px solid #dde4ea;padding-bottom:4px;margin-bottom:2px;
-}
-.deps-item { padding:2px 4px;border-radius:2px;color:#1a2a35; }
-.deps-item:nth-child(odd) { background:#eef3f7; }
-
-/* legend row */
-.legend-row {
-  display:flex;flex-wrap:wrap;align-items:center;gap:6px;
-  font-size:10.5px;color:#555;padding:4px 0;
-}
-
-.scr-section h3 { font-size:13px;font-weight:700;color:var(--smut);
-  text-transform:uppercase;letter-spacing:.8px;margin-bottom:14px; }
-.scr-item img { width:100%;border:1px solid var(--sborder);border-radius:6px;
-  box-shadow:0 2px 12px rgba(0,0,0,.35); }
-/* feature list */
-.feat-list { list-style:none;display:flex;flex-direction:column;gap:6px; }
-.feat-list li { font-size:12.5px;color:#a8b4c8;line-height:1.6;padding-left:16px;position:relative; }
-.feat-list li::before { content:"›";position:absolute;left:0;color:var(--sacc);font-weight:700; }
-
-/* filter toolbar */
-.toolbar { display:flex;flex-wrap:wrap;align-items:center;gap:6px;padding:6px 0; }
-.lbl-sm { font-size:11px;color:#2c3e50;white-space:nowrap; }
-
-/* selected row highlight */
-.cal-tbl tr.sel td { background:#d0e8f5; }
-
-/* list items in deps */
-.deps-list { list-style:none;display:flex;flex-direction:column;gap:2px; }
+  .legend-row { display:flex; flex-wrap:wrap; align-items:center; gap:6px; font-size:12px; color:#555; margin-bottom:4px; }
+  .legend-sep { color:#bbb; padding:0 4px; }
+  .dep-panel { min-width:170px; max-width:260px; border:1px solid #ddd; border-radius:6px; background:#fafafa; padding:10px 12px; display:flex; flex-direction:column; gap:6px; }
+  .dep-panel-title { font-weight:700; font-size:13px; color:#2c3e50; word-break:break-word; margin-bottom:4px; }
+  .dep-list { list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:4px; }
+  .dep-list li { font-size:12px; color:#34495e; background:#fff; border:1px solid #e0e0e0; border-radius:4px; padding:3px 8px; }
+  .dep-hint { font-style:italic; font-size:11px; color:#888; margin-top:6px; }
+  .flexi-split { display:flex; gap:8px; align-items:flex-start; }
+  .flexi-split .tbl-wrap { flex:1; min-width:0; overflow-x:auto; }
 </style>
 </head>
 <body class="tab-page">
 
-<!-- ── Summary card ── -->
+<!-- ───── Summary card ───── -->
 <div class="sum">
   <div class="sum-title">
-    <h2>FlexiPages</h2>
+    <h2>FlexiPages &amp; Profile Overrides</h2>
     <span class="sum-badge">Tab 42</span>
   </div>
   <p class="sum-desc">
-    Analyse Lightning page assignments and legacy component usage across your Salesforce org.
-    The tab exposes three views: <strong>Profile Overrides</strong> — which FlexiPage each profile
-    sees for each object action; <strong>FlexiPages</strong> — all Lightning pages with their
-    Full-Dynamic (FD) score and Classic Layout (CL) dependency count; and
-    <strong>Flexi Unused</strong> — Lightning pages that are not assigned to any profile or app.
-    Double-clicking any row opens the corresponding Lightning page in Setup.
-    Data is loaded from a Tooling API cache that is shared across tabs.
+    Audit Lightning pages (FlexiPages) and profile-level action overrides across your Salesforce org.
+    Color-coded FD and CL badges instantly reveal which pages carry legacy (non-LWC) components,
+    and unused FlexiPages are surfaced for safe cleanup.
+    <button class="cal-btn btn-d" style="margin-left:10px" onclick="document.getElementById('modal-kf').style.display='flex'">&#9733; Key features</button>
   </p>
 </div>
 
-<!-- ── Feature highlights ── -->
-<div class="scr-section">
-  <h3>Key Features</h3>
-  <ul class="feat-list">
-    <li>FD badge: counts legacy (non-Full-Dynamic) components on a Lightning page — green FD means fully modern, red ≥7 means heavy legacy debt.</li>
-    <li>CL badge: counts Classic Layout references inside the page — a non-zero value indicates remaining dependencies on old page layouts.</li>
-    <li>Profile Overrides table shows the exact FlexiPage override per profile / record type / action combination, letting you spot inconsistencies at a glance.</li>
-    <li>Layout Dependencies side panel shows, for the selected FlexiPage, all Classic layouts it depends on.</li>
-    <li>Flexi Unused tab identifies Lightning pages that exist in the org but are not assigned to any profile or Lightning app — candidates for cleanup.</li>
-    <li>All three tables support live text filters; data is cached to avoid repeated API calls.</li>
-  </ul>
-</div>
-
-<div class="scr-section">
-  <h3>Screenshots</h3>
-  <div class="scr-grid">
-    <div class="scr-item">
-      <span class="scr-caption">Profile Overrides — each row is a profile/action/record-type override. The FD badge shows the legacy component count for that Lightning page. Blue "View" action badges indicate the page is shown on the record view action.</span>
-    </div>
-    <div class="scr-item">
-      <span class="scr-caption">FlexiPages tab — the main table lists every Lightning page with its FD and CL scores. Selecting a row populates the Layout Dependencies panel on the right with the names of all Classic layouts still referenced.</span>
-    </div>
-    <div class="scr-item">
-      <span class="scr-caption">Flexi Unused — Lightning pages that are not assigned to any profile or Lightning app. The Object Related column links the page back to its Salesforce object, making cleanup straightforward.</span>
-    </div>
-  </div>
-</div>
-
-<!-- ── Interactive mockup ── -->
+<!-- ───── Mockup ───── -->
 <div class="mockup-wrap">
   <div class="mockup">
+
     <div class="m-tabpane" id="tp42">
       <div class="m-tabbar">
-        <div class="m-tab act" onclick="sw('tp42',0)">Profile overrides</div>
-        <div class="m-tab" onclick="sw('tp42',1)">FlexiPages</div>
-        <div class="m-tab" onclick="sw('tp42',2)">Flexi Unused</div>
+        <div class="m-tab act"  onclick="sw('tp42',0)">Profile overrides</div>
+        <div class="m-tab"      onclick="sw('tp42',1)">FlexiPages</div>
+        <div class="m-tab"      onclick="sw('tp42',2)">Flexi Unused</div>
       </div>
       <div class="m-body">
 
-        <!-- ══════════════════════════════════════════
-             Tab 0 — Profile Overrides
-             ══════════════════════════════════════════ -->
+        <!-- ══════════════════════════════════════════════════════════
+             Tab 0 — Profile overrides
+             ══════════════════════════════════════════════════════════ -->
         <div class="m-panel act" id="tp42-0">
-          <div class="anchor">
+          <div class="vbox" style="gap:8px;padding:6px 0 0 0">
 
             <!-- Toolbar row 1 -->
-            <div class="toolbar">
-              <button class="cal-btn btn-b" data-tip="Load profile action overrides from Tooling API cache">Extract</button>
-              <button class="cal-btn btn-d" data-tip="Clear local Tooling API cache and re-fetch from Salesforce">ClearCache</button>
-              <span class="cal-lbl" style="color:#555">Cache was last updated: 2026-04-29 08:15</span>
+            <div class="hbox" style="gap:8px;align-items:center">
+              <button class="cal-btn btn-b" data-tip="Load profile action overrides from cache or API">Extract</button>
+              <button class="cal-btn btn-d" data-tip="Clear cached data and re-fetch from Salesforce">ClearCache</button>
+              <span class="vsep"></span>
+              <span class="cal-lbl" style="font-size:12px;color:#888">Cache was last updated: 2026-04-22 09:14</span>
             </div>
 
-            <!-- Toolbar row 2: filters -->
-            <div class="toolbar">
-              <span class="lbl-sm">AppLabel:</span>
-              <input class="cal-tf" style="width:130px" placeholder="filter…" readonly>
-              <span class="lbl-sm">Name:</span>
-              <input class="cal-tf" style="width:130px" placeholder="filter…" readonly>
-              <span class="lbl-sm">Object:</span>
-              <input class="cal-tf" style="width:130px" placeholder="filter…" readonly>
-              <span class="lbl-sm">Profile:</span>
-              <input class="cal-tf" style="width:130px" placeholder="filter…" readonly>
+            <!-- Toolbar row 2 — filters -->
+            <div class="hbox" style="gap:6px;align-items:center">
+              <span class="cal-lbl">AppLabel:</span>
+              <input class="cal-tf" style="width:120px" placeholder="filter&hellip;" readonly>
+              <span class="cal-lbl">Name:</span>
+              <input class="cal-tf" style="width:120px" placeholder="filter&hellip;" readonly>
+              <span class="cal-lbl">Object:</span>
+              <input class="cal-tf" style="width:120px" placeholder="filter&hellip;" readonly>
+              <span class="cal-lbl">Profile:</span>
+              <input class="cal-tf" style="width:120px" placeholder="filter&hellip;" readonly>
             </div>
 
             <!-- Legend -->
             <div class="legend-row">
-              <span>FD : Full Dynamic —</span>
-              <span class="badge-fd badge-clean">FD</span><span>= no legacy component</span>
-              <span class="badge-fd badge-ok">1–3</span><span>= low</span>
-              <span class="badge-fd badge-warn">4–6</span><span>= medium</span>
-              <span class="badge-fd badge-error">≥7</span><span>= high (count of non-Full-Dynamic components)</span>
+              <span>FD : Full Dynamic &#8212;</span>
+              <span style="background:#e8f5e9;color:#2e7d32;border-radius:12px;padding:2px 8px;font-size:12px;font-weight:600">FD</span>
+              <span>= no legacy component</span>
+              <span style="background:#c8e6c9;color:#1b5e20;border-radius:12px;padding:2px 8px;font-size:12px;font-weight:600">1&#8211;3</span>
+              <span>= low</span>
+              <span style="background:#fff3e0;color:#e65100;border-radius:12px;padding:2px 8px;font-size:12px;font-weight:600">4&#8211;6</span>
+              <span>= medium</span>
+              <span style="background:#ffebee;color:#c62828;border-radius:12px;padding:2px 8px;font-size:12px;font-weight:600">&#8805;7</span>
+              <span>= high &nbsp;(number = non-Full-Dynamic components)</span>
             </div>
 
             <!-- Table -->
-            <div class="tbl-wrap" style="max-height:420px;overflow-y:auto">
+            <div class="tbl-wrap">
               <table class="cal-tbl">
                 <thead>
                   <tr>
-                    <th>AppLabel</th>
+                    <th style="width:90px">AppLabel</th>
                     <th style="width:60px">FD</th>
                     <th style="width:110px">Action</th>
-                    <th>Name</th>
-                    <th>Label</th>
-                    <th>Object</th>
-                    <th>RecordType</th>
-                    <th>Profile</th>
+                    <th style="width:190px">Name</th>
+                    <th style="width:160px">Label</th>
+                    <th style="width:100px">Object</th>
+                    <th style="width:110px">RecordType</th>
+                    <th style="width:130px">Profile</th>
                     <th>Layout</th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr>
-                    <td>InnoSquare Dealflow</td>
-                    <td><span class="badge-fd badge-error">16</span></td>
-                    <td><span class="badge-view">View</span></td>
-                    <td>Account_TC_2022</td>
-                    <td>Account – Target Company 2022</td>
+                    <td>Sales</td>
+                    <td><span style="background:#e8f5e9;color:#2e7d32;border-radius:12px;padding:2px 8px;font-size:12px;font-weight:600">FD</span></td>
+                    <td><span style="background:#e3f2fd;color:#1565c0;border-radius:12px;padding:2px 8px;font-size:12px">View</span></td>
+                    <td>Account_Sales_View</td>
+                    <td>Account Sales View</td>
                     <td>Account</td>
-                    <td>Company</td>
-                    <td>Assistant Fundraising</td>
-                    <td>Target Company</td>
+                    <td></td>
+                    <td>Sales_Rep</td>
+                    <td style="color:#888">&#8212;</td>
                   </tr>
                   <tr>
-                    <td>InnoSquare Dealflow</td>
-                    <td><span class="badge-fd badge-error">16</span></td>
-                    <td><span class="badge-view">View</span></td>
-                    <td>Account_TC_2022</td>
-                    <td>Account – Target Company 2022</td>
+                    <td>Sales</td>
+                    <td><span style="background:#c8e6c9;color:#1b5e20;border-radius:12px;padding:2px 8px;font-size:12px;font-weight:600">2</span></td>
+                    <td><span style="background:#fff3e0;color:#e65100;border-radius:12px;padding:2px 8px;font-size:12px">Edit</span></td>
+                    <td>Account_Sales_Edit</td>
+                    <td>Account Edit Form</td>
                     <td>Account</td>
-                    <td>Company</td>
-                    <td>Deal Cathay Innovation</td>
-                    <td>Target Company</td>
+                    <td></td>
+                    <td>Sales_Rep</td>
+                    <td>AccountLayout</td>
                   </tr>
                   <tr>
-                    <td>InnoSquare Dealflow</td>
-                    <td><span class="badge-fd badge-error">16</span></td>
-                    <td><span class="badge-view">View</span></td>
-                    <td>Account_TC_2022</td>
-                    <td>Account – Target Company 2022</td>
-                    <td>Account</td>
-                    <td>Company</td>
-                    <td>Fund of Fund (incl. Fundraising)</td>
-                    <td>Target Company</td>
+                    <td>Service</td>
+                    <td><span style="background:#e8f5e9;color:#2e7d32;border-radius:12px;padding:2px 8px;font-size:12px;font-weight:600">FD</span></td>
+                    <td><span style="background:#e3f2fd;color:#1565c0;border-radius:12px;padding:2px 8px;font-size:12px">View</span></td>
+                    <td>Case_Service_View</td>
+                    <td>Case View</td>
+                    <td>Case</td>
+                    <td></td>
+                    <td>Service_Agent</td>
+                    <td style="color:#888">&#8212;</td>
                   </tr>
                   <tr>
-                    <td>InnoSquare Dealflow</td>
-                    <td><span class="badge-fd badge-error">16</span></td>
-                    <td><span class="badge-view">View</span></td>
-                    <td>Account_TC_2022</td>
-                    <td>Account – Target Company 2022</td>
-                    <td>Account</td>
-                    <td>Company</td>
-                    <td>System Administrator</td>
-                    <td>Target Company</td>
+                    <td>Service</td>
+                    <td><span style="background:#fff3e0;color:#e65100;border-radius:12px;padding:2px 8px;font-size:12px;font-weight:600">5</span></td>
+                    <td><span style="background:#fff3e0;color:#e65100;border-radius:12px;padding:2px 8px;font-size:12px">Edit</span></td>
+                    <td>Case_Edit_Advanced</td>
+                    <td>Case Edit</td>
+                    <td>Case</td>
+                    <td></td>
+                    <td>Service_Manager</td>
+                    <td>CaseLayout</td>
                   </tr>
                   <tr>
-                    <td>InnoSquare Dealflow</td>
-                    <td><span class="badge-fd badge-error">23</span></td>
-                    <td><span class="badge-view">View</span></td>
-                    <td>Account_Record_Page2</td>
-                    <td>Account – Other</td>
-                    <td>Account</td>
-                    <td>Advisor</td>
-                    <td>Assistant Fundraising</td>
-                    <td>Others Record Types</td>
+                    <td>Marketing</td>
+                    <td><span style="background:#c8e6c9;color:#1b5e20;border-radius:12px;padding:2px 8px;font-size:12px;font-weight:600">1</span></td>
+                    <td><span style="background:#e8f5e9;color:#2e7d32;border-radius:12px;padding:2px 8px;font-size:12px">New</span></td>
+                    <td>Lead_Marketing</td>
+                    <td>Lead Capture</td>
+                    <td>Lead</td>
+                    <td></td>
+                    <td>Marketing_User</td>
+                    <td style="color:#888">&#8212;</td>
                   </tr>
                   <tr>
-                    <td>InnoSquare Dealflow</td>
-                    <td><span class="badge-fd badge-error">23</span></td>
-                    <td><span class="badge-view">View</span></td>
-                    <td>Account_Record_Page2</td>
-                    <td>Account – Other</td>
-                    <td>Account</td>
-                    <td>Advisor</td>
-                    <td>Deal Cathay</td>
-                    <td>Others Record Types</td>
+                    <td>HR</td>
+                    <td><span style="background:#e8f5e9;color:#2e7d32;border-radius:12px;padding:2px 8px;font-size:12px;font-weight:600">FD</span></td>
+                    <td><span style="background:#f5f5f5;color:#616161;border-radius:12px;padding:2px 8px;font-size:12px">Tab</span></td>
+                    <td>HR_HomePage</td>
+                    <td>HR Home</td>
+                    <td></td>
+                    <td></td>
+                    <td>HR_Admin</td>
+                    <td style="color:#888">&#8212;</td>
                   </tr>
                   <tr>
-                    <td>InnoSquare Dealflow</td>
-                    <td><span class="badge-fd badge-error">23</span></td>
-                    <td><span class="badge-view">View</span></td>
-                    <td>Account_Record_Page2</td>
-                    <td>Account – Other</td>
-                    <td>Account</td>
-                    <td>Corporate</td>
-                    <td>Fundraising Cathay Innovation</td>
-                    <td>Others Record Types</td>
-                  </tr>
-                  <tr>
-                    <td>InnoSquare Dealflow</td>
-                    <td><span class="badge-fd badge-warn">5</span></td>
-                    <td><span class="badge-edit">Edit</span></td>
-                    <td>Contact_Record_Page</td>
-                    <td>Contact Record Page</td>
-                    <td>Contact</td>
-                    <td>—</td>
-                    <td>System Administrator</td>
-                    <td>Standard Contact Layout</td>
-                  </tr>
-                  <tr>
-                    <td>InnoSquare Dealflow</td>
-                    <td><span class="badge-fd badge-ok">2</span></td>
-                    <td><span class="badge-new">New</span></td>
-                    <td>Opportunity_Record_Page2</td>
-                    <td>Opportunity Record Page</td>
+                    <td>Finance</td>
+                    <td><span style="background:#ffebee;color:#c62828;border-radius:12px;padding:2px 8px;font-size:12px;font-weight:600">8</span></td>
+                    <td><span style="background:#ede7f6;color:#4527a0;border-radius:12px;padding:2px 8px;font-size:12px">Default</span></td>
+                    <td>Opportunity_Finance</td>
+                    <td>Opp Finance</td>
                     <td>Opportunity</td>
-                    <td>—</td>
-                    <td>Deal Cathay Innovation</td>
-                    <td>Opportunity Layout</td>
+                    <td></td>
+                    <td>Finance_User</td>
+                    <td>OppLayout</td>
                   </tr>
                   <tr>
-                    <td>InnoSquare Dealflow</td>
-                    <td><span class="badge-fd badge-clean">FD</span></td>
-                    <td><span class="badge-tab">Tab</span></td>
-                    <td>Fundraising_Home_Page</td>
-                    <td>Fundraising Home Page</td>
-                    <td>standard-home</td>
-                    <td>—</td>
-                    <td>Fundraising Cathay</td>
-                    <td>—</td>
-                  </tr>
-                  <tr>
-                    <td>InnoSquare Dealflow</td>
-                    <td><span class="badge-fd badge-clean">FD</span></td>
-                    <td><span class="badge-default">Default</span></td>
-                    <td>Home_Page_Innovation</td>
-                    <td>Home Page Innovation</td>
-                    <td>standard-home</td>
-                    <td>—</td>
-                    <td>Tech team</td>
-                    <td>—</td>
+                    <td>Admin</td>
+                    <td><span style="background:#e8f5e9;color:#2e7d32;border-radius:12px;padding:2px 8px;font-size:12px;font-weight:600">FD</span></td>
+                    <td><span style="background:#ede7f6;color:#4527a0;border-radius:12px;padding:2px 8px;font-size:12px">DefaultApp</span></td>
+                    <td>Admin_Dashboard</td>
+                    <td>Admin Panel</td>
+                    <td></td>
+                    <td></td>
+                    <td>System_Admin</td>
+                    <td style="color:#888">&#8212;</td>
                   </tr>
                 </tbody>
               </table>
             </div>
+            <p class="dep-hint" style="margin:2px 0 0 0">Double-click a row to open in Salesforce</p>
 
           </div>
-        </div>
+        </div><!-- /tab 0 -->
 
-        <!-- ══════════════════════════════════════════
+        <!-- ══════════════════════════════════════════════════════════
              Tab 1 — FlexiPages
-             ══════════════════════════════════════════ -->
+             ══════════════════════════════════════════════════════════ -->
         <div class="m-panel" id="tp42-1">
-          <div class="anchor">
+          <div class="vbox" style="gap:8px;padding:6px 0 0 0">
 
             <!-- Toolbar row 1 -->
-            <div class="toolbar">
+            <div class="hbox" style="gap:8px;align-items:center">
               <button class="cal-btn btn-b" data-tip="Load all FlexiPages from org">Extract</button>
               <label class="cal-chk"><input type="checkbox" disabled> clearCache</label>
-              <span class="cal-lbl" style="color:#555">Cache was last updated: 2026-04-29 08:15</span>
+              <span class="vsep"></span>
+              <span class="cal-lbl" style="font-size:12px;color:#888">Cache was last updated: 2026-04-22 09:14</span>
             </div>
 
-            <!-- Toolbar row 2: filter -->
-            <div class="toolbar">
-              <span class="lbl-sm">Object:</span>
-              <input class="cal-tf" style="width:150px" placeholder="filter…" readonly>
+            <!-- Toolbar row 2 — filter -->
+            <div class="hbox" style="gap:6px;align-items:center">
+              <span class="cal-lbl">Object:</span>
+              <input class="cal-tf" style="width:150px" placeholder="filter&hellip;" readonly>
             </div>
 
-            <!-- Legend -->
+            <!-- Legend: FD | CL -->
             <div class="legend-row">
-              <span>FD : FullDynamic —</span>
-              <span class="badge-fd badge-clean">FD</span><span>= no legacy component</span>
-              <span class="badge-fd badge-ok">1–3</span><span>= low</span>
-              <span class="badge-fd badge-warn">4–6</span><span>= medium</span>
-              <span class="badge-fd badge-error">≥7</span><span>= high</span>
-              <span style="color:#ccc;margin:0 4px">|</span>
-              <span>CL : Classic Layout —</span>
-              <span class="badge-fd badge-dash">—</span><span>= none</span>
-              <span class="badge-fd badge-ok">1–3</span><span>= few</span>
-              <span class="badge-fd badge-warn">4–6</span><span>= several</span>
-              <span class="badge-fd badge-error">≥7</span><span>= many</span>
+              <span>FD : FullDynamic &#8212;</span>
+              <span style="background:#e8f5e9;color:#2e7d32;border-radius:12px;padding:2px 8px;font-size:12px;font-weight:600">FD</span>
+              <span>= no legacy</span>
+              <span style="background:#c8e6c9;color:#1b5e20;border-radius:12px;padding:2px 8px;font-size:12px;font-weight:600">1&#8211;3</span>
+              <span>= low</span>
+              <span style="background:#fff3e0;color:#e65100;border-radius:12px;padding:2px 8px;font-size:12px;font-weight:600">4&#8211;6</span>
+              <span>= medium</span>
+              <span style="background:#ffebee;color:#c62828;border-radius:12px;padding:2px 8px;font-size:12px;font-weight:600">&#8805;7</span>
+              <span>= high</span>
+              <span class="legend-sep">|</span>
+              <span>CL : Classic Layout &#8212;</span>
+              <span style="background:#e8f5e9;color:#2e7d32;border-radius:12px;padding:2px 8px;font-size:12px;font-weight:600">&#8212;</span>
+              <span>= none</span>
+              <span style="background:#c8e6c9;color:#1b5e20;border-radius:12px;padding:2px 8px;font-size:12px;font-weight:600">1&#8211;3</span>
+              <span>= few</span>
+              <span style="background:#fff3e0;color:#e65100;border-radius:12px;padding:2px 8px;font-size:12px;font-weight:600">4&#8211;6</span>
+              <span>= several</span>
+              <span style="background:#ffebee;color:#c62828;border-radius:12px;padding:2px 8px;font-size:12px;font-weight:600">&#8805;7</span>
+              <span>= many</span>
             </div>
 
-            <!-- Table + deps panel -->
-            <div class="hbox" style="gap:8px;align-items:flex-start">
-              <div class="tbl-wrap" style="flex:1;max-height:420px;overflow-y:auto">
+            <!-- Split: table + dep panel -->
+            <div class="flexi-split">
+              <div class="tbl-wrap">
                 <table class="cal-tbl">
                   <thead>
                     <tr>
-                      <th>Name</th>
-                      <th>Label</th>
-                      <th>Object</th>
-                      <th style="width:70px">FD</th>
-                      <th style="width:70px">CL</th>
+                      <th style="width:200px">Name</th>
+                      <th style="width:180px">Label</th>
+                      <th style="width:120px">Object</th>
+                      <th style="width:60px">FD</th>
+                      <th style="width:60px">CL</th>
                     </tr>
                   </thead>
                   <tbody>
-                    <tr class="sel">
-                      <td>Account_TC_2022</td>
-                      <td>Account – Target Company 2022</td>
+                    <tr>
+                      <td>Account_Sales_View</td>
+                      <td>Account Sales View</td>
                       <td>Account</td>
-                      <td><span class="badge-fd badge-error">16</span></td>
-                      <td><span class="badge-fd badge-warn">4</span></td>
+                      <td><span style="background:#e8f5e9;color:#2e7d32;border-radius:12px;padding:2px 8px;font-size:12px;font-weight:600">FD</span></td>
+                      <td><span style="background:#e8f5e9;color:#2e7d32;border-radius:12px;padding:2px 8px;font-size:12px;font-weight:600">&#8212;</span></td>
                     </tr>
                     <tr>
-                      <td>Account_Record_Page2</td>
-                      <td>Account – Other</td>
+                      <td>Account_Sales_Edit</td>
+                      <td>Account Edit Form</td>
                       <td>Account</td>
-                      <td><span class="badge-fd badge-error">23</span></td>
-                      <td><span class="badge-fd badge-ok">3</span></td>
+                      <td><span style="background:#c8e6c9;color:#1b5e20;border-radius:12px;padding:2px 8px;font-size:12px;font-weight:600">2</span></td>
+                      <td><span style="background:#c8e6c9;color:#1b5e20;border-radius:12px;padding:2px 8px;font-size:12px;font-weight:600">1</span></td>
                     </tr>
                     <tr>
-                      <td>Deal_Innovation_Record_Page</td>
-                      <td>Deal Innovation Record Page</td>
-                      <td>Deal__c</td>
-                      <td><span class="badge-fd badge-error">8</span></td>
-                      <td><span class="badge-fd badge-ok">3</span></td>
+                      <td>Case_Service_View</td>
+                      <td>Case View</td>
+                      <td>Case</td>
+                      <td><span style="background:#e8f5e9;color:#2e7d32;border-radius:12px;padding:2px 8px;font-size:12px;font-weight:600">FD</span></td>
+                      <td><span style="background:#e8f5e9;color:#2e7d32;border-radius:12px;padding:2px 8px;font-size:12px;font-weight:600">&#8212;</span></td>
+                    </tr>
+                    <tr style="background:#fff8f8">
+                      <td><strong>Case_Edit_Advanced</strong></td>
+                      <td>Case Edit</td>
+                      <td>Case</td>
+                      <td><span style="background:#fff3e0;color:#e65100;border-radius:12px;padding:2px 8px;font-size:12px;font-weight:600">5</span></td>
+                      <td><span style="background:#c8e6c9;color:#1b5e20;border-radius:12px;padding:2px 8px;font-size:12px;font-weight:600">3</span></td>
                     </tr>
                     <tr>
-                      <td>Deal_FoF_Dealmaking_Record_Page</td>
-                      <td>Deal FoF Dealmaking Record Page</td>
-                      <td>Deal__c</td>
-                      <td><span class="badge-fd badge-error">10</span></td>
-                      <td><span class="badge-fd badge-ok">2</span></td>
+                      <td>Lead_Marketing</td>
+                      <td>Lead Capture</td>
+                      <td>Lead</td>
+                      <td><span style="background:#c8e6c9;color:#1b5e20;border-radius:12px;padding:2px 8px;font-size:12px;font-weight:600">1</span></td>
+                      <td><span style="background:#e8f5e9;color:#2e7d32;border-radius:12px;padding:2px 8px;font-size:12px;font-weight:600">&#8212;</span></td>
                     </tr>
                     <tr>
-                      <td>Weekly_Event_Page</td>
-                      <td>Weekly Event Page</td>
-                      <td>Event</td>
-                      <td><span class="badge-fd badge-ok">1</span></td>
-                      <td><span class="badge-fd badge-ok">1</span></td>
-                    </tr>
-                    <tr>
-                      <td>Commitment_Record_Page_Fundraising</td>
-                      <td>Fundraising Commitment Record Page</td>
-                      <td>Commitment__c</td>
-                      <td><span class="badge-fd badge-warn">6</span></td>
-                      <td><span class="badge-fd badge-ok">1</span></td>
-                    </tr>
-                    <tr>
-                      <td>Fundraising_Home_Page</td>
-                      <td>Fundraising Home Page</td>
-                      <td>standard-home</td>
-                      <td><span class="badge-fd badge-clean">FD</span></td>
-                      <td><span class="badge-fd badge-dash">—</span></td>
-                    </tr>
-                    <tr>
-                      <td>Home_Page_Innovation</td>
-                      <td>Home Page Innovation</td>
-                      <td>standard-home</td>
-                      <td><span class="badge-fd badge-clean">FD</span></td>
-                      <td><span class="badge-fd badge-dash">—</span></td>
-                    </tr>
-                    <tr>
-                      <td>Contact_Record_Page</td>
-                      <td>Contact Record Page</td>
-                      <td>Contact</td>
-                      <td><span class="badge-fd badge-warn">6</span></td>
-                      <td><span class="badge-fd badge-ok">1</span></td>
-                    </tr>
-                    <tr>
-                      <td>Opportunity_Record_Page2</td>
-                      <td>Opportunity Record Page</td>
+                      <td>Opportunity_Finance</td>
+                      <td>Opp Finance</td>
                       <td>Opportunity</td>
-                      <td><span class="badge-fd badge-warn">4</span></td>
-                      <td><span class="badge-fd badge-ok">1</span></td>
+                      <td><span style="background:#ffebee;color:#c62828;border-radius:12px;padding:2px 8px;font-size:12px;font-weight:600">8</span></td>
+                      <td><span style="background:#ffebee;color:#c62828;border-radius:12px;padding:2px 8px;font-size:12px;font-weight:600">7</span></td>
                     </tr>
                     <tr>
-                      <td>Deal_Innovation_Record_Page1</td>
-                      <td>Deal Record Page (test dynamic forms)</td>
-                      <td>Deal__c</td>
-                      <td><span class="badge-fd badge-error">19</span></td>
-                      <td><span class="badge-fd badge-ok">1</span></td>
+                      <td>HR_HomePage</td>
+                      <td>HR Home</td>
+                      <td style="color:#888">(none)</td>
+                      <td><span style="background:#e8f5e9;color:#2e7d32;border-radius:12px;padding:2px 8px;font-size:12px;font-weight:600">FD</span></td>
+                      <td><span style="background:#e8f5e9;color:#2e7d32;border-radius:12px;padding:2px 8px;font-size:12px;font-weight:600">&#8212;</span></td>
                     </tr>
                     <tr>
-                      <td>Account_Record_Page</td>
-                      <td>Account Default Record Page</td>
-                      <td>Account</td>
-                      <td><span class="badge-fd badge-error">24</span></td>
-                      <td><span class="badge-fd badge-ok">1</span></td>
-                    </tr>
-                    <tr>
-                      <td>Business_Development_Opportunity_Record_Page2</td>
-                      <td>Business Development Opportunity Record Page</td>
-                      <td>Business_Development_Opportunity__c</td>
-                      <td><span class="badge-fd badge-ok">3</span></td>
-                      <td><span class="badge-fd badge-ok">1</span></td>
+                      <td>Admin_Dashboard</td>
+                      <td>Admin Panel</td>
+                      <td style="color:#888">(none)</td>
+                      <td><span style="background:#e8f5e9;color:#2e7d32;border-radius:12px;padding:2px 8px;font-size:12px;font-weight:600">FD</span></td>
+                      <td><span style="background:#e8f5e9;color:#2e7d32;border-radius:12px;padding:2px 8px;font-size:12px;font-weight:600">&#8212;</span></td>
                     </tr>
                   </tbody>
                 </table>
+                <p class="dep-hint">Double-click a row to open in Salesforce</p>
               </div>
 
-              <!-- Layout Dependencies side panel (shows deps of selected row) -->
-              <div class="deps-panel">
-                <div class="deps-title">Account_TC_2022</div>
-                <ul class="deps-list">
-                  <li class="deps-item">Target Company</li>
-                  <li class="deps-item">Direct Investor Fund</li>
-                  <li class="deps-item">Others Record Types</li>
-                  <li class="deps-item">Innovation Strategic Partner-Internal</li>
+              <!-- Layout Dependencies panel — showing selection: Case_Edit_Advanced -->
+              <div class="dep-panel">
+                <div class="dep-panel-title">Case_Edit_Advanced</div>
+                <div style="font-size:11px;color:#888;margin-bottom:2px">Layout Dependencies</div>
+                <ul class="dep-list">
+                  <li>CaseLayout</li>
+                  <li>CaseCompactLayout</li>
+                  <li>CaseMiniLayout</li>
                 </ul>
               </div>
             </div>
 
           </div>
-        </div>
+        </div><!-- /tab 1 -->
 
-        <!-- ══════════════════════════════════════════
+        <!-- ══════════════════════════════════════════════════════════
              Tab 2 — Flexi Unused
-             ══════════════════════════════════════════ -->
+             ══════════════════════════════════════════════════════════ -->
         <div class="m-panel" id="tp42-2">
-          <div class="anchor">
+          <div class="vbox" style="gap:8px;padding:6px 0 0 0">
 
             <!-- Toolbar -->
-            <div class="toolbar">
-              <button class="cal-btn btn-b" data-tip="Find all FlexiPages not assigned to any profile or Lightning app">Extract</button>
+            <div class="hbox" style="gap:8px;align-items:center">
+              <button class="cal-btn btn-b" data-tip="Find FlexiPages not assigned to any app or profile">Extract</button>
               <label class="cal-chk"><input type="checkbox" disabled> clearCache</label>
-              <span class="cal-lbl" style="color:#555">Cache was last updated: 2026-04-29 08:16</span>
+              <span class="vsep"></span>
+              <span class="cal-lbl" style="font-size:12px;color:#888">Cache was last updated: 2026-04-22 09:14</span>
             </div>
 
             <!-- Table -->
-            <div class="tbl-wrap" style="max-height:450px;overflow-y:auto">
+            <div class="tbl-wrap">
               <table class="cal-tbl">
                 <thead>
                   <tr>
-                    <th>Name</th>
-                    <th>Label</th>
-                    <th>Type</th>
-                    <th>Last Modified</th>
-                    <th>Object Related</th>
+                    <th style="width:200px">Name</th>
+                    <th style="width:190px">Label</th>
+                    <th style="width:110px">Type</th>
+                    <th style="width:130px">Last Modified</th>
+                    <th style="width:150px">Object Related</th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr>
-                    <td>Sortable_Data_Grid_Action_Record_Page</td>
-                    <td>Sortable Data Grid Action Record Page</td>
-                    <td>RecordPage</td>
-                    <td style="color:#888">2021-01-14 18:45:20</td>
-                    <td>sortablegrid__SDG_Action__c</td>
+                    <td>Legacy_OrderPage</td>
+                    <td>Order Legacy Page</td>
+                    <td>AppPage</td>
+                    <td style="color:#888">2024-11-03</td>
+                    <td>Order</td>
                   </tr>
                   <tr>
-                    <td>Comv_Table_Config</td>
-                    <td>Comv Table Config</td>
+                    <td>Old_ContactView</td>
+                    <td>Contact Old View</td>
                     <td>RecordPage</td>
-                    <td style="color:#888">2020-11-25 18:24:43</td>
-                    <td>ComvTable__Comv_Table_Config__c</td>
+                    <td style="color:#888">2025-01-14</td>
+                    <td>Contact</td>
                   </tr>
                   <tr>
-                    <td>Lead_2_Column_Sales_Navigator</td>
-                    <td>Lead 2 Column (Sales Navigator)</td>
-                    <td>RecordPage</td>
-                    <td style="color:#888">2021-10-13 15:40:41</td>
-                    <td>Lead</td>
+                    <td>Test_FlexiPage</td>
+                    <td>Test Page</td>
+                    <td>AppPage</td>
+                    <td style="color:#888">2025-03-08</td>
+                    <td style="color:#888">&#8212;</td>
                   </tr>
                   <tr>
-                    <td>Case_Record_Page</td>
-                    <td>Case Record Page</td>
+                    <td>Deprecated_CasePage</td>
+                    <td>Case Deprecated</td>
                     <td>RecordPage</td>
-                    <td style="color:#888">2021-04-12 12:17:34</td>
+                    <td style="color:#888">2024-09-21</td>
                     <td>Case</td>
                   </tr>
                   <tr>
-                    <td>Case_Record_Page1</td>
-                    <td>Case Record Page</td>
+                    <td>Archive_LeadPage</td>
+                    <td>Lead Archive</td>
                     <td>RecordPage</td>
-                    <td style="color:#888">2021-04-12 15:52:15</td>
-                    <td>Case</td>
-                  </tr>
-                  <tr>
-                    <td>Opportunity_3_Column_Sales_Navigator</td>
-                    <td>Opportunity 3 Column (Sales Navigator)</td>
-                    <td>RecordPage</td>
-                    <td style="color:#888">2021-10-13 15:40:43</td>
-                    <td>Opportunity</td>
-                  </tr>
-                  <tr>
-                    <td>Lead_3_Column_Sales_Navigator</td>
-                    <td>Lead 3 Column (Sales Navigator)</td>
-                    <td>RecordPage</td>
-                    <td style="color:#888">2021-10-13 15:40:42</td>
+                    <td style="color:#888">2024-12-05</td>
                     <td>Lead</td>
-                  </tr>
-                  <tr>
-                    <td>Weekly_Settings_Record_Page</td>
-                    <td>Weekly Settings Record Page</td>
-                    <td>RecordPage</td>
-                    <td style="color:#888">2022-04-14 13:14:37</td>
-                    <td>Weekly_Settings__c</td>
-                  </tr>
-                  <tr>
-                    <td>Account_Record_Page1</td>
-                    <td>Fund Investor Page</td>
-                    <td>RecordPage</td>
-                    <td style="color:#888">2022-02-03 19:38:03</td>
-                    <td>Account</td>
-                  </tr>
-                  <tr>
-                    <td>Minute_Record_Page</td>
-                    <td>Minute Record Page</td>
-                    <td>RecordPage</td>
-                    <td style="color:#888">2019-07-12 10:53:14</td>
-                    <td>Minute_Report__c</td>
-                  </tr>
-                  <tr>
-                    <td>PersonAccount_2_Column_Sales_Navigator</td>
-                    <td>Person Account 2 Column (Sales Navigator)</td>
-                    <td>RecordPage</td>
-                    <td style="color:#888">2021-10-13 15:40:44</td>
-                    <td>Account</td>
-                  </tr>
-                  <tr>
-                    <td>Opportunity_FoF_Record_Page</td>
-                    <td>Opportunity FoF Record Page</td>
-                    <td>RecordPage</td>
-                    <td style="color:#888">2020-06-24 14:50:19</td>
-                    <td>Opportunity</td>
-                  </tr>
-                  <tr>
-                    <td>Opportunity_Record_Page</td>
-                    <td>Opportunity Deprecated</td>
-                    <td>RecordPage</td>
-                    <td style="color:#888">2020-01-03 16:43:31</td>
-                    <td>Opportunity</td>
-                  </tr>
-                  <tr>
-                    <td>Content_Document_Record_Page1</td>
-                    <td>Content Document Record Page</td>
-                    <td>RecordPage</td>
-                    <td style="color:#888">2017-12-31 17:37:57</td>
-                    <td>ContentDocument</td>
-                  </tr>
-                  <tr>
-                    <td>Group_Record_Page</td>
-                    <td>Group Record Page</td>
-                    <td>RecordPage</td>
-                    <td style="color:#888">2017-11-23 15:48:17</td>
-                    <td>CollaborationGroup</td>
-                  </tr>
-                  <tr>
-                    <td>Convert_Attachments_to_Files_Log_Record_Page</td>
-                    <td>Convert Attachments to Files Log Record Page</td>
-                    <td>RecordPage</td>
-                    <td style="color:#888">2017-12-18 18:50:44</td>
-                    <td>dca_cnvrt_file__Convert_Attachments_to_Files_Log__c</td>
-                  </tr>
-                  <tr>
-                    <td>Conga_Template_Record_Page</td>
-                    <td>Conga Template Record Page</td>
-                    <td>RecordPage</td>
-                    <td style="color:#888">2018-01-01 14:19:11</td>
-                    <td>APXTConga4__Conga_Template__c</td>
                   </tr>
                 </tbody>
               </table>
             </div>
+            <p class="dep-hint" style="margin:2px 0 0 0">Double-click a row to open in Salesforce</p>
 
           </div>
-        </div>
+        </div><!-- /tab 2 -->
 
-      </div><!-- .m-body -->
-    </div><!-- .m-tabpane -->
-  </div><!-- .mockup -->
-</div><!-- .mockup-wrap -->
+      </div><!-- /m-body -->
+    </div><!-- /m-tabpane -->
+
+  </div><!-- /mockup -->
+</div><!-- /mockup-wrap -->
+
+<!-- ───── Key features modal ───── -->
+<div id="modal-kf" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:999;align-items:center;justify-content:center" onclick="if(event.target===this)this.style.display='none'">
+  <div style="background:#fff;border-radius:8px;padding:28px 32px;max-width:540px;width:90%;color:#1a2a35;box-shadow:0 8px 32px rgba(0,0,0,.3)">
+    <h3 style="margin:0 0 14px;color:#2980b9">&#9733; Key features</h3>
+    <ul style="margin:0;padding-left:20px;line-height:1.8">
+      <li>Analyze all Lightning pages across profiles and detect legacy (non-LWC) components via the FD score</li>
+      <li>Color-coded FD/CL badges instantly identify problematic pages (green = clean, red = critical)</li>
+      <li>Layout Dependencies panel shows which classic layouts a FlexiPage still relies on, updated on row selection</li>
+      <li>Detect unused FlexiPages never assigned to any app or profile — safe cleanup candidates</li>
+      <li>Double-click any row to open the Lightning page directly in Salesforce Setup</li>
+      <li>Filterable by AppLabel, Name, Object, or Profile for quick drill-down across large orgs</li>
+    </ul>
+    <div style="text-align:right;margin-top:18px">
+      <button class="cal-btn btn-d" onclick="document.getElementById('modal-kf').style.display='none'">Close</button>
+    </div>
+  </div>
+</div>
 
 <script>
 function sw(id,idx){
