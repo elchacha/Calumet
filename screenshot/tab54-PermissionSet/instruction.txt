@@ -1,1 +1,7 @@
-Place screenshots for tab54-PermissionSet in this directory.
+Tu n'affiches que les infos du screenshot tabPrincipal.png affiche au début
+tu dois rendre la colonne Name clickable
+fais en sorte qu'une ligne clignote en rouge.
+si l'utilisateur clique dessus, tu ouvres dans une popup le contenu du screenshot popup.png
+
+anonymises les info dans Name et children svp pour l'écran principal
+anonymise les infos UserName,Profile,psGroup,Objects (si finit par __c), fields 

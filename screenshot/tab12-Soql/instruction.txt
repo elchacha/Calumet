@@ -1,1 +1,6 @@
-Place screenshots for tab12-Soql in this directory.
+Tu peux cacher les infos Key features. Tu peux eventuellement mettre un bouton dans la description qui ouvre une popup qui affiche les key features.
+tu pourrais rendre le bouton select * config (met le en rouge clignotant) et si cliquer, ouvrir la doc du bouton pour le moment
+
+tu peux mettre pour l'onglet Opportunity select * from FROM Opportunity WHERE StageName != 'Closed Lost' AND CloseDate >= THIS_YEAR ORDER BY CloseDate ASC LIMIT 500 et idéalemnet, il faudrait afficher les colonnes prio de la config select *. 
+
+tu peux aussi indiquer en légende que les champs défini pour le select * sont affichés en priorité 
