@@ -149,5 +149,5 @@ body{font-family:"Segoe UI",system-ui,sans-serif;background:#14161f;
 .wlc-version{font-size:13px;color:var(--smut);margin-bottom:24px}
 .wlc-desc{font-size:14px;color:#a8b4c8;line-height:1.8;margin-bottom:20px;text-align:left}
 .wlc-hint{font-size:12px;color:var(--smut);margin-top:28px;font-style:italic}
-/* Tab page body */
-body.tab-page{margin:0;background:#14161f;color:var(--stxt)}
+/* Tab page body — override the flex layout set on bare body (used by index.html) */
+body.tab-page{display:block;height:auto;overflow:auto;margin:0;background:#14161f;color:var(--stxt)}
