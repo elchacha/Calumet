@@ -5,6 +5,13 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Calumet Documentation</title>
 <link rel="stylesheet" href="shared.css">
+<style>
+#main{display:flex;flex-direction:column;overflow:hidden}
+#content{flex:1;display:flex;flex-direction:column;overflow:hidden}
+#desc-panel{height:20%;overflow:auto;background:#1a1d2e;padding:16px 24px;border-bottom:1px solid #1f2438;flex-shrink:0}
+#frame-wrap{flex:1;overflow:hidden}
+#pane{border:none;width:100%;height:100%}
+</style>
 </head>
 <body>
 <aside id="sb">
@@ -34,21 +41,34 @@
   </div>
 </div>
 
-<iframe id="pane" style="display:none;border:none;width:100%;background:#14161f"></iframe>
+<div id="content" style="display:none">
+  <div id="desc-panel"></div>
+  <div id="frame-wrap">
+    <iframe id="pane"></iframe>
+  </div>
+</div>
 </main>
 <script>
 function nav(sid,file){
   document.getElementById('welcome').classList.add('h');
-  var fr=document.getElementById('pane');
-  fr.style.display='block';
-  fr.src='tabs/'+file;
+  var ct=document.getElementById('content');
+  ct.style.display='flex';
+  document.getElementById('pane').src='tabs/'+file;
   document.querySelectorAll('.nav-a').forEach(function(a){a.classList.remove('on')});
   var a=document.querySelector('.nav-a[data-sid="'+sid+'"]');
   if(a){a.classList.add('on');a.scrollIntoView({block:'nearest'})}
 }
 document.getElementById('pane').addEventListener('load',function(){
-  try{this.style.height=this.contentDocument.documentElement.scrollHeight+'px'}catch(e){}
-  document.getElementById('main').scrollTop=0;
+  try{
+    var doc=this.contentDocument;
+    var sum=doc.querySelector('.sum');
+    var dp=document.getElementById('desc-panel');
+    if(sum){dp.innerHTML=sum.outerHTML;sum.style.display='none';}
+    else dp.innerHTML='';
+    var st=doc.createElement('style');
+    st.textContent='.screenshot-block,.scr-gallery,[class*="screenshot"],[class*="scr-"]{display:none!important}';
+    doc.head.appendChild(st);
+  }catch(e){}
 });
 var sb=document.getElementById('sb-search');
 sb.addEventListener('input',function(){
