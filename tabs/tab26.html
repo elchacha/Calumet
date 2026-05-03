@@ -3,20 +3,352 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Dead Code — Calumet</title>
+<title>Control — Calumet</title>
 <link rel="stylesheet" href="../shared.css">
+<style>
+.pill-type { display:inline-block;padding:1px 7px;border-radius:10px;font-size:10px;font-weight:600;background:#dbeafe;color:#1a5276; }
+.diff-ins  { color:#27ae60;font-weight:700; }
+.diff-upd  { color:#e67e22;font-weight:700; }
+.diff-del  { color:#E74C3C;font-weight:700; }
+.diff-zero { color:#aaa; }
+</style>
 </head>
 <body class="tab-page">
+
 <div class="sum">
   <div class="sum-title">
-    <h2>Dead Code</h2>
+    <h2>Control</h2>
     <span class="sum-badge">Tab 26</span>
   </div>
-  <p class="sum-desc">Detect unused Apex classes, triggers and methods that are never referenced in the org.</p>
+  <p class="sum-desc">
+    Compare the metadata package about to be deployed against the current state of the target environment. Identifies new, changed, and unchanged components — with the last modifier and date fetched from the org — so you can review every diff before promoting a deployment.
+    <button class="cal-btn btn-d" style="margin-left:10px" onclick="document.getElementById('modal-kf').style.display='flex'">&#9733; Key features</button>
+  </p>
 </div>
+
 <div class="mockup-wrap">
-  <div class="mockup"><div class="vbox" style="gap:0px"><div class="anchor"><label class="cal-chk"><input type="checkbox" disabled> Reuse Current backup</label><label class="cal-chk"><input type="checkbox" disabled> Hide not changed object</label><label class="cal-chk"><input type="checkbox" disabled> Hide changed object</label><label class="cal-chk"><input type="checkbox" disabled> Hide new object</label><button class="cal-btn btn-d">Check Package</button><div class="tbl-wrap"><table class="cal-tbl"><thead><tr><th>New</th><th>Ok</th><th>Insert</th><th>Update</th><th>Delete</th><th>Type</th><th>Name</th><th>ModifiedBy</th><th>LastModifiedDate</th></tr></thead><tbody><tr><td colspan="20" class="tbl-empty"></td></tr></tbody></table></div><span class="cal-lbl">lbl Check diff</span><label class="cal-chk"><input type="checkbox" disabled> hide Profile</label></div></div></div>
+  <div class="mockup" style="padding:0">
+
+    <!-- Status label -->
+    <div style="padding:8px 14px 4px;font-size:12px;color:#1a2a35;background:#f0f6fa;border-bottom:1px solid #c8dae6;">
+      Find below the difference between your package to be deployed and your target environment
+    </div>
+
+    <!-- Toolbar row -->
+    <div class="hbox" style="gap:10px;align-items:flex-start;padding:10px 14px 8px;">
+      <button class="cal-btn btn-b" data-tip="Retrieve the current state from the target org and compute the diff">Check Package</button>
+
+      <div class="vbox" style="gap:4px;margin-left:6px;">
+        <label class="cal-chk"><input type="checkbox" checked disabled> Reuse Current backup</label>
+        <label class="cal-chk"><input type="checkbox" checked disabled> Hide not changed object</label>
+        <label class="cal-chk"><input type="checkbox" disabled> Hide changed object</label>
+        <label class="cal-chk"><input type="checkbox" checked disabled> Hide new object</label>
+      </div>
+
+      <div style="margin-left:20px;margin-top:2px;">
+        <label class="cal-chk"><input type="checkbox" disabled> hide Profile</label>
+      </div>
+    </div>
+
+    <!-- Diff table -->
+    <div class="tbl-wrap" style="margin:0 14px 14px;max-height:460px;overflow-y:auto;">
+      <table class="cal-tbl">
+        <thead>
+          <tr>
+            <th style="width:52px">New</th>
+            <th style="width:52px">Ok</th>
+            <th style="width:52px">Insert</th>
+            <th style="width:60px">Update</th>
+            <th style="width:52px">Delete</th>
+            <th style="width:120px">Type</th>
+            <th style="width:380px">Name</th>
+            <th style="width:150px">ModifiedBy</th>
+            <th style="width:160px">LastModifiedDate</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="diff-zero">false</td>
+            <td class="diff-zero">false</td>
+            <td class="diff-zero">0</td>
+            <td class="diff-upd">2</td>
+            <td class="diff-zero">0</td>
+            <td><span class="pill-type">ApexClass</span></td>
+            <td>AP217_SFA2_DeploiementContratCadre</td>
+            <td>John Doe</td>
+            <td>2024-09-03 14:13:27</td>
+          </tr>
+          <tr>
+            <td class="diff-zero">false</td>
+            <td class="diff-zero">false</td>
+            <td class="diff-zero">0</td>
+            <td class="diff-upd">2</td>
+            <td class="diff-zero">0</td>
+            <td><span class="pill-type">ApexPage</span></td>
+            <td>AP217_SFA2_DeploiementContratCadre.page</td>
+            <td>Bob Johnson</td>
+            <td>2023-04-25 08:34:11</td>
+          </tr>
+          <tr>
+            <td class="diff-zero">false</td>
+            <td class="diff-zero">false</td>
+            <td class="diff-zero">0</td>
+            <td class="diff-upd">1</td>
+            <td class="diff-zero">0</td>
+            <td><span class="pill-type">Flow</span></td>
+            <td>Account_MAJ_Date_derniere_modification_Qualification_macro.flow</td>
+            <td></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td class="diff-zero">false</td>
+            <td class="diff-zero">false</td>
+            <td class="diff-zero">0</td>
+            <td class="diff-upd">1</td>
+            <td class="diff-zero">0</td>
+            <td><span class="pill-type">Flow</span></td>
+            <td>Account_Mise_a_jour_date_dernier_Appel.flow</td>
+            <td></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td class="diff-zero">false</td>
+            <td class="diff-zero">false</td>
+            <td class="diff-zero">0</td>
+            <td class="diff-upd">1</td>
+            <td class="diff-zero">0</td>
+            <td><span class="pill-type">Flow</span></td>
+            <td>Account_mise_a_jour_filiere.flow</td>
+            <td></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td class="diff-zero">false</td>
+            <td class="diff-zero">false</td>
+            <td class="diff-zero">0</td>
+            <td class="diff-upd">1</td>
+            <td class="diff-zero">0</td>
+            <td><span class="pill-type">Flow</span></td>
+            <td>Account_Redescente_du_rating_Etablissement_sur_les_affaires.flow</td>
+            <td></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td class="diff-zero">false</td>
+            <td class="diff-zero">false</td>
+            <td class="diff-zero">0</td>
+            <td class="diff-upd">1</td>
+            <td class="diff-zero">0</td>
+            <td><span class="pill-type">Flow</span></td>
+            <td>ACC_MAJ_Jalon_1.flow</td>
+            <td></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td class="diff-zero">false</td>
+            <td class="diff-zero">false</td>
+            <td class="diff-zero">0</td>
+            <td class="diff-upd">1</td>
+            <td class="diff-zero">0</td>
+            <td><span class="pill-type">Flow</span></td>
+            <td>Acheminement_d_l_ments_de_travail.flow</td>
+            <td></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td class="diff-zero">false</td>
+            <td class="diff-zero">false</td>
+            <td class="diff-zero">0</td>
+            <td class="diff-upd">1</td>
+            <td class="diff-zero">0</td>
+            <td><span class="pill-type">Flow</span></td>
+            <td>Action_Action_Hors_Cible_et_Objectifs.flow</td>
+            <td></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td class="diff-zero">false</td>
+            <td class="diff-zero">false</td>
+            <td class="diff-zero">0</td>
+            <td class="diff-upd">1</td>
+            <td class="diff-zero">0</td>
+            <td><span class="pill-type">Flow</span></td>
+            <td>Action_ReOpen_Action.flow</td>
+            <td></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td class="diff-zero">false</td>
+            <td class="diff-zero">false</td>
+            <td class="diff-zero">0</td>
+            <td class="diff-upd">1</td>
+            <td class="diff-zero">0</td>
+            <td><span class="pill-type">Flow</span></td>
+            <td>Affaire_Field_Updates.flow</td>
+            <td></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td class="diff-zero">false</td>
+            <td class="diff-zero">false</td>
+            <td class="diff-zero">0</td>
+            <td class="diff-upd">1</td>
+            <td class="diff-zero">0</td>
+            <td><span class="pill-type">Flow</span></td>
+            <td>Affaire_Mise_jour_Flag_Auto_close.flow</td>
+            <td></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td class="diff-zero">false</td>
+            <td class="diff-zero">false</td>
+            <td class="diff-zero">0</td>
+            <td class="diff-upd">1</td>
+            <td class="diff-zero">0</td>
+            <td><span class="pill-type">Flow</span></td>
+            <td>Affaire_Mise_jour_Flag_Auto_close_3_mois.flow</td>
+            <td></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td class="diff-zero">false</td>
+            <td class="diff-zero">false</td>
+            <td class="diff-zero">0</td>
+            <td class="diff-upd">1</td>
+            <td class="diff-zero">0</td>
+            <td><span class="pill-type">Flow</span></td>
+            <td>Affaire_Mise_jour_Flag_Auto_close_6_mois.flow</td>
+            <td></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td class="diff-zero">false</td>
+            <td class="diff-zero">false</td>
+            <td class="diff-zero">0</td>
+            <td class="diff-upd">1</td>
+            <td class="diff-zero">0</td>
+            <td><span class="pill-type">Flow</span></td>
+            <td>Affaire_Recopie_Specificit_Service_Client_du_contrat_precedent.flow</td>
+            <td></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td class="diff-zero">false</td>
+            <td class="diff-zero">false</td>
+            <td class="diff-zero">0</td>
+            <td class="diff-upd">1</td>
+            <td class="diff-zero">0</td>
+            <td><span class="pill-type">Flow</span></td>
+            <td>Annulation_RIB_apres_Virement_Echoue.flow</td>
+            <td></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td class="diff-zero">false</td>
+            <td class="diff-zero">false</td>
+            <td class="diff-zero">0</td>
+            <td class="diff-upd">1</td>
+            <td class="diff-zero">0</td>
+            <td><span class="pill-type">Flow</span></td>
+            <td>Case_Mise_jour_champs_Pick_list_Omni_Channel.flow</td>
+            <td></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td class="diff-zero">false</td>
+            <td class="diff-zero">false</td>
+            <td class="diff-ins">1</td>
+            <td class="diff-zero">0</td>
+            <td class="diff-zero">0</td>
+            <td><span class="pill-type">CustomField</span></td>
+            <td>Account.SLA_Expiration_Date__c</td>
+            <td>Alice Martin</td>
+            <td>2024-11-14 09:22:05</td>
+          </tr>
+          <tr>
+            <td class="diff-zero">false</td>
+            <td class="diff-zero">false</td>
+            <td class="diff-zero">0</td>
+            <td class="diff-upd">3</td>
+            <td class="diff-zero">0</td>
+            <td><span class="pill-type">CustomObject</span></td>
+            <td>Order__c</td>
+            <td>Marc Dupont</td>
+            <td>2024-10-02 16:45:00</td>
+          </tr>
+          <tr>
+            <td class="diff-zero">false</td>
+            <td class="diff-zero">false</td>
+            <td class="diff-zero">0</td>
+            <td class="diff-upd">1</td>
+            <td class="diff-zero">0</td>
+            <td><span class="pill-type">Layout</span></td>
+            <td>Account-Account Layout.layout</td>
+            <td>Admin</td>
+            <td>2024-12-01 11:00:17</td>
+          </tr>
+          <tr>
+            <td class="diff-zero">false</td>
+            <td class="diff-zero">false</td>
+            <td class="diff-zero">0</td>
+            <td class="diff-zero">0</td>
+            <td class="diff-del">1</td>
+            <td><span class="pill-type">ValidationRule</span></td>
+            <td>Contact.RequireEmailOnLead</td>
+            <td>Jane Smith</td>
+            <td>2024-07-19 14:30:00</td>
+          </tr>
+          <tr>
+            <td class="diff-ins">true</td>
+            <td class="diff-zero">false</td>
+            <td class="diff-ins">1</td>
+            <td class="diff-zero">0</td>
+            <td class="diff-zero">0</td>
+            <td><span class="pill-type">ApexTrigger</span></td>
+            <td>AccountBeforeInsertTrigger</td>
+            <td>John Doe</td>
+            <td>2025-01-08 10:55:42</td>
+          </tr>
+          <tr>
+            <td class="diff-zero">false</td>
+            <td class="diff-zero">false</td>
+            <td class="diff-zero">0</td>
+            <td class="diff-upd">1</td>
+            <td class="diff-zero">0</td>
+            <td><span class="pill-type">PermissionSet</span></td>
+            <td>SalesRep_FullAccess</td>
+            <td>Admin</td>
+            <td>2024-11-22 08:14:33</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
 </div>
+
+<!-- Key features modal -->
+<div id="modal-kf" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:999;align-items:center;justify-content:center" onclick="if(event.target===this)this.style.display='none'">
+  <div style="background:#fff;border-radius:8px;padding:28px 32px;max-width:540px;width:90%;color:#1a2a35;box-shadow:0 8px 32px rgba(0,0,0,.3)">
+    <h3 style="margin:0 0 14px;color:#2980b9">&#9733; Key features</h3>
+    <ul style="margin:0;padding-left:20px;line-height:1.8">
+      <li>Compares the local deployment package against the metadata currently live in the target org</li>
+      <li>Shows per-component Insert / Update / Delete counts so every change is visible before deploy</li>
+      <li>Flags new components (not yet present in the target) in a dedicated "New" column</li>
+      <li>Retrieves and displays the last modifier and modification date from the org for every component</li>
+      <li>Double-click any row to open an inline diff viewer; CustomField picklists open a dedicated picklist comparator</li>
+      <li>Layout rows open a structured layout diff popup to compare section-by-section</li>
+      <li>Checkboxes let you hide unchanged, changed, or new items to focus only on what matters</li>
+      <li>"Reuse Current backup" re-runs the diff against the cached backup without re-fetching from the org</li>
+      <li>Profile rows are hidden by default and shown only when they contain actual updates</li>
+      <li>In-app notification panel slides in from the top-right to report success or failure at the end of the operation</li>
+    </ul>
+    <div style="text-align:right;margin-top:18px">
+      <button class="cal-btn btn-d" onclick="document.getElementById('modal-kf').style.display='none'">Close</button>
+    </div>
+  </div>
+</div>
+
 <script>
 function sw(id,idx){
   var tp=document.getElementById(id);

@@ -3,20 +3,438 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>History — Search — Calumet</title>
+<title>History — Calumet</title>
 <link rel="stylesheet" href="../shared.css">
+<style>
+/* Tree view */
+.tree-root { list-style:none; padding:0; margin:0; font-size:12px; }
+.tree-item { padding:1px 0; }
+.tree-type { font-weight:600; color:#1a5276; cursor:pointer; padding:2px 4px; border-radius:3px; display:inline-block; }
+.tree-type:hover { background:#d6eaf8; }
+.tree-children { list-style:none; padding-left:18px; margin:0; }
+.tree-leaf { padding:2px 4px; color:#2c3e50; cursor:pointer; display:block; border-radius:3px; }
+.tree-leaf:hover { background:#eaf4fb; }
+.tree-arrow { font-size:9px; margin-right:4px; color:#5b9bac; }
+
+/* Context menu mockup */
+.ctx-menu {
+  position:absolute;
+  background:#fff;
+  border:1px solid #bbb;
+  border-radius:3px;
+  box-shadow:3px 4px 12px rgba(0,0,0,.25);
+  min-width:180px;
+  z-index:10;
+  font-size:12px;
+}
+.ctx-menu-item {
+  padding:5px 16px;
+  cursor:pointer;
+  color:#1a2a35;
+  white-space:nowrap;
+}
+.ctx-menu-item:hover { background:#e8f0fe; }
+.ctx-menu-sep { border-top:1px solid #e0e0e0; margin:2px 0; }
+.ctx-menu-item.danger { color:#c0392b; }
+
+/* Selected row highlight */
+.row-selected { background:#3c7fc0 !important; }
+.row-selected td { color:#fff !important; }
+
+/* Ok column cell coloring */
+.cell-ok-yes { background:#27ae60; display:inline-block; width:14px; height:14px; border-radius:2px; }
+.cell-ok-no  { background:#E74C3C; display:inline-block; width:14px; height:14px; border-radius:2px; }
+
+/* Right panel */
+.right-panel { width:340px; flex-shrink:0; border-left:1px solid #bbb; padding:8px 10px 8px 14px; display:flex; flex-direction:column; gap:6px; background:#f8f8f8; }
+.panel-label-bold { font-weight:700; font-size:12px; color:#1a2a35; }
+
+/* Left column */
+.left-panel { flex:1; min-width:0; padding:8px; display:flex; flex-direction:column; gap:6px; }
+
+/* Comment textarea */
+.comment-area {
+  width:100%; height:90px; resize:none; font-size:11px;
+  border:1px solid #bbb; border-radius:3px; padding:5px;
+  font-family:"Segoe UI",sans-serif; color:#1a2a35; background:#fff;
+  line-height:1.5;
+}
+
+/* Hist count badge */
+.hist-badge {
+  display:inline-block; background:#d6eaf8; color:#1a5276;
+  border-radius:10px; padding:0 7px; font-size:11px; font-weight:600;
+}
+</style>
 </head>
 <body class="tab-page">
+
 <div class="sum">
   <div class="sum-title">
-    <h2>History — Search</h2>
+    <h2>History</h2>
     <span class="sum-badge">Tab 10</span>
   </div>
-  <p class="sum-desc">Search the org&#x27;s field history tracking records by object and field across a date range.</p>
+  <p class="sum-desc">
+    Browse and manage local backup projects for the current org. Inspect package contents, compare metadata versions across backups, search class/trigger change history across all projects, and deploy or rollback any backup to a target org.
+    <button class="cal-btn btn-d" style="margin-left:10px" onclick="document.getElementById('modal-kf').style.display='flex'">&#9733; Key features</button>
+  </p>
 </div>
+
 <div class="mockup-wrap">
-  <div class="mockup"><div class="anchor"><div class="m-tabpane" id="tp1"><div class="m-tabbar"><div class="m-tab act" onclick="sw('tp1',0)">Search</div><div class="m-tab" onclick="sw('tp1',1)">Display</div></div><div class="m-body"><div class="m-panel act" id="tp1-0"><div class="vbox" style="gap:0px"><div class="anchor"><div class="hbox" style="gap:0px;align-items:center"><div class="anchor"><div class="hbox" style="gap:8.0px;align-items:center"><button class="cal-btn btn-b" data-tip="Load all backup projects for the current org">Search org projects</button><div class="vsep"></div><span class="cal-lbl">Search metadata</span><input class="cal-tf cal-grow" placeholder="metadata name (case sensitive)" data-tip="Filter the project list to those containing this metadata" style="" readonly></div><div class="hbox" style="gap:8.0px;align-items:center"><span class="cal-lbl">Filter projects</span><input class="cal-tf cal-grow" placeholder="filter by name, author or date…" data-tip="Narrow the project list in real time" style="" readonly></div><div class="hbox" style="gap:8.0px;align-items:center"><select class="cal-cb" data-tip="Target org for deploying the selected project" style="width:160.0px;"><option class="ph">Select...</option></select><button class="cal-btn btn-d" data-tip="Unzip the selected backup into the target org&#x27;s deploy folder">Unzip to deploy</button><label class="cal-chk" data-tip="Delete the backup sub-folder after unzipping"><input type="checkbox" disabled> Remove backup folder</label></div><div class="tbl-wrap"><table class="cal-tbl"><thead><tr><th>Name</th><th>Author</th><th>Date</th></tr></thead><tbody><tr><td colspan="20" class="tbl-empty"></td></tr></tbody></table></div></div><div class="vsep"></div><div class="vbox" style="padding:8px 8px 8px 12px;gap:6.0px"><span class="cal-lbl" style="font-weight:bold">Comment</span><textarea class="cal-ta" placeholder="Project comment…" data-tip="Free-text comment stored with the selected backup project" rows="6" readonly></textarea><button class="cal-btn btn-d" data-tip="Save the comment for the selected project">Update comment</button><hr class="hsep"><span class="cal-lbl" style="font-weight:bold">Package contents</span></div></div></div></div></div><div class="m-panel" id="tp1-1"><div class="vbox" style="gap:0px"><div class="anchor"><div class="hbox" style="gap:8.0px;align-items:center"><button class="cal-btn btn-d" data-tip="Load history from the current retrieve package.xml">Use retrieve package</button><button class="cal-btn btn-d" data-tip="Load history from the current deploy package.xml">Use deploy package</button><button class="cal-btn btn-d" data-tip="Browse for a specific package.xml to load history from">Select a project package</button><div class="vsep"></div><input class="cal-tf" placeholder="class or trigger name" data-tip="Name of the class or trigger to search across all projects" style="width:220.0px;" readonly><button class="cal-btn btn-d" data-tip="Search the change history for the specified class or trigger">Class search</button></div><span class="cal-lbl" style="font-style:italic;color:#5b9bac;font-size:11px">Search all changes made on classes/triggers through backup projects — double-click a row to see details</span><div class="tbl-wrap"><table class="cal-tbl"><thead><tr><th style="width:130.0px">Type</th><th style="width:320.0px">Name</th><th style="width:200.0px">User</th><th style="width:140.0px">Date</th><th style="width:250.0px">Project</th><th style="width:34.0px">Hist</th><th style="width:26.0px">Ok</th></tr></thead><tbody><tr><td colspan="20" class="tbl-empty"></td></tr></tbody></table></div></div></div></div></div></div></div></div>
-</div>
+  <div class="mockup">
+
+    <!-- Main TabPane -->
+    <div class="m-tabpane" id="tp0">
+      <div class="m-tabbar">
+        <div class="m-tab act" onclick="sw('tp0',0)">Search</div>
+        <div class="m-tab" onclick="sw('tp0',1)">Display</div>
+      </div>
+      <div class="m-body">
+
+        <!-- ═══════════════════ SEARCH TAB ═══════════════════ -->
+        <div class="m-panel act" id="tp0-0">
+          <div style="display:flex;height:560px;overflow:hidden;">
+
+            <!-- Left column -->
+            <div class="left-panel">
+
+              <!-- Row 1: Search + metadata filter -->
+              <div class="hbox" style="gap:8px;align-items:center;">
+                <button class="cal-btn btn-b" data-tip="Load all backup projects for the current org">Search org projects</button>
+                <div class="vsep" style="height:20px"></div>
+                <span class="cal-lbl">Search metadata</span>
+                <input class="cal-tf cal-grow" value="UsageTrackerController" readonly
+                       data-tip="Filter the project list to those containing this metadata"
+                       placeholder="metadata name (case sensitive)">
+              </div>
+
+              <!-- Row 2: Filter projects -->
+              <div class="hbox" style="gap:8px;align-items:center;">
+                <span class="cal-lbl">Filter projects</span>
+                <input class="cal-tf cal-grow" placeholder="filter by name, author or date..." readonly
+                       data-tip="Narrow the project list in real time">
+              </div>
+
+              <!-- Row 3: Target org + Unzip -->
+              <div class="hbox" style="gap:8px;align-items:center;">
+                <select class="cal-cb" style="width:160px" disabled
+                        data-tip="Target org for deploying the selected project">
+                  <option>PROD-ORG</option>
+                  <option>PREPROD</option>
+                  <option>UAT</option>
+                </select>
+                <button class="cal-btn btn-g" data-tip="Unzip the selected backup into the target org's deploy folder">Unzip to deploy</button>
+                <label class="cal-chk" data-tip="Delete the backup sub-folder after unzipping">
+                  <input type="checkbox" disabled> Remove backup folder
+                </label>
+              </div>
+
+              <!-- Project list table + context menu -->
+              <div style="position:relative;flex:1;overflow:hidden;">
+                <div class="tbl-wrap" style="height:100%;overflow-y:auto;">
+                  <table class="cal-tbl">
+                    <thead>
+                      <tr>
+                        <th style="width:420px">Name</th>
+                        <th style="width:140px">Author</th>
+                        <th style="width:150px">Date</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>TECH - PM 10001 - Permission set deployment</td>
+                        <td>John Doe</td>
+                        <td>2026-04-21 10:07:58</td>
+                      </tr>
+                      <tr>
+                        <td>PROJET - PM 10002 - Directory integration implementation</td>
+                        <td>Marc Dupont</td>
+                        <td>2026-04-20 18:04:54</td>
+                      </tr>
+                      <tr class="row-selected">
+                        <td>PROJET - PM 10003 - Smart tracking - Add click tracking</td>
+                        <td>Marc Dupont</td>
+                        <td>2026-04-20 12:47:41</td>
+                      </tr>
+                      <tr>
+                        <td>E-billing</td>
+                        <td>Sarah Connor</td>
+                        <td>2026-04-16 11:44:50</td>
+                      </tr>
+                      <tr>
+                        <td>E-billing</td>
+                        <td>Sarah Connor</td>
+                        <td>2026-04-16 10:47:09</td>
+                      </tr>
+                      <tr>
+                        <td>E-billing</td>
+                        <td>Sarah Connor</td>
+                        <td>2026-04-13 17:09:03</td>
+                      </tr>
+                      <tr>
+                        <td>TECH - Fix integration service</td>
+                        <td>Bob Johnson</td>
+                        <td>2026-04-09 18:39:28</td>
+                      </tr>
+                      <tr>
+                        <td>TECH - Fix integration service</td>
+                        <td>Bob Johnson</td>
+                        <td>2026-04-09 17:18:22</td>
+                      </tr>
+                      <tr>
+                        <td>CTI-Integration</td>
+                        <td>John Doe</td>
+                        <td>2026-04-07 18:15:30</td>
+                      </tr>
+                      <tr>
+                        <td>CTI-Integration</td>
+                        <td>John Doe</td>
+                        <td>2026-04-07 14:18:37</td>
+                      </tr>
+                      <tr>
+                        <td>CTI-Integration</td>
+                        <td>John Doe</td>
+                        <td>2026-04-07 14:15:56</td>
+                      </tr>
+                      <tr>
+                        <td>PROJET - PM 10003 - Smart tracking - alert link</td>
+                        <td>Marc Dupont</td>
+                        <td>2026-04-01 16:04:00</td>
+                      </tr>
+                      <tr>
+                        <td>PE - PM 11870 - GLPI 2603130326 VR blocage modif sur affaire (mail)</td>
+                        <td>Marc Dupont</td>
+                        <td>2026-04-01 12:37:20</td>
+                      </tr>
+                      <tr>
+                        <td>Project-ClaimsAnalysis</td>
+                        <td>John Doe</td>
+                        <td>2026-03-31 10:27:35</td>
+                      </tr>
+                      <tr>
+                        <td>TMA - PM 10005 - Unblock messaging sessions</td>
+                        <td>John Doe</td>
+                        <td>2026-03-25 16:44:23</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+
+                <!-- Context menu shown at the selected (blue) row level -->
+                <div class="ctx-menu" style="top:128px;left:200px;">
+                  <div class="ctx-menu-item">retrieve zip package</div>
+                  <div class="ctx-menu-item">retrieve package.xml</div>
+                  <div class="ctx-menu-sep"></div>
+                  <div class="ctx-menu-item">unzip deploy package</div>
+                  <div class="ctx-menu-item">rename package</div>
+                  <div class="ctx-menu-item">rollback package</div>
+                  <div class="ctx-menu-sep"></div>
+                  <div class="ctx-menu-item danger">Delete history</div>
+                </div>
+              </div>
+            </div><!-- /left-panel -->
+
+            <!-- Right column -->
+            <div class="right-panel">
+              <div class="panel-label-bold">Comment</div>
+              <textarea class="comment-area" readonly>Add last generation timestamp and click tracking.</textarea>
+              <button class="cal-btn btn-d" style="align-self:flex-start"
+                      data-tip="Save the comment for the selected project">Update comment</button>
+
+              <div class="hsep"></div>
+
+              <div class="panel-label-bold">Package contents</div>
+              <div style="flex:1;overflow-y:auto;border:1px solid #bbb;border-radius:3px;background:#fff;padding:4px 6px;"
+                   data-tip="Metadata members in this backup — double-click to compare versions, right-click for file options">
+                <ul class="tree-root">
+                  <li class="tree-item">
+                    <span class="tree-arrow">&#9660;</span><span class="tree-type">package</span>
+                    <ul class="tree-children">
+                      <li class="tree-item">
+                        <span class="tree-arrow">&#9660;</span><span class="tree-type">ApexClass(2)</span>
+                        <ul class="tree-children">
+                          <li><span class="tree-leaf">UsageTrackerController</span></li>
+                          <li><span class="tree-leaf">UsageTrackerController_TEST</span></li>
+                        </ul>
+                      </li>
+                      <li class="tree-item">
+                        <span class="tree-arrow">&#9660;</span><span class="tree-type">CustomField(4)</span>
+                        <ul class="tree-children">
+                          <li><span class="tree-leaf">Usage_Tracker__c.Activity__c</span></li>
+                          <li><span class="tree-leaf">Usage_Tracker__c.Case__c</span></li>
+                          <li><span class="tree-leaf">Usage_Tracker__c.Tool__c</span></li>
+                          <li><span class="tree-leaf">Usage_Tracker__c.Site_Code__c</span></li>
+                        </ul>
+                      </li>
+                      <li class="tree-item">
+                        <span class="tree-arrow">&#9660;</span><span class="tree-type">CustomObject(1)</span>
+                        <ul class="tree-children">
+                          <li><span class="tree-leaf">Usage_Tracker__c</span></li>
+                        </ul>
+                      </li>
+                      <li class="tree-item">
+                        <span class="tree-arrow">&#9660;</span><span class="tree-type">CustomTab(1)</span>
+                        <ul class="tree-children">
+                          <li><span class="tree-leaf">Usage_Tracker__c</span></li>
+                        </ul>
+                      </li>
+                      <li class="tree-item">
+                        <span class="tree-arrow">&#9660;</span><span class="tree-type">LightningComponentBundle(2)</span>
+                        <ul class="tree-children">
+                          <li><span class="tree-leaf">IWCCaseResumeMagique</span></li>
+                          <li><span class="tree-leaf">lwcCaseLinks</span></li>
+                        </ul>
+                      </li>
+                      <li class="tree-item">
+                        <span class="tree-arrow">&#9660;</span><span class="tree-type">Profile(12)</span>
+                        <ul class="tree-children">
+                          <li><span class="tree-leaf">Admin</span></li>
+                          <li><span class="tree-leaf">ORG_Admin</span></li>
+                          <li><span class="tree-leaf">ORG_Assurance</span></li>
+                          <li><span class="tree-leaf">ORG_Ops</span></li>
+                          <li><span class="tree-leaf">ORG_Ops_Req</span></li>
+                          <li><span class="tree-leaf">ORG_Support</span></li>
+                          <li><span class="tree-leaf">ORG_Agent_Level2</span></li>
+                          <li><span class="tree-leaf">ORG_Agent_Req</span></li>
+                          <li><span class="tree-leaf">ORG_Agent_Level1</span></li>
+                          <li><span class="tree-leaf">ORG_Agent_Level2b</span></li>
+                          <li><span class="tree-leaf">ORG_Agent_Req2</span></li>
+                          <li><span class="tree-leaf">ORG_eAgent_Level2</span></li>
+                        </ul>
+                      </li>
+                    </ul>
+                  </li>
+                </ul>
+              </div>
+            </div><!-- /right-panel -->
+
+          </div>
+        </div><!-- /Search panel -->
+
+        <!-- ═══════════════════ DISPLAY TAB ═══════════════════ -->
+        <div class="m-panel" id="tp0-1">
+          <div style="padding:8px;height:560px;overflow:hidden;display:flex;flex-direction:column;gap:6px;">
+
+            <!-- Row 1: package source buttons + class search -->
+            <div class="hbox" style="gap:8px;align-items:center;">
+              <button class="cal-btn btn-d"
+                      data-tip="Load history from the current retrieve package.xml">Use retrieve package</button>
+              <button class="cal-btn btn-d"
+                      data-tip="Load history from the current deploy package.xml">Use deploy package</button>
+              <button class="cal-btn btn-d"
+                      data-tip="Browse for a specific package.xml to load history from">Select a project package</button>
+              <div class="vsep" style="height:20px"></div>
+              <input class="cal-tf" style="width:220px" value="UsageTrackerController" readonly
+                     data-tip="Name of the class or trigger to search across all projects"
+                     placeholder="class or trigger name">
+              <button class="cal-btn btn-b"
+                      data-tip="Search the change history for the specified class or trigger">Class search</button>
+            </div>
+
+            <!-- Info label -->
+            <div style="font-style:italic;color:#5b9bac;font-size:11px;">
+              Search all changes made on classes/triggers through backup projects — double-click a row to see details
+            </div>
+
+            <!-- History table -->
+            <div class="tbl-wrap" style="flex:1;overflow-y:auto;">
+              <table class="cal-tbl">
+                <thead>
+                  <tr>
+                    <th style="width:130px">Type</th>
+                    <th style="width:280px">Name</th>
+                    <th style="width:180px">User</th>
+                    <th style="width:140px">Date</th>
+                    <th style="width:230px">Project</th>
+                    <th style="width:40px">Hist</th>
+                    <th style="width:30px">Ok</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>ApexClass</td>
+                    <td>UsageTrackerController</td>
+                    <td>Marc Dupont</td>
+                    <td>2026-04-20 12:47:41</td>
+                    <td>PROJET - PM 10003 - Smart tracking</td>
+                    <td style="text-align:center"><span class="hist-badge">4</span></td>
+                    <td style="text-align:center"><span class="cell-ok-yes"></span></td>
+                  </tr>
+                  <tr>
+                    <td>ApexClass</td>
+                    <td>UsageTrackerController_TEST</td>
+                    <td>Marc Dupont</td>
+                    <td>2026-04-20 12:47:41</td>
+                    <td>PROJET - PM 10003 - Smart tracking</td>
+                    <td style="text-align:center"><span class="hist-badge">3</span></td>
+                    <td style="text-align:center"><span class="cell-ok-yes"></span></td>
+                  </tr>
+                  <tr>
+                    <td>ApexTrigger</td>
+                    <td>CaseTrigger</td>
+                    <td>John Doe</td>
+                    <td>2026-04-21 10:07:58</td>
+                    <td>TECH - PM 10001 - Permission set deployment</td>
+                    <td style="text-align:center"><span class="hist-badge">7</span></td>
+                    <td style="text-align:center"><span class="cell-ok-yes"></span></td>
+                  </tr>
+                  <tr>
+                    <td>ApexClass</td>
+                    <td>AccountService</td>
+                    <td>John Doe</td>
+                    <td>2026-04-07 18:15:30</td>
+                    <td>CTI-Integration</td>
+                    <td style="text-align:center"><span class="hist-badge">2</span></td>
+                    <td style="text-align:center"><span class="cell-ok-yes"></span></td>
+                  </tr>
+                  <tr>
+                    <td>ApexClass</td>
+                    <td>BillingBatchController</td>
+                    <td>Sarah Connor</td>
+                    <td>2026-04-16 11:44:50</td>
+                    <td>E-billing</td>
+                    <td style="text-align:center"><span class="hist-badge">3</span></td>
+                    <td style="text-align:center"><span class="cell-ok-no"></span></td>
+                  </tr>
+                  <tr>
+                    <td>ApexTrigger</td>
+                    <td>MessagingSessionTrigger</td>
+                    <td>John Doe</td>
+                    <td>2026-03-25 16:44:23</td>
+                    <td>TMA - PM 10005 - Unblock messaging sessions</td>
+                    <td style="text-align:center"><span class="hist-badge">1</span></td>
+                    <td style="text-align:center"><span class="cell-ok-yes"></span></td>
+                  </tr>
+                  <tr>
+                    <td>ApexClass</td>
+                    <td>IntegrationRepairBatch</td>
+                    <td>Bob Johnson</td>
+                    <td>2026-04-09 18:39:28</td>
+                    <td>TECH - Fix integration service</td>
+                    <td style="text-align:center"><span class="hist-badge">2</span></td>
+                    <td style="text-align:center"><span class="cell-ok-yes"></span></td>
+                  </tr>
+                  <tr>
+                    <td>ApexClass</td>
+                    <td>ClaimsAnalysisHelper</td>
+                    <td>John Doe</td>
+                    <td>2026-03-31 10:27:35</td>
+                    <td>Project-ClaimsAnalysis</td>
+                    <td style="text-align:center"><span class="hist-badge">5</span></td>
+                    <td style="text-align:center"><span class="cell-ok-no"></span></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div><!-- /Display panel -->
+
+      </div><!-- /m-body -->
+    </div><!-- /tp0 -->
+
+  </div><!-- /mockup -->
+</div><!-- /mockup-wrap -->
+
 <script>
 function sw(id,idx){
   var tp=document.getElementById(id);
@@ -24,5 +442,28 @@ function sw(id,idx){
   tp.querySelectorAll('.m-panel').forEach(function(p,i){p.classList.toggle('act',i===idx)});
 }
 </script>
+
+<!-- Key features modal -->
+<div id="modal-kf" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:999;align-items:center;justify-content:center" onclick="if(event.target===this)this.style.display='none'">
+  <div style="background:#fff;border-radius:8px;padding:28px 32px;max-width:540px;width:90%;color:#1a2a35;box-shadow:0 8px 32px rgba(0,0,0,.3)">
+    <h3 style="margin:0 0 14px;color:#2980b9">&#9733; Key features</h3>
+    <ul style="margin:0;padding-left:20px;line-height:1.9">
+      <li><strong>Project browser:</strong> list all backup ZIP projects stored for the current org, filtered in real time by name, author or date.</li>
+      <li><strong>Metadata search:</strong> type a metadata name (case-sensitive) to instantly narrow the list to projects that contain that component.</li>
+      <li><strong>Package contents tree:</strong> selecting a project expands its package.xml as a collapsible tree grouped by metadata type.</li>
+      <li><strong>Version diff:</strong> double-click any member in the tree to open a side-by-side diff between the backup file and the current deployed file.</li>
+      <li><strong>CustomField diff:</strong> for picklist fields, a dedicated popup shows structured field configuration differences.</li>
+      <li><strong>Context menu actions:</strong> right-click a project to retrieve the ZIP, export package.xml, unzip for deploy, rename, rollback, or delete the backup.</li>
+      <li><strong>Unzip to deploy:</strong> extract a backup directly into a target org's deploy folder, with optional cleanup of the backup sub-folder.</li>
+      <li><strong>Comment tracking:</strong> attach and update free-text comments to any backup project for traceability.</li>
+      <li><strong>Class/trigger history (Display tab):</strong> search a class or trigger name across all projects to see its full change timeline with Hist count and project-status indicator.</li>
+      <li><strong>Double-click to detail:</strong> in the Display tab, double-click a row to open the full change history popup for that component.</li>
+    </ul>
+    <div style="text-align:right;margin-top:18px">
+      <button class="cal-btn btn-d" onclick="document.getElementById('modal-kf').style.display='none'">Close</button>
+    </div>
+  </div>
+</div>
+
 </body>
 </html>

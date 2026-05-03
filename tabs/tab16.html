@@ -153,9 +153,9 @@
           <!-- Child – Master-Detail (cascade delete = yes) -->
           <tr>
             <td><span class="badge-rel-child">Child</span></td>
-            <td>AccountVerticalRelation__c</td>
-            <td>Account-Vertical Relation</td>
-            <td>AccountVerticalRelations__r</td>
+            <td>AccountCategory__c</td>
+            <td>Account Category</td>
+            <td>AccountCategories__r</td>
             <td class="text-error-bold" data-tip="Controlled by">Account__c</td>
             <td class="text-center"><span class="icon-yes">&#x2714;</span></td>
             <td class="text-center"><span class="icon-no">&#x2716;</span></td>
@@ -164,10 +164,10 @@
           <!-- Child – Lookup -->
           <tr>
             <td><span class="badge-rel-child">Child</span></td>
-            <td>AISearchAction__c</td>
-            <td>AISearchAction</td>
-            <td>AISearchActions__r</td>
-            <td>ActionItemAccount__c</td>
+            <td>ActionItem__c</td>
+            <td>Action Item</td>
+            <td>ActionItems__r</td>
+            <td>RelatedAccount__c</td>
             <td class="text-center"><span class="icon-no">&#x2716;</span></td>
             <td class="text-center"><span class="icon-no">&#x2716;</span></td>
             <td><span class="badge-rel-lookup">Lookup</span></td>
@@ -175,10 +175,10 @@
           <!-- Child – Lookup -->
           <tr>
             <td><span class="badge-rel-child">Child</span></td>
-            <td>Board_Member__c</td>
-            <td>Board Member</td>
-            <td>Board_Seats__r</td>
-            <td>Board_Member_Company__c</td>
+            <td>Contact_Role__c</td>
+            <td>Contact Role</td>
+            <td>ContactRoles__r</td>
+            <td>RelatedCompany__c</td>
             <td class="text-center"><span class="icon-no">&#x2716;</span></td>
             <td class="text-center"><span class="icon-no">&#x2716;</span></td>
             <td><span class="badge-rel-lookup">Lookup</span></td>
@@ -186,10 +186,10 @@
           <!-- Child – Master-Detail -->
           <tr>
             <td><span class="badge-rel-child">Child</span></td>
-            <td>Board_Member__c</td>
-            <td>Board Member</td>
-            <td>Board_Members__r</td>
-            <td class="text-error-bold" data-tip="Controlled by">Target_Company__c</td>
+            <td>Contact_Role__c</td>
+            <td>Contact Role</td>
+            <td>ContactRoleLinks__r</td>
+            <td class="text-error-bold" data-tip="Controlled by">ParentAccount__c</td>
             <td class="text-center"><span class="icon-yes">&#x2714;</span></td>
             <td class="text-center"><span class="icon-no">&#x2716;</span></td>
             <td><span class="badge-rel-masterdetail">Master-Detail</span></td>
@@ -197,10 +197,10 @@
           <!-- Child – Lookup -->
           <tr>
             <td><span class="badge-rel-child">Child</span></td>
-            <td>Business_Development_Opportunity__c</td>
-            <td>Biz Dev</td>
-            <td>Biz_Dev_Prospect__r</td>
-            <td>Biz_Dev_Prospect__c</td>
+            <td>Project__c</td>
+            <td>Project</td>
+            <td>ProjectProspects__r</td>
+            <td>ProspectAccount__c</td>
             <td class="text-center"><span class="icon-no">&#x2716;</span></td>
             <td class="text-center"><span class="icon-no">&#x2716;</span></td>
             <td><span class="badge-rel-lookup">Lookup</span></td>
@@ -208,10 +208,10 @@
           <!-- Child – Lookup -->
           <tr>
             <td><span class="badge-rel-child">Child</span></td>
-            <td>Business_Development_Opportunity__c</td>
-            <td>Biz Dev</td>
-            <td>Biz_Dev_Seeker__r</td>
-            <td>Biz_Dev_Seeker__c</td>
+            <td>Project__c</td>
+            <td>Project</td>
+            <td>ProjectSeekers__r</td>
+            <td>SeekerAccount__c</td>
             <td class="text-center"><span class="icon-no">&#x2716;</span></td>
             <td class="text-center"><span class="icon-no">&#x2716;</span></td>
             <td><span class="badge-rel-lookup">Lookup</span></td>
@@ -219,10 +219,10 @@
           <!-- Child – Lookup (RD = yes) -->
           <tr>
             <td><span class="badge-rel-child">Child</span></td>
-            <td>Co_investment__c</td>
-            <td>Co-investments</td>
-            <td>Co_investments__r</td>
-            <td>InvestedCompany__c</td>
+            <td>Investment__c</td>
+            <td>Investments</td>
+            <td>Investments__r</td>
+            <td>TargetCompany__c</td>
             <td class="text-center"><span class="icon-no">&#x2716;</span></td>
             <td class="text-center"><span class="icon-yes">&#x2714;</span></td>
             <td><span class="badge-rel-lookup">Lookup</span></td>
@@ -230,10 +230,10 @@
           <!-- Child – Master-Detail (controlled by primary) -->
           <tr>
             <td><span class="badge-rel-child">Child</span></td>
-            <td>Co_investment__c</td>
-            <td>Co-investments</td>
-            <td>CoInvestor__r</td>
-            <td class="text-error-bold" data-tip="Controlled by &amp; Primary Master">CoInvestor__c</td>
+            <td>Investment__c</td>
+            <td>Investments</td>
+            <td>CoInvestors__r</td>
+            <td class="text-error-bold" data-tip="Controlled by &amp; Primary Master">InvestorAccount__c</td>
             <td class="text-center"><span class="icon-yes">&#x2714;</span></td>
             <td class="text-center"><span class="icon-no">&#x2716;</span></td>
             <td><span class="badge-rel-masterdetail">Master-Detail (P)</span></td>
@@ -241,10 +241,10 @@
           <!-- Child – Lookup -->
           <tr>
             <td><span class="badge-rel-child">Child</span></td>
-            <td>Commitment__c</td>
-            <td>Commitment</td>
-            <td>Commitments1__r</td>
-            <td>Vehicle__c</td>
+            <td>Contract__c</td>
+            <td>Contract</td>
+            <td>VehicleContracts__r</td>
+            <td>Asset__c</td>
             <td class="text-center"><span class="icon-no">&#x2716;</span></td>
             <td class="text-center"><span class="icon-no">&#x2716;</span></td>
             <td><span class="badge-rel-lookup">Lookup</span></td>
@@ -252,10 +252,10 @@
           <!-- Child – Lookup (RD = yes) -->
           <tr>
             <td><span class="badge-rel-child">Child</span></td>
-            <td>Commitment__c</td>
-            <td>Commitment</td>
-            <td>Commitments__r</td>
-            <td>Investor__c</td>
+            <td>Contract__c</td>
+            <td>Contract</td>
+            <td>InvestorContracts__r</td>
+            <td>InvestorRef__c</td>
             <td class="text-center"><span class="icon-no">&#x2716;</span></td>
             <td class="text-center"><span class="icon-yes">&#x2714;</span></td>
             <td><span class="badge-rel-lookup">Lookup</span></td>
@@ -263,9 +263,9 @@
           <!-- Child – Lookup (RD = yes) -->
           <tr>
             <td><span class="badge-rel-child">Child</span></td>
-            <td>CommunityAccount__c</td>
-            <td>Company</td>
-            <td>CommunityAccounts__r</td>
+            <td>PartnerAccount__c</td>
+            <td>Partner Account</td>
+            <td>PartnerAccounts__r</td>
             <td>Account__c</td>
             <td class="text-center"><span class="icon-no">&#x2716;</span></td>
             <td class="text-center"><span class="icon-yes">&#x2714;</span></td>
@@ -274,10 +274,10 @@
           <!-- Child – Lookup -->
           <tr>
             <td><span class="badge-rel-child">Child</span></td>
-            <td>CommunityAccountSearchItem__c</td>
-            <td>CommunityAccountSearchItem</td>
-            <td>CommunityAccountSearchItems__r</td>
-            <td>StrategicPartner__c</td>
+            <td>PartnerSearchItem__c</td>
+            <td>Partner Search Item</td>
+            <td>PartnerSearchItems__r</td>
+            <td>PartnerRef__c</td>
             <td class="text-center"><span class="icon-no">&#x2716;</span></td>
             <td class="text-center"><span class="icon-no">&#x2716;</span></td>
             <td><span class="badge-rel-lookup">Lookup</span></td>
@@ -285,10 +285,10 @@
           <!-- Child – Master-Detail -->
           <tr>
             <td><span class="badge-rel-child">Child</span></td>
-            <td>Deal__c</td>
-            <td>Deal</td>
-            <td>Deals__r</td>
-            <td class="text-error-bold" data-tip="Controlled by">Company__c</td>
+            <td>Order__c</td>
+            <td>Order</td>
+            <td>Orders__r</td>
+            <td class="text-error-bold" data-tip="Controlled by">RelatedAccount__c</td>
             <td class="text-center"><span class="icon-yes">&#x2714;</span></td>
             <td class="text-center"><span class="icon-no">&#x2716;</span></td>
             <td><span class="badge-rel-masterdetail">Master-Detail</span></td>
@@ -296,9 +296,9 @@
           <!-- Child – Lookup -->
           <tr>
             <td><span class="badge-rel-child">Child</span></td>
-            <td>Engagement__c</td>
-            <td>Engagement</td>
-            <td>Engagements__r</td>
+            <td>Task__c</td>
+            <td>Task</td>
+            <td>Tasks__r</td>
             <td>Account__c</td>
             <td class="text-center"><span class="icon-no">&#x2716;</span></td>
             <td class="text-center"><span class="icon-no">&#x2716;</span></td>
@@ -307,10 +307,10 @@
           <!-- Child – Lookup -->
           <tr>
             <td><span class="badge-rel-child">Child</span></td>
-            <td>Fund__c</td>
-            <td>Fund</td>
-            <td>FundManagers__r</td>
-            <td>ManagingCompany__c</td>
+            <td>Report__c</td>
+            <td>Report</td>
+            <td>ReportOwners__r</td>
+            <td>OwnerCompany__c</td>
             <td class="text-center"><span class="icon-no">&#x2716;</span></td>
             <td class="text-center"><span class="icon-no">&#x2716;</span></td>
             <td><span class="badge-rel-lookup">Lookup</span></td>

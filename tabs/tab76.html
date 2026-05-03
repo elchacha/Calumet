@@ -3,20 +3,284 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Sharing Explorer — Calumet</title>
+<title>Users &amp; Config — Calumet</title>
 <link rel="stylesheet" href="../shared.css">
+<style>
+  .badge-regular  { background:#2980b9; color:#fff; border-radius:6px; padding:2px 9px; font-size:11px; font-weight:600; display:inline-block; }
+  .badge-queue    { background:#e67e22; color:#fff; border-radius:6px; padding:2px 9px; font-size:11px; font-weight:600; display:inline-block; }
+  .badge-role     { background:#27ae60; color:#fff; border-radius:6px; padding:2px 9px; font-size:11px; font-weight:600; display:inline-block; }
+  .badge-org      { background:#2c3e50; color:#fff; border-radius:6px; padding:2px 9px; font-size:11px; font-weight:600; display:inline-block; }
+  .badge-guest    { background:#7f8c8d; color:#fff; border-radius:6px; padding:2px 9px; font-size:11px; font-weight:600; display:inline-block; }
+  .badge-prm      { background:#8e44ad; color:#fff; border-radius:6px; padding:2px 9px; font-size:11px; font-weight:600; display:inline-block; }
+  .badge-managed  { background:#16a085; color:#fff; border-radius:6px; padding:2px 9px; font-size:11px; font-weight:600; display:inline-block; }
+  .tree-indent    { padding-left:20px; }
+  .tree-indent2   { padding-left:40px; }
+  .tree-arrow     { color:#888; margin-right:4px; font-size:11px; }
+  .cache-info     { font-size:11px; color:#2980b9; font-style:italic; }
+</style>
 </head>
 <body class="tab-page">
+
 <div class="sum">
   <div class="sum-title">
-    <h2>Sharing Explorer</h2>
+    <h2>Users &amp; Config</h2>
     <span class="sum-badge">Tab 76</span>
   </div>
-  <p class="sum-desc">Explore sharing rules, public groups, queues and other sharing mechanisms across the org.</p>
+  <p class="sum-desc">
+    Browses users, groups, queues, and other team-membership structures in the org.
+    Each sub-panel can be filtered and exported, making it easy to audit org membership and group composition.
+    <button class="cal-btn btn-d" style="margin-left:10px" onclick="document.getElementById('modal-kf').style.display='flex'">&#9733; Key features</button>
+  </p>
 </div>
+
 <div class="mockup-wrap">
-  <div class="mockup"><div class="vbox" style="gap:0px"><div class="anchor"><div class="m-tabpane" id="tp30"><div class="m-tabbar"><div class="m-tab act" onclick="sw('tp30',0)">Users</div><div class="m-tab" onclick="sw('tp30',1)">Groups</div><div class="m-tab" onclick="sw('tp30',2)">Queue</div><div class="m-tab" onclick="sw('tp30',3)">Others</div></div><div class="m-body"><div class="m-panel act" id="tp30-0"></div><div class="m-panel" id="tp30-1"></div><div class="m-panel" id="tp30-2"></div><div class="m-panel" id="tp30-3"></div></div></div></div></div></div>
+  <div class="mockup">
+
+    <div class="m-tabpane" id="tp76">
+      <div class="m-tabbar">
+        <div class="m-tab act" onclick="sw('tp76',0)">Users</div>
+        <div class="m-tab" onclick="sw('tp76',1)">Groups</div>
+        <div class="m-tab" onclick="sw('tp76',2)">Queue</div>
+        <div class="m-tab" onclick="sw('tp76',3)">Others</div>
+      </div>
+      <div class="m-body">
+
+        <!-- ══ Users ══ -->
+        <div class="m-panel act" id="tp76-0">
+          <div class="vbox" style="gap:8px">
+            <!-- Toolbar -->
+            <div class="hbox" style="gap:8px;align-items:center">
+              <span class="cal-lbl">Filter:</span>
+              <input class="cal-tf" readonly style="width:220px" placeholder="Search any field...">
+              <span style="border-left:1px solid #ccc;height:18px"></span>
+              <label class="cal-chk"><input type="checkbox" disabled> Active only</label>
+              <span style="border-left:1px solid #ccc;height:18px"></span>
+              <button class="cal-btn btn-d" data-tip="Reload users from Salesforce (bypasses cache)">&#8635; Refresh</button>
+              <button class="cal-btn btn-d" data-tip="Choose which columns to display">&#9881; Columns</button>
+              <span class="spacer"></span>
+              <span class="cache-info">Loaded 2026-04-30 09:47 — 142 users</span>
+            </div>
+            <!-- Table -->
+            <div class="tbl-wrap">
+              <table class="cal-tbl">
+                <thead>
+                  <tr>
+                    <th style="width:165px">Id</th>
+                    <th style="width:180px">Name</th>
+                    <th style="width:270px">Username</th>
+                    <th style="width:190px">Profile</th>
+                    <th style="width:160px">Role</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><td style="font-size:11px">005Sm00000FfVIZIA3</td><td>Alice Martin</td><td>alice.martin@example.com.pc</td><td>Deal Acme Innovation</td><td>Deal Team</td></tr>
+                  <tr><td style="font-size:11px">0051p00000AsqMnAAJ</td><td>Admin User</td><td>admin@example.com.pc</td><td>System Administrator</td><td></td></tr>
+                  <tr><td style="font-size:11px">0051p000009ERe3AAG</td><td>John Doe</td><td>john.doe@example.com.pc</td><td>System Administrator</td><td></td></tr>
+                  <tr><td style="font-size:11px">0051p00000G7psrAAB</td><td>Bob Johnson</td><td>bob.johnson@example.com.pc</td><td>Deal Acme Innovation</td><td>Deal Team</td></tr>
+                  <tr><td style="font-size:11px">0051p00009Dv9NAAS</td><td>Marc Dupont</td><td>marc.dupont@example.com.pc</td><td>Deal Acme Innovation</td><td>Deal Team</td></tr>
+                  <tr><td style="font-size:11px">00524000001jtaWAAQ</td><td>Jane Smith</td><td>jane.smith@example.com.pc</td><td>Deal Acme</td><td>Deal Team</td></tr>
+                  <tr><td style="font-size:11px">005Sm000008xFMbIAM</td><td>Sarah Connor</td><td>sarah.connor@example.com.pc</td><td>Deal Acme Innovation</td><td>Deal Team</td></tr>
+                  <tr><td style="font-size:11px">005Sm00000KjkuaIAB</td><td>Laura Brown</td><td>laura.brown@example.com.pc</td><td>Deal Acme</td><td>Deal Team</td></tr>
+                  <tr><td style="font-size:11px">0051p00000JC1QPIA1</td><td>Paul Wilson</td><td>paul.wilson@example.com.pc</td><td>Deal Acme</td><td>Deal Team</td></tr>
+                  <tr><td style="font-size:11px">005Sm00000RyEclAK</td><td>Emma Davis</td><td>emma.davis@example.com.pc</td><td>Deal Acme</td><td>Deal Team</td></tr>
+                  <tr><td style="font-size:11px">005Sm00000LHIMDIA5</td><td>Nina Lopez</td><td>nina.lopez@example.com.pc</td><td>Deal Acme LATAM</td><td>Deal Team</td></tr>
+                  <tr><td style="font-size:11px">005Sm00000MWzjlIAD</td><td>Sophie Turner</td><td>sophie.turner@example.com.pc</td><td>Deal Acme</td><td>Deal Team</td></tr>
+                  <tr><td style="font-size:11px">00524000000p5LzAAI</td><td>Tom Baker</td><td>tom.baker@example.com.pc</td><td>Fundraising Acme</td><td>Fundraising USA</td></tr>
+                  <tr><td style="font-size:11px">00524000000GYX7DAAX</td><td>Yuning Lee</td><td>yuning.lee@example.com.pc</td><td>Deal Acme</td><td>Deal Team</td></tr>
+                  <tr><td style="font-size:11px">0050800000ESV6uAAH</td><td>Chris Moore</td><td>chris.moore@example.com.pc</td><td>Deal Acme Innovation</td><td>Deal Team</td></tr>
+                  <tr><td style="font-size:11px">0051p000000Bv36MAAR</td><td>Felix Weber</td><td>felix.weber@example.com.pc</td><td>Fundraising Acme</td><td>Fundraising France</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- ══ Groups ══ -->
+        <div class="m-panel" id="tp76-1">
+          <div class="vbox" style="gap:8px">
+            <!-- Toolbar -->
+            <div class="hbox" style="gap:8px;align-items:center">
+              <span class="cal-lbl">Filter:</span>
+              <input class="cal-tf" readonly style="width:220px" placeholder="Search any field...">
+              <span style="border-left:1px solid #ccc;height:18px"></span>
+              <button class="cal-btn btn-d" data-tip="Reload groups from Salesforce (bypasses cache)">&#8635; Refresh</button>
+              <button class="cal-btn btn-d" data-tip="Expand all tree nodes">&#8862; Expand all</button>
+              <button class="cal-btn btn-d" data-tip="Collapse all tree nodes">&#8863; Collapse all</button>
+              <span class="spacer"></span>
+              <span class="cache-info">Loaded 2026-04-30 09:51 — 24 groups</span>
+            </div>
+            <!-- Tree table -->
+            <div class="tbl-wrap">
+              <table class="cal-tbl">
+                <thead>
+                  <tr>
+                    <th style="width:240px">Name</th>
+                    <th style="width:100px">Type</th>
+                    <th style="width:230px">Developer Name</th>
+                    <th style="width:80px">Email</th>
+                    <th style="width:80px">Related</th>
+                    <th style="width:60px">Users</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><td><span class="tree-arrow">&#9660;</span> All Fundraising</td><td><span class="badge-regular">Regular</span></td><td>All_Fundraising</td><td></td><td></td><td>0</td></tr>
+                  <tr><td class="tree-indent">Fundraising France</td><td><span class="badge-regular">Regular</span></td><td>Fundraising_France</td><td></td><td></td><td>14</td></tr>
+                  <tr><td class="tree-indent">Fundraising Germany</td><td><span class="badge-regular">Regular</span></td><td>Fundraising_Germany</td><td></td><td></td><td>0</td></tr>
+                  <tr><td>All internal users</td><td><span class="badge-regular">Regular</span></td><td>All_internal_users</td><td></td><td></td><td>0</td></tr>
+                  <tr><td>PartnerA (Strategic Partner)</td><td><span class="badge-regular">Regular</span></td><td>PartnerA_Strategic_Partner</td><td></td><td></td><td>0</td></tr>
+                  <tr><td>PartnerB (Strategic Partner)</td><td><span class="badge-regular">Regular</span></td><td>PartnerB_Strategic_Partner</td><td></td><td></td><td>0</td></tr>
+                  <tr><td><span class="tree-arrow">&#9660;</span> Acme Capital</td><td><span class="badge-regular">Regular</span></td><td>Acme_Capital</td><td></td><td></td><td>0</td></tr>
+                  <tr><td class="tree-indent"><span class="tree-arrow">&#9660;</span> PE Europe</td><td><span class="badge-regular">Regular</span></td><td>PE_Europe</td><td></td><td></td><td>0</td></tr>
+                  <tr><td class="tree-indent2">PE France</td><td><span class="badge-regular">Regular</span></td><td>PE_France</td><td></td><td></td><td>68</td></tr>
+                  <tr><td class="tree-indent2">PE Germany</td><td><span class="badge-regular">Regular</span></td><td>PE_Germany</td><td></td><td></td><td>12</td></tr>
+                  <tr><td class="tree-indent">PE Singapore</td><td><span class="badge-regular">Regular</span></td><td>PE_Singapore</td><td></td><td></td><td>3</td></tr>
+                  <tr><td><span class="tree-arrow">&#9660;</span> PE Team</td><td><span class="badge-regular">Regular</span></td><td>PE_Team</td><td></td><td></td><td>0</td></tr>
+                  <tr><td class="tree-indent">PE France</td><td><span class="badge-regular">Regular</span></td><td>PE_France</td><td></td><td></td><td>68</td></tr>
+                  <tr><td class="tree-indent">PE Germany</td><td><span class="badge-regular">Regular</span></td><td>PE_Germany</td><td></td><td></td><td>12</td></tr>
+                  <tr><td>Healthcare team</td><td><span class="badge-regular">Regular</span></td><td>Healthcare_team</td><td></td><td></td><td>6</td></tr>
+                  <tr><td><span class="tree-arrow">&#9660;</span> Acme Innovation</td><td><span class="badge-regular">Regular</span></td><td>Acme_Innovation</td><td></td><td></td><td>0</td></tr>
+                  <tr><td class="tree-indent">Innovators</td><td><span class="badge-regular">Regular</span></td><td>Innovators</td><td></td><td></td><td>9</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- ══ Queue ══ -->
+        <div class="m-panel" id="tp76-2">
+          <div class="vbox" style="gap:8px">
+            <!-- Toolbar -->
+            <div class="hbox" style="gap:8px;align-items:center">
+              <span class="cal-lbl">Filter:</span>
+              <input class="cal-tf" readonly style="width:220px" placeholder="Search any field...">
+              <span style="border-left:1px solid #ccc;height:18px"></span>
+              <button class="cal-btn btn-d" data-tip="Reload queues from Salesforce (bypasses cache)">&#8635; Refresh</button>
+              <button class="cal-btn btn-d" data-tip="Expand all tree nodes">&#8862; Expand all</button>
+              <button class="cal-btn btn-d" data-tip="Collapse all tree nodes">&#8863; Collapse all</button>
+              <span class="spacer"></span>
+              <span class="cache-info">Loaded 2026-04-30 09:52 — 20 queues</span>
+            </div>
+            <!-- Table -->
+            <div class="tbl-wrap">
+              <table class="cal-tbl">
+                <thead>
+                  <tr>
+                    <th style="width:240px">Name</th>
+                    <th style="width:100px">Type</th>
+                    <th style="width:230px">Developer Name</th>
+                    <th style="width:80px">Email</th>
+                    <th style="width:80px">Related</th>
+                    <th style="width:60px">Users</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><td>Front Nat</td><td><span class="badge-queue">Queue</span></td><td>FrontNat</td><td></td><td></td><td>162</td></tr>
+                  <tr><td>Spex Nat</td><td><span class="badge-queue">Queue</span></td><td>SpexNat</td><td></td><td></td><td>55</td></tr>
+                  <tr><td>Front Inter</td><td><span class="badge-queue">Queue</span></td><td>FrontInter</td><td></td><td></td><td>36</td></tr>
+                  <tr><td>Partenaire</td><td><span class="badge-queue">Queue</span></td><td>Partenaire</td><td></td><td></td><td>32</td></tr>
+                  <tr><td>LiveChat Miaw</td><td><span class="badge-queue">Queue</span></td><td>LiveChatMiaw</td><td></td><td></td><td>27</td></tr>
+                  <tr><td>LiveChat MiawPetitPro</td><td><span class="badge-queue">Queue</span></td><td>LiveChatMiawPetitPro</td><td></td><td></td><td>26</td></tr>
+                  <tr><td>Livechat_Queue</td><td><span class="badge-queue">Queue</span></td><td>Livechat_Queue</td><td></td><td></td><td>25</td></tr>
+                  <tr><td>DAF Facturation Complementaire</td><td><span class="badge-queue">Queue</span></td><td>DAF_Factu_Compl</td><td></td><td></td><td>24</td></tr>
+                  <tr><td>Spex Inter</td><td><span class="badge-queue">Queue</span></td><td>SpexInter</td><td></td><td></td><td>23</td></tr>
+                  <tr><td>Business Solutions</td><td><span class="badge-queue">Queue</span></td><td>ServiceDSO</td><td></td><td></td><td>16</td></tr>
+                  <tr><td>CRESA</td><td><span class="badge-queue">Queue</span></td><td>CRESA</td><td></td><td></td><td>15</td></tr>
+                  <tr><td>Hot Line Facturation</td><td><span class="badge-queue">Queue</span></td><td>Hot_Line_Facturation</td><td></td><td></td><td>15</td></tr>
+                  <tr><td>Service Client et Facturation</td><td><span class="badge-queue">Queue</span></td><td>Service_Client_Facturation</td><td></td><td></td><td>15</td></tr>
+                  <tr><td>Assistance Nat</td><td><span class="badge-queue">Queue</span></td><td>AssistanceNat</td><td></td><td></td><td>13</td></tr>
+                  <tr><td>Inbound Email Akio</td><td><span class="badge-queue">Queue</span></td><td>Inbound_Email_Akio</td><td></td><td></td><td>10</td></tr>
+                  <tr><td>Assurance</td><td><span class="badge-queue">Queue</span></td><td>Assurance</td><td></td><td></td><td>7</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- ══ Others ══ -->
+        <div class="m-panel" id="tp76-3">
+          <div class="vbox" style="gap:8px">
+            <!-- Toolbar -->
+            <div class="hbox" style="gap:8px;align-items:center">
+              <span class="cal-lbl">Filter:</span>
+              <input class="cal-tf" readonly style="width:220px" placeholder="Search any field...">
+              <span style="border-left:1px solid #ccc;height:18px"></span>
+              <button class="cal-btn btn-d" data-tip="Reload from Salesforce (bypasses cache)">&#8635; Refresh</button>
+              <button class="cal-btn btn-d" data-tip="Expand all tree nodes">&#8862; Expand all</button>
+              <button class="cal-btn btn-d" data-tip="Collapse all tree nodes">&#8863; Collapse all</button>
+              <span class="spacer"></span>
+              <span class="cache-info">Loaded 2026-04-30 09:53 — 38 entries</span>
+            </div>
+            <!-- Type filter pills -->
+            <div class="hbox" style="gap:6px;align-items:center;padding:2px 0 4px 0">
+              <span class="cal-lbl" style="font-size:12px">Types:</span>
+              <span class="badge-guest" style="cursor:pointer">AllCustomerPortal</span>
+              <span class="badge-guest" style="cursor:pointer">GuestUserGroup</span>
+              <span class="badge-managed" style="cursor:pointer">ManagedContentSpaceRole</span>
+              <span class="badge-org" style="cursor:pointer">Organization</span>
+              <span class="badge-prm" style="cursor:pointer">PRMOrganization</span>
+              <span class="badge-role" style="cursor:pointer">Role</span>
+              <span class="badge-regular" style="cursor:pointer">RoleAndSubordinates</span>
+              <span class="badge-regular" style="cursor:pointer">RoleAndSubordinatesInternal</span>
+            </div>
+            <!-- Table -->
+            <div class="tbl-wrap">
+              <table class="cal-tbl">
+                <thead>
+                  <tr>
+                    <th style="width:240px">Name</th>
+                    <th style="width:180px">Type</th>
+                    <th style="width:290px">Developer Name</th>
+                    <th style="width:120px">Related</th>
+                    <th style="width:60px">Users</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><td>AllCustomerPortal</td><td><span class="badge-guest">AllCustomerPortal</span></td><td>AllCustomerPortalUsers</td><td></td><td>0</td></tr>
+                  <tr><td>Acme_Knowledge_Platform_Platf...</td><td><span class="badge-guest">GuestUserGroup</span></td><td>Acme_Knowledge_Platform</td><td>Acme Knowledge Platform Site Guest User</td><td>0</td></tr>
+                  <tr><td>Community_Test</td><td><span class="badge-guest">GuestUserGroup</span></td><td>Community_Test</td><td>Community Test Site Guest User</td><td>0</td></tr>
+                  <tr><td>sandbox</td><td><span class="badge-guest">GuestUserGroup</span></td><td>sandbox</td><td>sandbox Site Guest User</td><td>0</td></tr>
+                  <tr><td>Twitter_Feed</td><td><span class="badge-guest">GuestUserGroup</span></td><td>Twitter_Feed</td><td>Twitter Feed Site Guest User</td><td>0</td></tr>
+                  <tr><td>Builder</td><td><span class="badge-managed">ManagedContentSpaceRole</span></td><td>MC_0Zu08000000L3ccCAC_0aJ1p000000fyshEAA</td><td></td><td>0</td></tr>
+                  <tr><td>Experience Admin</td><td><span class="badge-managed">ManagedContentSpaceRole</span></td><td>MC_0Zu08000000L3ccCAC_0aJ1p000000g0S4EAI</td><td></td><td>0</td></tr>
+                  <tr><td>Publisher</td><td><span class="badge-managed">ManagedContentSpaceRole</span></td><td>MC_0Zu08000000L3ccCAC_0aJ1p000000fysiEAA</td><td></td><td>0</td></tr>
+                  <tr><td>Organization</td><td><span class="badge-org">Organization</span></td><td>AllInternalUsers</td><td></td><td>0</td></tr>
+                  <tr><td>PRMOrganization</td><td><span class="badge-prm">PRMOrganization</span></td><td>AllPartnerUsers</td><td></td><td>0</td></tr>
+                  <tr><td>PartnerCUtilisateurPartenaire</td><td><span class="badge-role">Role</span></td><td>PartnerCUtilisateurPartenaire</td><td>PartnerC (Strategic Partner) Utilisateur Partenaire</td><td>0</td></tr>
+                  <tr><td>PartnerGStrategicPartnerUtilisateurPartenaire</td><td><span class="badge-role">Role</span></td><td>PartnerGStrategicPartnerUtilisateurPartenaire</td><td>PartnerG (Strategic Partner) Utilisateur Partenaire</td><td>0</td></tr>
+                  <tr><td>PartnerDUtilisateurPartenaire</td><td><span class="badge-role">Role</span></td><td>PartnerDUtilisateurPartenaire</td><td>PartnerD (Strategic Partner) Utilisateur Partenaire</td><td>0</td></tr>
+                  <tr><td>PartnerEStrategicPartnerUtilisateurPartenaire</td><td><span class="badge-role">Role</span></td><td>PartnerEStrategicPartnerUtilisateurPartenaire</td><td>PartnerE (Strategic Partner) Utilisateur Partenaire</td><td>0</td></tr>
+                  <tr><td>PartnerFUtilisateurPartenaire</td><td><span class="badge-role">Role</span></td><td>PartnerFUtilisateurPartenaire</td><td>PartnerF (Strategic Partner) Utilisateur Partenaire</td><td>0</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- m-body -->
+    </div><!-- m-tabpane -->
+
+  </div>
 </div>
+
+<!-- Key features modal -->
+<div id="modal-kf" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:999;align-items:center;justify-content:center" onclick="if(event.target===this)this.style.display='none'">
+  <div style="background:#fff;border-radius:8px;padding:28px 32px;max-width:540px;width:90%;color:#1a2a35;box-shadow:0 8px 32px rgba(0,0,0,.3)">
+    <h3 style="margin:0 0 14px;color:#2980b9">&#9733; Key features</h3>
+    <ul style="margin:0;padding-left:20px;line-height:1.8">
+      <li>Four sub-tabs: Users, Groups, Queue, and Others (all group types excluding Regular and Queue)</li>
+      <li>Users table with live filter on any column (name, username, profile, role)</li>
+      <li>"Active only" checkbox hides inactive users in the Users panel</li>
+      <li>Groups and Queue panels use a TreeTable showing parent/child hierarchy with expand/collapse</li>
+      <li>Others panel includes type-filter pills (Organization, Role, GuestUserGroup, PRMOrganization…)</li>
+      <li>Member count per group/queue displayed in the Users column for instant capacity review</li>
+      <li>All panels support Refresh to bypass cache and reload from Salesforce in real-time</li>
+    </ul>
+    <div style="text-align:right;margin-top:18px">
+      <button class="cal-btn btn-d" onclick="document.getElementById('modal-kf').style.display='none'">Close</button>
+    </div>
+  </div>
+</div>
+
 <script>
 function sw(id,idx){
   var tp=document.getElementById(id);

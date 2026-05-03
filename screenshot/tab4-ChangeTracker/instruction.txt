@@ -1,1 +1,3 @@
 Place screenshots for tab4-ChangeTracker in this directory.
+tu peux rendre le bouton choose Metadata clickable et clignotant.
+si on clique tu ouvre la popup tab4Popup.png

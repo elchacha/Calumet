@@ -3,20 +3,253 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Object Diff — Calumet</title>
+<title>Compare All Profiles — Calumet</title>
 <link rel="stylesheet" href="../shared.css">
+<style>
+.profile-list { display:flex; flex-direction:column; gap:5px; }
+.profile-list label { display:flex; align-items:center; gap:7px; font-size:13px; cursor:pointer; padding:2px 4px; border-radius:3px; }
+.profile-list label:hover { background:#e8f4fb; }
+.pill-type { display:inline-block; padding:1px 7px; border-radius:10px; font-size:11px; font-weight:600; min-width:90px; text-align:center; }
+.pt-apex   { background:#d5f5e3; color:#1e8449; }
+.pt-field  { background:#d6eaf8; color:#1a5276; }
+.pt-obj    { background:#fdebd0; color:#935116; }
+.pt-tab    { background:#e8daef; color:#6c3483; }
+.pt-rec    { background:#f9ebea; color:#922b21; }
+.val-enabled  { color:#27ae60; font-weight:600; }
+.val-disabled { color:#E74C3C; font-weight:600; }
+.val-read     { color:#2980b9; }
+.val-edit     { color:#e67e22; font-weight:600; }
+.val-none     { color:#888; }
+.val-hidden   { color:#888; font-style:italic; }
+.split-profiles { display:flex; gap:12px; align-items:flex-start; }
+.profile-panel { flex:0 0 175px; background:#f7fafc; border:1px solid #d0dae4; border-radius:6px; padding:8px; }
+.comparison-panel { flex:1; min-width:0; }
+</style>
 </head>
 <body class="tab-page">
+
 <div class="sum">
   <div class="sum-title">
-    <h2>Object Diff</h2>
+    <h2>Compare All Profiles</h2>
     <span class="sum-badge">Tab 15</span>
   </div>
-  <p class="sum-desc">Compare two Salesforce objects field-by-field to highlight structural differences between orgs.</p>
+  <p class="sum-desc">
+    Select multiple Salesforce profiles and compare all their permissions side by side — field security, object access, Apex classes, pages, and more — in a single sortable table.
+    <button class="cal-btn btn-d" style="margin-left:10px" onclick="document.getElementById('modal-kf').style.display='flex'">&#9733; Key features</button>
+  </p>
 </div>
+
 <div class="mockup-wrap">
-  <div class="mockup"><div class="vbox" style="gap:0px"><div class="anchor"><button class="cal-btn btn-b">Read Profiles</button><label class="cal-chk"><input type="checkbox" disabled> useCachedValues</label><div class="hbox" style="gap:10.0px;align-items:center"><div class="vbox" style="gap:10.0px"><input class="cal-tf" placeholder="" style="width:150.0px;" readonly><div class="scroll-pane"><div class="vbox" style="gap:10.0px"></div></div></div><div class="vbox" style="gap:10.0px"><div class="hbox" style="gap:10.0px;align-items:center"><input class="cal-tf" placeholder="" style="width:200.0px;" readonly><label class="cal-chk"><input type="checkbox" checked disabled> Global</label><label class="cal-chk"><input type="checkbox" checked disabled> Object</label><label class="cal-chk"><input type="checkbox" checked disabled> Field</label><label class="cal-chk"><input type="checkbox" checked disabled> Others</label></div><div class="tbl-wrap"><table class="cal-tbl"><thead><tr><th>C1</th><th>C2</th></tr></thead><tbody><tr><td colspan="20" class="tbl-empty"></td></tr></tbody></table></div></div></div><label class="cal-chk"><input type="checkbox" disabled> containingActiveUsers</label></div></div></div>
+  <div class="mockup">
+
+    <!-- Top action bar -->
+    <div class="hbox" style="gap:10px;align-items:center;padding:8px 8px 6px;">
+      <button class="cal-btn btn-b">Read Profiles</button>
+      <label class="cal-chk"><input type="checkbox" checked disabled> useCachedValues</label>
+      <label class="cal-chk"><input type="checkbox" checked disabled> containingActiveUsers</label>
+    </div>
+
+    <div class="split-profiles" style="padding:0 8px 8px;">
+
+      <!-- Left: profile list -->
+      <div class="profile-panel">
+        <input class="cal-tf" style="width:100%;margin-bottom:8px;box-sizing:border-box" placeholder="Filter profiles..." readonly>
+        <div class="profile-list">
+          <label><input type="checkbox" disabled> Sales Administrator</label>
+          <label><input type="checkbox" disabled> Document Request Profile</label>
+          <label><input type="checkbox" disabled> Bank Details Profile</label>
+          <label><input type="checkbox" disabled> Read Only Profile</label>
+          <label><input type="checkbox" disabled> Sales Force Profile</label>
+          <label><input type="checkbox" disabled> ServiceAdmin</label>
+          <label><input type="checkbox" checked disabled> ServiceAgent</label>
+          <label><input type="checkbox" checked disabled> ServiceManager</label>
+          <label><input type="checkbox" checked disabled> ServiceManager_REQ</label>
+          <label><input type="checkbox" disabled> ServiceDRC</label>
+          <label><input type="checkbox" disabled> SupportTC Level 2</label>
+          <label><input type="checkbox" disabled> SupportTC REQ</label>
+          <label><input type="checkbox" disabled> SupportTC Level 1</label>
+          <label><input type="checkbox" disabled> SupportTC Level 2</label>
+          <label><input type="checkbox" disabled> SupportTC REQ</label>
+          <label><input type="checkbox" disabled> SupporteTC Level 2</label>
+          <label><input type="checkbox" disabled> SupporteTC REQ</label>
+          <label><input type="checkbox" disabled> Lead Score Profile</label>
+          <label><input type="checkbox" disabled> OPS - Agency</label>
+          <label><input type="checkbox" disabled> P1 - Assistant - Standard</label>
+          <label><input type="checkbox" disabled> Partner Unlimited</label>
+          <label><input type="checkbox" disabled> BillingDispute_ARC</label>
+        </div>
+      </div>
+
+      <!-- Right: comparison table -->
+      <div class="comparison-panel">
+        <!-- filter + category checkboxes -->
+        <div class="hbox" style="gap:10px;align-items:center;margin-bottom:6px;">
+          <input class="cal-tf" style="width:200px" placeholder="Filter comparison..." readonly>
+          <label class="cal-chk"><input type="checkbox" checked disabled> Global</label>
+          <label class="cal-chk"><input type="checkbox" checked disabled> Object</label>
+          <label class="cal-chk"><input type="checkbox" checked disabled> Field</label>
+          <label class="cal-chk"><input type="checkbox" checked disabled> Others</label>
+        </div>
+
+        <div class="tbl-wrap" style="max-height:480px;overflow-y:auto;">
+          <table class="cal-tbl">
+            <thead>
+              <tr>
+                <th style="width:110px">Type</th>
+                <th style="width:260px">Name</th>
+                <th style="width:110px">ServiceAgent</th>
+                <th style="width:110px">ServiceManager</th>
+                <th style="width:110px">ServiceManager_REQ</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><span class="pill-type pt-apex">ApexClass</span></td>
+                <td>App_Ctrl_Config_Test</td>
+                <td class="val-disabled">disabled</td>
+                <td class="val-enabled">enabled</td>
+                <td class="val-enabled">enabled</td>
+              </tr>
+              <tr>
+                <td><span class="pill-type pt-apex">ApexPage</span></td>
+                <td>VFP_UpdateAccountInfo</td>
+                <td class="val-disabled">disabled</td>
+                <td class="val-enabled">enabled</td>
+                <td class="val-disabled">disabled</td>
+              </tr>
+              <tr>
+                <td><span class="pill-type pt-apex">ApexPage</span></td>
+                <td>VFP_FluxWrapper</td>
+                <td class="val-disabled">disabled</td>
+                <td class="val-enabled">enabled</td>
+                <td class="val-enabled">enabled</td>
+              </tr>
+              <tr>
+                <td><span class="pill-type pt-apex">ApexPage</span></td>
+                <td>VFP_ServiceGrid</td>
+                <td class="val-disabled">disabled</td>
+                <td class="val-enabled">enabled</td>
+                <td class="val-enabled">enabled</td>
+              </tr>
+              <tr>
+                <td><span class="pill-type pt-apex">ApexPage</span></td>
+                <td>VFP_SummarySheet</td>
+                <td class="val-disabled">disabled</td>
+                <td class="val-enabled">enabled</td>
+                <td class="val-enabled">enabled</td>
+              </tr>
+              <tr>
+                <td><span class="pill-type pt-apex">ApexPage</span></td>
+                <td>VFP_ElectronicSignature</td>
+                <td class="val-enabled">enabled</td>
+                <td class="val-disabled">disabled</td>
+                <td class="val-disabled">disabled</td>
+              </tr>
+              <tr>
+                <td><span class="pill-type pt-apex">ApexPage</span></td>
+                <td>VFP_Pricing</td>
+                <td class="val-enabled">enabled</td>
+                <td class="val-disabled">disabled</td>
+                <td class="val-disabled">disabled</td>
+              </tr>
+              <tr>
+                <td><span class="pill-type pt-apex">ApexPage</span></td>
+                <td>VFP_PricingCondition</td>
+                <td class="val-enabled">enabled</td>
+                <td class="val-disabled">disabled</td>
+                <td class="val-disabled">disabled</td>
+              </tr>
+              <tr>
+                <td><span class="pill-type pt-field">Field Security</span></td>
+                <td>Account.TickerSymbol</td>
+                <td class="val-none">None</td>
+                <td class="val-none">None</td>
+                <td class="val-edit">Edit</td>
+              </tr>
+              <tr>
+                <td><span class="pill-type pt-field">Field Security</span></td>
+                <td>Case.AssetId</td>
+                <td class="val-none">None</td>
+                <td class="val-edit">Edit</td>
+                <td class="val-none">None</td>
+              </tr>
+              <tr>
+                <td><span class="pill-type pt-field">Field Security</span></td>
+                <td>Case.IsClosedOnCreate</td>
+                <td class="val-none">None</td>
+                <td class="val-read">Read</td>
+                <td class="val-none">None</td>
+              </tr>
+              <tr>
+                <td><span class="pill-type pt-field">Field Security</span></td>
+                <td>Case.IsEscalated</td>
+                <td class="val-none">None</td>
+                <td class="val-edit">Edit</td>
+                <td class="val-none">None</td>
+              </tr>
+              <tr>
+                <td><span class="pill-type pt-field">Field Security</span></td>
+                <td>Contact.DoNotCall</td>
+                <td class="val-none">None</td>
+                <td class="val-edit">Edit</td>
+                <td class="val-none">None</td>
+              </tr>
+              <tr>
+                <td><span class="pill-type pt-field">Field Security</span></td>
+                <td>Contact.HasOptedOutOfEmail</td>
+                <td class="val-none">None</td>
+                <td class="val-edit">Edit</td>
+                <td class="val-none">None</td>
+              </tr>
+              <tr>
+                <td><span class="pill-type pt-field">Field Security</span></td>
+                <td>Contact.TECH_DateDiff__c</td>
+                <td class="val-none">None</td>
+                <td class="val-edit">Edit</td>
+                <td class="val-none">None</td>
+              </tr>
+              <tr>
+                <td><span class="pill-type pt-obj">Object Security</span></td>
+                <td>Service_Detail__c</td>
+                <td>C,R,U</td>
+                <td>C,R,U,View All</td>
+                <td class="val-none">None</td>
+              </tr>
+              <tr>
+                <td><span class="pill-type pt-tab">TabSet</span></td>
+                <td>standard-SalesforceQuote</td>
+                <td class="val-hidden">Hidden</td>
+                <td class="val-enabled">DefaultOn</td>
+                <td class="val-enabled">DefaultOn</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </div>
 </div>
+
+<!-- Key features modal -->
+<div id="modal-kf" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:999;align-items:center;justify-content:center" onclick="if(event.target===this)this.style.display='none'">
+  <div style="background:#fff;border-radius:8px;padding:28px 32px;max-width:520px;width:90%;color:#1a2a35;box-shadow:0 8px 32px rgba(0,0,0,.3)">
+    <h3 style="margin:0 0 14px;color:#2980b9">&#9733; Key features</h3>
+    <ul style="margin:0;padding-left:20px;line-height:1.8">
+      <li>Read all org profiles in one click, with optional cache for fast re-comparison</li>
+      <li>Filter profile list by name or restrict to profiles with active users only</li>
+      <li>Select 2+ profiles: the comparison table builds automatically</li>
+      <li>Filter comparison by type: Global, Object, Field Security, and Others</li>
+      <li>Full-text filter across the comparison result table</li>
+      <li>Results sorted by type then name for easy diffing</li>
+      <li>Dynamic column headers — one column per selected profile</li>
+    </ul>
+    <div style="text-align:right;margin-top:18px">
+      <button class="cal-btn btn-d" onclick="document.getElementById('modal-kf').style.display='none'">Close</button>
+    </div>
+  </div>
+</div>
+
 <script>
 function sw(id,idx){
   var tp=document.getElementById(id);

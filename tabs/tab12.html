@@ -205,15 +205,15 @@
                 <th style="width:148px" class="star-col">&#9733; RecordType.Name</th>
                 <th style="width:120px" class="star-col">&#9733; Owner.Name</th>
                 <th style="width:148px" class="star-col">&#9733; LastModifiedBy.Name</th>
-                <th style="width:148px" class="star-col">&#9733; Account_Data_Quality__c</th>
+                <th style="width:148px" class="star-col">&#9733; Account_Score__c</th>
                 <th style="width:120px" class="star-col">&#9733; Account_Region__c</th>
-                <th style="width:148px" class="star-col">&#9733; Account_UID__c</th>
+                <th style="width:148px" class="star-col">&#9733; Account_ExternalId__c</th>
                 <th style="width:170px">Id</th>
                 <th style="width:140px">CreatedDate</th>
                 <th style="width:140px">LastModifiedDate</th>
                 <th style="width:120px">CreatedBy.Name</th>
                 <th style="width:120px">AccountSource</th>
-                <th style="width:148px">Account_ID18__c</th>
+                <th style="width:148px">Account_UniqueKey__c</th>
               </tr>
             </thead>
             <tbody>
@@ -224,7 +224,7 @@
                 <td>Automated Process</td>
                 <td>18.2</td>
                 <td>France</td>
-                <td>AUID206759</td>
+                <td>EXT100001</td>
                 <td style="font-family:monospace;font-size:10px">001XXXXXXXXXXXXXXXXA</td>
                 <td>2025-12-25 09:00</td>
                 <td>2026-04-28 14:32</td>
@@ -239,7 +239,7 @@
                 <td>user_01</td>
                 <td>9.1</td>
                 <td style="color:#888">&mdash;</td>
-                <td>AUID291353</td>
+                <td>EXT100002</td>
                 <td style="font-family:monospace;font-size:10px">001XXXXXXXXXXXXXXXXB</td>
                 <td>2025-12-29 11:15</td>
                 <td>2026-01-11 08:22</td>
@@ -254,7 +254,7 @@
                 <td>user_01</td>
                 <td>18.2</td>
                 <td>Rest of the World</td>
-                <td>AUID346461</td>
+                <td>EXT100003</td>
                 <td style="font-family:monospace;font-size:10px">001XXXXXXXXXXXXXXXXC</td>
                 <td>2025-12-30 16:48</td>
                 <td>2026-01-11 09:05</td>
@@ -528,9 +528,9 @@ var CFG_DATA = {
     {f:'RecordType.Name',        t:'RecordTypeId',      o:''},
     {f:'Owner.Name',             t:'OwnerId',           o:''},
     {f:'LastModifiedBy.Name',    t:'LastModifiedById',  o:''},
-    {f:'Account_Data_Quality__c',t:'',                  o:'Account'},
+    {f:'Account_Score__c',t:'',                  o:'Account'},
     {f:'Account_Region__c',      t:'',                  o:'Account'},
-    {f:'Account_UID__c',         t:'',                  o:'Account'}
+    {f:'Account_ExternalId__c',         t:'',                  o:'Account'}
   ],
   Opportunity:[
     {f:'Name',       t:'',         o:''},

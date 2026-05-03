@@ -3,20 +3,139 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Object Comparator — Calumet</title>
+<title>Record Comparison — Calumet</title>
 <link rel="stylesheet" href="../shared.css">
+<style>
+  .left-panel   { width:340px; flex-shrink:0; display:flex; flex-direction:column; gap:14px; padding-top:4px; }
+  .rec-section  { background:#f8f9fa; border:1px solid #dce3e8; border-radius:6px; padding:14px 16px; display:flex; flex-direction:column; gap:8px; }
+  .rec-section label { font-size:12px; color:#555; font-weight:600; }
+  .obj-badge    { background:#2980b9; color:#fff; border-radius:6px; padding:2px 10px; font-size:12px; font-weight:600; display:inline-block; }
+  .save-ok      { color:#27ae60; font-size:12px; font-weight:700; }
+  .main-split   { display:flex; gap:14px; align-items:flex-start; height:100%; }
+  .diff-diff td { background:#fff4e6 !important; }
+  .diff-same td { background:#f0fff0 !important; }
+  .diff-empty td{ color:#aaa; font-style:italic; }
+  .filter-row   { display:flex; align-items:center; gap:8px; margin-bottom:4px; }
+</style>
 </head>
 <body class="tab-page">
+
 <div class="sum">
   <div class="sum-title">
-    <h2>Object Comparator</h2>
+    <h2>Record Comparison</h2>
     <span class="sum-badge">Tab 58</span>
   </div>
-  <p class="sum-desc">Compare two Salesforce records by ID side-by-side to detect field-level data differences.</p>
+  <p class="sum-desc">
+    Compares two Salesforce records side-by-side, field by field, to detect data differences.
+    Supports same-org or cross-org comparison by selecting a secondary environment, and includes a snapshot save for offline diff workflows.
+    <button class="cal-btn btn-d" style="margin-left:10px" onclick="document.getElementById('modal-kf').style.display='flex'">&#9733; Key features</button>
+  </p>
 </div>
+
 <div class="mockup-wrap">
-  <div class="mockup"><div class="vbox" style="gap:0px"><div class="anchor"><input class="cal-tf" placeholder="" style="" readonly><input class="cal-tf" placeholder="" style="" readonly><span class="cal-lbl">First id</span><span class="cal-lbl">Second id</span><span class="cal-lbl">Use those feature to compare 2 objects or twice the same object</span><button class="cal-btn btn-d">Save</button><button class="cal-btn btn-d">Compare to itself</button><button class="cal-btn btn-d">Compare</button><span class="cal-lbl">Type d&#x27;objet :</span><div class="tbl-wrap"><table class="cal-tbl"><thead><tr><th style="width:187.0px">Field</th><th style="width:204.0px">Value first object</th><th style="width:301.0px">Value second object</th></tr></thead><tbody><tr><td colspan="20" class="tbl-empty"></td></tr></tbody></table></div><span class="cal-lbl">objectType</span><select class="cal-cb" style="width:150.0px;"><option class="ph">Select...</option></select><span class="cal-lbl">action</span><input class="cal-tf" placeholder="" style="width:241.0px;" readonly></div></div></div>
+  <div class="mockup">
+    <div class="main-split">
+
+      <!-- Left: inputs & actions -->
+      <div class="left-panel">
+
+        <!-- Hint -->
+        <span class="cal-lbl" style="font-size:12px;color:#555;font-style:italic">Use those features to compare 2 objects or twice the same object</span>
+
+        <!-- Object type badge -->
+        <div class="hbox" style="gap:8px;align-items:center">
+          <span class="cal-lbl">Type d'objet :</span>
+          <span class="obj-badge">Project__c</span>
+        </div>
+
+        <!-- First record -->
+        <div class="rec-section">
+          <label>First id</label>
+          <input class="cal-tf" readonly value="a00G500000X001aAA" style="width:100%">
+          <div class="hbox" style="gap:6px">
+            <button class="cal-btn btn-d" data-tip="Save a snapshot of this record to disk for later comparison">Save</button>
+            <button class="cal-btn btn-d" data-tip="Compare this record against its saved snapshot">Compare to itself</button>
+            <span class="save-ok">Saved</span>
+          </div>
+        </div>
+
+        <!-- Second record -->
+        <div class="rec-section">
+          <label>Second id</label>
+          <input class="cal-tf" readonly value="a00G500000X001bAA" style="width:100%">
+          <div class="hbox" style="gap:6px;align-items:center">
+            <button class="cal-btn btn-b" data-tip="Compare the two record IDs side by side">Compare</button>
+            <select class="cal-cb" style="width:130px">
+              <option>Production Org</option>
+              <option>Sandbox UAT</option>
+              <option>Dev Sandbox</option>
+            </select>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Right: diff table -->
+      <div class="vbox" style="flex:1;min-width:0;gap:6px">
+        <!-- Filter field (visible after compare) -->
+        <div class="filter-row">
+          <span class="cal-lbl" style="font-size:12px">Filter:</span>
+          <input class="cal-tf cal-grow" readonly value="" style="max-width:260px" placeholder="Filter fields...">
+        </div>
+        <div class="tbl-wrap">
+          <table class="cal-tbl">
+            <thead>
+              <tr>
+                <th style="width:220px">Field</th>
+                <th style="width:310px">Value first object</th>
+                <th style="width:310px">Value second object</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="diff-same"><td>Team_Initials__c</td><td>John Doe</td><td>Jane Smith</td></tr>
+              <tr class="diff-same"><td>Record_ID18__c</td><td>a00G500000X001aAA</td><td>a00G500000X001bAA</td></tr>
+              <tr class="diff-diff"><td>Company_Country__c</td><td>United Kingdom</td><td>France</td></tr>
+              <tr class="diff-same"><td>Id</td><td>a00G500000X001aAA</td><td>a00G500000X001bAA</td></tr>
+              <tr class="diff-same"><td>UID__c</td><td>CD-100001</td><td>CD-100002</td></tr>
+              <tr class="diff-diff"><td>Account_Verticals__c</td><td>Application Software; Information Services (B2C)</td><td>HealthTech</td></tr>
+              <tr class="diff-diff"><td>Website__c</td><td>&lt;a href="https://example-alpha.com"&gt;Website&lt;/a&gt;</td><td>&lt;a href="https://example-beta.fr"&gt;Website&lt;/a&gt;</td></tr>
+              <tr class="diff-diff"><td>Name</td><td>Alpha Corp 2025</td><td>Beta Solutions (France) 2025 A</td></tr>
+              <tr class="diff-diff"><td>Male_C_Levels__c</td><td style="color:#aaa;font-style:italic">(empty)</td><td>0.0</td></tr>
+              <tr class="diff-diff"><td>Female_CEOs__c</td><td style="color:#aaa;font-style:italic">(empty)</td><td>0.0</td></tr>
+              <tr class="diff-diff"><td>Data_Quality__c</td><td>0.3</td><td>0.4</td></tr>
+              <tr class="diff-diff"><td>Reason_for_rejected1__c</td><td>Out of Scope: Late Stage</td><td style="color:#aaa;font-style:italic">(empty)</td></tr>
+              <tr class="diff-diff"><td>Company_Region__c</td><td>Europe</td><td>France</td></tr>
+              <tr class="diff-diff"><td>RoundType__c</td><td style="color:#aaa;font-style:italic">(empty)</td><td>A</td></tr>
+              <tr class="diff-diff"><td>Round_recap__c</td><td>100MEUR</td><td>5MEUR A</td></tr>
+              <tr class="diff-diff"><td>RoundValueM__c</td><td>100.0</td><td>5.0</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </div>
 </div>
+
+<!-- Key features modal -->
+<div id="modal-kf" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:999;align-items:center;justify-content:center" onclick="if(event.target===this)this.style.display='none'">
+  <div style="background:#fff;border-radius:8px;padding:28px 32px;max-width:520px;width:90%;color:#1a2a35;box-shadow:0 8px 32px rgba(0,0,0,.3)">
+    <h3 style="margin:0 0 14px;color:#2980b9">&#9733; Key features</h3>
+    <ul style="margin:0;padding-left:20px;line-height:1.8">
+      <li>Compare any two records within the same org or across two different orgs</li>
+      <li>Save a snapshot of the first record to disk for async / offline comparison</li>
+      <li>"Compare to itself" mode diffs a live record against its saved snapshot</li>
+      <li>Secondary org selector allows cross-environment record diffs</li>
+      <li>Filter bar narrows the diff table to fields matching any text string</li>
+      <li>Object type badge auto-detected from the first record ID</li>
+      <li>Differences highlighted in amber rows; matching values in green rows</li>
+    </ul>
+    <div style="text-align:right;margin-top:18px">
+      <button class="cal-btn btn-d" onclick="document.getElementById('modal-kf').style.display='none'">Close</button>
+    </div>
+  </div>
+</div>
+
 <script>
 function sw(id,idx){
   var tp=document.getElementById(id);

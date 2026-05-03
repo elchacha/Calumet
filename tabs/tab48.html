@@ -3,20 +3,116 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Remover Helper — Calumet</title>
+<title>Children Access — Calumet</title>
 <link rel="stylesheet" href="../shared.css">
+<style>
+  .badge-type  { background:#2980b9; color:#fff; border-radius:8px; padding:2px 10px; font-size:12px; font-weight:600; display:inline-block; }
+  .badge-found { background:#27ae60; color:#fff; border-radius:8px; padding:2px 10px; font-size:12px; font-weight:600; display:inline-block; }
+  .badge-err   { background:#e74c3c; color:#fff; border-radius:8px; padding:2px 10px; font-size:12px; font-weight:600; display:inline-block; }
+  .user-locked { background:#d5f5e3; border:1.5px solid #27ae60; border-radius:3px; padding:3px 8px; font-size:13px; color:#1a2a35; width:220px; display:inline-block; }
+  .clr-x       { color:#e74c3c; font-weight:700; cursor:pointer; margin-left:2px; }
+  .pb-wrap     { background:#ddd; border-radius:4px; height:14px; width:220px; overflow:hidden; display:inline-block; vertical-align:middle; }
+  .pb-fill     { background:#2980b9; height:100%; width:67%; }
+  .acc-delete  { color:#27ae60; font-weight:600; }
+  .acc-edit    { color:#2980b9; }
+  .acc-all     { color:#8e44ad; font-weight:700; }
+  .acc-read    { color:#888; }
+  .acc-none    { color:#ccc; }
+</style>
 </head>
 <body class="tab-page">
+
 <div class="sum">
   <div class="sum-title">
-    <h2>Remover Helper</h2>
+    <h2>Children Access</h2>
     <span class="sum-badge">Tab 48</span>
   </div>
-  <p class="sum-desc">Assist in identifying and safely removing obsolete metadata before packaging for deployment.</p>
+  <p class="sum-desc">
+    Reports all access rights a given user holds over child records of a parent record, via its object relationships.
+    Useful for auditing implicit sharing and verifying that sharing rules propagate correctly down the record hierarchy.
+    <button class="cal-btn btn-d" style="margin-left:10px" onclick="document.getElementById('modal-kf').style.display='flex'">&#9733; Key features</button>
+  </p>
 </div>
+
 <div class="mockup-wrap">
-  <div class="mockup"><div class="vbox" style="gap:0px"><div class="anchor"><div class="anchor"><div class="tbl-wrap"><table class="cal-tbl"><thead><tr><th>Object Name</th><th>Record Id</th><th>Access Right</th></tr></thead><tbody><tr><td colspan="20" class="tbl-empty"></td></tr></tbody></table></div><button class="cal-btn btn-d">Search child record access</button><input class="cal-tf" placeholder="" style="width:181.0px;" readonly><span class="cal-lbl">Record Id</span><span class="cal-lbl">UserId</span><input class="cal-tf" placeholder="" style="width:231.0px;" readonly><span class="cal-lbl">objectType :</span><label class="cal-chk"><input type="checkbox" disabled> diplayNoAccess</label></div></div></div></div>
+  <div class="mockup">
+    <div class="vbox" style="gap:10px;padding:6px 0 0 0">
+
+      <!-- Row 1: Record Id + User autocomplete (locked) -->
+      <div class="hbox" style="gap:12px;align-items:center">
+        <span class="cal-lbl">Record Id</span>
+        <input class="cal-tf" readonly value="001G500000yVWnmlAG" style="width:185px">
+        <span class="cal-lbl">User</span>
+        <span class="user-locked">John Doe</span><span class="clr-x">&#10006;</span>
+      </div>
+
+      <!-- Row 2: Button + checkbox + badges -->
+      <div class="hbox" style="gap:12px;align-items:center">
+        <button class="cal-btn btn-b" data-tip="Search all child record access rights for this record and user">Search child record access</button>
+        <label class="cal-chk"><input type="checkbox" disabled> Show no access</label>
+        <span class="badge-type">Account</span>
+        <span class="badge-found">&#10003; Found</span>
+      </div>
+
+      <!-- Row 3: Progress bar (visible during search) -->
+      <div class="hbox" style="gap:10px;align-items:center">
+        <div class="pb-wrap"><div class="pb-fill"></div></div>
+        <span class="cal-lbl" style="font-size:12px;color:#666">8 / 12 completed</span>
+      </div>
+
+      <!-- Results table -->
+      <div class="tbl-wrap">
+        <table class="cal-tbl">
+          <thead>
+            <tr>
+              <th style="width:280px">Object Name</th>
+              <th style="width:200px">Record Id</th>
+              <th style="width:110px">Access Right</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>Asset__c</td><td>a0hG5000006sXqclAE</td><td class="acc-delete">Delete</td></tr>
+            <tr><td>Asset__c</td><td>a0hG5000006sXqqlAE</td><td class="acc-delete">Delete</td></tr>
+            <tr><td>Asset__c</td><td>a0hG5000006sXqrlAE</td><td class="acc-delete">Delete</td></tr>
+            <tr><td>Project__c</td><td>a0GG500000FGWdPMAX</td><td class="acc-all">All</td></tr>
+            <tr><td>Project__c</td><td>a0GG500000FGWmNMAX</td><td class="acc-edit">Edit</td></tr>
+            <tr><td>Project__c</td><td>a0GG500000FGWmMMAX</td><td class="acc-edit">Edit</td></tr>
+            <tr><td>Project__c</td><td>a0GG500000FGWmLMAX</td><td class="acc-edit">Edit</td></tr>
+            <tr><td>Contract__c</td><td>a0vG5000007YzHGIA0</td><td class="acc-delete">Delete</td></tr>
+            <tr><td>Contact</td><td>003G5000000zMX48IAG</td><td class="acc-edit">Edit</td></tr>
+            <tr><td>Contact</td><td>003G5000000zMX47IAG</td><td class="acc-edit">Edit</td></tr>
+            <tr><td>Order__c</td><td>a0JG50000058wR8MAI</td><td class="acc-delete">Delete</td></tr>
+            <tr><td>Order__c</td><td>a0JG50000058xQdMAI</td><td class="acc-delete">Delete</td></tr>
+            <tr><td>Order__c</td><td>a0JG50000058wOfMAI</td><td class="acc-delete">Delete</td></tr>
+            <tr><td>Order__c</td><td>a0JG50000058xQvMAI</td><td class="acc-delete">Delete</td></tr>
+            <tr><td>Opportunity</td><td>006G5000003TvBkIAK</td><td class="acc-edit">Edit</td></tr>
+            <tr><td>Invoice__c</td><td>a0QG5000004cLpAMAU</td><td class="acc-read">Read</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+  </div>
 </div>
+
+<!-- Key features modal -->
+<div id="modal-kf" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:999;align-items:center;justify-content:center" onclick="if(event.target===this)this.style.display='none'">
+  <div style="background:#fff;border-radius:8px;padding:28px 32px;max-width:520px;width:90%;color:#1a2a35;box-shadow:0 8px 32px rgba(0,0,0,.3)">
+    <h3 style="margin:0 0 14px;color:#2980b9">&#9733; Key features</h3>
+    <ul style="margin:0;padding-left:20px;line-height:1.8">
+      <li>Auto-detects the SObject type of any 15 or 18-character Salesforce record ID</li>
+      <li>Walks all child relationships and queries each object for the user's access level</li>
+      <li>Progress bar reports per-query completion (N / total queries)</li>
+      <li>User autocomplete locks the field once a user is selected, resolving their ID</li>
+      <li>"Show no access" toggle includes records with zero rights for full-coverage audits</li>
+      <li>Access levels displayed: Delete, Edit, Read, All, None — color-coded in the table</li>
+    </ul>
+    <div style="text-align:right;margin-top:18px">
+      <button class="cal-btn btn-d" onclick="document.getElementById('modal-kf').style.display='none'">Close</button>
+    </div>
+  </div>
+</div>
+
 <script>
 function sw(id,idx){
   var tp=document.getElementById(id);

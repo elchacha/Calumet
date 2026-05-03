@@ -1,17 +1,18 @@
-# Screenshot Documentation — Processed Tabs
-
-Tabs listed here have had their `docs/tabs/tabN.html` regenerated with real screenshots.
-Do not re-process unless explicitly requested.
-
-| Tab | Label | Screenshots | Last processed |
-|-----|-------|-------------|----------------|
-| tab9 | LastRecords | 2fyJoJGIB0.png, 5mROtw5m3S.png, 62xp93aA6E.png, BRmRtPnozu.png | 2026-04-29 |
-| tab12 | Soql | XkK6fx9MEI.png | 2026-04-29 |
-| tab16 | Relations | J54vzFTUIp.png | 2026-04-29 |
-| tab22 | Apex | y9p6A4jQof.png | 2026-04-29 |
-| tab27 | Picklists | seeDfOJTzc.png | 2026-04-29 |
-| tab42 | FlexiPages | aYaLxAaVbo.png, kM6upLbaLP.png, MuhHox4pww.png | 2026-04-29 |
-| tab53 | CustomMetadataUpdater | RqNIJMdCBX.png | 2026-04-29 |
-| tab54 | PermissionSet | msGjotiaYo.png, VderFVEoM5.png | 2026-04-29 |
-| tab59 | AllRelations | MtpZ4PmtiM.png | 2026-04-29 |
-| tab74 | ObjectActivity | qNVVzSWgs4.png | 2026-04-29 |
+tab_num,tab_name,last_screenshot,last_html_gen
+2,Retrieve,2026-05-01,2026-05-01
+3,Deploy,2026-05-01,2026-05-01
+4,ChangeTracker,2026-05-01,2026-05-01
+9,LastRecords,2026-04-29,2026-04-29
+10,History,2026-05-01,2026-05-01
+12,Soql,2026-04-29,2026-04-29
+16,Relations,2026-04-29,2026-04-29
+22,Apex,2026-04-29,2026-04-29
+26,Control,2026-05-01,2026-05-01
+27,Picklists,2026-04-29,2026-04-29
+29,Profiles,2026-05-01,2026-05-01
+34,Flow informations,2026-05-01,2026-05-01
+42,FlexiPages,2026-04-29,2026-04-29
+53,CustomMetadataUpdater,2026-04-29,2026-04-29
+54,PermissionSet,2026-04-29,2026-04-29
+59,AllRelations,2026-04-29,2026-04-29
+74,ObjectActivity,2026-04-29,2026-04-29

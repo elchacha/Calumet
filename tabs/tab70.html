@@ -3,20 +3,204 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Security Optimisation — Calumet</title>
+<title>Profile &amp; Permission Set Optimization — Calumet</title>
 <link rel="stylesheet" href="../shared.css">
+<style>
+  .badge-profile { background:#8e44ad; color:#fff; border-radius:6px; padding:2px 9px; font-size:11px; font-weight:600; display:inline-block; }
+  .badge-permset { background:#2980b9; color:#fff; border-radius:6px; padding:2px 9px; font-size:11px; font-weight:600; display:inline-block; }
+  .badge-psg     { background:#16a085; color:#fff; border-radius:6px; padding:2px 9px; font-size:11px; font-weight:600; display:inline-block; }
+  .badge-keep    { background:#27ae60; color:#fff; border-radius:6px; padding:2px 9px; font-size:11px; font-weight:600; display:inline-block; }
+  .badge-review  { background:#e67e22; color:#fff; border-radius:6px; padding:2px 9px; font-size:11px; font-weight:600; display:inline-block; }
+  .badge-remove  { background:#e74c3c; color:#fff; border-radius:6px; padding:2px 9px; font-size:11px; font-weight:600; display:inline-block; }
+  .row-keep   { background:#e6f7e6 !important; }
+  .row-keep td{ background:#e6f7e6 !important; }
+  .row-review { background:#fff4e6 !important; }
+  .row-review td{ background:#fff4e6 !important; }
+  .row-remove { background:#ffe6e6 !important; }
+  .row-remove td{ background:#ffe6e6 !important; }
+  .filter-bar { background:#f0f0f0; border-radius:6px; padding:8px 12px; display:flex; gap:12px; align-items:center; flex-wrap:wrap; }
+  .chk-filter-bar { background:#f8f8f8; border-radius:6px; padding:6px 12px; display:flex; gap:16px; align-items:center; flex-wrap:wrap; }
+  .summary-lbl { font-size:11px; color:#7f8c8d; margin-top:2px; }
+</style>
 </head>
 <body class="tab-page">
+
 <div class="sum">
   <div class="sum-title">
-    <h2>Security Optimisation</h2>
+    <h2>Profile &amp; Permission Set Optimization</h2>
     <span class="sum-badge">Tab 70</span>
   </div>
-  <p class="sum-desc">Identify unused or under-utilised profiles and permission sets. Color-coded: Keep / Review / Remove.</p>
+  <p class="sum-desc">
+    Analyzes all profiles and permission sets to surface unused, under-utilized, or redundant security configurations.
+    Each item receives a usage score and a color-coded recommendation: Keep, Review, or Safe to Remove.
+    <button class="cal-btn btn-d" style="margin-left:10px" onclick="document.getElementById('modal-kf').style.display='flex'">&#9733; Key features</button>
+  </p>
 </div>
+
 <div class="mockup-wrap">
-  <div class="mockup"><div class="vbox" style="gap:0px"><div class="hbox" style="background:#f0f0f0;padding:10px;gap:15.0px;align-items:center"><span class="cal-lbl">Type Filter:</span><select class="cal-cb" style="width:150.0px;"><option class="ph">Select...</option></select><span class="cal-lbl">Search:</span><input class="cal-tf" placeholder="Filter by name or description..." style="width:200.0px;" readonly><button class="cal-btn btn-b">Start Analysis</button><button class="cal-btn btn-d">Export Excel</button></div><div class="vbox" style="background:#f8f8f8;padding:8px;gap:5.0px"><div class="hbox" style="gap:20.0px;align-items:center"><span class="cal-lbl" style="font-weight:bold">Show:</span><label class="cal-chk"><input type="checkbox" checked disabled> Keep</label><label class="cal-chk"><input type="checkbox" checked disabled> Review</label><label class="cal-chk"><input type="checkbox" checked disabled> Safe to Remove</label><div class="vsep"></div><label class="cal-chk"><input type="checkbox" checked disabled> Custom only</label></div><span class="cal-lbl" style="color:#7f8c8d">No data analyzed yet</span></div><div class="tbl-wrap"><table class="cal-tbl"><thead><tr><th>Permission Type</th><th>Name</th><th>nb Users</th><th>Active</th><th>Score</th><th>Recommendation</th><th>Created</th><th>Analysis Details</th><th>Description</th></tr></thead><tbody><tr><td colspan="20" class="tbl-empty"></td></tr></tbody></table></div></div></div>
+  <div class="mockup">
+    <div class="vbox" style="gap:8px;padding:6px 0 0 0">
+
+      <!-- Config bar -->
+      <div class="filter-bar">
+        <span class="cal-lbl">Type Filter:</span>
+        <select class="cal-cb" style="width:160px">
+          <option>All</option>
+          <option>Profile</option>
+          <option>Permission Set</option>
+          <option>Permission Set Group</option>
+        </select>
+        <span class="cal-lbl">Search:</span>
+        <input class="cal-tf cal-grow" readonly value="" style="max-width:220px" placeholder="Filter by name or description...">
+        <button class="cal-btn btn-b" data-tip="Run profile and permission set usage analysis">Start Analysis</button>
+        <button class="cal-btn btn-d" data-tip="Export filtered results to Excel">Export Excel</button>
+      </div>
+
+      <!-- Filter checkboxes -->
+      <div class="chk-filter-bar">
+        <span class="cal-lbl" style="font-weight:700">Show:</span>
+        <label class="cal-chk"><input type="checkbox" checked disabled style="accent-color:#27ae60"> <span style="color:#27ae60;font-weight:700">Keep (18 items)</span></label>
+        <label class="cal-chk"><input type="checkbox" checked disabled style="accent-color:#e67e22"> <span style="color:#e67e22">Review (9 items)</span></label>
+        <label class="cal-chk"><input type="checkbox" checked disabled style="accent-color:#e74c3c"> <span style="color:#e74c3c;font-weight:700">Safe to Remove (8 items)</span></label>
+        <span style="border-left:1px solid #ccc;height:18px;display:inline-block;margin:0 4px"></span>
+        <label class="cal-chk"><input type="checkbox" checked disabled> <strong>Custom only</strong></label>
+        <div style="width:100%"><span class="summary-lbl">Total: 35 items (12 profiles, 23 permission sets) | Cleanup potential: 48.6%</span></div>
+      </div>
+
+      <!-- Results table -->
+      <div class="tbl-wrap">
+        <table class="cal-tbl">
+          <thead>
+            <tr>
+              <th style="width:110px">Permission Type</th>
+              <th style="width:220px">Name</th>
+              <th style="width:68px">nb Users</th>
+              <th style="width:58px">Active</th>
+              <th style="width:58px">Score</th>
+              <th style="width:110px">Recommendation</th>
+              <th style="width:95px">Created</th>
+              <th style="width:280px">Analysis Details</th>
+              <th style="width:200px">Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="row-keep">
+              <td><span class="badge-profile">Profile</span></td>
+              <td>Event Monitoring Analytics Admin</td>
+              <td>2</td><td>2</td><td>8.7</td>
+              <td><span class="badge-keep">Keep</span></td>
+              <td>2020-05-01</td>
+              <td>&#128293; High user activity; justified usage</td>
+              <td>Custom Event Monitoring Analytics app access and data settings</td>
+            </tr>
+            <tr class="row-keep">
+              <td><span class="badge-profile">Profile</span></td>
+              <td>Chatter Free User</td>
+              <td>3</td><td>2</td><td>6.4</td>
+              <td><span class="badge-keep">Keep</span></td>
+              <td>2019-03-12</td>
+              <td>&#128077; Good activity; justified usage</td>
+              <td>Allows access to Chatter without a full Salesforce license</td>
+            </tr>
+            <tr class="row-review">
+              <td><span class="badge-permset">Permission Set</span></td>
+              <td>Salesforce CRM Content User</td>
+              <td>4</td><td>1</td><td>3.8</td>
+              <td><span class="badge-review">Review</span></td>
+              <td>2018-07-19</td>
+              <td>&#9888; Moderate user activity; potential cleanup</td>
+              <td>Gives access to Salesforce CRM Content features</td>
+            </tr>
+            <tr class="row-keep">
+              <td><span class="badge-profile">Profile</span></td>
+              <td>Platform Integration User</td>
+              <td>1</td><td>1</td><td>9.1</td>
+              <td><span class="badge-keep">Keep</span></td>
+              <td>2021-01-08</td>
+              <td>&#128293; High user activity; justified usage</td>
+              <td>API-only integration user profile</td>
+            </tr>
+            <tr class="row-remove">
+              <td><span class="badge-permset">Permission Set</span></td>
+              <td>Partner Community Login User</td>
+              <td>0</td><td>0</td><td>0.0</td>
+              <td><span class="badge-remove">Safe to Remove</span></td>
+              <td>2019-11-03</td>
+              <td>&#128123; No active users; candidate for removal</td>
+              <td>Not assigned to any active permission set</td>
+            </tr>
+            <tr class="row-remove">
+              <td><span class="badge-profile">Profile</span></td>
+              <td>Charter General User</td>
+              <td>0</td><td>0</td><td>0.0</td>
+              <td><span class="badge-remove">Safe to Remove</span></td>
+              <td>2017-11-25</td>
+              <td>&#128123; No active users; candidate for removal</td>
+              <td>No users assigned to this profile</td>
+            </tr>
+            <tr class="row-review">
+              <td><span class="badge-permset">Permission Set</span></td>
+              <td>Manager Access — Salesforce</td>
+              <td>15</td><td>9</td><td>4.2</td>
+              <td><span class="badge-review">Review</span></td>
+              <td>2020-09-15</td>
+              <td>&#9888; Low user activity; potential cleanup</td>
+              <td>Provides access to manager-level reports and dashboards</td>
+            </tr>
+            <tr class="row-keep">
+              <td><span class="badge-psg">Perm Set Group</span></td>
+              <td>Sales Operations Manager</td>
+              <td>8</td><td>8</td><td>7.9</td>
+              <td><span class="badge-keep">Keep</span></td>
+              <td>2022-04-22</td>
+              <td>&#128293; High user activity; justified usage</td>
+              <td>Grouped permissions for sales ops workflow</td>
+            </tr>
+            <tr class="row-remove">
+              <td><span class="badge-permset">Permission Set</span></td>
+              <td>Ship and Debit Process Management</td>
+              <td>2</td><td>0</td><td>0.5</td>
+              <td><span class="badge-remove">Safe to Remove</span></td>
+              <td>2021-02-11</td>
+              <td>&#128123; No active users; candidate for removal</td>
+              <td>Gives access to Ship and Debit Process Management features in Operations Cloud</td>
+            </tr>
+            <tr class="row-review">
+              <td><span class="badge-profile">Profile</span></td>
+              <td>Service Catalog Agent</td>
+              <td>5</td><td>3</td><td>3.5</td>
+              <td><span class="badge-review">Review</span></td>
+              <td>2023-01-31</td>
+              <td>&#9888; Moderate user activity; optimization opportunity</td>
+              <td>Access Server Catalog and its catalog items for contracts and users</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+  </div>
 </div>
+
+<!-- Key features modal -->
+<div id="modal-kf" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:999;align-items:center;justify-content:center" onclick="if(event.target===this)this.style.display='none'">
+  <div style="background:#fff;border-radius:8px;padding:28px 32px;max-width:540px;width:90%;color:#1a2a35;box-shadow:0 8px 32px rgba(0,0,0,.3)">
+    <h3 style="margin:0 0 14px;color:#2980b9">&#9733; Key features</h3>
+    <ul style="margin:0;padding-left:20px;line-height:1.8">
+      <li>Analyzes profiles, permission sets, and permission set groups in a single run</li>
+      <li>Usage score (0–10) computed from active-user ratio and last-login activity over 90 days</li>
+      <li>Recommendations: Keep (green), Review (orange), Safe to Remove (red) — with row color coding</li>
+      <li>Emoji-coded analysis details: fire = high activity, ghost = no users, broom = cleanup candidate</li>
+      <li>Real-time filter by type, recommendation checkboxes, and free-text search</li>
+      <li>Summary bar shows total count, type breakdown, and overall cleanup potential %</li>
+      <li>Export filtered results to Excel for sharing with security administrators</li>
+    </ul>
+    <div style="text-align:right;margin-top:18px">
+      <button class="cal-btn btn-d" onclick="document.getElementById('modal-kf').style.display='none'">Close</button>
+    </div>
+  </div>
+</div>
+
 <script>
 function sw(id,idx){
   var tp=document.getElementById(id);

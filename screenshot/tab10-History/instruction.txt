@@ -1,1 +1,2 @@
 Place screenshots for tab10-History in this directory.
+tu peux remonter la popup qui affiche les fonction retrieve zip, retrieve package .... au niveau de la ligne bleu

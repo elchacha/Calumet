@@ -3,20 +3,401 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Orgs Management — Calumet</title>
+<title>Profiles Permissions — Calumet</title>
 <link rel="stylesheet" href="../shared.css">
+<style>
+.perm-table-wrap { overflow-x:auto; overflow-y:auto; max-height:480px; }
+.perm-tbl { border-collapse:collapse; font-size:12px; white-space:nowrap; }
+.perm-tbl th, .perm-tbl td { border:1px solid #d0dae4; padding:3px 6px; }
+.perm-tbl thead tr:first-child th { background:#2c3e50; color:#fff; position:sticky; top:0; z-index:2; text-align:center; }
+.perm-tbl thead tr:first-child th:first-child { text-align:left; min-width:220px; position:sticky; left:0; z-index:3; background:#2c3e50; }
+.perm-tbl tbody td:first-child { background:#f0f4f8; font-weight:600; color:#1a2a35; position:sticky; left:0; z-index:1; min-width:220px; font-size:12px; }
+.perm-tbl tbody tr:nth-child(even) td { background:#f7fafc; }
+.perm-tbl tbody tr:nth-child(even) td:first-child { background:#e8f0f7; }
+.cell-x   { text-align:center; color:#aab; font-size:11px; }
+.cell-chk { text-align:center; font-size:14px; }
+.cell-chk-green { color:#27ae60; font-size:15px; text-align:center; font-weight:700; }
+.cell-chk-red   { color:#E74C3C; font-size:15px; text-align:center; font-weight:700; }
+.col-highlighted { background:#1a5276 !important; color:#fff !important; }
+.prof-hdr { writing-mode:vertical-rl; text-orientation:mixed; transform:rotate(180deg); padding:8px 4px; font-size:11px; min-height:100px; }
+</style>
 </head>
 <body class="tab-page">
+
 <div class="sum">
   <div class="sum-title">
-    <h2>Orgs Management</h2>
+    <h2>Profiles Permissions</h2>
     <span class="sum-badge">Tab 41</span>
   </div>
-  <p class="sum-desc">Manage connected Salesforce org configurations: add, edit, remove and test org connections.</p>
+  <p class="sum-desc">
+    Extract all user permissions across every Salesforce profile into a single matrix. Each row is a permission, each column is a profile — quickly spot which profiles have which system permissions enabled, export to Excel, or regenerate profiles from an Excel file.
+    <button class="cal-btn btn-d" style="margin-left:10px" onclick="document.getElementById('modal-kf').style.display='flex'">&#9733; Key features</button>
+  </p>
 </div>
+
 <div class="mockup-wrap">
-  <div class="mockup"><div class="vbox" style="gap:0px"><div class="anchor"><button class="cal-btn btn-b">Extract profiles Permissions</button><div class="tbl-wrap"><table class="cal-tbl"><thead><tr><th style="width:75.0px">Profile1</th><th style="width:75.0px">Profile1</th><th style="width:75.0px">Profile3</th></tr></thead><tbody><tr><td colspan="20" class="tbl-empty"></td></tr></tbody></table></div><button class="cal-btn btn-d">Save To Excel</button><span class="cal-lbl">Let you export all the permissions assign to all profile in an excel format</span><button class="cal-btn btn-d">Generate Profile from Excel</button><label class="cal-chk"><input type="checkbox" disabled> display Profiles iwth inactive User</label></div></div></div>
+  <div class="mockup">
+
+    <!-- Action bar -->
+    <div style="padding:8px 10px 6px;">
+      <div style="font-size:12px;font-weight:600;color:#1a5276;margin-bottom:8px;">
+        Export all permissions assigned to all profiles in Excel format
+      </div>
+      <div class="hbox" style="gap:10px;align-items:center;">
+        <button class="cal-btn btn-b">Extract profiles Permissions</button>
+        <label class="cal-chk"><input type="checkbox" disabled> display Profiles with inactive User</label>
+        <button class="cal-btn btn-d">Save To Excel</button>
+        <button class="cal-btn btn-g">Generate Profile from Excel</button>
+      </div>
+    </div>
+
+    <!-- Permissions matrix table -->
+    <div class="perm-table-wrap">
+      <table class="perm-tbl">
+        <thead>
+          <tr>
+            <th>Permission</th>
+            <th><div class="prof-hdr">Analytics Cloud Integration User</div></th>
+            <th><div class="prof-hdr">Analytics Cloud Security User</div></th>
+            <th style="background:#1a5276;"><div class="prof-hdr">Standard Platform Knowledge Profile</div></th>
+            <th><div class="prof-hdr">Chatter Free User</div></th>
+            <th><div class="prof-hdr">Community Test Profile</div></th>
+            <th><div class="prof-hdr">Deal Standard</div></th>
+            <th><div class="prof-hdr">Deal Standard Innovation</div></th>
+            <th><div class="prof-hdr">Deal Standard LATAM</div></th>
+            <th><div class="prof-hdr">Discard Profile</div></th>
+            <th><div class="prof-hdr">Feature Demos</div></th>
+            <th><div class="prof-hdr">Fund of Fund (incl. Fundraising)</div></th>
+            <th><div class="prof-hdr">Fundraising Standard</div></th>
+            <th><div class="prof-hdr">Marketing User</div></th>
+            <th style="background:#1a5276;"><div class="prof-hdr">Minimum Access - API Only Integrations</div></th>
+            <th><div class="prof-hdr">Read Only</div></th>
+            <th><div class="prof-hdr">Sales Insights Integration User</div></th>
+            <th><div class="prof-hdr">Salesforce API Only System Integrations</div></th>
+            <th><div class="prof-hdr">System Administrator</div></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>API Enabled</td>
+            <td class="cell-x">X</td>
+            <td class="cell-x">X</td>
+            <td class="col-highlighted"><span class="cell-chk-red">&#10007;</span></td>
+            <td class="cell-x">X</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td class="cell-x">X</td>
+            <td class="col-highlighted"><span class="cell-chk-green">&#10003;</span></td>
+            <td class="cell-x">X</td>
+            <td class="cell-x">X</td>
+            <td class="cell-x">X</td>
+            <td class="cell-x">X</td>
+          </tr>
+          <tr>
+            <td>API Only User</td>
+            <td class="cell-x">X</td>
+            <td class="cell-x">X</td>
+            <td class="col-highlighted"><span class="cell-chk-red">&#10007;</span></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td class="col-highlighted"><span class="cell-chk-green">&#10003;</span></td>
+            <td class="cell-x">X</td>
+            <td class="cell-x">X</td>
+            <td></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>Access Activities</td>
+            <td></td>
+            <td></td>
+            <td class="col-highlighted"><span class="cell-chk-green">&#10003;</span></td>
+            <td class="cell-x">X</td>
+            <td class="cell-x">X</td>
+            <td class="cell-x">X</td>
+            <td class="cell-x">X</td>
+            <td class="cell-x">X</td>
+            <td class="cell-x">X</td>
+            <td class="cell-x">X</td>
+            <td class="cell-x">X</td>
+            <td class="cell-x">X</td>
+            <td class="cell-x">X</td>
+            <td class="col-highlighted"><span class="cell-chk-red">&#10007;</span></td>
+            <td class="cell-x">X</td>
+            <td class="cell-x">X</td>
+            <td class="cell-x">X</td>
+            <td class="cell-x">X</td>
+          </tr>
+          <tr>
+            <td>Access Libraries</td>
+            <td></td>
+            <td></td>
+            <td class="col-highlighted"><span class="cell-chk-green">&#10003;</span></td>
+            <td class="cell-x">X</td>
+            <td></td>
+            <td class="cell-x">X</td>
+            <td></td>
+            <td></td>
+            <td class="cell-x">X</td>
+            <td></td>
+            <td class="cell-x">X</td>
+            <td></td>
+            <td class="cell-x">X</td>
+            <td class="col-highlighted"><span class="cell-chk-red">&#10007;</span></td>
+            <td class="cell-x">X</td>
+            <td class="cell-x">X</td>
+            <td class="cell-x">X</td>
+            <td class="cell-x">X</td>
+          </tr>
+          <tr>
+            <td>Add People to Direct Messages</td>
+            <td class="cell-x">X</td>
+            <td class="cell-x">X</td>
+            <td class="col-highlighted"><span class="cell-chk-green">&#10003;</span></td>
+            <td class="cell-x">X</td>
+            <td class="cell-x">X</td>
+            <td class="cell-x">X</td>
+            <td class="cell-x">X</td>
+            <td></td>
+            <td class="cell-x">X</td>
+            <td></td>
+            <td class="cell-x">X</td>
+            <td></td>
+            <td class="cell-x">X</td>
+            <td class="col-highlighted"><span class="cell-chk-red">&#10007;</span></td>
+            <td class="cell-x">X</td>
+            <td class="cell-x">X</td>
+            <td class="cell-x">X</td>
+            <td class="cell-x">X</td>
+          </tr>
+          <tr>
+            <td>Allow Access to Customized Actions</td>
+            <td class="cell-x">X</td>
+            <td class="cell-x">X</td>
+            <td class="col-highlighted"><span class="cell-chk-green">&#10003;</span></td>
+            <td class="cell-x">X</td>
+            <td class="cell-x">X</td>
+            <td class="cell-x">X</td>
+            <td class="cell-x">X</td>
+            <td class="cell-x">X</td>
+            <td class="cell-x">X</td>
+            <td class="cell-x">X</td>
+            <td class="cell-x">X</td>
+            <td class="cell-x">X</td>
+            <td class="cell-x">X</td>
+            <td class="col-highlighted"><span class="cell-chk-red">&#10007;</span></td>
+            <td class="cell-x">X</td>
+            <td class="cell-x">X</td>
+            <td class="cell-x">X</td>
+            <td class="cell-x">X</td>
+          </tr>
+          <tr>
+            <td>Chatter Internal User</td>
+            <td></td>
+            <td class="cell-x">X</td>
+            <td class="col-highlighted"><span class="cell-chk-red">&#10007;</span></td>
+            <td class="cell-x">X</td>
+            <td class="cell-x">X</td>
+            <td class="cell-x">X</td>
+            <td class="cell-x">X</td>
+            <td class="cell-x">X</td>
+            <td class="cell-x">X</td>
+            <td class="cell-x">X</td>
+            <td class="cell-x">X</td>
+            <td class="cell-x">X</td>
+            <td class="cell-x">X</td>
+            <td class="col-highlighted"><span class="cell-chk-green">&#10003;</span></td>
+            <td class="cell-x">X</td>
+            <td></td>
+            <td class="cell-x">X</td>
+            <td class="cell-x">X</td>
+          </tr>
+          <tr>
+            <td>Email Administration</td>
+            <td></td>
+            <td></td>
+            <td class="col-highlighted"><span class="cell-chk-green">&#10003;</span></td>
+            <td class="cell-x">X</td>
+            <td class="cell-x">X</td>
+            <td class="cell-x">X</td>
+            <td class="cell-x">X</td>
+            <td class="cell-x">X</td>
+            <td class="cell-x">X</td>
+            <td></td>
+            <td class="cell-x">X</td>
+            <td class="cell-x">X</td>
+            <td class="cell-x">X</td>
+            <td class="col-highlighted"><span class="cell-chk-red">&#10007;</span></td>
+            <td></td>
+            <td class="cell-x">X</td>
+            <td></td>
+            <td class="cell-x">X</td>
+          </tr>
+          <tr>
+            <td>Manage Email Templates</td>
+            <td></td>
+            <td></td>
+            <td class="col-highlighted"><span class="cell-chk-green">&#10003;</span></td>
+            <td class="cell-x">X</td>
+            <td class="cell-x">X</td>
+            <td class="cell-x">X</td>
+            <td></td>
+            <td class="cell-x">X</td>
+            <td></td>
+            <td></td>
+            <td class="cell-x">X</td>
+            <td class="cell-x">X</td>
+            <td class="cell-x">X</td>
+            <td class="col-highlighted"><span class="cell-chk-red">&#10007;</span></td>
+            <td></td>
+            <td class="cell-x">X</td>
+            <td></td>
+            <td class="cell-x">X</td>
+          </tr>
+          <tr>
+            <td>Password Never Expires</td>
+            <td class="cell-x">X</td>
+            <td class="cell-x">X</td>
+            <td class="col-highlighted"><span class="cell-chk-green">&#10003;</span></td>
+            <td class="cell-x">X</td>
+            <td></td>
+            <td class="cell-x">X</td>
+            <td></td>
+            <td></td>
+            <td class="cell-x">X</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td class="col-highlighted"><span class="cell-chk-red">&#10007;</span></td>
+            <td class="cell-x">X</td>
+            <td></td>
+            <td class="cell-x">X</td>
+            <td class="cell-x">X</td>
+          </tr>
+          <tr>
+            <td>Select Files from Salesforce</td>
+            <td></td>
+            <td class="cell-x">X</td>
+            <td class="col-highlighted"><span class="cell-chk-green">&#10003;</span></td>
+            <td class="cell-x">X</td>
+            <td class="cell-x">X</td>
+            <td class="cell-x">X</td>
+            <td class="cell-x">X</td>
+            <td class="cell-x">X</td>
+            <td class="cell-x">X</td>
+            <td class="cell-x">X</td>
+            <td class="cell-x">X</td>
+            <td class="cell-x">X</td>
+            <td class="cell-x">X</td>
+            <td class="col-highlighted"><span class="cell-chk-red">&#10007;</span></td>
+            <td class="cell-x">X</td>
+            <td class="cell-x">X</td>
+            <td class="cell-x">X</td>
+            <td class="cell-x">X</td>
+          </tr>
+          <tr>
+            <td>Send Outbound Messages</td>
+            <td></td>
+            <td class="cell-x">X</td>
+            <td class="col-highlighted"><span class="cell-chk-green">&#10003;</span></td>
+            <td class="cell-x">X</td>
+            <td class="cell-x">X</td>
+            <td class="cell-x">X</td>
+            <td></td>
+            <td class="cell-x">X</td>
+            <td class="cell-x">X</td>
+            <td class="cell-x">X</td>
+            <td class="cell-x">X</td>
+            <td class="cell-x">X</td>
+            <td class="cell-x">X</td>
+            <td class="col-highlighted"><span class="cell-chk-red">&#10007;</span></td>
+            <td></td>
+            <td></td>
+            <td class="cell-x">X</td>
+            <td class="cell-x">X</td>
+          </tr>
+          <tr>
+            <td>Show App Launcher in Experience Cloud Sites</td>
+            <td class="cell-x">X</td>
+            <td class="cell-x">X</td>
+            <td class="col-highlighted"><span class="cell-chk-green">&#10003;</span></td>
+            <td class="cell-x">X</td>
+            <td class="cell-x">X</td>
+            <td class="cell-x">X</td>
+            <td class="cell-x">X</td>
+            <td></td>
+            <td class="cell-x">X</td>
+            <td></td>
+            <td class="cell-x">X</td>
+            <td></td>
+            <td class="cell-x">X</td>
+            <td class="col-highlighted"><span class="cell-chk-red">&#10007;</span></td>
+            <td class="cell-x">X</td>
+            <td class="cell-x">X</td>
+            <td></td>
+            <td class="cell-x">X</td>
+          </tr>
+          <tr>
+            <td>Show Company Name as Site Role</td>
+            <td></td>
+            <td class="cell-x">X</td>
+            <td class="col-highlighted"><span class="cell-chk-green">&#10003;</span></td>
+            <td class="cell-x">X</td>
+            <td class="cell-x">X</td>
+            <td class="cell-x">X</td>
+            <td class="cell-x">X</td>
+            <td class="cell-x">X</td>
+            <td class="cell-x">X</td>
+            <td class="cell-x">X</td>
+            <td class="cell-x">X</td>
+            <td class="cell-x">X</td>
+            <td class="cell-x">X</td>
+            <td class="col-highlighted"><span class="cell-chk-red">&#10007;</span></td>
+            <td class="cell-x">X</td>
+            <td class="cell-x">X</td>
+            <td class="cell-x">X</td>
+            <td class="cell-x">X</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
 </div>
+
+<!-- Key features modal -->
+<div id="modal-kf" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:999;align-items:center;justify-content:center" onclick="if(event.target===this)this.style.display='none'">
+  <div style="background:#fff;border-radius:8px;padding:28px 32px;max-width:540px;width:90%;color:#1a2a35;box-shadow:0 8px 32px rgba(0,0,0,.3)">
+    <h3 style="margin:0 0 14px;color:#2980b9">&#9733; Key features</h3>
+    <ul style="margin:0;padding-left:20px;line-height:1.8">
+      <li>Extract user system permissions for all profiles at once in a matrix layout</li>
+      <li>Option to include profiles with inactive users for a complete org view</li>
+      <li>Click a column header checkbox to highlight that profile column and filter rows</li>
+      <li>Highlighted columns show green checkmarks / red X marks for visual scanning</li>
+      <li>Export the full matrix to Excel (Save To Excel)</li>
+      <li>Generate deployable profile XML files from an edited Excel file (Generate Profile from Excel)</li>
+      <li>Automatically redirects to the Deployment tab after generating profiles</li>
+    </ul>
+    <div style="text-align:right;margin-top:18px">
+      <button class="cal-btn btn-d" onclick="document.getElementById('modal-kf').style.display='none'">Close</button>
+    </div>
+  </div>
+</div>
+
 <script>
 function sw(id,idx){
   var tp=document.getElementById(id);
