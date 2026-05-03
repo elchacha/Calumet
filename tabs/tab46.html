@@ -3,20 +3,132 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Streaming (B) — Calumet</title>
+<title>LayoutUnused — Calumet</title>
 <link rel="stylesheet" href="../shared.css">
 </head>
 <body class="tab-page">
+
 <div class="sum">
   <div class="sum-title">
-    <h2>Streaming (B)</h2>
+    <h2>LayoutUnused</h2>
     <span class="sum-badge">Tab 46</span>
   </div>
-  <p class="sum-desc">Extended streaming monitor: subscribe to multiple channels and log incoming event payloads.</p>
+  <p class="sum-desc">
+    Identifies page layouts that are never actually used — either not assigned to any profile, assigned only to inactive profiles, or linked only to inactive record types. Helps clean up technical debt in your org's page layout configuration.
+    <button class="cal-btn btn-d" style="margin-left:10px" onclick="document.getElementById('modal-kf').style.display='flex'">★ Key features</button>
+  </p>
 </div>
+
 <div class="mockup-wrap">
-  <div class="mockup"><div class="vbox" style="gap:0px"><div class="anchor"><button class="cal-btn btn-b">extract</button><div class="tbl-wrap"><table class="cal-tbl"><thead><tr><th>ObjectName</th><th>LayoutName</th><th>CreatedDate</th><th>Reason</th></tr></thead><tbody><tr><td colspan="20" class="tbl-empty"></td></tr></tbody></table></div><label class="cal-chk"><input type="checkbox" checked disabled> only profile with users</label><label class="cal-chk"><input type="checkbox" checked disabled> only active recordRype</label></div></div></div>
-</div>
+  <div class="mockup">
+
+    <div class="anchor" style="padding:10px;gap:8px">
+
+      <!-- Toolbar -->
+      <div class="hbox" style="gap:8px;align-items:center">
+        <button class="cal-btn btn-b"
+                data-tip="Query all layouts via Metadata and ProfileLayout SOQL, then detect those with no active assignment">
+          extract
+        </button>
+        <label class="cal-chk">
+          <input type="checkbox" checked disabled> only profile with users
+        </label>
+        <label class="cal-chk">
+          <input type="checkbox" checked disabled> only active recordRype
+        </label>
+      </div>
+
+      <!-- Results table -->
+      <div class="tbl-wrap">
+        <table class="cal-tbl">
+          <thead>
+            <tr>
+              <th style="width:180px">ObjectName</th>
+              <th style="width:260px">LayoutName</th>
+              <th style="width:160px">CreatedDate</th>
+              <th>Reason</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Opportunity_Deal</td>
+              <td>Standard Layout</td>
+              <td style="color:#888">2022-09-01 18:05:28</td>
+              <td style="color:#e67e22">Layout is not assigned</td>
+            </tr>
+            <tr>
+              <td>Project_Meeting</td>
+              <td>Project Meeting Layout-Community</td>
+              <td style="color:#888">2017-12-09 10:47:56</td>
+              <td>assigned to :<br>
+                <span style="color:#e67e22">Inactive profile : [Partner Portal Users, Community Test, Partner Community User]</span>
+              </td>
+            </tr>
+            <tr>
+              <td>Initiative_Action</td>
+              <td>Initiative Layout v2</td>
+              <td style="color:#888">2021-01-14 18:45:19</td>
+              <td style="color:#e67e22">Layout is not assigned</td>
+            </tr>
+            <tr>
+              <td>Activity_Report</td>
+              <td>Activity Layout - Standard</td>
+              <td style="color:#888">2023-08-29 14:12:42</td>
+              <td style="color:#e67e22">Layout is not assigned</td>
+            </tr>
+            <tr>
+              <td>Initiative</td>
+              <td>Initiative Layout v2</td>
+              <td style="color:#888">2021-01-14 18:45:19</td>
+              <td style="color:#e67e22">Layout is not assigned</td>
+            </tr>
+            <tr>
+              <td>Solution</td>
+              <td>Solution Layout</td>
+              <td style="color:#888">2017-12-20 00:16:33</td>
+              <td style="color:#e67e22">Layout is not assigned</td>
+            </tr>
+            <tr>
+              <td>Initiative_Field</td>
+              <td>Initiative Layout v2</td>
+              <td style="color:#888">2021-01-14 18:45:19</td>
+              <td style="color:#e67e22">Layout is not assigned</td>
+            </tr>
+            <tr>
+              <td>Meeting_Minutes</td>
+              <td>Meeting Layout-Community</td>
+              <td style="color:#888">2017-12-10 15:19:52</td>
+              <td>assigned to :<br>
+                <span style="color:#e67e22">Inactive profile : [Partner Portal Users, Community Test, Partner Community User]</span>
+              </td>
+            </tr>
+            <tr>
+              <td>Opportunity_Deal</td>
+              <td>Pipeline Layout</td>
+              <td style="color:#888">2018-09-15 10:18:22</td>
+              <td style="color:#e67e22">Layout is not assigned</td>
+            </tr>
+            <tr>
+              <td>Export_Setting</td>
+              <td>Export Setting Layout</td>
+              <td style="color:#888">2021-08-06 15:29:39</td>
+              <td style="color:#e67e22">Layout is not assigned</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Status hint -->
+      <div class="hbox" style="gap:6px;align-items:center">
+        <span class="cal-lbl" style="color:#888;font-style:italic">
+          10 unused layouts found — double-click a row to open the Object Manager page layout view in Setup
+        </span>
+      </div>
+
+    </div><!-- /anchor -->
+  </div><!-- /mockup -->
+</div><!-- /mockup-wrap -->
+
 <script>
 function sw(id,idx){
   var tp=document.getElementById(id);
@@ -24,5 +136,25 @@ function sw(id,idx){
   tp.querySelectorAll('.m-panel').forEach(function(p,i){p.classList.toggle('act',i===idx)});
 }
 </script>
+
+<!-- Key features modal -->
+<div id="modal-kf" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:999;align-items:center;justify-content:center" onclick="if(event.target===this)this.style.display='none'">
+  <div style="background:#fff;border-radius:8px;padding:28px 32px;max-width:520px;width:90%;color:#1a2a35;box-shadow:0 8px 32px rgba(0,0,0,.3)">
+    <h3 style="margin:0 0 14px;color:#2980b9">★ Key features</h3>
+    <ul style="margin:0;padding-left:20px;line-height:1.8">
+      <li>Detects page layouts that are not assigned to any profile/permission set at all (<em>Layout is not assigned</em>)</li>
+      <li>Detects layouts assigned only to inactive profiles (profiles with no active users)</li>
+      <li>Detects layouts linked only to inactive record types, making them unreachable at runtime</li>
+      <li><strong>Only profiles with users</strong> filter: ignore profiles that have no active users when determining whether an assignment counts as "active"</li>
+      <li><strong>Only active record type</strong> filter: restrict the scan to layouts tied to active record types only</li>
+      <li>Double-click any row to open the relevant Object Manager page in Salesforce Setup directly in your browser</li>
+      <li>Results include the object name, layout name, creation date, and a human-readable reason why the layout is considered unused</li>
+    </ul>
+    <div style="text-align:right;margin-top:18px">
+      <button class="cal-btn btn-d" onclick="document.getElementById('modal-kf').style.display='none'">Close</button>
+    </div>
+  </div>
+</div>
+
 </body>
 </html>

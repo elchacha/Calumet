@@ -6,21 +6,53 @@
 <title>Profile &amp; Permission Set Optimization — Calumet</title>
 <link rel="stylesheet" href="../shared.css">
 <style>
-  .badge-profile { background:#8e44ad; color:#fff; border-radius:6px; padding:2px 9px; font-size:11px; font-weight:600; display:inline-block; }
-  .badge-permset { background:#2980b9; color:#fff; border-radius:6px; padding:2px 9px; font-size:11px; font-weight:600; display:inline-block; }
-  .badge-psg     { background:#16a085; color:#fff; border-radius:6px; padding:2px 9px; font-size:11px; font-weight:600; display:inline-block; }
-  .badge-keep    { background:#27ae60; color:#fff; border-radius:6px; padding:2px 9px; font-size:11px; font-weight:600; display:inline-block; }
-  .badge-review  { background:#e67e22; color:#fff; border-radius:6px; padding:2px 9px; font-size:11px; font-weight:600; display:inline-block; }
-  .badge-remove  { background:#e74c3c; color:#fff; border-radius:6px; padding:2px 9px; font-size:11px; font-weight:600; display:inline-block; }
-  .row-keep   { background:#e6f7e6 !important; }
-  .row-keep td{ background:#e6f7e6 !important; }
-  .row-review { background:#fff4e6 !important; }
-  .row-review td{ background:#fff4e6 !important; }
-  .row-remove { background:#ffe6e6 !important; }
-  .row-remove td{ background:#ffe6e6 !important; }
-  .filter-bar { background:#f0f0f0; border-radius:6px; padding:8px 12px; display:flex; gap:12px; align-items:center; flex-wrap:wrap; }
-  .chk-filter-bar { background:#f8f8f8; border-radius:6px; padding:6px 12px; display:flex; gap:16px; align-items:center; flex-wrap:wrap; }
-  .summary-lbl { font-size:11px; color:#7f8c8d; margin-top:2px; }
+  /* Recommendation row background colors matching the Java row factory */
+  .row-keep    { background:#E6F7E6; }
+  .row-review  { background:#FFF4E6; }
+  .row-remove  { background:#FFE6E6; }
+  .row-consol  { background:#E6F0FF; }
+
+  /* Type badges */
+  .badge-type {
+    display:inline-block;padding:1px 8px;border-radius:10px;
+    font-size:10px;font-weight:700;white-space:nowrap;
+  }
+  .badge-profile { background:#2980b9;color:#fff; }
+  .badge-ps      { background:#8e44ad;color:#fff; }
+  .badge-psg     { background:#16a085;color:#fff; }
+
+  /* Recommendation badge */
+  .badge-rec {
+    display:inline-block;padding:1px 7px;border-radius:10px;
+    font-size:10px;font-weight:700;white-space:nowrap;
+  }
+  .badge-keep   { background:#27ae60;color:#fff; }
+  .badge-review { background:#e67e22;color:#fff; }
+  .badge-rm     { background:#e74c3c;color:#fff; }
+  .badge-con    { background:#2980b9;color:#fff; }
+
+  /* Score cell styling */
+  .score-high { color:#27ae60;font-weight:700; }
+  .score-mid  { color:#e67e22;font-weight:700; }
+  .score-low  { color:#e74c3c;font-weight:700; }
+
+  /* Filter bar */
+  .filter-bar {
+    background:#f8f8f8;border-bottom:1px solid #d0dde8;
+    padding:6px 8px;display:flex;flex-wrap:wrap;gap:10px;align-items:center;
+  }
+  .filter-label { font-weight:700;font-size:11px;color:#2c3e50; }
+
+  /* Summary strip */
+  .summary-strip {
+    font-size:11px;color:#7f8c8d;padding:3px 8px;
+    border-bottom:1px solid #d0dde8;background:#f0f4f7;
+  }
+
+  /* Checkbox filter labels with colors matching FXML */
+  .chk-keep   { color:#27ae60;font-weight:700; }
+  .chk-review { color:#e67e22; }
+  .chk-rm     { color:#e74c3c;font-weight:700; }
 </style>
 </head>
 <body class="tab-page">
@@ -31,148 +63,231 @@
     <span class="sum-badge">Tab 70</span>
   </div>
   <p class="sum-desc">
-    Analyzes all profiles and permission sets to surface unused, under-utilized, or redundant security configurations.
-    Each item receives a usage score and a color-coded recommendation: Keep, Review, or Safe to Remove.
+    Analyzes all Profiles, Permission Sets, and Permission Set Groups to identify unused, underused, or redundant security configurations.
+    Each item receives a usage score and an actionable recommendation (Keep, Review, or Safe to Remove) based on real user activity data.
     <button class="cal-btn btn-d" style="margin-left:10px" onclick="document.getElementById('modal-kf').style.display='flex'">&#9733; Key features</button>
   </p>
 </div>
 
 <div class="mockup-wrap">
   <div class="mockup">
-    <div class="vbox" style="gap:8px;padding:6px 0 0 0">
+    <div class="vbox" style="gap:0">
 
-      <!-- Config bar -->
-      <div class="filter-bar">
+      <!-- Configuration toolbar -->
+      <div class="hbox" style="gap:10px;align-items:center;padding:8px 10px;background:#f0f0f0;border-bottom:1px solid #d0dde8;">
         <span class="cal-lbl">Type Filter:</span>
-        <select class="cal-cb" style="width:160px">
+        <select class="cal-cb" style="width:160px" disabled>
           <option>All</option>
           <option>Profile</option>
           <option>Permission Set</option>
           <option>Permission Set Group</option>
         </select>
+
         <span class="cal-lbl">Search:</span>
-        <input class="cal-tf cal-grow" readonly value="" style="max-width:220px" placeholder="Filter by name or description...">
-        <button class="cal-btn btn-b" data-tip="Run profile and permission set usage analysis">Start Analysis</button>
-        <button class="cal-btn btn-d" data-tip="Export filtered results to Excel">Export Excel</button>
+        <input type="text" class="cal-tf cal-grow" style="max-width:220px"
+               value="" placeholder="Filter by name or description..." readonly
+               data-tip="Filter the table by name or description (real-time)">
+
+        <button class="cal-btn btn-b" data-tip="Run the analysis: queries user activity for the last 90 days and computes a usage score for every Profile and Permission Set">Start Analysis</button>
+        <button class="cal-btn btn-d" data-tip="Export the currently filtered rows to an Excel file">Export Excel</button>
       </div>
 
-      <!-- Filter checkboxes -->
-      <div class="chk-filter-bar">
-        <span class="cal-lbl" style="font-weight:700">Show:</span>
-        <label class="cal-chk"><input type="checkbox" checked disabled style="accent-color:#27ae60"> <span style="color:#27ae60;font-weight:700">Keep (18 items)</span></label>
-        <label class="cal-chk"><input type="checkbox" checked disabled style="accent-color:#e67e22"> <span style="color:#e67e22">Review (9 items)</span></label>
-        <label class="cal-chk"><input type="checkbox" checked disabled style="accent-color:#e74c3c"> <span style="color:#e74c3c;font-weight:700">Safe to Remove (8 items)</span></label>
-        <span style="border-left:1px solid #ccc;height:18px;display:inline-block;margin:0 4px"></span>
-        <label class="cal-chk"><input type="checkbox" checked disabled> <strong>Custom only</strong></label>
-        <div style="width:100%"><span class="summary-lbl">Total: 35 items (12 profiles, 23 permission sets) | Cleanup potential: 48.6%</span></div>
+      <!-- Filter checkboxes + summary -->
+      <div class="filter-bar">
+        <span class="filter-label">Show:</span>
+        <label class="cal-chk chk-keep"><input type="checkbox" checked disabled> Keep (18 items)</label>
+        <label class="cal-chk chk-review"><input type="checkbox" checked disabled> Review (11 items)</label>
+        <label class="cal-chk chk-rm"><input type="checkbox" checked disabled> Safe to Remove (9 items)</label>
+        <div class="vsep" style="height:18px"></div>
+        <label class="cal-chk" style="font-weight:700"><input type="checkbox" checked disabled> Custom only</label>
+      </div>
+
+      <!-- Summary label -->
+      <div class="summary-strip">
+        Total: 38 items (24 profiles, 14 permission sets) &nbsp;|&nbsp; Cleanup potential: 52.6%
       </div>
 
       <!-- Results table -->
-      <div class="tbl-wrap">
+      <div class="tbl-wrap" style="margin:0;border-radius:0;border-left:none;border-right:none;border-top:none">
         <table class="cal-tbl">
           <thead>
             <tr>
-              <th style="width:110px">Permission Type</th>
-              <th style="width:220px">Name</th>
-              <th style="width:68px">nb Users</th>
-              <th style="width:58px">Active</th>
-              <th style="width:58px">Score</th>
+              <th style="width:115px">Permission Type</th>
+              <th style="width:230px">Name</th>
+              <th style="width:62px">nb Users</th>
+              <th style="width:52px">Active</th>
+              <th style="width:58px">Score &#9660;</th>
               <th style="width:110px">Recommendation</th>
-              <th style="width:95px">Created</th>
-              <th style="width:280px">Analysis Details</th>
-              <th style="width:200px">Description</th>
+              <th style="width:88px">Created</th>
+              <th style="width:330px">Analysis Details</th>
+              <th style="width:220px">Description</th>
             </tr>
           </thead>
           <tbody>
+            <!-- Keep rows — light green -->
             <tr class="row-keep">
-              <td><span class="badge-profile">Profile</span></td>
-              <td>Event Monitoring Analytics Admin</td>
-              <td>2</td><td>2</td><td>8.7</td>
-              <td><span class="badge-keep">Keep</span></td>
-              <td>2020-05-01</td>
-              <td>&#128293; High user activity; justified usage</td>
-              <td>Custom Event Monitoring Analytics app access and data settings</td>
-            </tr>
-            <tr class="row-keep">
-              <td><span class="badge-profile">Profile</span></td>
-              <td>Chatter Free User</td>
-              <td>3</td><td>2</td><td>6.4</td>
-              <td><span class="badge-keep">Keep</span></td>
+              <td><span class="badge-type badge-profile">Profile</span></td>
+              <td>Sales Representative</td>
+              <td>47</td><td>43</td>
+              <td class="score-high">8.7</td>
+              <td><span class="badge-rec badge-keep">Keep</span></td>
               <td>2019-03-12</td>
-              <td>&#128077; Good activity; justified usage</td>
-              <td>Allows access to Chatter without a full Salesforce license</td>
-            </tr>
-            <tr class="row-review">
-              <td><span class="badge-permset">Permission Set</span></td>
-              <td>Salesforce CRM Content User</td>
-              <td>4</td><td>1</td><td>3.8</td>
-              <td><span class="badge-review">Review</span></td>
-              <td>2018-07-19</td>
-              <td>&#9888; Moderate user activity; potential cleanup</td>
-              <td>Gives access to Salesforce CRM Content features</td>
+              <td>&#128293; &#9989;&nbsp; 43 active users, 4 inactive | high user activity, recent activity | justified usage</td>
+              <td>Standard sales rep profile with Opportunity and Lead access</td>
             </tr>
             <tr class="row-keep">
-              <td><span class="badge-profile">Profile</span></td>
-              <td>Platform Integration User</td>
-              <td>1</td><td>1</td><td>9.1</td>
-              <td><span class="badge-keep">Keep</span></td>
-              <td>2021-01-08</td>
-              <td>&#128293; High user activity; justified usage</td>
-              <td>API-only integration user profile</td>
-            </tr>
-            <tr class="row-remove">
-              <td><span class="badge-permset">Permission Set</span></td>
-              <td>Partner Community Login User</td>
-              <td>0</td><td>0</td><td>0.0</td>
-              <td><span class="badge-remove">Safe to Remove</span></td>
-              <td>2019-11-03</td>
-              <td>&#128123; No active users; candidate for removal</td>
-              <td>Not assigned to any active permission set</td>
-            </tr>
-            <tr class="row-remove">
-              <td><span class="badge-profile">Profile</span></td>
-              <td>Charter General User</td>
-              <td>0</td><td>0</td><td>0.0</td>
-              <td><span class="badge-remove">Safe to Remove</span></td>
-              <td>2017-11-25</td>
-              <td>&#128123; No active users; candidate for removal</td>
-              <td>No users assigned to this profile</td>
-            </tr>
-            <tr class="row-review">
-              <td><span class="badge-permset">Permission Set</span></td>
-              <td>Manager Access — Salesforce</td>
-              <td>15</td><td>9</td><td>4.2</td>
-              <td><span class="badge-review">Review</span></td>
-              <td>2020-09-15</td>
-              <td>&#9888; Low user activity; potential cleanup</td>
-              <td>Provides access to manager-level reports and dashboards</td>
+              <td><span class="badge-type badge-ps">Permission Set</span></td>
+              <td>Salesforce_API_Access</td>
+              <td>12</td><td>12</td>
+              <td class="score-high">7.4</td>
+              <td><span class="badge-rec badge-keep">Keep</span></td>
+              <td>2020-06-08</td>
+              <td>&#128293; &#9989;&nbsp; 12 active users | high user activity, recent activity | justified usage</td>
+              <td>Grants REST and SOAP API access for integration users</td>
             </tr>
             <tr class="row-keep">
-              <td><span class="badge-psg">Perm Set Group</span></td>
-              <td>Sales Operations Manager</td>
-              <td>8</td><td>8</td><td>7.9</td>
-              <td><span class="badge-keep">Keep</span></td>
-              <td>2022-04-22</td>
-              <td>&#128293; High user activity; justified usage</td>
-              <td>Grouped permissions for sales ops workflow</td>
+              <td><span class="badge-type badge-profile">Profile</span></td>
+              <td>System Administrator</td>
+              <td>8</td><td>7</td>
+              <td class="score-high">7.1</td>
+              <td><span class="badge-rec badge-keep">Keep</span></td>
+              <td>2015-01-20</td>
+              <td>&#128293; &#9989;&nbsp; 7 active users, 1 inactive | high user activity, recent activity | justified usage</td>
+              <td>Full system access — administrators only</td>
             </tr>
-            <tr class="row-remove">
-              <td><span class="badge-permset">Permission Set</span></td>
-              <td>Ship and Debit Process Management</td>
-              <td>2</td><td>0</td><td>0.5</td>
-              <td><span class="badge-remove">Safe to Remove</span></td>
-              <td>2021-02-11</td>
-              <td>&#128123; No active users; candidate for removal</td>
+            <tr class="row-keep">
+              <td><span class="badge-type badge-psg">Perm Set Group</span></td>
+              <td>Field_Service_Technicians</td>
+              <td>22</td><td>19</td>
+              <td class="score-high">6.3</td>
+              <td><span class="badge-rec badge-keep">Keep</span></td>
+              <td>2021-09-14</td>
+              <td>&#128077; &#9989;&nbsp; 19 active users, 3 inactive | good activity score, activity within month | justified usage</td>
+              <td>Permission set group for field service technicians</td>
+            </tr>
+            <tr class="row-keep">
+              <td><span class="badge-type badge-ps">Permission Set</span></td>
+              <td>Event_Monitoring_Analytics_Admin</td>
+              <td>3</td><td>3</td>
+              <td class="score-high">5.9</td>
+              <td><span class="badge-rec badge-keep">Keep</span></td>
+              <td>2022-11-02</td>
+              <td>&#128293; &#9989;&nbsp; 3 active users | high user activity, recent activity | justified usage</td>
+              <td>Custom Event Monitoring Analytics app and data flows</td>
+            </tr>
+            <tr class="row-keep">
+              <td><span class="badge-type badge-profile">Profile</span></td>
+              <td>Customer Community Login User</td>
+              <td>184</td><td>97</td>
+              <td class="score-high">5.2</td>
+              <td><span class="badge-rec badge-keep">Keep</span></td>
+              <td>2018-07-03</td>
+              <td>&#128077; &#9989;&nbsp; 97 active users, 87 inactive | good activity score, activity within month | justified usage</td>
+              <td></td>
+            </tr>
+
+            <!-- Review rows — light orange -->
+            <tr class="row-review">
+              <td><span class="badge-type badge-profile">Profile</span></td>
+              <td>Salesforce_Grant_User</td>
+              <td>6</td><td>4</td>
+              <td class="score-mid">2.1</td>
+              <td><span class="badge-rec badge-review">Review</span></td>
+              <td>2020-02-17</td>
+              <td>&#9888; &#128161;&nbsp; 4 active users, 2 inactive | moderate user activity, activity within quarter | optimization opportunity</td>
+              <td>Grant management users — review if still needed</td>
+            </tr>
+            <tr class="row-review">
+              <td><span class="badge-type badge-ps">Permission Set</span></td>
+              <td>Territory_Management_Access</td>
+              <td>9</td><td>5</td>
+              <td class="score-mid">1.8</td>
+              <td><span class="badge-rec badge-review">Review</span></td>
+              <td>2021-04-22</td>
+              <td>&#9888; &#128161;&nbsp; 5 active users, 4 inactive | moderate user activity, no recent activity | optimization opportunity</td>
+              <td>Grants access to Territory Management features</td>
+            </tr>
+            <tr class="row-review">
+              <td><span class="badge-type badge-profile">Profile</span></td>
+              <td>Partner Community User</td>
+              <td>31</td><td>14</td>
+              <td class="score-mid">1.4</td>
+              <td><span class="badge-rec badge-review">Review</span></td>
+              <td>2019-08-11</td>
+              <td>&#9888; &#128161;&nbsp; 14 active users, 17 inactive | low user activity, no recent activity | optimization opportunity</td>
+              <td>External partner portal access — many inactive accounts detected</td>
+            </tr>
+            <tr class="row-review">
+              <td><span class="badge-type badge-ps">Permission Set</span></td>
+              <td>Ship_And_Debit_Process_Mgmt_Access</td>
+              <td>4</td><td>2</td>
+              <td class="score-mid">0.6</td>
+              <td><span class="badge-rec badge-review">Review</span></td>
+              <td>2023-01-30</td>
+              <td>&#9888; &#128161;&nbsp; 2 active users, 2 inactive | moderate user activity, no recent activity | optimization opportunity</td>
               <td>Gives access to Ship and Debit Process Management features in Operations Cloud</td>
             </tr>
             <tr class="row-review">
-              <td><span class="badge-profile">Profile</span></td>
-              <td>Service Catalog Agent</td>
-              <td>5</td><td>3</td><td>3.5</td>
-              <td><span class="badge-review">Review</span></td>
-              <td>2023-01-31</td>
-              <td>&#9888; Moderate user activity; optimization opportunity</td>
-              <td>Access Server Catalog and its catalog items for contracts and users</td>
+              <td><span class="badge-type badge-profile">Profile</span></td>
+              <td>Finance_Controller_User</td>
+              <td>5</td><td>3</td>
+              <td class="score-mid">0.3</td>
+              <td><span class="badge-rec badge-review">Review</span></td>
+              <td>2022-05-19</td>
+              <td>&#9888; &#128161;&nbsp; 3 active users, 2 inactive | low user activity, no recent activity | optimization opportunity</td>
+              <td></td>
+            </tr>
+
+            <!-- Safe to Remove rows — light red -->
+            <tr class="row-remove">
+              <td><span class="badge-type badge-profile">Profile</span></td>
+              <td>Chatter External User</td>
+              <td>0</td><td>0</td>
+              <td class="score-low">-10.0</td>
+              <td><span class="badge-rec badge-rm">Safe to Remove</span></td>
+              <td>2016-04-05</td>
+              <td>&#128123; &#128465;&nbsp; No users assigned to this profile | candidate for removal | potential cleanup</td>
+              <td></td>
+            </tr>
+            <tr class="row-remove">
+              <td><span class="badge-type badge-ps">Permission Set</span></td>
+              <td>Legacy_CPQ_Integration_User</td>
+              <td>0</td><td>0</td>
+              <td class="score-low">-10.0</td>
+              <td><span class="badge-rec badge-rm">Safe to Remove</span></td>
+              <td>2018-11-07</td>
+              <td>&#128123; &#128465;&nbsp; No users assigned to this permission set | candidate for removal | potential cleanup</td>
+              <td>No longer used after CPQ migration to Revenue Cloud</td>
+            </tr>
+            <tr class="row-remove">
+              <td><span class="badge-type badge-profile">Profile</span></td>
+              <td>Old_Mobile_App_User</td>
+              <td>3</td><td>0</td>
+              <td class="score-low">-12.0</td>
+              <td><span class="badge-rec badge-rm">Safe to Remove</span></td>
+              <td>2017-03-28</td>
+              <td>&#128123; &#128465;&nbsp; No active users (3 inactive users) | candidate for removal | potential cleanup</td>
+              <td>Profile for the legacy mobile application — replaced by Connected App permissions</td>
+            </tr>
+            <tr class="row-remove">
+              <td><span class="badge-type badge-ps">Permission Set</span></td>
+              <td>Read_Only_Data_Loader</td>
+              <td>1</td><td>0</td>
+              <td class="score-low">-12.5</td>
+              <td><span class="badge-rec badge-rm">Safe to Remove</span></td>
+              <td>2019-09-15</td>
+              <td>&#128123; &#128465;&nbsp; No active users (1 inactive user) | candidate for removal | potential cleanup</td>
+              <td></td>
+            </tr>
+            <tr class="row-remove">
+              <td><span class="badge-type badge-psg">Perm Set Group</span></td>
+              <td>Deprecated_Analytics_Group</td>
+              <td>0</td><td>0</td>
+              <td class="score-low">-10.0</td>
+              <td><span class="badge-rec badge-rm">Safe to Remove</span></td>
+              <td>2020-12-01</td>
+              <td>&#128123; &#128465;&nbsp; No users assigned to this permission set group | candidate for removal | potential cleanup</td>
+              <td>Analytics permission group superseded by the new CRM Analytics role</td>
             </tr>
           </tbody>
         </table>
@@ -187,13 +302,16 @@
   <div style="background:#fff;border-radius:8px;padding:28px 32px;max-width:540px;width:90%;color:#1a2a35;box-shadow:0 8px 32px rgba(0,0,0,.3)">
     <h3 style="margin:0 0 14px;color:#2980b9">&#9733; Key features</h3>
     <ul style="margin:0;padding-left:20px;line-height:1.8">
-      <li>Analyzes profiles, permission sets, and permission set groups in a single run</li>
-      <li>Usage score (0–10) computed from active-user ratio and last-login activity over 90 days</li>
-      <li>Recommendations: Keep (green), Review (orange), Safe to Remove (red) — with row color coding</li>
-      <li>Emoji-coded analysis details: fire = high activity, ghost = no users, broom = cleanup candidate</li>
-      <li>Real-time filter by type, recommendation checkboxes, and free-text search</li>
-      <li>Summary bar shows total count, type breakdown, and overall cleanup potential %</li>
-      <li>Export filtered results to Excel for sharing with security administrators</li>
+      <li>Analyzes the last 90 days of user activity to compute a numerical <strong>usage score</strong> for each Profile and Permission Set</li>
+      <li>Automatically classifies each item as <strong style="color:#27ae60">Keep</strong>, <strong style="color:#e67e22">Review</strong>, or <strong style="color:#e74c3c">Safe to Remove</strong> based on score thresholds</li>
+      <li>Row background colors (green / orange / red) provide an instant visual overview of security health</li>
+      <li>Supports all three security entity types: <strong>Profile</strong>, <strong>Permission Set</strong>, and <strong>Permission Set Group</strong></li>
+      <li>Real-time filtering by type combo, free-text search (name or description), and recommendation checkboxes</li>
+      <li>"Custom only" checkbox hides standard Salesforce system profiles from the analysis</li>
+      <li>Analysis Details column shows emoji-annotated summaries: active user count, activity level, last login recency, and cleanup justification</li>
+      <li>Summary bar shows total item count, breakdown by type, and overall cleanup potential percentage</li>
+      <li>Export to Excel preserves the current filter state — only visible rows are exported</li>
+      <li>Reuses user activity data shared with the User Activity tab (Tab 63) to avoid redundant API calls</li>
     </ul>
     <div style="text-align:right;margin-top:18px">
       <button class="cal-btn btn-d" onclick="document.getElementById('modal-kf').style.display='none'">Close</button>

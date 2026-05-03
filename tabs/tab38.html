@@ -3,20 +3,320 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Picklist Dependencies — Calumet</title>
+<title>VFP Delete Helper — Calumet</title>
 <link rel="stylesheet" href="../shared.css">
 </head>
 <body class="tab-page">
+
 <div class="sum">
   <div class="sum-title">
-    <h2>Picklist Dependencies</h2>
+    <h2>VFP Delete Helper</h2>
     <span class="sum-badge">Tab 38</span>
   </div>
-  <p class="sum-desc">Visualise and manage dependent picklist configurations between controlling and dependent fields.</p>
+  <p class="sum-desc">
+    Identify stale Visualforce Pages by querying their last-used date from Production, then build and export a destructive change package to safely remove unused pages and their dependent metadata.
+    <button class="cal-btn btn-d" style="margin-left:10px" onclick="document.getElementById('modal-kf').style.display='flex'">&#9733; Key features</button>
+  </p>
 </div>
+
 <div class="mockup-wrap">
-  <div class="mockup"><div class="vbox" style="gap:0px"><div class="anchor"><div class="m-tabpane" id="tp19"><div class="m-tabbar"><div class="m-tab act" onclick="sw('tp19',0)">ApexPage helper</div><div class="m-tab" onclick="sw('tp19',1)">Delete Helper</div></div><div class="m-body"><div class="m-panel act" id="tp19-0"><div class="anchor"><button class="cal-btn btn-b">Extract VFP(PRD)</button><div class="tbl-wrap"><table class="cal-tbl"><thead><tr><th>Page Name</th><th>LastUsed</th><th>CreatedBy</th><th>CreatedDate</th><th>LastModifyBy</th><th>LastModifyDate</th></tr></thead><tbody><tr><td colspan="20" class="tbl-empty"></td></tr></tbody></table></div><button class="cal-btn btn-d">Use Selection</button><button class="cal-btn btn-d">Read Values(Sandbox)</button><input class="cal-tf" placeholder="" style="" readonly><span class="cal-lbl">Action</span></div></div><div class="m-panel" id="tp19-1"><div class="anchor"><div class="hbox" style="gap:0px;align-items:center"><div class="vbox" style="gap:0px"><span class="cal-lbl">Delete table (List of metadatas to delete)</span><div class="tbl-wrap"><table class="cal-tbl"><thead><tr><th>Type</th><th>Name</th><th>lastUsed</th></tr></thead><tbody><tr><td colspan="20" class="tbl-empty"></td></tr></tbody></table></div></div><div class="vbox" style="gap:0px"><button class="cal-btn btn-d">==&gt;</button><button class="cal-btn btn-d">&lt;==</button></div><div class="vbox" style="gap:0px"><div class="tbl-wrap"><table class="cal-tbl"><thead><tr><th>Type</th><th>Name</th><th>colFoundLastUsed</th><th>colFoundDepends</th></tr></thead><tbody><tr><td colspan="20" class="tbl-empty"></td></tr></tbody></table></div></div></div><button class="cal-btn btn-d">find used by</button><button class="cal-btn btn-d">find using</button><button class="cal-btn btn-d">could be also deleted</button><button class="cal-btn btn-d">Generate destructive package</button><span class="cal-lbl">DeleteAction</span></div></div></div></div></div></div></div>
+  <div class="mockup">
+
+    <div class="m-tabpane" id="tp38">
+      <div class="m-tabbar">
+        <div class="m-tab act" onclick="sw('tp38',0)">ApexPage helper</div>
+        <div class="m-tab" onclick="sw('tp38',1)">Delete Helper</div>
+      </div>
+      <div class="m-body">
+
+        <!-- ── Tab 0 : ApexPage Helper ── -->
+        <div class="m-panel act" id="tp38-0">
+          <div class="vbox" style="gap:8px">
+
+            <span class="cal-lbl" style="font-weight:700;font-size:12px;color:#1a2a35">
+              You can now work on any related sandbox. The Production Org usage is in the Cache
+            </span>
+
+            <div class="hbox" style="gap:8px;align-items:center">
+              <button class="cal-btn btn-b"
+                data-tip="Query ApexPage last-used history from the Production org and store in cache">
+                Extract VFP(PRD)
+              </button>
+              <button class="cal-btn btn-d"
+                data-tip="Read last-used values from the connected Sandbox using the Production cache">
+                Read Values(Sandbox)
+              </button>
+              <button class="cal-btn btn-d"
+                data-tip="Transfer the selected page(s) to the Delete Helper tab">
+                Use Selection
+              </button>
+              <input class="cal-tf" style="width:180px" readonly placeholder="Filter pages…" value="">
+            </div>
+
+            <div class="tbl-wrap">
+              <table class="cal-tbl">
+                <thead>
+                  <tr>
+                    <th style="width:230px">Page Name</th>
+                    <th style="width:90px">LastUsed</th>
+                    <th style="width:160px">CreatedBy</th>
+                    <th style="width:100px">CreatedDate</th>
+                    <th style="width:180px">LastModifyBy</th>
+                    <th style="width:110px">LastModifyDate</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td style="color:#1565c0">BatchMassUpdateMeeting</td>
+                    <td style="color:#888">PRE-2017</td>
+                    <td>Marc Dupont</td>
+                    <td>2017-12-16</td>
+                    <td>Marc Dupont</td>
+                    <td>2017-12-16</td>
+                  </tr>
+                  <tr>
+                    <td style="color:#1565c0">Exception</td>
+                    <td style="color:#888">PRE-2017</td>
+                    <td>Marc Dupont</td>
+                    <td>2017-11-23</td>
+                    <td>Marc Dupont</td>
+                    <td>2017-11-23</td>
+                  </tr>
+                  <tr>
+                    <td style="color:#1565c0">AjaxVerticalAccounts</td>
+                    <td style="color:#888">PRE-2017</td>
+                    <td>Bob Johnson</td>
+                    <td>2018-08-31</td>
+                    <td>Bob Johnson</td>
+                    <td>2018-10-04</td>
+                  </tr>
+                  <tr>
+                    <td style="color:#1565c0">VF_StatusReportResetRegionA</td>
+                    <td style="color:#888">PRE-2017</td>
+                    <td>John Doe</td>
+                    <td>2015-11-24</td>
+                    <td>John Doe</td>
+                    <td>2015-11-24</td>
+                  </tr>
+                  <tr>
+                    <td style="color:#1565c0">SiteRegister</td>
+                    <td style="color:#888">PRE-2017</td>
+                    <td>Marc Dupont</td>
+                    <td>2017-11-23</td>
+                    <td>Marc Dupont</td>
+                    <td>2017-11-23</td>
+                  </tr>
+                  <tr>
+                    <td style="color:#1565c0">VF_StatusReport_RegionA</td>
+                    <td style="color:#888">PRE-2017</td>
+                    <td>John Doe</td>
+                    <td>2016-12-05</td>
+                    <td>John Doe</td>
+                    <td>2016-12-09</td>
+                  </tr>
+                  <tr>
+                    <td style="color:#1565c0">CommunitiesTemplate</td>
+                    <td style="color:#888">PRE-2017</td>
+                    <td>Marc Dupont</td>
+                    <td>2017-11-23</td>
+                    <td>Jane Smith</td>
+                    <td>2026-04-10</td>
+                  </tr>
+                  <tr>
+                    <td style="color:#1565c0">VF_StatusReportResetRegionB</td>
+                    <td style="color:#888">PRE-2017</td>
+                    <td>John Doe</td>
+                    <td>2015-11-24</td>
+                    <td>John Doe</td>
+                    <td>2015-11-24</td>
+                  </tr>
+                  <tr>
+                    <td style="color:#1565c0">ChangePassword</td>
+                    <td style="color:#888">PRE-2017</td>
+                    <td>Marc Dupont</td>
+                    <td>2017-11-23</td>
+                    <td>Marc Dupont</td>
+                    <td>2017-11-23</td>
+                  </tr>
+                  <tr>
+                    <td style="color:#1565c0">MicrobatchSelfReg</td>
+                    <td style="color:#888">PRE-2017</td>
+                    <td>Automated Process</td>
+                    <td>2022-02-05</td>
+                    <td>Automated Process</td>
+                    <td>2022-02-05</td>
+                  </tr>
+                  <tr>
+                    <td style="color:#1565c0">InMaintenance</td>
+                    <td style="color:#27ae60">2025-06-01</td>
+                    <td>Marc Dupont</td>
+                    <td>2017-11-23</td>
+                    <td>Marc Dupont</td>
+                    <td>2024-03-12</td>
+                  </tr>
+                  <tr>
+                    <td style="color:#1565c0">VF_StatusReport</td>
+                    <td style="color:#27ae60">2025-07-24</td>
+                    <td>Developer</td>
+                    <td>2015-02-10</td>
+                    <td>John Doe</td>
+                    <td>2016-12-09</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- ── Tab 1 : Delete Helper ── -->
+        <div class="m-panel" id="tp38-1">
+          <div class="vbox" style="gap:8px">
+
+            <span class="cal-lbl" style="font-weight:700;font-size:12px;color:#1a2a35">
+              Destructive package will be saved in the project <em>evalApex</em> folder
+            </span>
+
+            <div class="hbox" style="gap:8px;align-items:center">
+              <button class="cal-btn btn-d"
+                data-tip="Find all metadata items that USE the selected item (i.e., the selected item depends on them)">
+                find used by
+              </button>
+              <button class="cal-btn btn-d"
+                data-tip="Find all metadata items that are USED BY the selected item (i.e., they depend on the selected item)">
+                find using
+              </button>
+              <button class="cal-btn btn-d"
+                data-tip="Detect additional metadata that is no longer referenced anywhere and could also be deleted">
+                could be also deleted
+              </button>
+              <button class="cal-btn btn-o"
+                data-tip="Generate a destructive change package ZIP containing destructiveChanges.xml and an empty package.xml">
+                Generate destructive package
+              </button>
+            </div>
+
+            <!-- Two-panel split layout -->
+            <div class="hbox" style="gap:12px;align-items:flex-start">
+
+              <!-- Left panel: Delete table -->
+              <div class="vbox" style="gap:4px;min-width:340px">
+                <span class="cal-lbl" style="color:#7d4f00;font-weight:700">Delete table (List of metadatas to delete)</span>
+                <div class="tbl-wrap">
+                  <table class="cal-tbl">
+                    <thead>
+                      <tr>
+                        <th style="width:110px">Type</th>
+                        <th style="width:160px">Name</th>
+                        <th style="width:90px">lastUsed</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>ApexPage</td>
+                        <td style="color:#1565c0">VF_StatusReport</td>
+                        <td style="color:#27ae60">2025-07-24</td>
+                      </tr>
+                      <tr>
+                        <td>CustomTab</td>
+                        <td style="color:#1565c0">Status_Report</td>
+                        <td style="color:#888"></td>
+                      </tr>
+                      <tr>
+                        <td>WebLink</td>
+                        <td style="color:#1565c0">Status_Report</td>
+                        <td style="color:#888"></td>
+                      </tr>
+                      <tr>
+                        <td>ApexClass</td>
+                        <td style="color:#1565c0">CTRL_StatusReport</td>
+                        <td style="color:#888"></td>
+                      </tr>
+                      <tr>
+                        <td>StaticResource</td>
+                        <td style="color:#1565c0">CompanyLogo</td>
+                        <td style="color:#888"></td>
+                      </tr>
+                      <tr>
+                        <td>StaticResource</td>
+                        <td style="color:#1565c0">dynaPdf</td>
+                        <td style="color:#888"></td>
+                      </tr>
+                      <tr>
+                        <td>ApexComponent</td>
+                        <td style="color:#1565c0">dynapdfcomponent</td>
+                        <td style="color:#888"></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              <!-- Middle transfer buttons -->
+              <div class="vbox" style="gap:6px;align-items:center;justify-content:center;padding-top:50px">
+                <button class="cal-btn btn-d"
+                  data-tip="Move selected item from the Delete table to the Found table">
+                  ==&gt;
+                </button>
+                <button class="cal-btn btn-d"
+                  data-tip="Move selected item from the Found table back to the Delete table">
+                  &lt;==
+                </button>
+              </div>
+
+              <!-- Right panel: Found table -->
+              <div class="vbox" style="gap:4px;flex:1;min-width:0">
+                <span class="cal-lbl" style="font-weight:700">Metadatas USED BY the selection from delete Table(0)</span>
+                <div class="tbl-wrap">
+                  <table class="cal-tbl">
+                    <thead>
+                      <tr>
+                        <th style="width:110px">Type</th>
+                        <th style="width:160px">Name</th>
+                        <th style="width:110px">colFoundLastUsed</th>
+                        <th>colFoundDepends</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td colspan="4" class="tbl-empty">No results — click "find used by" or "find using" to search</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+            </div><!-- end split -->
+
+          </div>
+        </div>
+
+      </div><!-- m-body -->
+    </div><!-- m-tabpane -->
+
+  </div><!-- mockup -->
+</div><!-- mockup-wrap -->
+
+<!-- Key features modal -->
+<div id="modal-kf" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:999;align-items:center;justify-content:center" onclick="if(event.target===this)this.style.display='none'">
+  <div style="background:#fff;border-radius:8px;padding:28px 32px;max-width:540px;width:90%;color:#1a2a35;box-shadow:0 8px 32px rgba(0,0,0,.3)">
+    <h3 style="margin:0 0 14px;color:#2980b9">&#9733; Key features</h3>
+    <ul style="margin:0;padding-left:20px;line-height:1.8">
+      <li>Query Visualforce Page last-used history directly from Production (unavailable on sandboxes, including Full Copy)</li>
+      <li>Cache Production usage data so dependency analysis can be run safely against any sandbox</li>
+      <li>Filter the page list by name to quickly locate candidates for deletion</li>
+      <li>Analyse forward dependencies ("find using") and reverse dependencies ("find used by") for any metadata in the delete list</li>
+      <li>Detect additional orphaned metadata that could also be deleted alongside the selected page</li>
+      <li>Move items between the Delete table and the Found table to refine the scope before generating the package</li>
+      <li>Generate a ready-to-deploy destructive change ZIP (destructiveChanges.xml + empty package.xml) saved to the active project folder</li>
+      <li>Double-click any item to open the raw Apex/VFP source in a text editor for inspection</li>
+    </ul>
+    <div style="text-align:right;margin-top:18px">
+      <button class="cal-btn btn-d" onclick="document.getElementById('modal-kf').style.display='none'">Close</button>
+    </div>
+  </div>
 </div>
+
 <script>
 function sw(id,idx){
   var tp=document.getElementById(id);
