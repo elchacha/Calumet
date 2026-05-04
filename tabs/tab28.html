@@ -3,20 +3,208 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>ACL — Calumet</title>
+<title>ListViews — Calumet</title>
 <link rel="stylesheet" href="../shared.css">
 </head>
 <body class="tab-page">
+
 <div class="sum">
   <div class="sum-title">
-    <h2>ACL</h2>
+    <h2>ListViews</h2>
     <span class="sum-badge">Tab 28</span>
   </div>
-  <p class="sum-desc">Analyse Access Control Lists: review record-level sharing rules and user access combinations.</p>
+  <p class="sum-desc">
+    Analyse Access Control Lists: review record-level sharing rules and user access combinations.
+    For a selected Salesforce object, retrieves every list view with its scope, filter conditions,
+    sharing targets, SOQL query, and live record count.
+    <button class="cal-btn btn-d" style="margin-left:10px" onclick="document.getElementById('modal-kf').style.display='flex'">&#9733; Key features</button>
+  </p>
 </div>
+
 <div class="mockup-wrap">
-  <div class="mockup"><div class="vbox" style="gap:0px"><div class="anchor"><div class="tbl-wrap"><table class="cal-tbl"><thead><tr><th>name</th><th>count</th><th>time(s)</th><th>modifyBy</th><th>scope</th><th>rules</th><th>filters</th><th>shared to</th><th>query</th></tr></thead><tbody><tr><td colspan="20" class="tbl-empty"></td></tr></tbody></table></div><span class="cal-lbl">object</span><button class="cal-btn btn-b">Search</button><input class="cal-tf" placeholder="" style="width:249.0px;" readonly><span class="cal-lbl">listviews :</span><button class="cal-btn btn-b">Extract to xlsx</button><button class="cal-btn btn-d">Count results</button></div></div></div>
-</div>
+  <div class="mockup" style="padding:12px">
+
+    <!-- Toolbar row -->
+    <div class="hbox" style="gap:8px;align-items:center;margin-bottom:8px">
+      <span class="cal-lbl" style="min-width:40px">object</span>
+      <input class="cal-tf" style="width:220px" readonly value="Case (Case)">
+      <button class="cal-btn btn-b" data-tip="Search list views for the selected object">Search</button>
+      <button class="cal-btn btn-d" data-tip="Execute SOQL for selected rows and count records" style="opacity:.7">Count results</button>
+    </div>
+
+    <!-- Count label + export + filter -->
+    <div class="hbox" style="gap:8px;align-items:center;margin-bottom:6px">
+      <span class="cal-lbl" style="font-weight:700">listviews : 517</span>
+      <button class="cal-btn btn-b" data-tip="Export all list views to an Excel spreadsheet">Extract to xlsx</button>
+      <input class="cal-tf" style="width:240px" readonly placeholder="filter...">
+    </div>
+
+    <!-- Main table -->
+    <div class="tbl-wrap" style="max-height:520px;overflow-y:auto">
+      <table class="cal-tbl">
+        <thead>
+          <tr>
+            <th style="width:185px">name</th>
+            <th style="width:55px">count</th>
+            <th style="width:55px">time(s)</th>
+            <th style="width:130px">modifyBy</th>
+            <th style="width:110px">scope</th>
+            <th style="width:190px">rules</th>
+            <th style="width:270px">filters</th>
+            <th style="width:240px">shared to</th>
+            <th style="width:420px">query</th>
+          </tr>
+        </thead>
+        <tbody>
+
+          <!-- Row 1 — high count, red cells -->
+          <tr>
+            <td style="font-weight:600">RESH MRU – BO FEUX ROUGES</td>
+            <td style="color:#E74C3C;font-weight:700">121</td>
+            <td style="color:#E74C3C;font-weight:700">74</td>
+            <td>Coline TINARD</td>
+            <td>Queue : Fresh</td>
+            <td style="font-size:10px;white-space:pre-wrap">1 AND 3 AND 2 AND 4</td>
+            <td style="font-size:10px;white-space:pre-wrap">1 : Site_Dernier_Modificateur__c equals Fresh Maurice
+2 : Tableau_de_bord_de_l_encours__c contains ROUGE
+3 : Statut_Enqu_te_de_l_encours__c notEqual Cloture
+4 : CASES.PRIORITY equals Eleve</td>
+            <td style="font-size:10px;white-space:pre-wrap">roleAndSubordinates : REQ_SC_INTER_MRU
+roleAndSubordinatesInternal : Colizen
+roleAndSubordinatesInternal : Fresh_Maurice
+roleAndSubordinatesInternal : REQ_Fresh_Maurice</td>
+            <td style="font-size:10px;white-space:pre-wrap;color:#555">SELECT toLabel(Status), Engagement_produit__c, Tableau_de_bord_de_l_encours__c, Owner.Name, Date_de_l_engagement_en__c, Sous_Motif_Encours__c, SystemModstamp, GRC_LT__c WHERE OwnerId = '00G57000004Hg' AND Statut_Enqu_te_de_l_encours__c = 'Eleve' ORDER BY Status ASC</td>
+          </tr>
+
+          <!-- Row 2 — low count, green cells -->
+          <tr>
+            <td style="font-weight:600">1-SCL – Nat – Temp dirigee – Att Trait</td>
+            <td style="color:#27ae60;font-weight:700">22</td>
+            <td style="color:#27ae60;font-weight:700">3</td>
+            <td>Nathalie AUZILLEAU</td>
+            <td>Everything</td>
+            <td style="font-size:10px;white-space:pre-wrap">1 AND 2 AND 3 AND 4 AND 5 AND 6 AND 7</td>
+            <td style="font-size:10px;white-space:pre-wrap">1 : Pack_Nat__c startsWith Temp,sante 1,sante 2,sante 3
+2 : CASES.STATUS equals En attente de traitement chronopost
+3 : TypeDossier__c equals Portail Web
+4 : GRC_Perimetre__c notContain INTERNATIONAL,EXPORT DOM/TOM,INTER DOM/TOM
+5 : OWNER_NAME notContain Contact Supervision Interne
+6 : Temperature_dirigee__c equals 1
+7 : CASES.RECORDTYPE equals Case.GRC_Dossier_SAV_LT_ESD</td>
+            <td style="font-size:10px;white-space:pre-wrap">group : Admin
+group : DRC_CC
+role : DirectiondelaRelationClient
+role : Division_Sante
+role : REQANEFLN1
+role : REQANEFLN2
+role : REQANEFLN3
+role : REQANEFLN4
+roleAndSubordinates : ANESPEXNAT
+roleAndSubordinates : TCANESPEXNAT1
+roleAndSubordinatesInternal : TC_Supervision_Medical</td>
+            <td style="font-size:10px;white-space:pre-wrap;color:#555">SELECT Pack_Nat__c, Infos__c, Contact.Name, MotifDernier__c, Owner.Name, CreatedDate WHERE (Pack_Nat__c like 'Temp%' OR Pack_Nat__c like 'sante 1%') AND Status = 'En attente de traitement chronopost' AND (NOT GRC_Perimetre__c like '%INTERNATIONAL%') AND Temperature_dirigee__c = 1 AND RecordType.DeveloperName = 'GRC_Dossier_SAV_LT_ESD' ORDER BY Status ASC NULLS LAST</td>
+          </tr>
+
+          <!-- Row 3 — low count, green cells -->
+          <tr>
+            <td style="font-weight:600">1-SCL – Nat – Temp dirigee – Nouveaux</td>
+            <td style="color:#27ae60;font-weight:700">5</td>
+            <td style="color:#27ae60;font-weight:700">5</td>
+            <td>Nacera ABDAT</td>
+            <td>Everything</td>
+            <td style="font-size:10px;white-space:pre-wrap">(1 AND 2 AND 3 AND 4 AND 5 AND 6 AND 7) OR (8 AND 9 AND 10 AND 2 AND 3 AND 4 AND 5 AND 7)</td>
+            <td style="font-size:10px;white-space:pre-wrap">1 : Pack_Nat__c startsWith Temp,sante 1,sante 2,sante 3
+2 : CASES.STATUS equals Nouveau
+3 : TypeDossier__c equals Portail Web
+4 : CASES.RECORDTYPE equals Case.GRC_Dossier_SAV_LT_ESD
+5 : GRC_Perimetre__c notContain INTERNATIONAL,EXPORT DOM/TOM,TRANSIT,INDEFINI
+6 : Temperature_dirigee__c equals 1
+7 : ACCOUNT.NAME notContain ABBVIE
+8 : Pack_Nat__c startsWith Temp
+9 : Temperature_dirigee__c equals 0
+10 : ACCOUNT.NAME notEqual CADENCE,LYRA,FRANCE DENTORIA SAS</td>
+            <td style="font-size:10px;white-space:pre-wrap">role : DRC_REQ_ANE
+role : DRC_REQ_SPEX_ANE
+role : ANE
+role : Cellule_Supervision_Medical
+role : TCANEFLN1
+role : TC_Supervision_Medical
+roleAndSubordinates : TCANESPEXNAT1</td>
+            <td style="font-size:10px;white-space:pre-wrap;color:#555">SELECT Pack_Nat__c, Infos__c, Account.Name, CreatedDate, Owner.Name, Account.RecordTypeId, Contact.Name WHERE ((Pack_Nat__c like 'Te%') AND Status = 'Nouveau' AND (NOT GRC_Perimetre__c like '%EXPORT%') AND Temperature_dirigee__c = 1 AND Account.Name NOT IN ('ABBVIE') AND Account.Name NOT IN ('CADENCE','LYRA','FRANCE DENTORIA SAS')) ORDER BY CreatedDate DESC NULLS LAST</td>
+          </tr>
+
+          <!-- Row 4 — no count yet -->
+          <tr>
+            <td style="font-weight:600">My Open Cases</td>
+            <td style="color:#888">—</td>
+            <td style="color:#888">—</td>
+            <td>System Administrator</td>
+            <td>Mine</td>
+            <td style="font-size:10px">1 AND 2</td>
+            <td style="font-size:10px;white-space:pre-wrap">1 : CASES.STATUS notEqual Closed
+2 : CASES.STATUS notEqual Cancelled</td>
+            <td style="font-size:10px">allUsers</td>
+            <td style="font-size:10px;color:#555">SELECT CaseNumber, Subject, Status, Priority, CreatedDate, LastModifiedDate FROM Case WHERE OwnerId = :userId AND Status NOT IN ('Closed','Cancelled') ORDER BY LastModifiedDate DESC</td>
+          </tr>
+
+          <!-- Row 5 — very high count, red cells -->
+          <tr>
+            <td style="font-weight:600">All Open – Priority High</td>
+            <td style="color:#E74C3C;font-weight:700">3 842</td>
+            <td style="color:#E74C3C;font-weight:700">18</td>
+            <td>Admin</td>
+            <td>Everything</td>
+            <td style="font-size:10px">1 AND 2</td>
+            <td style="font-size:10px;white-space:pre-wrap">1 : CASES.STATUS notEqual Closed
+2 : CASES.PRIORITY equals High</td>
+            <td style="font-size:10px;white-space:pre-wrap">group : Admin
+group : Support_L2
+roleAndSubordinates : GlobalSupportManager</td>
+            <td style="font-size:10px;color:#555">SELECT CaseNumber, Subject, Status, Priority, Owner.Name FROM Case WHERE Status != 'Closed' AND Priority = 'High' ORDER BY CreatedDate DESC NULLS LAST</td>
+          </tr>
+
+          <!-- Row 6 — moderate, green cells -->
+          <tr>
+            <td style="font-weight:600">Escalated – Awaiting Customer</td>
+            <td style="color:#27ae60;font-weight:700">47</td>
+            <td style="color:#27ae60;font-weight:700">2</td>
+            <td>Marc DURANT</td>
+            <td>Everything</td>
+            <td style="font-size:10px">1 AND 2 AND 3</td>
+            <td style="font-size:10px;white-space:pre-wrap">1 : CASES.STATUS equals Escalated
+2 : CASES.STATUS equals Waiting on Customer
+3 : OWNER_NAME notContain Test</td>
+            <td style="font-size:10px;white-space:pre-wrap">role : SupportManager
+roleAndSubordinates : L2_Support
+roleAndSubordinatesInternal : EscalationTeam</td>
+            <td style="font-size:10px;color:#555">SELECT CaseNumber, Subject, Status, Priority, Owner.Name, EscalatedDate, Account.Name FROM Case WHERE (Status = 'Escalated' OR Status = 'Waiting on Customer') AND Owner.Name NOT LIKE '%Test%' ORDER BY EscalatedDate ASC NULLS LAST</td>
+          </tr>
+
+          <!-- Row 7 — no count yet -->
+          <tr>
+            <td style="font-weight:600">SAV – Logistique – En cours</td>
+            <td style="color:#888">—</td>
+            <td style="color:#888">—</td>
+            <td>Sophie LEFEBVRE</td>
+            <td>Queue : Logistique_SAV</td>
+            <td style="font-size:10px">1 AND 2 AND 3 AND 4</td>
+            <td style="font-size:10px;white-space:pre-wrap">1 : TypeDossier__c equals Logistique
+2 : CASES.STATUS notEqual Closed
+3 : CASES.STATUS notEqual Cancelled
+4 : CASES.RECORDTYPE equals Case.GRC_Dossier_SAV</td>
+            <td style="font-size:10px;white-space:pre-wrap">role : Logistique_Responsable
+roleAndSubordinates : SAV_Logistique
+group : Logistique_CC</td>
+            <td style="font-size:10px;color:#555">SELECT CaseNumber, Subject, TypeDossier__c, Status, Owner.Name, CreatedDate FROM Case WHERE TypeDossier__c = 'Logistique' AND Status NOT IN ('Closed','Cancelled') AND RecordType.DeveloperName = 'GRC_Dossier_SAV' ORDER BY CreatedDate ASC NULLS LAST</td>
+          </tr>
+
+        </tbody>
+      </table>
+    </div>
+
+  </div><!-- .mockup -->
+</div><!-- .mockup-wrap -->
+
 <script>
 function sw(id,idx){
   var tp=document.getElementById(id);
@@ -24,5 +212,28 @@ function sw(id,idx){
   tp.querySelectorAll('.m-panel').forEach(function(p,i){p.classList.toggle('act',i===idx)});
 }
 </script>
+
+<!-- Key features modal -->
+<div id="modal-kf" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:999;align-items:center;justify-content:center" onclick="if(event.target===this)this.style.display='none'">
+  <div style="background:#fff;border-radius:8px;padding:28px 32px;max-width:540px;width:90%;color:#1a2a35;box-shadow:0 8px 32px rgba(0,0,0,.3)">
+    <h3 style="margin:0 0 14px;color:#2980b9">&#9733; Key features</h3>
+    <ul style="margin:0;padding-left:20px;line-height:1.8">
+      <li>Search all list views for any Salesforce object using the autocomplete object picker</li>
+      <li>Displays scope (Mine, Everything, Queue name) for each list view at a glance</li>
+      <li>Shows the full list of filter conditions (rules) in human-readable form</li>
+      <li>Exposes sharing targets: individual roles, role-and-subordinates, groups, and internal users</li>
+      <li>Reconstructs the underlying SOQL query executed by each list view</li>
+      <li>On-demand record count per selected list view — green &lt; 2,000 records, red &ge; 2,000</li>
+      <li>Query execution time in seconds to spot slow or oversized list views</li>
+      <li>Real-time filter field to narrow results without re-querying Salesforce</li>
+      <li>One-click export of all list view details to an Excel spreadsheet (.xlsx)</li>
+      <li>Identifies which users and profiles have access via ACL sharing combinations</li>
+    </ul>
+    <div style="text-align:right;margin-top:18px">
+      <button class="cal-btn btn-d" onclick="document.getElementById('modal-kf').style.display='none'">Close</button>
+    </div>
+  </div>
+</div>
+
 </body>
 </html>

@@ -3,20 +3,316 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Public Groups &amp; Perm Sets — Calumet</title>
+<title>User Access Comparison — Calumet</title>
 <link rel="stylesheet" href="../shared.css">
+<style>
+/* ── Pill basket ── */
+.basket-area{
+  border:1px solid #ccc;border-radius:3px;background:#fff;
+  min-height:44px;padding:6px 8px;display:flex;flex-wrap:wrap;gap:6px;
+  align-items:center;
+}
+.pill{
+  display:inline-flex;align-items:center;gap:4px;
+  background:#dbeafe;border:1px solid #93c5fd;border-radius:10px;
+  padding:3px 8px 3px 10px;font-size:11px;color:#1e3a5f;
+}
+.pill-x{
+  background:transparent;border:none;color:#475569;font-size:12px;
+  padding:0 0 0 4px;cursor:default;line-height:1;
+}
+/* ── Badge pills (Type column) ── */
+.bdg{
+  display:inline-block;padding:2px 8px;border-radius:4px;font-size:10px;
+  font-weight:700;white-space:nowrap;
+}
+.bdg-psg     {background:#7e57c2;color:#fff;}
+.bdg-ps      {background:#5b9bac;color:#fff;}
+.bdg-profile {background:#2c3e50;color:#fff;}
+.bdg-regular  {background:#2980b9;color:#fff;}
+.bdg-queue    {background:#e67e22;color:#fff;}
+.bdg-role     {background:#27ae60;color:#fff;}
+.bdg-roleAndSub{background:#16a085;color:#fff;}
+.bdg-org      {background:#8e44ad;color:#fff;}
+.bdg-direct   {background:#27ae60;color:#fff;}
+.bdg-indirect {background:#95a5a6;color:#fff;}
+/* Check/cross column */
+.tcheck{text-align:center;font-size:14px;}
+/* Role block */
+.role-block{font-size:11px;color:#1a2a35;padding:1px 0;}
+</style>
 </head>
 <body class="tab-page">
+
 <div class="sum">
   <div class="sum-title">
-    <h2>Public Groups &amp; Perm Sets</h2>
+    <h2>User Access Comparison</h2>
     <span class="sum-badge">Tab 73</span>
   </div>
-  <p class="sum-desc">Browse public groups and permission set groups: members, roles, and assignment details.</p>
+  <p class="sum-desc">
+    Compare permission sets, profiles and roles between users. Add users to a basket, retrieve their access details, and diff assignments side by side.
+    <button class="cal-btn btn-d" style="margin-left:10px" onclick="document.getElementById('modal-kf').style.display='flex'">&#9733; Key features</button>
+  </p>
 </div>
+
 <div class="mockup-wrap">
-  <div class="mockup"><div class="vbox" style="gap:0px"><div class="anchor"><div class="vbox" style="gap:4.0px"><div class="hbox" style="padding:8px 8px 0px 8px;gap:8.0px;align-items:center"><span class="cal-lbl">User</span><button class="cal-btn btn-d" data-tip="Add this user to the comparison basket" disabled>Add</button><button class="cal-btn btn-d" data-tip="Remove all users from the basket">Clear all</button></div><div class="scroll-pane"></div><div class="hbox" style="padding:0px 8px 0px 8px;gap:8.0px;align-items:center"><button class="cal-btn btn-d" data-tip="Retrieve role, permission sets and group memberships for the user(s) in the basket" disabled>Retrieve</button></div><div class="hbox" style="padding:0px 8px 0px 8px;gap:6.0px;align-items:center"><span class="cal-lbl" style="font-weight:bold">Role:</span><span class="cal-lbl">—</span></div><div class="m-tabpane" id="tp29"><div class="m-tabbar"><div class="m-tab act" onclick="sw('tp29',0)">Permission Sets</div><div class="m-tab" onclick="sw('tp29',1)">Groups</div></div><div class="m-body"><div class="m-panel act" id="tp29-0"><div class="anchor"></div></div><div class="m-panel" id="tp29-1"><div class="anchor"></div></div></div></div></div></div></div></div>
-</div>
+  <div class="mockup">
+    <div class="vbox" style="gap:0">
+
+      <!-- ── User input row ── -->
+      <div class="hbox" style="gap:8px;align-items:center;padding:8px 8px 4px 8px;">
+        <span class="cal-lbl" style="font-weight:700">User</span>
+        <input class="cal-tf" style="width:220px" readonly placeholder="Search user by name&hellip;"
+               data-tip="Type a user name to search — the matching Salesforce User ID will be used">
+        <button class="cal-btn btn-d" data-tip="Add this user to the comparison basket">Add</button>
+        <button class="cal-btn btn-d" data-tip="Remove all users from the basket">Clear all</button>
+      </div>
+
+      <!-- ── Pill basket ── -->
+      <div style="padding:0 8px 4px 8px;">
+        <div class="basket-area">
+          <div class="pill"><span>Fabrice Challier</span><button class="pill-x">&times;</button></div>
+          <div class="pill"><span>Didier TROBRILLANT</span><button class="pill-x">&times;</button></div>
+          <div class="pill"><span>Marie-Claire Fontaine</span><button class="pill-x">&times;</button></div>
+        </div>
+      </div>
+
+      <!-- ── Action row ── -->
+      <div class="hbox" style="gap:8px;align-items:center;padding:4px 8px;">
+        <button class="cal-btn btn-b"
+                data-tip="Retrieve role, permission sets and group memberships for the user(s) in the basket">
+          Compare
+        </button>
+        <span class="cal-lbl" style="color:#27ae60;font-weight:700">
+          11 perm set differences &middot; 9 group differences
+        </span>
+      </div>
+
+      <!-- ── Role row ── -->
+      <div class="hbox" style="gap:6px;align-items:flex-start;padding:2px 8px 6px 8px;">
+        <span class="cal-lbl" style="font-weight:700;white-space:nowrap">Role:</span>
+        <div class="vbox" style="gap:1px">
+          <div class="role-block">Fabrice Challier: (none)</div>
+          <div class="role-block">Didier TROBRILLANT: MASSY (MASSY) &rarr; parent: DRO ILE DE FRANCE</div>
+          <div class="role-block">Marie-Claire Fontaine: PARIS NORD (PNO) &rarr; parent: DRO ILE DE FRANCE</div>
+        </div>
+      </div>
+
+      <!-- ── Results TabPane ── -->
+      <div class="m-tabpane" id="tp73" style="margin:0 8px 8px 8px;">
+        <div class="m-tabbar">
+          <div class="m-tab act" onclick="sw('tp73',0)">Permission Sets</div>
+          <div class="m-tab" onclick="sw('tp73',1)">Groups</div>
+        </div>
+        <div class="m-body">
+
+          <!-- Permission Sets panel -->
+          <div class="m-panel act" id="tp73-0">
+            <div class="tbl-wrap">
+              <table class="cal-tbl">
+                <thead>
+                  <tr>
+                    <th style="width:110px">Type</th>
+                    <th style="width:220px">Label</th>
+                    <th style="width:230px">API Name</th>
+                    <th style="width:115px;text-align:center">Fabrice Challier</th>
+                    <th style="width:130px;text-align:center">Didier TROBRILLANT</th>
+                    <th style="width:115px;text-align:center">M-C. Fontaine</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><span class="bdg bdg-ps">PermSet</span></td>
+                    <td>DataloaderAccess</td>
+                    <td>DataloaderAccess</td>
+                    <td class="tcheck" style="color:#27ae60">&#10003;</td>
+                    <td class="tcheck" style="color:#E74C3C">&#10007;</td>
+                    <td class="tcheck" style="color:#E74C3C">&#10007;</td>
+                  </tr>
+                  <tr>
+                    <td><span class="bdg bdg-ps">PermSet</span></td>
+                    <td>SecurityUpdate</td>
+                    <td>SecurityUpdate</td>
+                    <td class="tcheck" style="color:#27ae60">&#10003;</td>
+                    <td class="tcheck" style="color:#E74C3C">&#10007;</td>
+                    <td class="tcheck" style="color:#27ae60">&#10003;</td>
+                  </tr>
+                  <tr>
+                    <td><span class="bdg bdg-ps">PermSet</span></td>
+                    <td>LiveChatUser</td>
+                    <td>LiveChatUser</td>
+                    <td class="tcheck" style="color:#27ae60">&#10003;</td>
+                    <td class="tcheck" style="color:#E74C3C">&#10007;</td>
+                    <td class="tcheck" style="color:#E74C3C">&#10007;</td>
+                  </tr>
+                  <tr>
+                    <td><span class="bdg bdg-ps">PermSet</span></td>
+                    <td>LiveChat Supervision</td>
+                    <td>LiveChat_Supervision</td>
+                    <td class="tcheck" style="color:#27ae60">&#10003;</td>
+                    <td class="tcheck" style="color:#E74C3C">&#10007;</td>
+                    <td class="tcheck" style="color:#27ae60">&#10003;</td>
+                  </tr>
+                  <tr>
+                    <td><span class="bdg bdg-ps">PermSet</span></td>
+                    <td>Derogation Validations Affaires</td>
+                    <td>Derogation_Validations_Affaires</td>
+                    <td class="tcheck" style="color:#27ae60">&#10003;</td>
+                    <td class="tcheck" style="color:#E74C3C">&#10007;</td>
+                    <td class="tcheck" style="color:#E74C3C">&#10007;</td>
+                  </tr>
+                  <tr>
+                    <td><span class="bdg bdg-ps">PermSet</span></td>
+                    <td>ByPass ValidationRule</td>
+                    <td>ByPass_ValidationRule</td>
+                    <td class="tcheck" style="color:#27ae60">&#10003;</td>
+                    <td class="tcheck" style="color:#E74C3C">&#10007;</td>
+                    <td class="tcheck" style="color:#E74C3C">&#10007;</td>
+                  </tr>
+                  <tr>
+                    <td><span class="bdg bdg-profile">Profile</span></td>
+                    <td>System Administrator</td>
+                    <td>System Administrator</td>
+                    <td class="tcheck" style="color:#27ae60">&#10003;</td>
+                    <td class="tcheck" style="color:#E74C3C">&#10007;</td>
+                    <td class="tcheck" style="color:#E74C3C">&#10007;</td>
+                  </tr>
+                  <tr>
+                    <td><span class="bdg bdg-ps">PermSet</span></td>
+                    <td>Affaire - Rapport WF Service Credit</td>
+                    <td>Affaire_Rapport_WF_Service_Credit</td>
+                    <td class="tcheck" style="color:#27ae60">&#10003;</td>
+                    <td class="tcheck" style="color:#E74C3C">&#10007;</td>
+                    <td class="tcheck" style="color:#E74C3C">&#10007;</td>
+                  </tr>
+                  <tr>
+                    <td><span class="bdg bdg-profile">Profile</span></td>
+                    <td>OPS - Agence</td>
+                    <td>OPS - Agence</td>
+                    <td class="tcheck" style="color:#E74C3C">&#10007;</td>
+                    <td class="tcheck" style="color:#27ae60">&#10003;</td>
+                    <td class="tcheck" style="color:#27ae60">&#10003;</td>
+                  </tr>
+                  <tr>
+                    <td><span class="bdg bdg-psg">PermSetGroup</span></td>
+                    <td>Sales Cloud Full Access</td>
+                    <td>Sales_Cloud_Full_Access</td>
+                    <td class="tcheck" style="color:#E74C3C">&#10007;</td>
+                    <td class="tcheck" style="color:#27ae60">&#10003;</td>
+                    <td class="tcheck" style="color:#27ae60">&#10003;</td>
+                  </tr>
+                  <tr>
+                    <td><span class="bdg bdg-ps">PermSet</span></td>
+                    <td>CRM Analytics Viewer</td>
+                    <td>CRMAnalyticsViewer</td>
+                    <td class="tcheck" style="color:#E74C3C">&#10007;</td>
+                    <td class="tcheck" style="color:#E74C3C">&#10007;</td>
+                    <td class="tcheck" style="color:#27ae60">&#10003;</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Groups panel -->
+          <div class="m-panel" id="tp73-1">
+            <div class="tbl-wrap">
+              <table class="cal-tbl">
+                <thead>
+                  <tr>
+                    <th style="width:110px">Type</th>
+                    <th style="width:215px">Name</th>
+                    <th style="width:225px">API Name</th>
+                    <th style="width:115px;text-align:center">Fabrice Challier</th>
+                    <th style="width:130px;text-align:center">Didier TROBRILLANT</th>
+                    <th style="width:115px;text-align:center">M-C. Fontaine</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><span class="bdg bdg-regular">Regular</span></td>
+                    <td>Direction commerciale Acces Cotation</td>
+                    <td>Direction_commerciale_Acces_Cotation</td>
+                    <td class="tcheck" style="color:#27ae60">&#10003;</td>
+                    <td class="tcheck" style="color:#E74C3C">&#10007;</td>
+                    <td class="tcheck" style="color:#E74C3C">&#10007;</td>
+                  </tr>
+                  <tr>
+                    <td><span class="bdg bdg-regular">Regular</span></td>
+                    <td>Utilisateurs DSI</td>
+                    <td>UtilisateursDSI</td>
+                    <td class="tcheck" style="color:#27ae60">&#10003;</td>
+                    <td class="tcheck" style="color:#E74C3C">&#10007;</td>
+                    <td class="tcheck" style="color:#E74C3C">&#10007;</td>
+                  </tr>
+                  <tr>
+                    <td><span class="bdg bdg-queue">Queue</span></td>
+                    <td>Livechat_Queue</td>
+                    <td>Livechat_Queue</td>
+                    <td class="tcheck" style="color:#27ae60">&#10003;</td>
+                    <td class="tcheck" style="color:#E74C3C">&#10007;</td>
+                    <td class="tcheck" style="color:#E74C3C">&#10007;</td>
+                  </tr>
+                  <tr>
+                    <td><span class="bdg bdg-regular">Regular</span></td>
+                    <td>Reporting Knowledge</td>
+                    <td>Reporting_Knowledge</td>
+                    <td class="tcheck" style="color:#27ae60">&#10003;</td>
+                    <td class="tcheck" style="color:#E74C3C">&#10007;</td>
+                    <td class="tcheck" style="color:#27ae60">&#10003;</td>
+                  </tr>
+                  <tr>
+                    <td><span class="bdg bdg-regular">Regular</span></td>
+                    <td>DSI</td>
+                    <td>DSI</td>
+                    <td class="tcheck" style="color:#27ae60">&#10003;</td>
+                    <td class="tcheck" style="color:#E74C3C">&#10007;</td>
+                    <td class="tcheck" style="color:#E74C3C">&#10007;</td>
+                  </tr>
+                  <tr>
+                    <td><span class="bdg bdg-queue">Queue</span></td>
+                    <td>LiveChat MiawPetitPro</td>
+                    <td>LiveChat_MiawPetitPro</td>
+                    <td class="tcheck" style="color:#27ae60">&#10003;</td>
+                    <td class="tcheck" style="color:#E74C3C">&#10007;</td>
+                    <td class="tcheck" style="color:#27ae60">&#10003;</td>
+                  </tr>
+                  <tr>
+                    <td><span class="bdg bdg-queue">Queue</span></td>
+                    <td>LiveChatMiaw</td>
+                    <td>LiveChatMiaw</td>
+                    <td class="tcheck" style="color:#27ae60">&#10003;</td>
+                    <td class="tcheck" style="color:#E74C3C">&#10007;</td>
+                    <td class="tcheck" style="color:#E74C3C">&#10007;</td>
+                  </tr>
+                  <tr>
+                    <td><span class="bdg bdg-queue">Queue</span></td>
+                    <td>Dispersion Poste</td>
+                    <td>DispersionPoste</td>
+                    <td class="tcheck" style="color:#27ae60">&#10003;</td>
+                    <td class="tcheck" style="color:#E74C3C">&#10007;</td>
+                    <td class="tcheck" style="color:#E74C3C">&#10007;</td>
+                  </tr>
+                  <tr>
+                    <td><span class="bdg bdg-queue">Queue</span></td>
+                    <td>Media Social</td>
+                    <td>MediaSocial</td>
+                    <td class="tcheck" style="color:#27ae60">&#10003;</td>
+                    <td class="tcheck" style="color:#E74C3C">&#10007;</td>
+                    <td class="tcheck" style="color:#E74C3C">&#10007;</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+        </div><!-- .m-body -->
+      </div><!-- .m-tabpane -->
+
+    </div><!-- .vbox -->
+  </div><!-- .mockup -->
+</div><!-- .mockup-wrap -->
+
 <script>
 function sw(id,idx){
   var tp=document.getElementById(id);
@@ -24,5 +320,27 @@ function sw(id,idx){
   tp.querySelectorAll('.m-panel').forEach(function(p,i){p.classList.toggle('act',i===idx)});
 }
 </script>
+
+<!-- Key features modal -->
+<div id="modal-kf" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:999;align-items:center;justify-content:center" onclick="if(event.target===this)this.style.display='none'">
+  <div style="background:#fff;border-radius:8px;padding:28px 32px;max-width:540px;width:90%;color:#1a2a35;box-shadow:0 8px 32px rgba(0,0,0,.3)">
+    <h3 style="margin:0 0 14px;color:#2980b9">&#9733; Key features</h3>
+    <ul style="margin:0;padding-left:20px;line-height:1.9">
+      <li>Add any number of users to a comparison basket using an auto-complete user search field.</li>
+      <li>Retrieve the full access profile for each user: permission sets, permission set groups, profile assignment, role and group memberships.</li>
+      <li>In <strong>single-user mode</strong>, all assignments are listed with type badges and direct/indirect membership indicators.</li>
+      <li>In <strong>compare mode</strong> (2+ users), only <em>differences</em> are shown — one column per user with a check (has it) or a cross (does not have it).</li>
+      <li>Colored badges distinguish <span style="background:#5b9bac;color:#fff;padding:1px 6px;border-radius:3px;font-size:10px">PermSet</span>, <span style="background:#7e57c2;color:#fff;padding:1px 6px;border-radius:3px;font-size:10px">PermSetGroup</span> and <span style="background:#2c3e50;color:#fff;padding:1px 6px;border-radius:3px;font-size:10px">Profile</span> in the Permission Sets tab, and <span style="background:#2980b9;color:#fff;padding:1px 6px;border-radius:3px;font-size:10px">Regular</span> / <span style="background:#e67e22;color:#fff;padding:1px 6px;border-radius:3px;font-size:10px">Queue</span> / <span style="background:#27ae60;color:#fff;padding:1px 6px;border-radius:3px;font-size:10px">Role</span> group types in the Groups tab.</li>
+      <li>Role assignments are displayed per user below the basket — identical roles or diverging roles are both surfaced clearly.</li>
+      <li>The current connected user is automatically pre-filled in the search field when the tab opens.</li>
+      <li>Basket pills can be removed individually with the &times; button or cleared all at once.</li>
+      <li>Status label reports the exact count of perm set and group differences found after a compare run.</li>
+    </ul>
+    <div style="text-align:right;margin-top:18px">
+      <button class="cal-btn btn-d" onclick="document.getElementById('modal-kf').style.display='none'">Close</button>
+    </div>
+  </div>
+</div>
+
 </body>
 </html>

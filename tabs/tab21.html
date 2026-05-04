@@ -3,20 +3,521 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Apex — Calumet</title>
+<title>Logs — Calumet</title>
 <link rel="stylesheet" href="../shared.css">
+<style>
+/* Row coloring */
+.row-danger td { background:#fdf0ef;color:#922b21 }
+/* Debug level badges */
+.badge-dbg {
+  display:inline-block;padding:1px 7px;border-radius:10px;font-size:10px;font-weight:700;
+  white-space:nowrap;border:1px solid transparent
+}
+.badge-calumet { background:#d5f5e3;color:#1a5226;border-color:#a9dfbf }
+.badge-sfdc    { background:#d6eaf8;color:#1a5276;border-color:#aed6f1 }
+.badge-apex    { background:#e8d5f5;color:#5b1aa6;border-color:#c4a9df }
+.badge-debug   { background:#fdebd0;color:#784212;border-color:#f0c994 }
+/* Trace flag form panel */
+.tf-panel {
+  background:#e8f0f5;border:1px solid #9aabbf;border-radius:4px;
+  padding:10px;width:220px;flex-shrink:0
+}
+.tf-panel .pnl-title {
+  font-weight:700;font-size:12px;color:#1a5276;
+  border-bottom:1px solid #9aabbf;padding-bottom:6px;margin-bottom:8px
+}
+.tf-row { display:flex;align-items:center;gap:6px;margin-bottom:6px }
+.tf-row label { width:78px;font-size:11px;color:#2c3e50;flex-shrink:0 }
+.tf-dur-btns { display:flex;gap:3px;margin-bottom:8px }
+/* Centered info panels (Analyser / Filter) */
+.info-center {
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:14px;padding:50px 20px;text-align:center
+}
+.info-center p { max-width:480px;line-height:1.6;color:#4a6274;font-size:12px }
+.info-box {
+  background:#f0f5f8;border:1px solid #c5d8e5;border-radius:4px;
+  padding:14px 20px;text-align:left;max-width:540px;width:100%
+}
+.info-box-title { font-weight:700;font-size:11px;color:#1a5276;margin-bottom:8px }
+.info-box-body  { font-size:11px;color:#4a6274;line-height:1.7 }
+.info-box-warn  { background:#fef9e7;border-color:#f7dc6f }
+.info-box-warn .info-box-title { color:#7d6608 }
+</style>
 </head>
 <body class="tab-page">
+
 <div class="sum">
   <div class="sum-title">
-    <h2>Apex</h2>
+    <h2>Logs</h2>
     <span class="sum-badge">Tab 21</span>
   </div>
-  <p class="sum-desc">Browse, edit, and manage Apex classes and triggers. View coverage, run tests, and push to org.</p>
+  <p class="sum-desc">
+    Browse, download and analyse Salesforce Apex debug logs directly from your org.
+    Manage trace flags to control log generation per user, class, trigger or profile.
+    <button class="cal-btn btn-d" style="margin-left:10px" onclick="document.getElementById('modal-kf').style.display='flex'">&#9733; Key features</button>
+  </p>
 </div>
+
 <div class="mockup-wrap">
-  <div class="mockup"><div class="vbox" style="gap:0px"><div class="anchor"><div class="m-tabpane" id="tp7"><div class="m-tabbar"><div class="m-tab act" onclick="sw('tp7',0)">Display Logs</div><div class="m-tab" onclick="sw('tp7',1)">User Logs</div><div class="m-tab" onclick="sw('tp7',2)">Log Analyser</div><div class="m-tab" onclick="sw('tp7',3)">Analyse Soql 101</div><div class="m-tab" onclick="sw('tp7',4)">Filter Log</div></div><div class="m-body"><div class="m-panel act" id="tp7-0"><div class="anchor"><div class="hbox" style="gap:8.0px;align-items:center"><input class="cal-tf" placeholder="User" data-tip="Filtrer par utilisateur" style="width:130.0px;" readonly><input class="cal-tf" placeholder="Status" data-tip="Filtrer par statut" style="width:100.0px;" readonly><input class="cal-tf" placeholder="Duration &gt;" data-tip="Durée minimale (ms)" style="width:90.0px;" readonly><input class="cal-tf" placeholder="Start time" data-tip="Date de début (YYYY-MM-DD)" style="width:120.0px;" readonly><input class="cal-tf" placeholder="End time" data-tip="Date de fin (YYYY-MM-DD)" style="width:120.0px;" readonly><button class="cal-btn btn-b" data-tip="Lancer la recherche">Search</button><button class="cal-btn btn-d" data-tip="Ouvrir le moniteur de logs en temps réel">Open Monitor</button></div><div class="hbox" style="gap:8.0px;align-items:center"><label class="cal-chk" data-tip="Recalculer l&#x27;opération pour chaque log"><input type="checkbox" disabled> Calculate operation</label><button class="cal-btn btn-d" data-tip="Supprimer les logs sélectionnés">Delete Selected</button><div class="vsep"></div><span class="cal-lbl">Filter :</span><input class="cal-tf" placeholder="" data-tip="Filtrer les résultats affichés" style="width:220.0px;" readonly><label class="cal-chk" data-tip="Masquer les logs en succès"><input type="checkbox" disabled> Hide success</label><label class="cal-chk" data-tip="Conserver uniquement les succès"><input type="checkbox" disabled> Keep success</label><div class="spacer"></div><span class="cal-lbl" style="font-weight:bold">Cache : 0 M</span><button class="cal-btn btn-g" data-tip="Ouvrir le dossier cache">Open cache</button><button class="cal-btn btn-g" data-tip="Vider le dossier cache">Clear cache</button></div><div class="hbox" style="gap:20.0px;align-items:center"><span class="cal-lbl">Results : 0</span></div><div class="tbl-wrap"><table class="cal-tbl"><thead><tr><th>User</th><th>RequestType</th><th>Application</th><th>Operation</th><th>Status</th><th>Duration</th><th>(s)</th><th>Size</th><th>startTime</th><th>lastModified</th><th>Request Id</th></tr></thead><tbody><tr><td colspan="20" class="tbl-empty"></td></tr></tbody></table></div></div></div><div class="m-panel" id="tp7-1"><div class="anchor"><div class="hbox" style="gap:8.0px;align-items:center"><button class="cal-btn btn-d" data-tip="Recharger la liste des trace flags">Refresh</button><button class="cal-btn btn-d">Delete all classes</button><button class="cal-btn btn-d" data-tip="Créer un nouveau trace flag">New traceFlag</button><button class="cal-btn btn-d" data-tip="Modifier le trace flag sélectionné">Edit traceFlag</button><button class="cal-btn btn-d" data-tip="Gérer la suppression des trace flags">Manage deletion</button><div class="spacer"></div><span class="cal-lbl">Filter :</span><input class="cal-tf" placeholder="" data-tip="Filtrer les trace flags" style="width:200.0px;" readonly></div><div class="vbox" style="gap:10.0px"><span class="cal-lbl">Trace Flag</span><div class="hbox" style="gap:8.0px;align-items:center"><span class="cal-lbl">Type</span><select class="cal-cb" style="width:150.0px;"><option class="ph">Select...</option></select></div><label class="cal-chk"><input type="checkbox" disabled> Select All</label><div class="hbox" style="gap:4.0px;align-items:center"><span class="cal-lbl">Name</span><button class="cal-btn btn-d" data-tip="Effacer le nom">❌</button></div><div class="hbox" style="gap:8.0px;align-items:center"><span class="cal-lbl">Debug Level</span><select class="cal-cb" style="width:150.0px;"><option class="ph">Select...</option></select></div><div class="hbox" style="gap:8.0px;align-items:center"><span class="cal-lbl">Time (mn)</span><input class="cal-tf" placeholder="" style="width:80.0px;" readonly></div><div class="hbox" style="gap:4.0px;align-items:center"><button class="cal-btn btn-d">30mn</button><button class="cal-btn btn-d">1h</button><button class="cal-btn btn-d">2h</button><button class="cal-btn btn-d">8h</button><button class="cal-btn btn-d">24h</button></div><button class="cal-btn btn-d">Create / Update</button></div><div class="tbl-wrap"><table class="cal-tbl"><thead><tr><th>Active</th><th>Type</th><th>Name</th><th>Start date</th><th>End date</th><th>Log Level</th><th>User profile</th><th>Requested by</th></tr></thead><tbody><tr><td colspan="20" class="tbl-empty"></td></tr></tbody></table></div></div></div><div class="m-panel" id="tp7-2"><div class="anchor"><div class="vbox" style="gap:16.0px"><span class="cal-lbl">Process the log and shrink it to present an easy-to-read methods file.</span><button class="cal-btn btn-d">Select a log file</button></div></div></div><div class="m-panel" id="tp7-3"><div class="anchor"><div class="vbox" style="gap:16.0px"><span class="cal-lbl">Input a log file with at least: Database (Info), Apex Code (Finest), Apex Profiling (Info), System (Fine).</span><button class="cal-btn btn-d">Choose a file</button></div></div></div><div class="m-panel" id="tp7-4"><div class="anchor"><div class="vbox" style="gap:16.0px"><span class="cal-lbl">Select a log file to apply a filter and extract relevant lines.</span><button class="cal-btn btn-d">Choose a file</button></div></div></div></div></div></div></div></div>
+  <div class="mockup">
+
+    <div class="m-tabpane" id="tp21">
+      <div class="m-tabbar">
+        <div class="m-tab act" onclick="sw('tp21',0)">Display Logs</div>
+        <div class="m-tab"     onclick="sw('tp21',1)">User Logs</div>
+        <div class="m-tab"     onclick="sw('tp21',2)">Log Analyser</div>
+        <div class="m-tab"     onclick="sw('tp21',3)">Analyse Soql 101</div>
+        <div class="m-tab"     onclick="sw('tp21',4)">Filter Log</div>
+      </div>
+      <div class="m-body">
+
+        <!-- ══════════════ TAB 1 — Display Logs ══════════════ -->
+        <div class="m-panel act" id="tp21-0">
+          <div class="vbox" style="gap:6px">
+
+            <!-- Search bar -->
+            <div class="hbox" style="gap:6px;align-items:center">
+              <input class="cal-tf" style="width:120px" placeholder="User" value="Fabrice Challier" readonly
+                data-tip="Filter by user name">
+              <input class="cal-tf" style="width:85px" placeholder="Status" value="" readonly
+                data-tip="Filter by status">
+              <input class="cal-tf" style="width:80px" placeholder="Duration &gt;" value="" readonly
+                data-tip="Minimum duration (ms)">
+              <input class="cal-tf" style="width:105px" placeholder="Start time" value="2026-04-29" readonly
+                data-tip="Start date (YYYY-MM-DD)">
+              <input class="cal-tf" style="width:105px" placeholder="End time" value="" readonly
+                data-tip="End date (YYYY-MM-DD)">
+              <button class="cal-btn btn-b" data-tip="Run the search">Search</button>
+              <button class="cal-btn btn-d" data-tip="Open real-time log monitor">Open Monitor</button>
+            </div>
+
+            <!-- Action / filter bar -->
+            <div class="hbox" style="gap:6px;align-items:center">
+              <label class="cal-chk" data-tip="Recalculate the operation for each log">
+                <input type="checkbox" disabled> Calculate operation
+              </label>
+              <button class="cal-btn btn-r" style="min-width:110px" data-tip="Delete selected logs">Delete Selected</button>
+              <div class="vsep"></div>
+              <span class="cal-lbl">Filter :</span>
+              <input class="cal-tf" style="width:190px" value="" readonly
+                data-tip="Filter displayed results">
+              <label class="cal-chk" data-tip="Hide logs with success status">
+                <input type="checkbox" disabled> Hide success
+              </label>
+              <label class="cal-chk" data-tip="Keep only success logs">
+                <input type="checkbox" disabled> Keep success
+              </label>
+              <div class="spacer"></div>
+              <span class="cal-lbl" style="font-weight:700" data-tip="Total size of cached log files">cache logs size : 224,17 M</span>
+              <button class="cal-btn btn-g" data-tip="Open the cache folder in Explorer">Open cache</button>
+              <button class="cal-btn btn-g" data-tip="Delete all cached log files">Clear cache</button>
+            </div>
+
+            <!-- Status bar -->
+            <div class="hbox" style="gap:20px;align-items:center">
+              <span class="cal-lbl" style="font-weight:700">Results : 34</span>
+              <span style="font-size:11px;color:#27ae60;font-weight:700">org limits : 1,3 Mo / 1000 Mo (0,13%)</span>
+            </div>
+
+            <!-- Logs table -->
+            <div class="tbl-wrap">
+              <table class="cal-tbl">
+                <thead>
+                  <tr>
+                    <th style="width:130px">User</th>
+                    <th style="width:90px">RequestType</th>
+                    <th style="width:80px">Application</th>
+                    <th style="width:95px">Operation</th>
+                    <th style="width:130px">Status</th>
+                    <th style="width:90px">Duration</th>
+                    <th style="width:28px">*(s)</th>
+                    <th style="width:75px">Size</th>
+                    <th style="width:132px">startTime</th>
+                    <th style="width:132px">lastModified</th>
+                    <th>Request Id</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Fabrice Challier</td><td>Application</td><td>Browser</td><td>/aura</td>
+                    <td style="color:#27ae60">Success</td>
+                    <td>00:00:01:031</td><td>1</td><td>306,26 KB</td>
+                    <td>2026-04-29 15:01:14</td><td>2026-04-29 15:01:15</td>
+                    <td style="color:#888;font-size:10px">TID:67821900003e8e68db</td>
+                  </tr>
+                  <tr>
+                    <td>Fabrice Challier</td><td>Application</td><td>Browser</td><td>/aura</td>
+                    <td style="color:#27ae60">Success</td>
+                    <td>00:00:01:307</td><td>0</td><td>20,82 KB</td>
+                    <td>2026-04-29 15:01:15</td><td>2026-04-29 15:01:15</td>
+                    <td style="color:#888;font-size:10px">TID:67821900003e8e68db</td>
+                  </tr>
+                  <tr>
+                    <td>Fabrice Challier</td><td>Application</td><td>Browser</td><td>/aura</td>
+                    <td style="color:#27ae60">Success</td>
+                    <td>00:00:00:081</td><td>0</td><td>331 byte</td>
+                    <td>2026-04-29 15:01:14</td><td>2026-04-29 15:01:14</td>
+                    <td style="color:#888;font-size:10px">TID:68308000008363d1b7</td>
+                  </tr>
+                  <tr>
+                    <td>Fabrice Challier</td><td>Application</td><td>Browser</td><td>/aura</td>
+                    <td style="color:#27ae60">Success</td>
+                    <td>00:00:01:260</td><td>2</td><td>308,33 KB</td>
+                    <td>2026-04-29 15:01:10</td><td>2026-04-29 15:01:12</td>
+                    <td style="color:#888;font-size:10px">TID:24161900000fe6cde8d</td>
+                  </tr>
+                  <tr>
+                    <td>Fabrice Challier</td><td>Application</td><td>Browser</td><td>/aura</td>
+                    <td style="color:#27ae60">Success</td>
+                    <td>00:00:01:014</td><td>1</td><td>109,92 KB</td>
+                    <td>2026-04-29 15:01:09</td><td>2026-04-29 15:01:10</td>
+                    <td style="color:#888;font-size:10px">TID:19540000000669f29bc</td>
+                  </tr>
+                  <tr>
+                    <td>Fabrice Challier</td><td>Application</td><td>Browser</td><td>/aura</td>
+                    <td style="color:#27ae60">Success</td>
+                    <td>00:00:00:112</td><td>0</td><td>20,84 KB</td>
+                    <td>2026-04-29 15:01:10</td><td>2026-04-29 15:01:10</td>
+                    <td style="color:#888;font-size:10px">TID:24166900007184a3bd</td>
+                  </tr>
+                  <tr>
+                    <td>Fabrice Challier</td><td>Application</td><td>Browser</td><td>/aura</td>
+                    <td style="color:#27ae60">Success</td>
+                    <td>00:00:00:058</td><td>0</td><td>4,58 KB</td>
+                    <td>2026-04-29 15:01:09</td><td>2026-04-29 15:01:09</td>
+                    <td style="color:#888;font-size:10px">TID:19496900000838a5e5</td>
+                  </tr>
+                  <tr class="row-danger">
+                    <td>Bassel Rawda</td><td>VF</td><td>Browser</td><td>/apex/ProjectView</td>
+                    <td>System.LimitException</td>
+                    <td>00:00:04:812</td><td>4</td><td>5,1 MB</td>
+                    <td>2026-04-29 14:58:33</td><td>2026-04-29 14:58:37</td>
+                    <td style="font-size:10px">TID:91003c00001d22ae8f</td>
+                  </tr>
+                  <tr>
+                    <td>Fabrice Challier</td><td>Application</td><td>Browser</td><td>/aura</td>
+                    <td style="color:#27ae60">Success</td>
+                    <td>00:00:00:089</td><td>0</td><td>884 byte</td>
+                    <td>2026-04-29 15:01:09</td><td>2026-04-29 15:01:09</td>
+                    <td style="color:#888;font-size:10px">TID:124369000061aab5bb</td>
+                  </tr>
+                  <tr class="row-danger">
+                    <td>Roberto Ramos</td><td>Batch Apex</td><td>Automated Process</td><td>BatchInvoiceProcess</td>
+                    <td>Unhandled Exception</td>
+                    <td>00:00:12:340</td><td>12</td><td>2,9 MB</td>
+                    <td>2026-04-29 14:55:01</td><td>2026-04-29 14:55:13</td>
+                    <td style="font-size:10px">TID:7b10ae00004c1f3e22</td>
+                  </tr>
+                  <tr>
+                    <td>Fabrice Challier</td><td>Application</td><td>Browser</td><td>/aura</td>
+                    <td style="color:#27ae60">Success</td>
+                    <td>00:00:00:057</td><td>0</td><td>331 byte</td>
+                    <td>2026-04-29 15:01:09</td><td>2026-04-29 15:01:09</td>
+                    <td style="color:#888;font-size:10px">TID:147200000826c3c57</td>
+                  </tr>
+                  <tr>
+                    <td>Fabrice Challier</td><td>Application</td><td>Browser</td><td>/aura</td>
+                    <td style="color:#27ae60">Success</td>
+                    <td>00:00:00:040</td><td>0</td><td>12,12 KB</td>
+                    <td>2026-04-29 15:01:09</td><td>2026-04-29 15:01:09</td>
+                    <td style="color:#888;font-size:10px">TID:20238900002c600264</td>
+                  </tr>
+                  <tr>
+                    <td>Fabrice Challier</td><td>Application</td><td>Browser</td><td>/aura</td>
+                    <td style="color:#27ae60">Success</td>
+                    <td>00:00:00:109</td><td>0</td><td>7,1 KB</td>
+                    <td>2026-04-29 15:01:09</td><td>2026-04-29 15:01:09</td>
+                    <td style="color:#888;font-size:10px">TID:1957890000059566eaf</td>
+                  </tr>
+                  <tr>
+                    <td>Fabrice Challier</td><td>Application</td><td>Browser</td><td>/aura</td>
+                    <td style="color:#27ae60">Success</td>
+                    <td>00:00:01:977</td><td>3</td><td>288,15 KB</td>
+                    <td>2026-04-29 15:00:46</td><td>2026-04-29 15:00:49</td>
+                    <td style="color:#888;font-size:10px">TID:2534900000446bae39</td>
+                  </tr>
+                  <tr>
+                    <td>Fabrice Challier</td><td>Application</td><td>Browser</td><td>/aura</td>
+                    <td style="color:#27ae60">Success</td>
+                    <td>00:00:01:484</td><td>2</td><td>31,05 KB</td>
+                    <td>2026-04-29 15:00:46</td><td>2026-04-29 15:00:48</td>
+                    <td style="color:#888;font-size:10px">TID:24402000000d314a67</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- ══════════════ TAB 2 — User Logs (Trace Flags) ══════════════ -->
+        <div class="m-panel" id="tp21-1">
+          <div class="vbox" style="gap:6px">
+
+            <!-- Toolbar -->
+            <div class="hbox" style="gap:6px;align-items:center">
+              <button class="cal-btn btn-d" data-tip="Reload the trace flag list">Refresh</button>
+              <button class="cal-btn btn-r" data-tip="Delete all Apex class trace flags">Delete all classes</button>
+              <button class="cal-btn btn-g" data-tip="Create a new trace flag in Salesforce">New traceFlag</button>
+              <button class="cal-btn btn-d" data-tip="Edit the selected trace flag">Edit traceFlag</button>
+              <button class="cal-btn btn-o" data-tip="Manage trace flag deletion">Manage deletion</button>
+              <div class="spacer"></div>
+              <span class="cal-lbl">Filter :</span>
+              <input class="cal-tf" style="width:180px" value="" readonly
+                data-tip="Filter trace flags by name or any field">
+            </div>
+
+            <!-- Split: form panel + table -->
+            <div class="hbox" style="gap:8px;align-items:flex-start">
+
+              <!-- Left form panel -->
+              <div class="tf-panel">
+                <div class="pnl-title">Trace Flag</div>
+
+                <div class="tf-row">
+                  <label>Type</label>
+                  <select class="cal-cb" style="width:120px" disabled>
+                    <option selected>User</option>
+                    <option>ApexClass</option>
+                    <option>ApexTrigger</option>
+                    <option>Profile</option>
+                  </select>
+                </div>
+
+                <label class="cal-chk" style="margin-bottom:6px">
+                  <input type="checkbox" disabled> select all Users(WARNING)
+                </label>
+
+                <div class="tf-row">
+                  <label>Name</label>
+                  <input class="cal-tf" style="width:118px" placeholder="User name" value="" readonly>
+                </div>
+
+                <div class="tf-row">
+                  <label>Debug Level</label>
+                  <select class="cal-cb" style="width:120px" disabled>
+                    <option selected>CALUMETDEBUG</option>
+                    <option>SFDC_DevConsole</option>
+                    <option>Apex_Fine</option>
+                    <option>DEBUG</option>
+                  </select>
+                </div>
+
+                <div class="tf-row">
+                  <label>Time (mn)</label>
+                  <input class="cal-tf" style="width:70px" value="120" readonly>
+                </div>
+
+                <div class="tf-dur-btns">
+                  <button class="cal-btn btn-d" style="padding:3px 6px" data-tip="Set duration to 30 minutes">30mn</button>
+                  <button class="cal-btn btn-d" style="padding:3px 6px" data-tip="Set duration to 1 hour">1h</button>
+                  <button class="cal-btn btn-d" style="padding:3px 6px" data-tip="Set duration to 2 hours">2h</button>
+                  <button class="cal-btn btn-d" style="padding:3px 6px" data-tip="Set duration to 8 hours">8h</button>
+                  <button class="cal-btn btn-d" style="padding:3px 6px" data-tip="Set duration to 24 hours">24h</button>
+                </div>
+
+                <button class="cal-btn btn-b" style="width:100%;margin-top:2px">Create / Update</button>
+              </div>
+
+              <!-- Right: Trace flags table -->
+              <div style="flex:1;min-width:0">
+                <div class="tbl-wrap">
+                  <table class="cal-tbl">
+                    <thead>
+                      <tr>
+                        <th style="width:48px">Active</th>
+                        <th style="width:68px">Type</th>
+                        <th style="width:210px">Name</th>
+                        <th style="width:138px">Start date</th>
+                        <th style="width:138px">End date</th>
+                        <th style="width:125px">Log Level</th>
+                        <th style="width:220px">User profile</th>
+                        <th>Requested by</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td style="color:#888">false</td><td>User</td><td>Fabrice Challier</td>
+                        <td>2026-04-29 14:59:55</td><td>2026-04-29 15:19:55</td>
+                        <td><span class="badge-dbg badge-calumet">CALUMETDEBUG</span></td>
+                        <td>System Administrator</td><td>Fabrice Challier</td>
+                      </tr>
+                      <tr>
+                        <td style="color:#888">false</td><td>User</td><td>Bassel Rawda</td>
+                        <td>2026-04-29 11:30:45</td><td>2026-04-29 12:12:50</td>
+                        <td><span class="badge-dbg badge-sfdc">SFDC_DevConsole</span></td>
+                        <td>System Administrator</td><td>Bassel Rawda</td>
+                      </tr>
+                      <tr>
+                        <td style="color:#888">false</td><td>User</td><td>Informations e-Facturation Site Guest User</td>
+                        <td>2026-04-28 16:47:00</td><td>2026-04-28 17:35:04</td>
+                        <td><span class="badge-dbg badge-apex">Apex_Fine</span></td>
+                        <td>Informations e-Facturation Profile</td><td>Régis Pelissier</td>
+                      </tr>
+                      <tr>
+                        <td style="color:#888">false</td><td>User</td><td>mycommunity Site Guest User</td>
+                        <td>2026-04-28 16:41:19</td><td>2026-04-28 17:11:19</td>
+                        <td><span class="badge-dbg badge-calumet">CALUMETDEBUG</span></td>
+                        <td>mycommunity Profile</td><td>Régis Pelissier</td>
+                      </tr>
+                      <tr>
+                        <td style="color:#888">false</td><td>User</td><td>Régis Pelissier</td>
+                        <td>2026-04-24 11:26:56</td><td>2026-04-24 11:31:56</td>
+                        <td><span class="badge-dbg badge-sfdc">SFDC_DevConsole</span></td>
+                        <td>System Administrator</td><td>Régis Pelissier</td>
+                      </tr>
+                      <tr>
+                        <td style="color:#888">false</td><td>User</td><td>Admin Administrateur</td>
+                        <td>2026-04-24 11:25:10</td><td>2026-04-24 11:31:56</td>
+                        <td><span class="badge-dbg badge-sfdc">SFDC_DevConsole</span></td>
+                        <td>System Administrator</td><td>Admin Administrateur</td>
+                      </tr>
+                      <tr>
+                        <td style="color:#888">false</td><td>User</td><td>Bassel Rawda</td>
+                        <td>2026-04-20 11:31:51</td><td>2026-04-20 13:31:51</td>
+                        <td><span class="badge-dbg badge-sfdc">SFDC_DevConsole</span></td>
+                        <td>System Administrator</td><td>Fabrice Challier</td>
+                      </tr>
+                      <tr>
+                        <td style="color:#888">false</td><td>User</td><td>EAI_3</td>
+                        <td>2026-04-17 14:13:51</td><td>2026-04-17 16:13:51</td>
+                        <td><span class="badge-dbg badge-apex">Apex_Fine</span></td>
+                        <td>Lot2 - API</td><td>Régis Pelissier</td>
+                      </tr>
+                      <tr>
+                        <td style="color:#888">false</td><td>User</td><td>Roberto Ramos</td>
+                        <td>2026-04-17 14:00:54</td><td>2026-04-17 14:56:42</td>
+                        <td><span class="badge-dbg badge-sfdc">SFDC_DevConsole</span></td>
+                        <td>System Administrator</td><td>Roberto Ramos</td>
+                      </tr>
+                      <tr>
+                        <td style="color:#888">false</td><td>User</td><td>EAI_5</td>
+                        <td>2026-04-16 21:30:00</td><td>2026-04-16 23:30:00</td>
+                        <td><span class="badge-dbg badge-debug">DEBUG</span></td>
+                        <td>Lot2 - API</td><td>Roberto Ramos</td>
+                      </tr>
+                      <tr>
+                        <td style="color:#888">false</td><td>User</td><td>CAF SED 1</td>
+                        <td>2026-04-07 17:00:05</td><td>2026-04-07 19:00:05</td>
+                        <td><span class="badge-dbg badge-calumet">CALUMETDEBUG</span></td>
+                        <td>P1 - Force de ventes CAF sedentaire - SFA2</td><td>Fabrice Challier</td>
+                      </tr>
+                      <tr>
+                        <td style="color:#888">false</td><td>User</td><td>Sarah Hymbert</td>
+                        <td>2026-04-01 16:08:46</td><td>2026-04-01 17:08:46</td>
+                        <td><span class="badge-dbg badge-calumet">CALUMETDEBUG</span></td>
+                        <td>GRC_Admin</td><td>Fabrice Challier</td>
+                      </tr>
+                      <tr>
+                        <td style="color:#888">false</td><td>User</td><td>Anna DUCASSE</td>
+                        <td>2026-04-01 15:49:35</td><td>2026-04-01 16:49:35</td>
+                        <td><span class="badge-dbg badge-calumet">CALUMETDEBUG</span></td>
+                        <td>GRC_TC Niveau 2</td><td>Fabrice Challier</td>
+                      </tr>
+                      <tr>
+                        <td style="color:#888">false</td><td>User</td><td>Benjamin Denise</td>
+                        <td>2026-04-01 15:47:23</td><td>2026-04-01 16:47:23</td>
+                        <td><span class="badge-dbg badge-calumet">CALUMETDEBUG</span></td>
+                        <td>GRC_TC Niveau 2</td><td>Fabrice Challier</td>
+                      </tr>
+                      <tr>
+                        <td style="color:#888">false</td><td>User</td><td>Natacha Vitre</td>
+                        <td>2026-01-09 16:21:17</td><td>2026-01-09 17:21:17</td>
+                        <td><span class="badge-dbg badge-calumet">CALUMETDEBUG</span></td>
+                        <td>Administrateur des ventes - SFA2</td><td>Fabrice Challier</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+        <!-- ══════════════ TAB 3 — Log Analyser ══════════════ -->
+        <div class="m-panel" id="tp21-2">
+          <div class="info-center">
+            <p>Process the log and shrink it to present an easy-to-read methods file. Generates a hierarchical call tree showing method durations.</p>
+            <button class="cal-btn btn-b" style="min-width:150px" data-tip="Choose a .log file to analyse">Select a log file</button>
+            <div class="info-box">
+              <div class="info-box-title">How it works</div>
+              <div class="info-box-body">
+                1. Select a <code>.log</code> file from your log cache folder.<br>
+                2. Calumet parses the log and builds a hierarchical call tree of all Apex methods.<br>
+                3. The tree popup shows each method with its individual and cumulative duration in ms.<br>
+                4. Double-clicking any row in the Display Logs tab triggers the same analysis automatically.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ══════════════ TAB 4 — Analyse Soql 101 ══════════════ -->
+        <div class="m-panel" id="tp21-3">
+          <div class="info-center">
+            <p>Input a log file with at least: Database (Info), Apex Code (Finest), Apex Profiling (Info), System (Fine). Detects and reports SOQL 101 governor limit violations with full callstack context.</p>
+            <button class="cal-btn btn-b" style="min-width:150px" data-tip="Choose a .log file for SOQL 101 analysis">Choose a file</button>
+            <div class="info-box info-box-warn">
+              <div class="info-box-title">Required log levels for SOQL 101 detection</div>
+              <div class="info-box-body">
+                <strong>Database:</strong> Info &nbsp;|&nbsp;
+                <strong>Apex Code:</strong> Finest &nbsp;|&nbsp;
+                <strong>Apex Profiling:</strong> Info &nbsp;|&nbsp;
+                <strong>System:</strong> Fine<br><br>
+                The analyser identifies every SOQL query executed inside a loop and highlights the callstack
+                that led to each 101 error. Results are shown per trigger / class with the offending query text.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ══════════════ TAB 5 — Filter Log ══════════════ -->
+        <div class="m-panel" id="tp21-4">
+          <div class="info-center">
+            <p>Select a log file to apply a filter and extract only the relevant lines. Useful for focusing on a specific class, USER_DEBUG output, or error category in a large log.</p>
+            <button class="cal-btn btn-b" style="min-width:150px" data-tip="Choose a .log file to filter">Choose a file</button>
+            <div class="info-box">
+              <div class="info-box-title">Filter capabilities</div>
+              <div class="info-box-body">
+                Filter by keyword, log category (USER_DEBUG, EXCEPTION_THROWN, DML_BEGIN, SOQL_EXECUTE_BEGIN…),
+                class name, or log level. The filtered output is written to a new file alongside the original
+                and opened automatically.
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /m-body -->
+    </div><!-- /m-tabpane -->
+
+  </div><!-- /mockup -->
+</div><!-- /mockup-wrap -->
+
+<!-- Key features modal -->
+<div id="modal-kf" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:999;align-items:center;justify-content:center" onclick="if(event.target===this)this.style.display='none'">
+  <div style="background:#fff;border-radius:8px;padding:28px 32px;max-width:540px;width:90%;color:#1a2a35;box-shadow:0 8px 32px rgba(0,0,0,.3)">
+    <h3 style="margin:0 0 14px;color:#2980b9">&#9733; Key features</h3>
+    <ul style="margin:0;padding-left:20px;line-height:1.8;color:#1a2a35">
+      <li>Search org debug logs with filters on user, status, minimum duration and date range</li>
+      <li>Color-coded rows: error / exception logs in red, success logs in white — at a glance triage</li>
+      <li>Right-click context menu: download, filter, analyse methods, detect 101 errors, open in VS Code</li>
+      <li>Double-click any row to instantly open a hierarchical method call tree with per-method timing</li>
+      <li>Recalculate real operation name by parsing log content (handles Batch Apex, QueueableHandler, /aura, etc.)</li>
+      <li>Manage trace flags: create / update / delete per user, Apex class, Apex trigger, or profile</li>
+      <li>Duration shortcuts: one-click 30mn / 1h / 2h / 8h / 24h expiry for trace flags</li>
+      <li>Real-time log tail monitor (Open Monitor) — stream new logs as they arrive in the org</li>
+      <li>Log Analyser: parse a local .log file into a collapsible method call tree</li>
+      <li>SOQL 101 Analyser: detect governor limit violations with full callstack and query text</li>
+      <li>Filter Log: extract specific lines from large log files by keyword or category</li>
+      <li>Local cache management: view size, open folder and clear cached log files</li>
+    </ul>
+    <div style="text-align:right;margin-top:18px">
+      <button class="cal-btn btn-d" onclick="document.getElementById('modal-kf').style.display='none'">Close</button>
+    </div>
+  </div>
 </div>
+
 <script>
 function sw(id,idx){
   var tp=document.getElementById(id);

@@ -5,18 +5,166 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Login As — Calumet</title>
 <link rel="stylesheet" href="../shared.css">
+<style>
+.toolbar-row{
+  display:flex;align-items:center;gap:10px;flex-wrap:wrap;
+  padding:10px 14px 8px;background:#f0f4f7;border-bottom:1px solid #c8d4dc}
+.field-row{
+  display:flex;align-items:center;gap:8px;flex-wrap:wrap;
+  padding:7px 14px;background:#f8f9fa}
+.field-lbl{font-size:12px;color:#1a2a35;min-width:90px;font-weight:500}
+.hint-txt{font-size:11px;color:#607080;font-style:italic}
+.fav-dot{
+  display:inline-block;width:8px;height:8px;border-radius:50%;
+  background:#27ae60;margin-right:5px;vertical-align:middle}
+</style>
 </head>
 <body class="tab-page">
+
+<!-- Summary card -->
 <div class="sum">
   <div class="sum-title">
     <h2>Login As</h2>
     <span class="sum-badge">Tab 17</span>
   </div>
-  <p class="sum-desc">Generate a login URL to impersonate any user in the org (requires the Login As permission).</p>
+  <p class="sum-desc">
+    Generate a Salesforce impersonation URL to log in as any user in the org without knowing their password. Requires the "Login As" permission on the running user's profile.
+    <button class="cal-btn btn-d" style="margin-left:10px" onclick="document.getElementById('modal-kf').style.display='flex'">&#9733; Key features</button>
+  </p>
 </div>
+
+<!-- Mockup -->
 <div class="mockup-wrap">
-  <div class="mockup"><div class="vbox" style="gap:0px"><div class="anchor"><div class="split-pane"><div class="split-panel"><div class="anchor"><span class="cal-lbl">User criteria :</span><button class="cal-btn btn-b">Search</button><span class="cal-lbl">Target id :</span><input class="cal-tf" placeholder="" style="" readonly><span class="cal-lbl">Optional id, use it to directly open salesforce with the specified object id</span><label class="cal-chk"><input type="checkbox" disabled> Mode console</label><label class="cal-chk"><input type="checkbox" disabled> Debug user for</label><input class="cal-tf" placeholder="" style="width:43.0px;" readonly><span class="cal-lbl">minutes</span><select class="cal-cb" style="width:186.0px;"><option class="ph">Select...</option></select><span class="cal-lbl">Chrome Profile</span><label class="cal-chk"><input type="checkbox" disabled> CommunityLogin</label></div><div class="anchor"><div class="m-tabpane" id="tp4"><div class="m-tabbar"><div class="m-tab act" onclick="sw('tp4',0)">Favorites</div><div class="m-tab" onclick="sw('tp4',1)">Search</div></div><div class="m-body"><div class="m-panel act" id="tp4-0"><div class="anchor"><div class="tbl-wrap"><table class="cal-tbl"><thead><tr><th style="width:75.0px">UserName</th><th style="width:75.0px">ChromeProfile</th></tr></thead><tbody><tr><td colspan="20" class="tbl-empty"></td></tr></tbody></table></div></div></div><div class="m-panel" id="tp4-1"><div class="anchor"><div class="tbl-wrap"><table class="cal-tbl"><thead><tr><th>User name</th><th>Profile</th></tr></thead><tbody><tr><td colspan="20" class="tbl-empty"></td></tr></tbody></table></div></div></div></div></div></div></div></div></div></div></div>
-</div>
+  <div class="mockup">
+
+    <!-- ── Row 1: criteria + Search + options ── -->
+    <div class="toolbar-row">
+      <span class="field-lbl" style="min-width:82px">User criteria :</span>
+      <input class="cal-tf" value="Pelissier" style="width:200px" readonly
+             data-tip="Type part of a username, first name or last name — autocomplete suggests matching users">
+      <button class="cal-btn btn-b" data-tip="Search users matching the criteria in the org">Search</button>
+      <div style="width:1px;height:20px;background:#c8d4dc;margin:0 2px"></div>
+      <label class="cal-chk" data-tip="Open the session in Salesforce Lightning App Builder console mode">
+        <input type="checkbox" disabled> Mode console
+      </label>
+      <label class="cal-chk" data-tip="Create a debug trace flag for this user session">
+        <input type="checkbox" checked disabled> Debug user for
+      </label>
+      <input class="cal-tf" value="60" style="width:44px;text-align:center" readonly
+             data-tip="Duration of the debug trace flag in minutes">
+      <span style="font-size:12px;color:#1a2a35">minutes</span>
+    </div>
+
+    <!-- ── Row 2: Target id + Chrome Profile + CommunityLogin ── -->
+    <div class="field-row" style="border-bottom:1px solid #c8d4dc">
+      <span class="field-lbl" style="min-width:82px">Target id :</span>
+      <input class="cal-tf" value="" style="width:200px" readonly
+             data-tip="Optional Salesforce record Id — the login URL will land directly on that record">
+      <span class="hint-txt">Optional id, use it to directly open Salesforce with the specified object id</span>
+    </div>
+    <div class="field-row" style="border-bottom:1px solid #c8d4dc">
+      <span class="field-lbl" style="min-width:82px">Chrome Profile</span>
+      <select class="cal-cb" style="width:190px" disabled
+              data-tip="Select which Chrome profile to use when opening the impersonation URL">
+        <option selected>Private</option>
+        <option>Profile 1 — Fabrice</option>
+        <option>Profile 2 — Admin</option>
+        <option>Profile 3 — Sandbox</option>
+      </select>
+      <label class="cal-chk" data-tip="Use the community (Experience Cloud) login endpoint instead of the standard Salesforce login URL">
+        <input type="checkbox" disabled> CommunityLogin
+      </label>
+    </div>
+
+    <!-- ── TabPane ── -->
+    <div class="m-tabpane" id="tp1">
+      <div class="m-tabbar">
+        <div class="m-tab act" onclick="sw('tp1',0)">Favorites</div>
+        <div class="m-tab" onclick="sw('tp1',1)">Search</div>
+      </div>
+      <div class="m-body">
+
+        <!-- Favorites panel -->
+        <div class="m-panel act" id="tp1-0">
+          <div style="padding:6px 10px 4px;font-size:11px;color:#607080;background:#f0f4f7;border-bottom:1px solid #c8d4dc">
+            <span class="fav-dot"></span>5 saved favorites &mdash; double-click to open &mdash; right-click to remove
+          </div>
+          <div class="tbl-wrap">
+            <table class="cal-tbl">
+              <thead>
+                <tr>
+                  <th style="width:260px">UserName</th>
+                  <th style="width:180px">ChromeProfile</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr style="cursor:pointer" data-tip="Double-click to open as this user">
+                  <td>regis.pelissier@acme.com</td>
+                  <td style="color:#607080">Private</td>
+                </tr>
+                <tr style="cursor:pointer" data-tip="Double-click to open as this user">
+                  <td>claire.martin@acme.com</td>
+                  <td style="color:#607080">Profile 1 — Fabrice</td>
+                </tr>
+                <tr style="cursor:pointer" data-tip="Double-click to open as this user">
+                  <td>thomas.leblanc@acme.com</td>
+                  <td style="color:#607080">Private</td>
+                </tr>
+                <tr style="cursor:pointer" data-tip="Double-click to open as this user">
+                  <td>sophie.dupont@acme.com</td>
+                  <td style="color:#607080">Profile 2 — Admin</td>
+                </tr>
+                <tr style="cursor:pointer" data-tip="Double-click to open as this user">
+                  <td>admin@acme.sandbox</td>
+                  <td style="color:#607080">Profile 3 — Sandbox</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Search results panel -->
+        <div class="m-panel" id="tp1-1">
+          <div style="padding:6px 10px 4px;font-size:11px;color:#607080;background:#f0f4f7;border-bottom:1px solid #c8d4dc">
+            3 user(s) found for &ldquo;Pelissier&rdquo; &mdash; double-click to open &mdash; right-click to add to Favorites
+          </div>
+          <div class="tbl-wrap">
+            <table class="cal-tbl">
+              <thead>
+                <tr>
+                  <th style="width:280px">User name</th>
+                  <th style="width:220px">Profile</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr style="cursor:pointer" data-tip="Double-click to generate login URL and open Chrome">
+                  <td>regis.pelissier@acme.com</td>
+                  <td>System Administrator</td>
+                </tr>
+                <tr style="cursor:pointer" data-tip="Double-click to generate login URL and open Chrome">
+                  <td>regis.pelissier@acme.com.uat</td>
+                  <td>Sales User</td>
+                </tr>
+                <tr style="cursor:pointer" data-tip="Double-click to generate login URL and open Chrome">
+                  <td>r.pelissier.readonly@acme.com</td>
+                  <td>Read Only</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div><!-- /.m-body -->
+    </div><!-- /#tp1 -->
+
+    <!-- Status bar -->
+    <div style="padding:5px 14px;font-size:11px;color:#607080;background:#f0f4f7;border-top:1px solid #c8d4dc">
+      Last login: regis.pelissier@acme.com &mdash; Chrome profile: Private &mdash; Debug trace created (60 min)
+    </div>
+
+  </div><!-- /.mockup -->
+</div><!-- /.mockup-wrap -->
+
 <script>
 function sw(id,idx){
   var tp=document.getElementById(id);
@@ -24,5 +172,27 @@ function sw(id,idx){
   tp.querySelectorAll('.m-panel').forEach(function(p,i){p.classList.toggle('act',i===idx)});
 }
 </script>
+
+<!-- Key features modal -->
+<div id="modal-kf" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:999;align-items:center;justify-content:center" onclick="if(event.target===this)this.style.display='none'">
+  <div style="background:#fff;border-radius:8px;padding:28px 32px;max-width:520px;width:90%;color:#1a2a35;box-shadow:0 8px 32px rgba(0,0,0,.3)">
+    <h3 style="margin:0 0 14px;color:#2980b9">&#9733; Key features</h3>
+    <ul style="margin:0;padding-left:20px;line-height:1.8">
+      <li>Search users by name or username with autocomplete — results automatically switch to the Search sub-tab</li>
+      <li>Double-click any user to generate a Salesforce impersonation URL and open it instantly in Chrome</li>
+      <li>Choose the Chrome profile (Private, or any named profile) for each login session</li>
+      <li>Optional Target Id — navigate directly to a specific record after impersonation</li>
+      <li>Mode console — opens the Lightning App Builder console URL instead of the standard home page</li>
+      <li>CommunityLogin — uses the Experience Cloud (community) login endpoint for external users</li>
+      <li>Automatic debug trace flag creation for the impersonated user (configurable duration in minutes)</li>
+      <li>Favorites system — right-click to bookmark frequent users; favorites persist across sessions per org</li>
+      <li>Per-favorite Chrome profile — assign a different Chrome profile to each favorite user</li>
+    </ul>
+    <div style="text-align:right;margin-top:18px">
+      <button class="cal-btn btn-d" onclick="document.getElementById('modal-kf').style.display='none'">Close</button>
+    </div>
+  </div>
+</div>
+
 </body>
 </html>

@@ -3,20 +3,483 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Custom Labels — Calumet</title>
+<title>Search — Calumet</title>
 <link rel="stylesheet" href="../shared.css">
 </head>
 <body class="tab-page">
+
 <div class="sum">
   <div class="sum-title">
-    <h2>Custom Labels</h2>
+    <h2>Search</h2>
     <span class="sum-badge">Tab 13</span>
   </div>
-  <p class="sum-desc">View, search and edit Salesforce Custom Labels. Export and import label translations.</p>
+  <p class="sum-desc">
+    Search for any text string across multiple Salesforce metadata types simultaneously — Custom Labels, Apex classes, Flows, Validation Rules, LWC, Aura, and more. Also explore metadata dependencies via the Dependency sub-tab.
+    <button class="cal-btn btn-d" style="margin-left:10px" onclick="document.getElementById('modal-kf').style.display='flex'">&#9733; Key features</button>
+  </p>
 </div>
+
 <div class="mockup-wrap">
-  <div class="mockup"><div class="vbox" style="gap:0px"><div class="anchor"><div class="m-tabpane" id="tp3"><div class="m-tabbar"><div class="m-tab act" onclick="sw('tp3',0)">Search</div><div class="m-tab" onclick="sw('tp3',1)">Dependency</div></div><div class="m-body"><div class="m-panel act" id="tp3-0"><div class="anchor"><div class="vbox" style="gap:6.0px"><span class="cal-lbl">Value to find</span><input class="cal-tf" placeholder="search value…" data-tip="Text to search across all selected metadata types" style="" readonly><hr class="hsep"><label class="cal-chk" data-tip="Search in custom labels (Name, MasterLabel, Value)"><input type="checkbox" checked disabled> Custom label</label><label class="cal-chk" data-tip="Search in validation rule error messages"><input type="checkbox" checked disabled> Validation rules</label><label class="cal-chk" data-tip="Deep search in Apex class and trigger bodies"><input type="checkbox" checked disabled> Apex</label><label class="cal-chk" data-tip="Search in VisualForce page markup"><input type="checkbox" disabled> Visual Force</label><label class="cal-chk" data-tip="Search in Aura component source"><input type="checkbox" disabled> Aura</label><label class="cal-chk" data-tip="Search in Lightning Web Component source"><input type="checkbox" disabled> LWC</label><label class="cal-chk" data-tip="Search in custom metadata records"><input type="checkbox" disabled> Custom metadata</label><label class="cal-chk" data-tip="Search in workflow rule names"><input type="checkbox" disabled> Workflow rule</label><label class="cal-chk" data-tip="Search in workflow field update names"><input type="checkbox" disabled> Workflow field update</label><label class="cal-chk" data-tip="Search in flow names and labels"><input type="checkbox" disabled> Flow</label><label class="cal-chk" data-tip="Search in email template names"><input type="checkbox" disabled> Mail template</label><label class="cal-chk" data-tip="Search in Lightning page names and labels"><input type="checkbox" disabled> FlexiPage</label><label class="cal-chk" data-tip="Search in lookup filter definitions"><input type="checkbox" disabled> LookupFilter</label><hr class="hsep"><div class="hbox" style="gap:8.0px;align-items:center"><button class="cal-btn btn-b" data-tip="Run the search across all selected metadata types">Search</button><label class="cal-chk" data-tip="Bypass the local cache and force a fresh extraction"><input type="checkbox" disabled> Clear cache</label></div></div><div class="m-tabpane" id="tp2"><div class="m-tabbar"><div class="m-tab act" onclick="sw('tp2',0)">Custom label</div><div class="m-tab" onclick="sw('tp2',1)">Validation rules</div><div class="m-tab" onclick="sw('tp2',2)">Classes</div><div class="m-tab" onclick="sw('tp2',3)">Test classes</div><div class="m-tab" onclick="sw('tp2',4)">Pages</div><div class="m-tab" onclick="sw('tp2',5)">Workflow rules</div><div class="m-tab" onclick="sw('tp2',6)">Workflow field updates</div><div class="m-tab" onclick="sw('tp2',7)">FlexiPage</div><div class="m-tab" onclick="sw('tp2',8)">Flows</div><div class="m-tab" onclick="sw('tp2',9)">Aura Component</div><div class="m-tab" onclick="sw('tp2',10)">Custom metadata</div><div class="m-tab" onclick="sw('tp2',11)">LWC Component</div><div class="m-tab" onclick="sw('tp2',12)">Email template</div><div class="m-tab" onclick="sw('tp2',13)">LookupFilter</div><div class="m-tab" onclick="sw('tp2',14)">No Results</div></div><div class="m-body"><div class="m-panel act" id="tp2-0"><div class="anchor"><div class="tbl-wrap"><table class="cal-tbl"><thead><tr><th>Name</th><th>Master Label</th><th>Value</th><th>Modified</th><th>Modified By</th></tr></thead><tbody><tr><td colspan="20" class="tbl-empty"></td></tr></tbody></table></div></div></div><div class="m-panel" id="tp2-1"><div class="anchor"><div class="tbl-wrap"><table class="cal-tbl"><thead><tr><th>Id</th><th>Object</th><th>Name</th><th>Field</th><th>Message</th><th>Modified</th><th>Modified By</th></tr></thead><tbody><tr><td colspan="20" class="tbl-empty"></td></tr></tbody></table></div></div></div><div class="m-panel" id="tp2-2"><div class="anchor"><div class="tbl-wrap"><table class="cal-tbl"><thead><tr><th style="width:110.0px">Type</th><th>Id</th><th>Name</th><th>Modified</th><th>Modified By</th></tr></thead><tbody><tr><td colspan="20" class="tbl-empty"></td></tr></tbody></table></div></div></div><div class="m-panel" id="tp2-3"><div class="anchor"><div class="tbl-wrap"><table class="cal-tbl"><thead><tr><th>Type</th><th>Id</th><th>Name</th><th>Modified</th><th>Modified By</th></tr></thead><tbody><tr><td colspan="20" class="tbl-empty"></td></tr></tbody></table></div></div></div><div class="m-panel" id="tp2-4"><div class="anchor"><div class="tbl-wrap"><table class="cal-tbl"><thead><tr><th>Id</th><th>Name</th><th>Type</th><th>Modified</th><th>Modified By</th></tr></thead><tbody><tr><td colspan="20" class="tbl-empty"></td></tr></tbody></table></div></div></div><div class="m-panel" id="tp2-5"><div class="anchor"><div class="tbl-wrap"><table class="cal-tbl"><thead><tr><th>Name</th><th>Parent</th><th>Modified</th><th>Modified By</th></tr></thead><tbody><tr><td colspan="20" class="tbl-empty"></td></tr></tbody></table></div></div></div><div class="m-panel" id="tp2-6"><div class="anchor"><div class="tbl-wrap"><table class="cal-tbl"><thead><tr><th>Name</th><th>Field Name</th><th>Parent</th><th>Workflow Rule</th><th>Modified</th><th>Modified By</th></tr></thead><tbody><tr><td colspan="20" class="tbl-empty"></td></tr></tbody></table></div></div></div><div class="m-panel" id="tp2-7"><div class="anchor"><div class="tbl-wrap"><table class="cal-tbl"><thead><tr><th>Name</th><th>Label</th><th>Modified</th><th>Type</th><th>Parent Object</th></tr></thead><tbody><tr><td colspan="20" class="tbl-empty"></td></tr></tbody></table></div></div></div><div class="m-panel" id="tp2-8"><div class="anchor"><input class="cal-tf" placeholder="filter flows…" data-tip="Filter flows by name, type or status (separate multiple terms with ;)" style="width:250.0px;" readonly><div class="tbl-wrap"><table class="cal-tbl"><thead><tr><th>Label</th><th>API Name</th><th>Type</th><th>SF Type</th><th>Modified</th><th>Modified By</th><th>Status</th><th>Version</th></tr></thead><tbody><tr><td colspan="20" class="tbl-empty"></td></tr></tbody></table></div></div></div><div class="m-panel" id="tp2-9"><div class="anchor"><div class="tbl-wrap"><table class="cal-tbl"><thead><tr><th>Id</th><th>Name</th><th>Type</th><th>Modified</th><th>Modified By</th></tr></thead><tbody><tr><td colspan="20" class="tbl-empty"></td></tr></tbody></table></div></div></div><div class="m-panel" id="tp2-10"><div class="anchor"><div class="tbl-wrap"><table class="cal-tbl"><thead><tr><th>Type</th><th>Name</th><th>Label</th></tr></thead><tbody><tr><td colspan="20" class="tbl-empty"></td></tr></tbody></table></div></div></div><div class="m-panel" id="tp2-11"><div class="anchor"><div class="tbl-wrap"><table class="cal-tbl"><thead><tr><th>Type</th><th>Id</th><th>Name</th><th>Modified</th><th>Modified By</th></tr></thead><tbody><tr><td colspan="20" class="tbl-empty"></td></tr></tbody></table></div></div></div><div class="m-panel" id="tp2-12"><div class="anchor"><div class="tbl-wrap"><table class="cal-tbl"><thead><tr><th>Name</th><th>Parent</th><th>Modified</th><th>Modified By</th></tr></thead><tbody><tr><td colspan="20" class="tbl-empty"></td></tr></tbody></table></div></div></div><div class="m-panel" id="tp2-13"><div class="anchor"><div class="tbl-wrap"><table class="cal-tbl"><thead><tr><th>Object</th><th>Field</th><th>Modified</th><th>Modified By</th></tr></thead><tbody><tr><td colspan="20" class="tbl-empty"></td></tr></tbody></table></div></div></div><div class="m-panel" id="tp2-14"><div class="anchor"><span class="cal-lbl" style="font-weight:bold">No metadata found for the given search criteria.</span></div></div></div></div></div></div><div class="m-panel" id="tp3-1"><div class="anchor"><div class="hbox" style="gap:8.0px;align-items:center"><span class="cal-lbl">Type</span><select class="cal-cb" data-tip="Salesforce metadata type to search dependencies for" style="width:226.0px;"><option class="ph">Select...</option></select><span class="cal-lbl">Name</span><label class="cal-chk" data-tip="Also analyse custom fields of the selected object (CustomObject only)"><input type="checkbox" disabled> Include Object Custom Fields</label></div><div class="hbox" style="gap:8.0px;align-items:center"><button class="cal-btn btn-b" data-tip="Find all metadata that use or are used by the selected element">Search</button><label class="cal-chk" data-tip="Filter out flows with a non-Active status from results"><input type="checkbox" disabled> Hide inactive flows</label></div><div class="tbl-wrap"><table class="cal-tbl"><thead><tr><th>Metadata Id</th><th>Type</th><th>Name</th><th>Usage</th></tr></thead><tbody><tr><td colspan="20" class="tbl-empty"></td></tr></tbody></table></div></div></div></div></div></div></div></div>
-</div>
+  <div class="mockup">
+
+    <!-- Outer TabPane: Search / Dependency -->
+    <div class="m-tabpane" id="tp0">
+      <div class="m-tabbar">
+        <div class="m-tab act" onclick="sw('tp0',0)">Search</div>
+        <div class="m-tab" onclick="sw('tp0',1)">Dependency</div>
+      </div>
+      <div class="m-body">
+
+        <!-- ═══ SEARCH PANEL ═══ -->
+        <div class="m-panel act" id="tp0-0" style="padding:0">
+          <div class="split-pane" style="gap:0;height:480px">
+
+            <!-- Left: filter panel -->
+            <div class="split-panel" style="max-width:240px;min-width:220px;border-right:1px solid #9AABBF;padding:8px 10px;display:flex;flex-direction:column;gap:6px;background:#F0F6FA">
+              <span class="cal-lbl" style="font-weight:700">Value to find</span>
+              <input class="cal-tf" value="LiveChatTranscript" readonly
+                data-tip="Text to search across all selected metadata types" style="width:100%">
+              <hr class="hsep">
+              <label class="cal-chk" data-tip="Search in custom labels (Name, MasterLabel, Value)">
+                <input type="checkbox" checked disabled> Custom label
+              </label>
+              <label class="cal-chk" data-tip="Search in validation rule error messages">
+                <input type="checkbox" checked disabled> Validation rules
+              </label>
+              <label class="cal-chk" data-tip="Deep search in Apex class and trigger bodies">
+                <input type="checkbox" checked disabled> Apex
+              </label>
+              <label class="cal-chk" data-tip="Search in VisualForce page markup">
+                <input type="checkbox" disabled> Visual Force
+              </label>
+              <label class="cal-chk" data-tip="Search in Aura component source">
+                <input type="checkbox" disabled> Aura
+              </label>
+              <label class="cal-chk" data-tip="Search in Lightning Web Component source">
+                <input type="checkbox" checked disabled> LWC
+              </label>
+              <label class="cal-chk" data-tip="Search in custom metadata records">
+                <input type="checkbox" checked disabled> Custom metadata
+              </label>
+              <label class="cal-chk" data-tip="Search in workflow rule names">
+                <input type="checkbox" disabled> Workflow rule
+              </label>
+              <label class="cal-chk" data-tip="Search in workflow field update names">
+                <input type="checkbox" disabled> Workflow field update
+              </label>
+              <label class="cal-chk" data-tip="Search in flow names and labels">
+                <input type="checkbox" checked disabled> Flow
+              </label>
+              <label class="cal-chk" data-tip="Search in email template names">
+                <input type="checkbox" disabled> Mail template
+              </label>
+              <label class="cal-chk" data-tip="Search in Lightning page names and labels">
+                <input type="checkbox" disabled> FlexiPage
+              </label>
+              <label class="cal-chk" data-tip="Search in lookup filter definitions">
+                <input type="checkbox" disabled> LookupFilter
+              </label>
+              <hr class="hsep">
+              <div class="hbox" style="gap:8px;align-items:center">
+                <button class="cal-btn btn-b" data-tip="Run the search across all selected metadata types">Search</button>
+                <label class="cal-chk" data-tip="Bypass the local cache and force a fresh extraction">
+                  <input type="checkbox" disabled> Clear cache
+                </label>
+              </div>
+            </div>
+
+            <!-- Right: results inner TabPane -->
+            <div class="split-panel" style="display:flex;flex-direction:column;overflow:hidden">
+              <div class="m-tabpane" id="tp1" style="flex:1;display:flex;flex-direction:column">
+                <div class="m-tabbar" style="flex-wrap:wrap">
+                  <div class="m-tab act" onclick="sw('tp1',0)">Classes(7)</div>
+                  <div class="m-tab" onclick="sw('tp1',1)">Test Classes(1)</div>
+                  <div class="m-tab" onclick="sw('tp1',2)">CustomMetadatas(1)</div>
+                  <div class="m-tab" onclick="sw('tp1',3)">Flows(3)</div>
+                  <div class="m-tab" onclick="sw('tp1',4)">Custom label(2)</div>
+                  <div class="m-tab" onclick="sw('tp1',5)">Validation rules(1)</div>
+                  <div class="m-tab" onclick="sw('tp1',6)">Lwc(2)</div>
+                </div>
+                <div class="m-body" style="flex:1;overflow:auto">
+
+                  <!-- Classes -->
+                  <div class="m-panel act" id="tp1-0" style="padding:6px">
+                    <div class="tbl-wrap">
+                      <table class="cal-tbl">
+                        <thead>
+                          <tr>
+                            <th style="width:110px">Type</th>
+                            <th style="width:160px">Id</th>
+                            <th style="width:220px">Name</th>
+                            <th style="width:145px">Modified</th>
+                            <th>Modified By</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr>
+                            <td><span style="background:#2980b9;color:#fff;border-radius:3px;padding:1px 6px;font-size:10px;font-weight:700">ApexClass</span></td>
+                            <td style="color:#888;font-size:10px">01p57000000WtXGAA0</td>
+                            <td>AP367InteractionClientHelper</td>
+                            <td>2026-03-30 14:26:10</td>
+                            <td>Fabrice Challier</td>
+                          </tr>
+                          <tr>
+                            <td><span style="background:#2980b9;color:#fff;border-radius:3px;padding:1px 6px;font-size:10px;font-weight:700">ApexClass</span></td>
+                            <td style="color:#888;font-size:10px">01p2o000003PyDIAAK</td>
+                            <td>LWC383InfosSurLT</td>
+                            <td>2025-10-07 15:15:52</td>
+                            <td>Fabrice Challier</td>
+                          </tr>
+                          <tr>
+                            <td><span style="background:#2980b9;color:#fff;border-radius:3px;padding:1px 6px;font-size:10px;font-weight:700">ApexClass</span></td>
+                            <td style="color:#888;font-size:10px">01p2o000003QeIWAA0</td>
+                            <td>DissocierLt</td>
+                            <td>2023-04-03 15:19:27</td>
+                            <td>Mohammed Jouad</td>
+                          </tr>
+                          <tr>
+                            <td><span style="background:#2980b9;color:#fff;border-radius:3px;padding:1px 6px;font-size:10px;font-weight:700">ApexClass</span></td>
+                            <td style="color:#888;font-size:10px">01p2o000003QOw9AAG</td>
+                            <td>CaseLinks</td>
+                            <td>2021-11-25 10:27:47</td>
+                            <td>Fabrice Challier</td>
+                          </tr>
+                          <tr>
+                            <td><span style="background:#2980b9;color:#fff;border-radius:3px;padding:1px 6px;font-size:10px;font-weight:700">ApexClass</span></td>
+                            <td style="color:#888;font-size:10px">01p2o000003QQhdAAG</td>
+                            <td>LiveChatTranscriptTrigger_Handler</td>
+                            <td>2023-07-03 20:15:38</td>
+                            <td>Mohammed Jouad</td>
+                          </tr>
+                          <tr>
+                            <td><span style="background:#2980b9;color:#fff;border-radius:3px;padding:1px 6px;font-size:10px;font-weight:700">ApexClass</span></td>
+                            <td style="color:#888;font-size:10px">01p2o000003Q0yIAAC</td>
+                            <td>LWC383Interactions</td>
+                            <td>2026-03-09 16:50:08</td>
+                            <td>Fabrice Challier</td>
+                          </tr>
+                          <tr>
+                            <td><span style="background:#e67e22;color:#fff;border-radius:3px;padding:1px 6px;font-size:10px;font-weight:700">ApexTrigger</span></td>
+                            <td style="color:#888;font-size:10px">01q2o0000002iwKAAQ</td>
+                            <td>LiveChatTranscriptTrigger</td>
+                            <td>2023-05-09 18:59:07</td>
+                            <td>Regis Pelissier</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+
+                  <!-- Test Classes -->
+                  <div class="m-panel" id="tp1-1" style="padding:6px">
+                    <div class="tbl-wrap">
+                      <table class="cal-tbl">
+                        <thead>
+                          <tr>
+                            <th style="width:110px">Type</th>
+                            <th style="width:160px">Id</th>
+                            <th style="width:260px">Name</th>
+                            <th style="width:145px">Modified</th>
+                            <th>Modified By</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr>
+                            <td>ApexClass</td>
+                            <td style="color:#888;font-size:10px">01p2o000003QQheAAG</td>
+                            <td>LiveChatTranscriptTrigger_Handler_TEST</td>
+                            <td>2023-07-03 20:15:38</td>
+                            <td>Mohammed Jouad</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+
+                  <!-- Custom Metadatas -->
+                  <div class="m-panel" id="tp1-2" style="padding:6px">
+                    <div class="tbl-wrap">
+                      <table class="cal-tbl">
+                        <thead>
+                          <tr>
+                            <th style="width:220px">Type</th>
+                            <th style="width:220px">Name</th>
+                            <th>Label</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr>
+                            <td>BatchPurgeConfiguration__mdt</td>
+                            <td>BatchPurgeTranscriptEvent</td>
+                            <td>BatchPurgeTranscriptEvent</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+
+                  <!-- Flows -->
+                  <div class="m-panel" id="tp1-3" style="padding:6px">
+                    <div class="hbox" style="gap:8px;align-items:center;margin-bottom:6px">
+                      <input class="cal-tf" placeholder="filter flows…" readonly style="width:240px"
+                        data-tip="Filter flows by name, type or status (separate multiple terms with ;)">
+                    </div>
+                    <div class="tbl-wrap">
+                      <table class="cal-tbl">
+                        <thead>
+                          <tr>
+                            <th style="width:170px">Label</th>
+                            <th style="width:185px">API Name</th>
+                            <th style="width:100px">Type</th>
+                            <th style="width:70px">SF Type</th>
+                            <th style="width:140px">Modified</th>
+                            <th style="width:120px">Modified By</th>
+                            <th style="width:90px">Status</th>
+                            <th style="width:55px">Version</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr>
+                            <td>IA Get Contact Full Name</td>
+                            <td>IA_Get_Contact_Full_Name</td>
+                            <td>PromptFlow</td>
+                            <td></td>
+                            <td>2025-06-16 15:36:55</td>
+                            <td>Regis Pelissier</td>
+                            <td style="color:#e67e22">InvalidDraft</td>
+                            <td style="color:#888">2</td>
+                          </tr>
+                          <tr>
+                            <td>IA Get Contact Full Name</td>
+                            <td>IA_Get_Contact_Full_Name</td>
+                            <td>PromptFlow</td>
+                            <td></td>
+                            <td>2025-06-16 15:45:09</td>
+                            <td>Regis Pelissier</td>
+                            <td style="color:#27ae60">Active</td>
+                            <td style="color:#888">3</td>
+                          </tr>
+                          <tr>
+                            <td>IA Get Contact Full Name</td>
+                            <td>IA_Get_Contact_Full_Name</td>
+                            <td>PromptFlow</td>
+                            <td></td>
+                            <td>2025-05-26 15:33:56</td>
+                            <td>Regis Pelissier</td>
+                            <td style="color:#888">Obsolete</td>
+                            <td style="color:#888">1</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+
+                  <!-- Custom Labels -->
+                  <div class="m-panel" id="tp1-4" style="padding:6px">
+                    <div class="tbl-wrap">
+                      <table class="cal-tbl">
+                        <thead>
+                          <tr>
+                            <th style="width:180px">Name</th>
+                            <th style="width:200px">Master Label</th>
+                            <th style="width:290px">Value</th>
+                            <th style="width:140px">Modified</th>
+                            <th>Modified By</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr>
+                            <td>LiveChat_WelcomeMsg</td>
+                            <td>LiveChat Welcome Message</td>
+                            <td>Welcome to LiveChatTranscript support. How can we help you?</td>
+                            <td>2024-02-12 09:30:00</td>
+                            <td>Fabrice Challier</td>
+                          </tr>
+                          <tr>
+                            <td>LiveChat_ClosedMsg</td>
+                            <td>LiveChat Session Closed</td>
+                            <td>Your LiveChatTranscript session has been closed. Thank you.</td>
+                            <td>2023-11-05 14:22:45</td>
+                            <td>Mohammed Jouad</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+
+                  <!-- Validation Rules -->
+                  <div class="m-panel" id="tp1-5" style="padding:6px">
+                    <div class="tbl-wrap">
+                      <table class="cal-tbl">
+                        <thead>
+                          <tr>
+                            <th style="width:130px">Id</th>
+                            <th style="width:140px">Object</th>
+                            <th style="width:180px">Name</th>
+                            <th style="width:100px">Field</th>
+                            <th style="width:240px">Message</th>
+                            <th style="width:140px">Modified</th>
+                            <th>Modified By</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr>
+                            <td style="color:#888;font-size:10px">03d2o000000AbCDAAX</td>
+                            <td>LiveChatTranscript</td>
+                            <td>RequireOwnerOnClose</td>
+                            <td>OwnerId</td>
+                            <td>A transcript must have an owner before closing.</td>
+                            <td>2024-06-18 11:05:33</td>
+                            <td>Fabrice Challier</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+
+                  <!-- LWC -->
+                  <div class="m-panel" id="tp1-6" style="padding:6px">
+                    <div class="tbl-wrap">
+                      <table class="cal-tbl">
+                        <thead>
+                          <tr>
+                            <th style="width:70px">Type</th>
+                            <th style="width:160px">Id</th>
+                            <th style="width:300px">Name</th>
+                            <th style="width:140px">Modified</th>
+                            <th>Modified By</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr>
+                            <td>JS</td>
+                            <td style="color:#888;font-size:10px">0Rb2o000000AbCDEAZ</td>
+                            <td>lwc/liveChatTranscriptViewer/liveChatTranscriptViewer.js</td>
+                            <td>2025-09-14 10:22:00</td>
+                            <td>Regis Pelissier</td>
+                          </tr>
+                          <tr>
+                            <td>HTML</td>
+                            <td style="color:#888;font-size:10px">0Rb2o000000AbCDFAZ</td>
+                            <td>lwc/liveChatTranscriptViewer/liveChatTranscriptViewer.html</td>
+                            <td>2025-09-14 10:22:00</td>
+                            <td>Regis Pelissier</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+
+                </div><!-- m-body inner -->
+              </div><!-- inner tp1 -->
+            </div><!-- right split-panel -->
+
+          </div><!-- split-pane -->
+        </div><!-- Search panel -->
+
+        <!-- ═══ DEPENDENCY PANEL ═══ -->
+        <div class="m-panel" id="tp0-1" style="padding:8px">
+          <!-- Row 1: type + name -->
+          <div class="hbox" style="gap:8px;align-items:center;margin-bottom:8px">
+            <span class="cal-lbl">Type</span>
+            <select class="cal-cb" style="width:200px" data-tip="Salesforce metadata type to search dependencies for">
+              <option>ApexClass</option>
+              <option>CustomObject</option>
+              <option>Flow</option>
+              <option>CustomField</option>
+            </select>
+            <span class="cal-lbl">Id :</span>
+            <input class="cal-tf" value="LiveChatTranscriptTrigger_Handler" readonly
+              data-tip="Name or Id of the metadata element" style="width:340px">
+            <label class="cal-chk" data-tip="Also analyse custom fields of the selected object (CustomObject only)">
+              <input type="checkbox" disabled> Include Object Custom Fields
+            </label>
+          </div>
+          <!-- Row 2: search + result count -->
+          <div class="hbox" style="gap:8px;align-items:center;margin-bottom:8px">
+            <button class="cal-btn btn-b" data-tip="Find all metadata that use or are used by the selected element">Search</button>
+            <span class="cal-lbl" style="color:#27ae60;font-weight:700">result : 9</span>
+            <label class="cal-chk" data-tip="Filter out flows with a non-Active status from results">
+              <input type="checkbox" disabled> Hide inactive flows
+            </label>
+          </div>
+          <!-- Results table -->
+          <div class="tbl-wrap">
+            <table class="cal-tbl">
+              <thead>
+                <tr>
+                  <th style="width:160px">Metadata Id</th>
+                  <th style="width:180px">Type</th>
+                  <th style="width:290px">Name</th>
+                  <th style="width:100px">Usage</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="color:#888;font-size:10px">01p2o000003QQhdAAG</td>
+                  <td>ApexClass</td>
+                  <td>LiveChatTranscriptTrigger_Handler</td>
+                  <td style="color:#27ae60">is used by</td>
+                </tr>
+                <tr>
+                  <td style="color:#888;font-size:10px">01q2o0000002iwKAAQ</td>
+                  <td>ApexTrigger</td>
+                  <td>LiveChatTranscriptTrigger</td>
+                  <td style="color:#2980b9">uses</td>
+                </tr>
+                <tr>
+                  <td style="color:#888;font-size:10px">01p2o000003PyDIAAK</td>
+                  <td>ApexClass</td>
+                  <td>LWC383InfosSurLT</td>
+                  <td style="color:#2980b9">uses</td>
+                </tr>
+                <tr>
+                  <td style="color:#888;font-size:10px">0Rb2o000000AbCDEAZ</td>
+                  <td>LightningComponentBundle</td>
+                  <td>liveChatTranscriptViewer</td>
+                  <td style="color:#2980b9">uses</td>
+                </tr>
+                <tr>
+                  <td style="color:#888;font-size:10px">3012o000000AbCDAA3</td>
+                  <td>Flow</td>
+                  <td>IA_Get_Contact_Full_Name-3</td>
+                  <td style="color:#2980b9">uses</td>
+                </tr>
+                <tr>
+                  <td style="color:#888;font-size:10px">01p2o000003Q0yIAAC</td>
+                  <td>ApexClass</td>
+                  <td>LWC383Interactions</td>
+                  <td style="color:#2980b9">uses</td>
+                </tr>
+                <tr>
+                  <td style="color:#888;font-size:10px">01p2o000003QeIWAA0</td>
+                  <td>ApexClass</td>
+                  <td>DissocierLt</td>
+                  <td style="color:#2980b9">uses</td>
+                </tr>
+                <tr>
+                  <td style="color:#888;font-size:10px">01p57000000WtXGAA0</td>
+                  <td>ApexClass</td>
+                  <td>AP367InteractionClientHelper</td>
+                  <td style="color:#2980b9">uses</td>
+                </tr>
+                <tr>
+                  <td style="color:#888;font-size:10px">01p2o000003QQheAAG</td>
+                  <td>ApexClass</td>
+                  <td>LiveChatTranscriptTrigger_Handler_TEST</td>
+                  <td style="color:#2980b9">uses</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div><!-- Dependency panel -->
+
+      </div><!-- outer m-body -->
+    </div><!-- outer tp0 -->
+
+  </div><!-- mockup -->
+</div><!-- mockup-wrap -->
+
 <script>
 function sw(id,idx){
   var tp=document.getElementById(id);
@@ -24,5 +487,27 @@ function sw(id,idx){
   tp.querySelectorAll('.m-panel').forEach(function(p,i){p.classList.toggle('act',i===idx)});
 }
 </script>
+
+<!-- Key features modal -->
+<div id="modal-kf" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:999;align-items:center;justify-content:center" onclick="if(event.target===this)this.style.display='none'">
+  <div style="background:#fff;border-radius:8px;padding:28px 32px;max-width:560px;width:90%;color:#1a2a35;box-shadow:0 8px 32px rgba(0,0,0,.3)">
+    <h3 style="margin:0 0 14px;color:#2980b9">&#9733; Key features</h3>
+    <ul style="margin:0;padding-left:20px;line-height:1.9;font-size:13px">
+      <li><strong>Multi-type search</strong> — a single search term is matched against all selected metadata categories simultaneously.</li>
+      <li><strong>14 supported metadata types</strong> — Custom Labels, Apex Classes &amp; Triggers, VisualForce Pages, Aura Components, LWC, Custom Metadata, Validation Rules, Workflow Rules, Workflow Field Updates, Flows, Email Templates, FlexiPages, Lookup Filters.</li>
+      <li><strong>Deep Apex search</strong> — when "Apex" is checked, the full class/trigger body is searched (not just the name), so you find every reference in the source code.</li>
+      <li><strong>Result tabs appear only when matches exist</strong> — each result category shows its count in the tab header (e.g. Classes(7)). Empty categories are hidden automatically.</li>
+      <li><strong>Flow filter bar</strong> — the Flows result tab includes a live filter input to narrow results by label, API name, type or status (semicolon-separated terms).</li>
+      <li><strong>Double-click to open</strong> — double-clicking an Apex row opens the source in your local editor; clicking a Salesforce record row navigates to it in the browser.</li>
+      <li><strong>Dependency analysis</strong> — the Dependency sub-tab uses the MetadataComponentDependency Tooling API to show all metadata items that use or are used by a selected element, with direct navigation on double-click.</li>
+      <li><strong>Package XML integration</strong> — right-click any row to add the selected metadata to a deployment package.</li>
+      <li><strong>Cache support</strong> — results are cached per org; tick "Clear cache" to force a fresh API extraction.</li>
+    </ul>
+    <div style="text-align:right;margin-top:18px">
+      <button class="cal-btn btn-d" onclick="document.getElementById('modal-kf').style.display='none'">Close</button>
+    </div>
+  </div>
+</div>
+
 </body>
 </html>

@@ -3,20 +3,136 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Profile List — Calumet</title>
+<title>Unused Profile — Calumet</title>
 <link rel="stylesheet" href="../shared.css">
 </head>
 <body class="tab-page">
+
 <div class="sum">
   <div class="sum-title">
-    <h2>Profile List</h2>
+    <h2>Unused Profile</h2>
     <span class="sum-badge">Tab 67</span>
   </div>
-  <p class="sum-desc">List all profiles and permission sets with creation date, license type, and custom flag.</p>
+  <p class="sum-desc">
+    List all profiles and permission sets with creation date, license type, and custom flag. Filter by custom-only or no active users, then safely delete obsolete profiles by reassigning their users to a replacement profile.
+    <button class="cal-btn btn-d" style="margin-left:10px" onclick="document.getElementById('modal-kf').style.display='flex'">&#9733; Key features</button>
+  </p>
 </div>
+
 <div class="mockup-wrap">
-  <div class="mockup"><div class="vbox" style="gap:0px"><div class="anchor"><button class="cal-btn btn-b">Extract</button><div class="tbl-wrap"><table class="cal-tbl"><thead><tr><th>Name</th><th>Created</th><th>CreatedBy</th><th>License</th><th>Custom</th><th>Active</th><th>Inactive</th></tr></thead><tbody><tr><td colspan="20" class="tbl-empty"></td></tr></tbody></table></div><label class="cal-chk"><input type="checkbox" checked disabled> Custom Only</label><label class="cal-chk"><input type="checkbox" checked disabled> No active users</label><span class="cal-lbl">default profile</span><button class="cal-btn btn-r" disabled>delete selected profiles</button></div></div></div>
+  <div class="mockup">
+    <div class="vbox" style="gap:0">
+
+      <!-- Toolbar -->
+      <div class="hbox" style="gap:8px;align-items:center;padding:10px 10px 8px;border-bottom:1px solid #c8d8e4;background:#f0f4f7">
+        <button class="cal-btn btn-b" data-tip="Query all profiles and permission sets from the org">Extract</button>
+        <label class="cal-chk"><input type="checkbox" checked disabled> Custom Only</label>
+        <label class="cal-chk"><input type="checkbox" checked disabled> No active users</label>
+        <div class="vsep"></div>
+        <span class="cal-lbl" style="white-space:nowrap">default profile</span>
+        <input class="cal-tf" style="width:210px;border-color:#9AABBF" placeholder="replacing profile name" readonly
+               data-tip="Profile to reassign users to before deletion. Required when selected profiles have active or inactive users.">
+        <button class="cal-btn btn-r" style="opacity:.55;width:170px" disabled
+                data-tip="Delete all selected profiles and reassign their users to the default profile above">delete selected profiles</button>
+      </div>
+
+      <!-- Table -->
+      <div style="padding:8px 10px">
+        <div class="tbl-wrap">
+          <table class="cal-tbl">
+            <thead>
+              <tr>
+                <th style="width:220px">Name</th>
+                <th style="width:190px">Created</th>
+                <th style="width:140px">CreatedBy</th>
+                <th style="width:150px">License</th>
+                <th style="width:55px;text-align:center">Active</th>
+                <th style="width:65px;text-align:center">Inactive</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>enquete Profile</td>
+                <td style="color:#555">2014-06-06T20:52:46.000Z</td>
+                <td>Ga&#235;l Marchand</td>
+                <td>Guest User License</td>
+                <td style="text-align:center;color:#27ae60">0</td>
+                <td style="text-align:center;color:#888">0</td>
+              </tr>
+              <tr style="background:#f5f5f5">
+                <td>Partenaire</td>
+                <td style="color:#555">2011-05-24T08:52:55.000Z</td>
+                <td>- Administrateur</td>
+                <td>Gold Partner</td>
+                <td style="text-align:center;color:#27ae60">0</td>
+                <td style="text-align:center;color:#e67e22">78</td>
+              </tr>
+              <tr>
+                <td>GRC TC Sante</td>
+                <td style="color:#555">2026-02-16T09:44:54.000Z</td>
+                <td>Fabrice Challier</td>
+                <td>Salesforce</td>
+                <td style="text-align:center;color:#27ae60">0</td>
+                <td style="text-align:center;color:#888">0</td>
+              </tr>
+              <tr style="background:#f5f5f5">
+                <td>Survey Profile</td>
+                <td style="color:#555">2015-07-22T12:10:07.000Z</td>
+                <td>Ga&#235;l Marchand</td>
+                <td>Guest User License</td>
+                <td style="text-align:center;color:#27ae60">0</td>
+                <td style="text-align:center;color:#888">0</td>
+              </tr>
+              <tr style="background:#cce5f8">
+                <td><strong>GRC_TC Chronopostfood Niveau 2</strong></td>
+                <td style="color:#555">2015-04-29T13:57:54.000Z</td>
+                <td>Ga&#235;l Marchand</td>
+                <td>Salesforce</td>
+                <td style="text-align:center;color:#27ae60">0</td>
+                <td style="text-align:center;color:#e67e22">181</td>
+              </tr>
+              <tr style="background:#ddeef8">
+                <td><strong>GRC_TC Chronopostfood REQ</strong></td>
+                <td style="color:#555">2015-04-29T13:58:30.000Z</td>
+                <td>Ga&#235;l Marchand</td>
+                <td>Salesforce</td>
+                <td style="text-align:center;color:#27ae60">0</td>
+                <td style="text-align:center;color:#e67e22">18</td>
+              </tr>
+              <tr style="background:#f5f5f5">
+                <td>GRC_TC Niveau 1</td>
+                <td style="color:#555">2011-04-22T10:01:11.000Z</td>
+                <td>- Administrateur</td>
+                <td>Salesforce</td>
+                <td style="text-align:center;color:#27ae60">0</td>
+                <td style="text-align:center;color:#E74C3C"><strong>2286</strong></td>
+              </tr>
+              <tr>
+                <td>Community Login Profile</td>
+                <td style="color:#555">2018-11-03T14:22:09.000Z</td>
+                <td>Fabrice Challier</td>
+                <td>Customer Community Login</td>
+                <td style="text-align:center;color:#27ae60">0</td>
+                <td style="text-align:center;color:#888">0</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <!-- Row count -->
+        <div style="margin-top:5px;font-size:11px;color:#555">
+          8 profiles listed &mdash; filters: <strong>Custom Only</strong>, <strong>No active users</strong>
+        </div>
+      </div>
+
+      <!-- Info note -->
+      <div style="margin:0 10px 10px;padding:7px 12px;background:#fff8e1;border:1px solid #ffe082;border-radius:4px;font-size:11px;color:#5d4037">
+        <strong>Note:</strong> Select one or more profiles in the table, then type the replacement profile name in the <em>default profile</em> field before clicking <em>delete selected profiles</em>. The field turns green when a valid profile is locked in. If selected profiles have users (active or inactive), the replacement profile is mandatory.
+      </div>
+
+    </div>
+  </div>
 </div>
+
 <script>
 function sw(id,idx){
   var tp=document.getElementById(id);
@@ -24,5 +140,26 @@ function sw(id,idx){
   tp.querySelectorAll('.m-panel').forEach(function(p,i){p.classList.toggle('act',i===idx)});
 }
 </script>
+
+<!-- Key features modal -->
+<div id="modal-kf" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:999;align-items:center;justify-content:center" onclick="if(event.target===this)this.style.display='none'">
+  <div style="background:#fff;border-radius:8px;padding:28px 32px;max-width:540px;width:90%;color:#1a2a35;box-shadow:0 8px 32px rgba(0,0,0,.3)">
+    <h3 style="margin:0 0 14px;color:#2980b9">&#9733; Key features</h3>
+    <ul style="margin:0;padding-left:20px;line-height:1.9">
+      <li>Lists all <strong>custom profiles and permission sets</strong> with creation date, author, and license type</li>
+      <li><strong>Custom Only</strong> filter hides standard Salesforce profiles, focusing on org-specific ones</li>
+      <li><strong>No active users</strong> filter surfaces profiles with zero active users &mdash; prime deletion candidates</li>
+      <li>Displays both <strong>Active</strong> and <strong>Inactive</strong> user counts per profile to judge the migration effort</li>
+      <li>Autocomplete <strong>replacement profile</strong> field locks in the target profile with a green border and a clear button</li>
+      <li>The <em>delete selected profiles</em> button is enabled only when the form is valid &mdash; replacement profile required if any users exist</li>
+      <li>After deletion, the tab auto-refreshes to show the updated profile list</li>
+      <li>Integrates with the <strong>Salesforce Partner / Metadata API</strong> for safe profile removal and user reassignment</li>
+    </ul>
+    <div style="text-align:right;margin-top:18px">
+      <button class="cal-btn btn-d" onclick="document.getElementById('modal-kf').style.display='none'">Close</button>
+    </div>
+  </div>
+</div>
+
 </body>
 </html>
