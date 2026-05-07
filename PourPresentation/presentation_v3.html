@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Nexus CRM — Prototype v3</title>
+<style>
+:root {
+  --page-bg:    #0d1117;
+  --crm-border: #e2e5ea;
+  --crm-bg:     #f8f9fb;
+  --text:       #1a1d23;
+  --muted:      #6b7280;
+  --light:      #9ba3ae;
+  --accent:     #1a56db;
+  --accent-bg:  #eef3ff;
+  --lead:       #7c3aed;
+  --lead-bg:    #f5f3ff;
+  --teal:       #0e7490;
+  --teal-bg:    #ecfeff;
+  --green:      #059669;
+  --green-bg:   #ecfdf5;
+  --red:        #dc2626;
+  --rose:       #f43f5e;
+  --orange:     #d97706;
+  --r: 10px;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  background: var(--page-bg);
+  font-family: -apple-system, 'Segoe UI', system-ui, sans-serif;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 36px 16px 56px;
+}
+
+/* ── Demo header ── */
+.demo-header { text-align: center; margin-bottom: 28px; animation: fade-down .4s ease both; }
+.demo-header h1 { font-size: 22px; font-weight: 700; color: #fff; letter-spacing: -.3px; margin-bottom: 5px; }
+.demo-header p  { font-size: 13px; color: #7d8590; }
+.demo-pill {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: rgba(56,139,253,.12); border: 1px solid rgba(56,139,253,.3);
+  color: #79c0ff; font-size: 11px; font-weight: 600; letter-spacing: 1.2px;
+  text-transform: uppercase; padding: 3px 12px; border-radius: 20px; margin-bottom: 10px;
+}
+.demo-pill::before { content:'●'; font-size:7px; color:#3fb950; animation: blink 2s infinite; }
+
+/* ── Browser window ── */
+.browser {
+  width: 100%; max-width: 960px;
+  border-radius: 12px; overflow: hidden;
+  box-shadow: 0 32px 90px rgba(0,0,0,.85);
+  border: 1px solid #30363d;
+  animation: fade-up .4s .1s ease both;
+  transition: max-width .35s ease;
+}
+.browser.wide { max-width: 1240px; }
+
+.browser-chrome {
+  background: #252525; padding: 9px 14px;
+  display: flex; align-items: center; gap: 10px;
+}
+.bdots { display: flex; gap: 5px; }
+.bdots span { width: 11px; height: 11px; border-radius: 50%; }
+.bdots .r { background: #ff5f57; } .bdots .y { background: #febc2e; } .bdots .g { background: #28c840; }
+.burl {
+  flex: 1; background: #3a3a3a; border-radius: 5px; padding: 3px 10px;
+  font-size: 11px; color: #999; text-align: center; letter-spacing: .3px;
+}
+
+/* ── Slides ── */
+.crm { background: #fff; }
+.slide { display: none; }
+.slide.active { display: block; }
+
+/* ── Slide 1 ── */
+.s1-wrap { position: relative; }
+.s1-wrap img { display: block; width: 100%; height: auto; }
+.hs {
+  position: absolute; left: 67.3%; top: 57.5%; width: 30%; height: 16.5%;
+  border-radius: 7px; cursor: pointer;
+  border: 2px solid rgba(26,86,219,.5);
+  animation: pulse-hs 2s ease-in-out infinite;
+  transition: background .15s, border-color .15s;
+}
+.hs:hover { background: rgba(26,86,219,.09); border-color: #1a56db; animation: none; }
+.hs .hs-label {
+  position: absolute; bottom: -26px; left: 50%; transform: translateX(-50%);
+  font-size: 11px; color: #6b7280; white-space: nowrap;
+  animation: blink 1.8s infinite;
+}
+@keyframes pulse-hs {
+  0%,100% { box-shadow: 0 0 0 0 rgba(26,86,219,.5); }
+  50%     { box-shadow: 0 0 0 8px rgba(26,86,219,0); }
+}
+
+/* ── Slide 2 — layout ── */
+.crm-nav {
+  background: #fff; border-bottom: 1px solid var(--crm-border);
+  display: flex; align-items: center; height: 46px; padding: 0 20px; gap: 0;
+}
+.nav-brand { font-size: 13px; font-weight: 700; color: var(--text); margin-right: 16px; }
+.nav-tabs { display: flex; height: 100%; }
+.nav-tab {
+  padding: 0 14px; height: 100%; display: flex; align-items: center;
+  font-size: 13px; color: var(--muted); cursor: pointer;
+  border-bottom: 2px solid transparent; transition: all .15s; white-space: nowrap;
+}
+.nav-tab:hover { color: var(--text); }
+.nav-tab.on { color: var(--accent); border-bottom-color: var(--accent); font-weight: 500; }
+.nav-spacer { flex: 1; }
+.nav-back {
+  display: flex; align-items: center; gap: 5px; font-size: 12px;
+  color: var(--accent); cursor: pointer; padding: 4px 10px; border-radius: 6px; transition: background .15s;
+}
+.nav-back:hover { background: var(--accent-bg); }
+
+/* Breadcrumb */
+.breadcrumb {
+  background: var(--crm-bg); border-bottom: 1px solid var(--crm-border);
+  height: 38px; padding: 0 16px 0 20px;
+  display: flex; align-items: center; gap: 6px;
+  font-size: 12px; color: var(--muted);
+}
+.breadcrumb a { color: var(--accent); text-decoration: none; cursor: pointer; }
+.breadcrumb a:hover { text-decoration: underline; }
+.breadcrumb .sep { color: var(--crm-border); font-size: 14px; }
+.breadcrumb .here { color: var(--text); font-weight: 500; }
+.bc-spacer { flex: 1; }
+
+/* Ann toggle button */
+.ann-toggle {
+  display: flex; align-items: center; gap: 5px; font-size: 11px; font-weight: 600;
+  padding: 5px 11px; border-radius: 7px; cursor: pointer;
+  border: 1px solid var(--crm-border); background: #fff; color: var(--muted);
+  transition: all .15s; font-family: inherit; white-space: nowrap;
+}
+.ann-toggle:hover { border-color: var(--rose); color: var(--rose); background: #fff5f5; }
+.ann-toggle.active { border-color: #fca5a5; color: var(--rose); background: #fff5f5; }
+.ann-toggle .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--rose); flex-shrink: 0; }
+.ann-toggle.active .dot { animation: blink .9s infinite; }
+
+/* Body: note + ann panel side by side */
+.s2-body { display: flex; min-height: 0; }
+
+/* Note content */
+.note-body { flex: 1; min-width: 0; max-width: 680px; margin: 0 auto; padding: 28px 20px 48px; }
+
+/* ── Annotation panel ── */
+.ann-panel {
+  flex-shrink: 0; width: 0; overflow: hidden;
+  border-left: 1px solid transparent;
+  background: #fafafa;
+  transition: width .3s ease, border-color .3s ease;
+}
+.show-ann .ann-panel { width: 268px; border-left-color: var(--crm-border); }
+
+.ann-inner {
+  width: 268px; padding: 16px 14px;
+  opacity: 0; transition: opacity .2s .15s;
+}
+.show-ann .ann-inner { opacity: 1; }
+
+.ann-section-label {
+  font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px;
+  color: var(--light); margin-bottom: 12px;
+  padding-bottom: 8px; border-bottom: 1px solid var(--crm-border);
+}
+
+.ann-card {
+  border: 1px solid #fecdd3; border-radius: 9px; background: #fff;
+  margin-bottom: 10px; cursor: pointer; transition: all .15s; overflow: hidden;
+}
+.ann-card:hover { border-color: var(--rose); }
+.ann-card.lit   { border-color: var(--rose); box-shadow: 0 0 0 2px rgba(244,63,94,.15); }
+
+.ann-card-top { display: flex; align-items: flex-start; gap: 8px; padding: 10px 12px 8px; }
+.ann-num {
+  width: 20px; height: 20px; border-radius: 50%; background: var(--rose);
+  color: #fff; font-size: 10px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px;
+}
+.ann-quote-text { font-size: 12px; font-style: italic; color: #374151; line-height: 1.45; }
+.ann-quote-text::before { content: '\201C'; }
+.ann-quote-text::after  { content: '\201D'; }
+
+.ann-fix {
+  padding: 7px 12px 9px; font-size: 11px; color: var(--accent);
+  border-top: 1px solid #fce7f3; background: #fffafc; line-height: 1.4;
+}
+.ann-fix::before { content: '→ '; font-weight: 700; }
+
+/* ── Ann badges on elements ── */
+.ann-badge {
+  display: none; width: 18px; height: 18px; border-radius: 50%;
+  background: var(--rose); color: #fff; font-size: 10px; font-weight: 700;
+  align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0;
+  box-shadow: 0 1px 4px rgba(244,63,94,.5); transition: transform .15s, box-shadow .15s;
+  border: 1.5px solid #fff;
+}
+.show-ann .ann-badge { display: flex; animation: pop-in .2s ease; }
+.ann-badge:hover { transform: scale(1.2); }
+.ann-badge.lit {
+  transform: scale(1.2);
+  box-shadow: 0 0 0 4px rgba(244,63,94,.22), 0 1px 4px rgba(244,63,94,.5);
+}
+
+/* Highlight the annotated element when its badge is active */
+.type-pill.lit .type-btn { border-color: var(--rose); box-shadow: 0 0 0 3px rgba(244,63,94,.12); }
+.contact-card.lit { box-shadow: 0 0 0 2px var(--rose); }
+.card.lit > .card-head { background: #fff5f5; }
+
+/* ── Note components ── */
+.note-title-row {
+  display: flex; align-items: flex-start; justify-content: space-between;
+  gap: 14px; margin-bottom: 14px;
+}
+.note-title {
+  font-size: 24px; font-weight: 700; color: var(--text);
+  flex: 1; border: none; outline: none; background: transparent;
+  border-bottom: 2px solid transparent; transition: border-color .15s;
+  font-family: inherit; padding: 2px 0; line-height: 1.3;
+}
+.note-title:focus { border-bottom-color: var(--accent); }
+
+.type-pill { position: relative; flex-shrink: 0; display: flex; align-items: center; gap: 6px; }
+.type-btn {
+  display: flex; align-items: center; gap: 6px;
+  background: var(--accent-bg); color: var(--accent);
+  border: 1px solid #c7d7f7; border-radius: 8px; padding: 6px 12px;
+  font-size: 12px; font-weight: 600; cursor: pointer; font-family: inherit;
+  transition: all .15s; white-space: nowrap;
+}
+.type-btn:hover { background: #dce8ff; }
+.type-btn .arr { font-size: 9px; opacity: .6; }
+
+.type-dropdown {
+  display: none; position: absolute; top: calc(100% + 4px); right: 0;
+  background: #fff; border: 1px solid var(--crm-border); border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(0,0,0,.12); min-width: 170px; z-index: 20; overflow: hidden;
+}
+.type-dropdown.open { display: block; animation: pop-in .15s ease; }
+.type-opt {
+  padding: 9px 14px; font-size: 13px; color: var(--text); cursor: pointer;
+  transition: background .1s; display: flex; align-items: center; gap: 8px;
+}
+.type-opt:hover { background: var(--crm-bg); }
+.type-opt.selected { color: var(--accent); font-weight: 500; }
+.type-opt.selected::after { content: '✓'; margin-left: auto; font-size: 11px; }
+
+.note-meta {
+  display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+  margin-bottom: 16px; font-size: 13px; color: var(--muted);
+}
+.avatar {
+  width: 26px; height: 26px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent), var(--lead));
+  color: #fff; font-size: 10px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+.meta-name { color: var(--text); font-weight: 500; }
+.meta-dot { color: var(--crm-border); }
+
+.tags { display: flex; align-items: center; flex-wrap: wrap; gap: 6px; margin-bottom: 24px; }
+.tag {
+  display: flex; align-items: center; gap: 4px; padding: 3px 10px;
+  border-radius: 20px; font-size: 12px; font-weight: 500; cursor: default;
+}
+.tag-x { font-size: 10px; opacity: .5; cursor: pointer; transition: opacity .1s; }
+.tag-x:hover { opacity: 1; }
+.t-blue   { background: #dbeafe; color: #1e40af; }
+.t-green  { background: #d1fae5; color: #065f46; }
+.t-purple { background: #ede9fe; color: #5b21b6; }
+.t-orange { background: #fef3c7; color: #92400e; }
+.t-cyan   { background: #cffafe; color: #164e63; }
+.tag-add {
+  display: flex; align-items: center; gap: 4px; padding: 3px 10px;
+  border-radius: 20px; font-size: 12px; color: var(--light);
+  border: 1px dashed var(--crm-border); cursor: pointer; transition: all .15s;
+}
+.tag-add:hover { border-color: var(--accent); color: var(--accent); }
+
+.card { border: 1px solid var(--crm-border); border-radius: var(--r); overflow: hidden; margin-bottom: 16px; transition: box-shadow .15s; }
+.card-head {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 11px 16px; background: var(--crm-bg); border-bottom: 1px solid var(--crm-border);
+  cursor: pointer; user-select: none; transition: background .15s;
+}
+.card-head h3 {
+  font-size: 13px; font-weight: 600; color: var(--text);
+  display: flex; align-items: center; gap: 8px;
+}
+.card-head .chevron { font-size: 10px; color: var(--light); transition: transform .2s; }
+.card-head.collapsed .chevron { transform: rotate(-90deg); }
+.card-body { padding: 16px; }
+.card-body.collapsed { display: none; }
+
+.detail-grid { display: grid; grid-template-columns: 140px 1fr; gap: 0; }
+.dl {
+  padding: 8px 0; font-size: 12px; color: var(--muted); font-weight: 500;
+  display: flex; align-items: flex-start; padding-top: 12px;
+  border-bottom: 1px solid #f0f1f3;
+}
+.dv { padding: 8px 0; border-bottom: 1px solid #f0f1f3; }
+.detail-grid .dl:last-of-type, .detail-grid .dv:last-of-type { border-bottom: none; }
+.plain-val { font-size: 13px; color: var(--text); padding-top: 12px; display: block; }
+.link-val  { font-size: 13px; color: var(--accent); cursor: pointer; padding-top: 12px; display: block; }
+.link-val:hover { text-decoration: underline; }
+
+.contact-card {
+  display: flex; flex-direction: column; gap: 8px;
+  padding: 12px 14px; border-radius: 8px; border-left: 3px solid;
+  margin: 6px 0; background: #fafafa; transition: box-shadow .15s;
+}
+.lead-card   { border-left-color: var(--lead); background: var(--lead-bg); }
+.person-card { border-left-color: var(--teal); background: var(--teal-bg); }
+
+.cc-top { display: flex; align-items: center; gap: 9px; }
+.cc-av {
+  width: 34px; height: 34px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 700; color: #fff; flex-shrink: 0;
+}
+.lead-card   .cc-av { background: var(--lead); }
+.person-card .cc-av { background: var(--teal); }
+.cc-name { font-weight: 600; font-size: 13px; color: var(--text); }
+.cc-badge {
+  font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .5px;
+  padding: 2px 7px; border-radius: 10px;
+}
+.lead-card   .cc-badge { background: rgba(124,58,237,.12); color: var(--lead); }
+.person-card .cc-badge { background: rgba(14,116,144,.12); color: var(--teal); }
+.cc-info {
+  display: grid; grid-template-columns: 16px 1fr; gap: 4px 8px;
+  font-size: 12px; color: var(--muted); line-height: 1.5;
+}
+.cc-info a { color: var(--accent); text-decoration: none; }
+.cc-info a:hover { text-decoration: underline; }
+.cc-icon { text-align: center; font-size: 11px; }
+
+.editable-wrap { padding: 14px 16px; position: relative; }
+.editable-area {
+  min-height: 64px; font-size: 13px; color: var(--text); line-height: 1.6;
+  border-radius: 7px; padding: 10px 12px; outline: none;
+  border: 1.5px solid transparent; background: var(--crm-bg);
+  transition: all .15s; font-family: inherit; width: 100%;
+}
+.editable-area:empty::before { content: attr(data-ph); color: var(--light); font-style: italic; pointer-events: none; }
+.editable-area:hover { border-color: var(--crm-border); background: #fff; }
+.editable-area:focus { border-color: var(--accent); background: #fff; box-shadow: 0 0 0 3px rgba(26,86,219,.08); }
+
+.save-badge {
+  position: absolute; top: 14px; right: 16px;
+  font-size: 11px; padding: 2px 8px; border-radius: 10px;
+  opacity: 0; transition: opacity .25s; pointer-events: none;
+}
+.save-badge.saving { opacity: 1; background: #fff7ed; color: var(--orange); }
+.save-badge.saved  { opacity: 1; background: var(--green-bg); color: var(--green); }
+
+.note-actions {
+  display: flex; align-items: center; gap: 8px;
+  padding-bottom: 20px; margin-bottom: 20px;
+  border-bottom: 1px solid var(--crm-border);
+}
+.btn {
+  padding: 7px 16px; border-radius: 7px; font-size: 13px; font-weight: 500;
+  cursor: pointer; border: 1px solid transparent; transition: all .15s; font-family: inherit;
+}
+.btn-primary { background: var(--accent); color: #fff; }
+.btn-primary:hover { background: #1747c4; }
+.btn-ghost { background: #fff; color: var(--muted); border-color: var(--crm-border); }
+.btn-ghost:hover { background: var(--crm-bg); color: var(--text); }
+.files-btn {
+  display: inline-flex; align-items: center; gap: 5px; font-size: 12px;
+  color: var(--muted); border: 1px dashed var(--crm-border); border-radius: 6px;
+  padding: 5px 10px; cursor: pointer; transition: all .15s; background: #fff; font-family: inherit;
+}
+.files-btn:hover { border-color: var(--accent); color: var(--accent); }
+.spacer { flex: 1; }
+
+/* ── Animations ── */
+@keyframes fade-down  { from { opacity:0; transform:translateY(-10px); } to { opacity:1; transform:translateY(0); } }
+@keyframes fade-up    { from { opacity:0; transform:translateY(14px); }  to { opacity:1; transform:translateY(0); } }
+@keyframes pop-in     { from { opacity:0; transform:scale(.92); }        to { opacity:1; transform:scale(1); } }
+@keyframes blink      { 0%,100%{opacity:1;} 50%{opacity:.25;} }
+@keyframes note-enter { from { opacity:0; transform:translateX(30px); } to { opacity:1; transform:translateX(0); } }
+.slide.active          { animation: note-enter .35s cubic-bezier(.4,0,.2,1) both; }
+.slide.active.s1       { animation: none; }
+
+.demo-footer { margin-top: 20px; font-size: 11px; color: #484f58; text-align: center; animation: fade-up .4s .3s ease both; }
+</style>
+</head>
+<body>
+
+<header class="demo-header">
+  <div class="demo-pill">Prototype interactif</div>
+  <h1>Nexus Capital CRM</h1>
+  <p>User story → prototype HTML &nbsp;·&nbsp; cliquer sur <strong style="color:#e6edf3">New Note</strong> pour voir la proposition</p>
+</header>
+
+<div class="browser" id="browser">
+  <div class="browser-chrome">
+    <div class="bdots"><span class="r"></span><span class="y"></span><span class="g"></span></div>
+    <div class="burl">nexus-crm.com / accounts / acme-corp / notes / new</div>
+  </div>
+
+  <div class="crm">
+
+    <!-- ══ Slide 1 : screenshot existant ══ -->
+    <div class="slide s1 active" id="s1">
+      <div class="s1-wrap">
+        <img src="ecran1.png" alt="Account — Nexus CRM">
+        <div class="hs" onclick="goToNote()">
+          <span class="hs-label">▲ Cliquer pour voir la proposition</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ Slide 2 : note redesignée ══ -->
+    <div class="slide s2" id="s2">
+
+      <!-- Nav -->
+      <div class="crm-nav">
+        <span class="nav-brand">Nexus Capital</span>
+        <div class="nav-tabs">
+          <span class="nav-tab">Home</span>
+          <span class="nav-tab">Timeline</span>
+          <span class="nav-tab on">Accounts</span>
+          <span class="nav-tab">Deals</span>
+          <span class="nav-tab">Calendar</span>
+        </div>
+        <span class="nav-spacer"></span>
+        <span class="nav-back" onclick="goBack()">← Retour</span>
+      </div>
+
+      <!-- Breadcrumb + toggle -->
+      <div class="breadcrumb">
+        <a>Accounts</a><span class="sep">/</span>
+        <a>Acme Corp</a><span class="sep">/</span>
+        <span class="here">New Note</span>
+        <span class="bc-spacer"></span>
+        <button class="ann-toggle" id="annToggle" onclick="toggleAnn()">
+          <span class="dot"></span> Afficher les retours utilisateur
+        </button>
+      </div>
+
+      <!-- Note + annotation panel -->
+      <div class="s2-body">
+
+        <!-- ── Note content ── -->
+        <div class="note-body">
+
+          <!-- Title + type -->
+          <div class="note-title-row">
+            <input class="note-title" value="New Note" spellcheck="false">
+            <!-- Badge ① on type pill -->
+            <div class="type-pill" id="el-type">
+              <button class="type-btn" onclick="toggleTypeMenu()" id="typeBtn">
+                📞 Expert Call <span class="arr">▾</span>
+              </button>
+              <span class="ann-badge" data-n="1" onclick="litAnn(event,1)" title="Voir le retour utilisateur">1</span>
+              <div class="type-dropdown" id="typeMenu">
+                <div class="type-opt selected" onclick="setType('📞 Expert Call')">📞 Expert Call</div>
+                <div class="type-opt" onclick="setType('🤝 Meeting')">🤝 Meeting</div>
+                <div class="type-opt" onclick="setType('📧 Email Follow-up')">📧 Email Follow-up</div>
+                <div class="type-opt" onclick="setType('📊 Due Diligence')">📊 Due Diligence</div>
+                <div class="type-opt" onclick="setType('🎯 Lead Intro')">🎯 Lead Intro</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Meta -->
+          <div class="note-meta">
+            <div class="avatar">MD</div>
+            <span class="meta-name">Marc Dupont</span>
+            <span class="meta-dot">·</span>
+            <span>2024-01-15</span>
+          </div>
+
+          <!-- Tags -->
+          <div class="tags">
+            <span class="tag t-blue">Direct Investor Fund <span class="tag-x">×</span></span>
+            <span class="tag t-green">Acme <span class="tag-x">×</span></span>
+            <span class="tag t-purple">Project Alpha <span class="tag-x">×</span></span>
+            <span class="tag t-orange">Jane Smith <span class="tag-x">×</span></span>
+            <span class="tag t-cyan">TechVentures <span class="tag-x">×</span></span>
+            <span class="tag-add">+ Add tag</span>
+          </div>
+
+          <!-- Actions -->
+          <div class="note-actions">
+            <button class="btn btn-primary">Save</button>
+            <button class="btn btn-ghost" onclick="goBack()">Cancel</button>
+            <span class="spacer"></span>
+            <button class="files-btn">📎 Add files</button>
+          </div>
+
+          <!-- Expert Call Details -->
+          <div class="card">
+            <div class="card-head" onclick="toggleCard(this)">
+              <h3>Expert Call Details <span class="chevron">▾</span></h3>
+            </div>
+            <div class="card-body">
+              <div class="detail-grid">
+
+                <span class="dl">Expert</span>
+                <div class="dv">
+                  <div class="contact-card lead-card" id="el-expert">
+                    <div class="cc-top">
+                      <div class="cc-av">JS</div>
+                      <div><div class="cc-name">Jane Smith</div></div>
+                      <span class="cc-badge">Lead</span>
+                      <!-- Badge ② -->
+                      <span class="ann-badge" data-n="2" onclick="litAnn(event,2)" title="Voir le retour utilisateur">2</span>
+                    </div>
+                    <div class="cc-info">
+                      <span class="cc-icon">✉</span><a href="#">j.smith@partners.com</a>
+                      <span class="cc-icon">📞</span><span>+1 555 234 5678</span>
+                      <span class="cc-icon">📍</span><span>100 Park Avenue, New York 10017</span>
+                    </div>
+                  </div>
+                </div>
+
+                <span class="dl">Team&nbsp;Member</span>
+                <div class="dv">
+                  <div class="contact-card person-card" id="el-member">
+                    <div class="cc-top">
+                      <div class="cc-av">MD</div>
+                      <div><div class="cc-name">Marc Dupont</div></div>
+                      <span class="cc-badge">Team Member</span>
+                      <!-- Badge ③ -->
+                      <span class="ann-badge" data-n="3" onclick="litAnn(event,3)" title="Voir le retour utilisateur">3</span>
+                    </div>
+                    <div class="cc-info">
+                      <span class="cc-icon">✉</span><a href="#">m.dupont@nexuscapital.com</a>
+                      <span class="cc-icon">📞</span><span>+1 555 987 6543</span>
+                    </div>
+                  </div>
+                </div>
+
+                <span class="dl">Deal</span>
+                <div class="dv"><span class="link-val">Project Alpha ↗</span></div>
+
+                <span class="dl">Call Date</span>
+                <div class="dv"><span class="plain-val">2024-01-15</span></div>
+
+              </div>
+            </div>
+          </div>
+
+          <!-- Note Recap — inline edit -->
+          <div class="card" id="el-recap">
+            <div class="card-head" onclick="toggleCard(this)">
+              <h3>
+                Note Recap
+                <!-- Badge ④ -->
+                <span class="ann-badge" data-n="4" onclick="litAnn(event,4)" title="Voir le retour utilisateur">4</span>
+                <span class="chevron">▾</span>
+              </h3>
+            </div>
+            <div class="card-body" style="padding:0">
+              <div class="editable-wrap">
+                <div class="editable-area" contenteditable="true"
+                     data-ph="Cliquer ici pour saisir un résumé de l'appel..."
+                     oninput="triggerSave(this)"></div>
+                <span class="save-badge" id="sb-recap"></span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Note Details — inline edit -->
+          <div class="card">
+            <div class="card-head" onclick="toggleCard(this)">
+              <h3>Note Details <span class="chevron">▾</span></h3>
+            </div>
+            <div class="card-body" style="padding:0">
+              <div class="editable-wrap">
+                <div class="editable-area" contenteditable="true"
+                     data-ph="Ajouter les détails de la note..."
+                     oninput="triggerSave(this)"></div>
+                <span class="save-badge" id="sb-details"></span>
+              </div>
+            </div>
+          </div>
+
+        </div><!-- /note-body -->
+
+        <!-- ── Annotation panel ── -->
+        <div class="ann-panel">
+          <div class="ann-inner">
+            <div class="ann-section-label">Retours utilisateur</div>
+
+            <div class="ann-card" id="ann-card-1" onclick="litAnn(event,1)">
+              <div class="ann-card-top">
+                <div class="ann-num">1</div>
+                <div class="ann-quote-text">C'est pas ça que je veux voir</div>
+              </div>
+              <div class="ann-fix">Type détecté automatiquement selon le contexte Account / Deal</div>
+            </div>
+
+            <div class="ann-card" id="ann-card-2" onclick="litAnn(event,2)">
+              <div class="ann-card-top">
+                <div class="ann-num">2</div>
+                <div class="ann-quote-text">Ça devrait être un lead</div>
+              </div>
+              <div class="ann-fix">Expert lié au bon objet Salesforce — badge Lead visible + coordonnées affichées</div>
+            </div>
+
+            <div class="ann-card" id="ann-card-3" onclick="litAnn(event,3)">
+              <div class="ann-card-top">
+                <div class="ann-num">3</div>
+                <div class="ann-quote-text">Je veux voir son adresse</div>
+              </div>
+              <div class="ann-fix">Email et téléphone visibles directement, sans clic supplémentaire</div>
+            </div>
+
+            <div class="ann-card" id="ann-card-4" onclick="litAnn(event,4)">
+              <div class="ann-card-top">
+                <div class="ann-num">4</div>
+                <div class="ann-quote-text">Ça marche pas comme je veux</div>
+              </div>
+              <div class="ann-fix">Édition inline directe — cliquer dans la zone, sauvegarde automatique</div>
+            </div>
+
+          </div>
+        </div><!-- /ann-panel -->
+
+      </div><!-- /s2-body -->
+    </div><!-- /s2 -->
+
+  </div><!-- /crm -->
+</div><!-- /browser -->
+
+<p class="demo-footer">Prototype HTML généré à partir de 2 screenshots + retours utilisateur</p>
+
+<script>
+  /* ── Slide transitions ── */
+  function goToNote() {
+    document.getElementById('s1').classList.remove('active');
+    document.getElementById('s2').classList.add('active');
+  }
+  function goBack() {
+    document.getElementById('s2').classList.remove('active');
+    document.getElementById('s1').classList.add('active');
+    // Reset annotations on going back
+    document.getElementById('s2').classList.remove('show-ann');
+    document.getElementById('annToggle').classList.remove('active');
+    document.getElementById('browser').classList.remove('wide');
+    clearLit();
+  }
+
+  /* ── Annotations toggle ── */
+  function toggleAnn() {
+    const s2  = document.getElementById('s2');
+    const btn = document.getElementById('annToggle');
+    const brw = document.getElementById('browser');
+    const on  = s2.classList.toggle('show-ann');
+    brw.classList.toggle('wide', on);
+    btn.classList.toggle('active', on);
+    btn.innerHTML = on
+      ? '<span class="dot"></span> Masquer les retours'
+      : '<span class="dot"></span> Afficher les retours utilisateur';
+    if (!on) clearLit();
+  }
+
+  /* ── Badge / card cross-highlight ── */
+  let litN = null;
+
+  function litAnn(e, n) {
+    e.stopPropagation();
+    if (litN === n) { clearLit(); return; }
+    clearLit();
+    litN = n;
+
+    // Light up all badges with this number
+    document.querySelectorAll(`.ann-badge[data-n="${n}"]`).forEach(b => b.classList.add('lit'));
+
+    // Light up the annotation card
+    const card = document.getElementById('ann-card-' + n);
+    if (card) { card.classList.add('lit'); card.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); }
+
+    // Light up the target element
+    const targets = { 1: 'el-type', 2: 'el-expert', 3: 'el-member', 4: 'el-recap' };
+    const el = document.getElementById(targets[n]);
+    if (el) el.classList.add('lit');
+  }
+
+  function clearLit() {
+    litN = null;
+    document.querySelectorAll('.ann-badge, .ann-card').forEach(el => el.classList.remove('lit'));
+    ['el-type','el-expert','el-member','el-recap'].forEach(id => {
+      document.getElementById(id)?.classList.remove('lit');
+    });
+  }
+
+  /* ── Type dropdown ── */
+  function toggleTypeMenu() {
+    document.getElementById('typeMenu').classList.toggle('open');
+  }
+  function setType(label) {
+    document.getElementById('typeBtn').innerHTML = label + ' <span class="arr">▾</span>';
+    document.getElementById('typeMenu').classList.remove('open');
+    document.querySelectorAll('.type-opt').forEach(o => {
+      o.classList.toggle('selected', o.textContent.trim() === label);
+    });
+  }
+  document.addEventListener('click', e => {
+    if (!e.target.closest('.type-pill')) document.getElementById('typeMenu').classList.remove('open');
+  });
+
+  /* ── Card collapse ── */
+  function toggleCard(head) {
+    head.classList.toggle('collapsed');
+    head.nextElementSibling.classList.toggle('collapsed');
+  }
+
+  /* ── Inline save simulation ── */
+  const timers = {};
+  function triggerSave(area) {
+    const badge = area.closest('.editable-wrap').querySelector('.save-badge');
+    clearTimeout(timers[badge.id]);
+    badge.className = 'save-badge saving';
+    badge.textContent = 'Saving...';
+    timers[badge.id] = setTimeout(() => {
+      badge.className = 'save-badge saved';
+      badge.textContent = '✓ Saved';
+      setTimeout(() => { badge.className = 'save-badge'; }, 2500);
+    }, 900);
+  }
+</script>
+</body>
+</html>
