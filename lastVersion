@@ -1,13 +1,7 @@
-[version]v10.1[/version]
+[version]v10.2[/version]
 [history]
-- Data Seeding — cyclic FK relations are now resolved automatically after a full import; object existence on the target org can be checked before seeding
-- Data Seeding — traversal plan total count now includes the start query; orphan emoji rendering in the import table fixed
-- Data Seeding — objects tab lists objects to validate before seeding; config persistence improved
-- Sandboxes — new screen listing all sandboxes with license type, last-modified date badges (orange >6 months, fire >2 years), per-user color-coded rows, and a filter field
-- Last Records — search progress label and progress bar now display correctly while loading
-- OAuth — login flow is more reliable: stale error messages clear on retry, button state resets correctly, and SOAP fallback is blocked when the session ID is null
-- General — VPN check at startup can now be disabled via a new setting; sandbox row tinting can also be turned off
+- OAuth — clicking the Init button no longer causes a startup error on some configurations
 [/history]
-[update]dist/CalumetGui-10.1.jar[/update]
-[exe]dist/Calumet-10.1.exe[/exe]
-[updaterVersion]2.8[/updaterVersion]
+[update]dist/CalumetGui-10.2.jar[/update]
+[exe]dist/Calumet-10.2.exe[/exe]
+[updaterVersion]2.9[/updaterVersion]
