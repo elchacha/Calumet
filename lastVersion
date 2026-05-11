@@ -1,6 +1,7 @@
 [version]v10.2[/version]
 [history]
 - OAuth — clicking the Init button no longer causes a startup error on some configurations
+- OAuth — the built-in HTTP callback server has been rewritten to use standard Java sockets, eliminating JDK-internal module dependency errors
 [/history]
 [update]dist/CalumetGui-10.2.jar[/update]
 [exe]dist/Calumet-10.2.exe[/exe]
