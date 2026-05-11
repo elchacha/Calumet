@@ -1,20 +1,13 @@
-[version]v10.0[/version]
+[version]v10.1[/version]
 [history]
-WARNING : Lastest version require the new engin of calumet. It's not yet available for MAC (schedule for May)
-- Data Seeding — new screen for exporting, importing, and cleaning records between orgs, including Community Users, dependency graph, and user mapping
-- Children Access — renamed and expanded with user autocomplete, color-coded badges, and a progress bar
-- Select * Config — arrows to reorder fields, double-click to edit inline, Gluon emoji legend
-- CustomApp Diff — new screen comparing Custom Application metadata between two orgs with structured HTML report
-- FlexiPages — layout dependencies panel shown on row click; action and score badges with legend
-- Profile Permissions — column filter checkboxes in header; selected profile column highlighted in blue
-- Profile Comparison — lock autocomplete fields after selection, Del key to unlock, delete selected rows
-- SOQL — query execution can now be cancelled immediately instead of waiting for the current page
-- Sharing Settings — Security Type badges and Object Name filter; disk+memory cache per org
-- User Roles — progress bar replaces spinner while loading
-- User Access Score — clickable Name column opens the permission set directly
-- TreeView popup — highlight mode with occurrence counter and up/down navigation
-- General — blue/orange/red button styles unified; spinner size increased; icon buttons added
+- Data Seeding — cyclic FK relations are now resolved automatically after a full import; object existence on the target org can be checked before seeding
+- Data Seeding — traversal plan total count now includes the start query; orphan emoji rendering in the import table fixed
+- Data Seeding — objects tab lists objects to validate before seeding; config persistence improved
+- Sandboxes — new screen listing all sandboxes with license type, last-modified date badges (orange >6 months, fire >2 years), per-user color-coded rows, and a filter field
+- Last Records — search progress label and progress bar now display correctly while loading
+- OAuth — login flow is more reliable: stale error messages clear on retry, button state resets correctly, and SOAP fallback is blocked when the session ID is null
+- General — VPN check at startup can now be disabled via a new setting; sandbox row tinting can also be turned off
 [/history]
-[update]dist/CalumetGui-10.0.jar[/update]
-[exe]dist/Calumet-10.0.exe[/exe]
+[update]dist/CalumetGui-10.1.jar[/update]
+[exe]dist/Calumet-10.1.exe[/exe]
 [updaterVersion]2.8[/updaterVersion]
