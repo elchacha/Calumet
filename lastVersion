@@ -1,8 +1,8 @@
-[version]v10.2[/version]
+[version]v10.3[/version]
 [history]
-- OAuth — clicking the Init button no longer causes a startup error on some configurations
-- OAuth — the built-in HTTP callback server has been rewritten to use standard Java sockets, eliminating JDK-internal module dependency errors
+- ChangeTracker — metadata cache is now persisted to disk and reused across sessions, reducing reload time on subsequent launches
+- OAuth — the authorization callback now correctly handles URL-encoded codes, adds retry loop, and improves logging
 [/history]
-[update]dist/CalumetGui-10.2.jar[/update]
-[exe]dist/Calumet-10.2.exe[/exe]
+[update]dist/CalumetGui-10.3.jar[/update]
+[exe]dist/Calumet-10.3.exe[/exe]
 [updaterVersion]2.9[/updaterVersion]
