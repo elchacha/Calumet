@@ -6,11 +6,37 @@
 <title>Control — Calumet</title>
 <link rel="stylesheet" href="../shared.css">
 <style>
-.pill-type { display:inline-block;padding:1px 7px;border-radius:10px;font-size:10px;font-weight:600;background:#dbeafe;color:#1a5276; }
-.diff-ins  { color:#27ae60;font-weight:700; }
-.diff-upd  { color:#e67e22;font-weight:700; }
-.diff-del  { color:#E74C3C;font-weight:700; }
-.diff-zero { color:#aaa; }
+/* Badge styles mirroring the real JavaFX badge-diff-* CSS classes */
+.bdg{display:inline-block;padding:2px 8px;border-radius:10px;font-size:10px;font-weight:700;min-width:44px;text-align:center}
+.bdg-new    {background:#e74c3c;color:#fff}
+.bdg-ok     {background:#27ae60;color:#fff}
+.bdg-changed{background:#e67e22;color:#fff}
+.bdg-insert {background:#27ae60;color:#fff}
+.bdg-update {background:#e67e22;color:#fff}
+.bdg-delete {background:#e74c3c;color:#fff}
+.bdg-zero   {background:#d0dce6;color:#7a8fa0}
+.pill-type  {display:inline-block;padding:1px 7px;border-radius:10px;font-size:10px;font-weight:600;background:#dbeafe;color:#1a5276}
+
+/* Diff viewer mockup */
+.diff-wrap{display:flex;gap:0;border:1px solid #9AABBF;border-radius:3px;overflow:hidden;font-size:11px;font-family:"Courier New",monospace}
+.diff-col{flex:1;min-width:0}
+.diff-col-hdr{background:#b8d5e3;color:#1A5276;font-weight:700;padding:4px 8px;text-align:center;font-family:"Segoe UI",sans-serif;font-size:11px;border-bottom:1px solid #9AABBF}
+.diff-line{display:flex;min-height:18px}
+.diff-ln{width:28px;text-align:right;padding:0 4px;color:#9aabbf;background:#f0f6fa;border-right:1px solid #d0dce6;flex-shrink:0;user-select:none;font-size:10px;line-height:18px}
+.diff-code{padding:0 6px;line-height:18px;white-space:pre;overflow:hidden;text-overflow:ellipsis;flex:1}
+.diff-del  {background:#ffebe9}
+.diff-add  {background:#e6ffed}
+.diff-chg  {background:#fff8db}
+.diff-same {background:#fff}
+.diff-empty{background:#f4f8fb}
+
+/* Notification badge */
+.notif-badge{
+  position:absolute;top:8px;right:12px;
+  background:#27ae60;color:#fff;border-radius:6px;
+  padding:8px 14px;font-size:11px;font-weight:700;
+  box-shadow:0 2px 10px rgba(0,0,0,.25);
+}
 </style>
 </head>
 <body class="tab-page">
@@ -27,321 +53,278 @@
 </div>
 
 <div class="mockup-wrap">
-  <div class="mockup" style="padding:0">
+  <div class="mockup" style="padding:0;position:relative">
 
     <!-- Status label -->
-    <div style="padding:8px 14px 4px;font-size:12px;color:#1a2a35;background:#f0f6fa;border-bottom:1px solid #c8dae6;">
+    <div style="padding:8px 14px 5px;font-size:12px;color:#1a5276;font-weight:600;background:#f0f6fa;border-bottom:1px solid #c8dae6;">
       Find below the difference between your package to be deployed and your target environment
     </div>
 
     <!-- Toolbar row -->
-    <div class="hbox" style="gap:10px;align-items:flex-start;padding:10px 14px 8px;">
-      <button class="cal-btn btn-b" data-tip="Retrieve the current state from the target org and compute the diff">Check Package</button>
+    <div class="hbox" style="gap:10px;align-items:flex-start;padding:10px 14px 8px;background:#f8fbfd;border-bottom:1px solid #dce8f0;">
+      <!-- Buttons column -->
+      <div class="vbox" style="gap:6px">
+        <button class="cal-btn btn-g" data-tip="Retrieve current state from the target org and compute the diff">Check Package</button>
+        <button class="cal-btn btn-o" data-tip="Generate an AI prompt summarising changed files for review">Generate AI Prompt</button>
+      </div>
 
-      <div class="vbox" style="gap:4px;margin-left:6px;">
+      <!-- Checkboxes -->
+      <div class="vbox" style="gap:4px;margin-left:16px;padding-top:2px">
         <label class="cal-chk"><input type="checkbox" checked disabled> Reuse Current backup</label>
         <label class="cal-chk"><input type="checkbox" checked disabled> Hide not changed object</label>
         <label class="cal-chk"><input type="checkbox" disabled> Hide changed object</label>
         <label class="cal-chk"><input type="checkbox" checked disabled> Hide new object</label>
       </div>
 
-      <div style="margin-left:20px;margin-top:2px;">
+      <div style="margin-left:20px;padding-top:2px;">
         <label class="cal-chk"><input type="checkbox" disabled> hide Profile</label>
       </div>
     </div>
 
     <!-- Diff table -->
-    <div class="tbl-wrap" style="margin:0 14px 14px;max-height:460px;overflow-y:auto;">
+    <div class="tbl-wrap" style="margin:10px 14px 14px;max-height:400px;overflow-y:auto;border-radius:3px">
       <table class="cal-tbl">
         <thead>
           <tr>
-            <th style="width:52px">New</th>
-            <th style="width:52px">Ok</th>
-            <th style="width:52px">Insert</th>
-            <th style="width:60px">Update</th>
-            <th style="width:52px">Delete</th>
-            <th style="width:120px">Type</th>
-            <th style="width:380px">Name</th>
-            <th style="width:150px">ModifiedBy</th>
-            <th style="width:160px">LastModifiedDate</th>
+            <th style="width:52px;text-align:center">New</th>
+            <th style="width:74px;text-align:center">Ok</th>
+            <th style="width:58px;text-align:center">Insert</th>
+            <th style="width:64px;text-align:center">Update</th>
+            <th style="width:58px;text-align:center">Delete</th>
+            <th style="width:110px">Type</th>
+            <th>Name</th>
+            <th style="width:140px">ModifiedBy</th>
+            <th style="width:155px">LastModifiedDate</th>
           </tr>
         </thead>
         <tbody>
+          <!-- Row 1 — Changed ApexClass, 4 inserts, 10 updates, 13 deletes (matches screenshot row 1) -->
           <tr>
-            <td class="diff-zero">false</td>
-            <td class="diff-zero">false</td>
-            <td class="diff-zero">0</td>
-            <td class="diff-upd">2</td>
-            <td class="diff-zero">0</td>
+            <td style="text-align:center"></td>
+            <td style="text-align:center"><span class="bdg bdg-changed">Changed</span></td>
+            <td style="text-align:center"><span class="bdg bdg-insert">4</span></td>
+            <td style="text-align:center"><span class="bdg bdg-update">10</span></td>
+            <td style="text-align:center"><span class="bdg bdg-delete">13</span></td>
             <td><span class="pill-type">ApexClass</span></td>
-            <td>AP217_SFA2_DeploiementContratCadre</td>
-            <td>John Doe</td>
-            <td>2024-09-03 14:13:27</td>
-          </tr>
-          <tr>
-            <td class="diff-zero">false</td>
-            <td class="diff-zero">false</td>
-            <td class="diff-zero">0</td>
-            <td class="diff-upd">2</td>
-            <td class="diff-zero">0</td>
-            <td><span class="pill-type">ApexPage</span></td>
-            <td>AP217_SFA2_DeploiementContratCadre.page</td>
+            <td>AccountTriggerHandler.cls</td>
             <td>Bob Johnson</td>
-            <td>2023-04-25 08:34:11</td>
+            <td>2026-05-05 11:01:52</td>
           </tr>
+          <!-- Row 2 — Changed ApexClass, 1 insert, 8 updates, 1 delete (matches screenshot row 2) -->
           <tr>
-            <td class="diff-zero">false</td>
-            <td class="diff-zero">false</td>
-            <td class="diff-zero">0</td>
-            <td class="diff-upd">1</td>
-            <td class="diff-zero">0</td>
-            <td><span class="pill-type">Flow</span></td>
-            <td>Account_MAJ_Date_derniere_modification_Qualification_macro.flow</td>
-            <td></td>
-            <td></td>
+            <td style="text-align:center"></td>
+            <td style="text-align:center"><span class="bdg bdg-changed">Changed</span></td>
+            <td style="text-align:center"><span class="bdg bdg-insert">1</span></td>
+            <td style="text-align:center"><span class="bdg bdg-update">8</span></td>
+            <td style="text-align:center"><span class="bdg bdg-delete">1</span></td>
+            <td><span class="pill-type">ApexClass</span></td>
+            <td>Opportunity_Pipeline_BeforeUpdate_TEST.cls</td>
+            <td>John Doe</td>
+            <td>2020-11-02 16:21:02</td>
           </tr>
+          <!-- Row 3 — Changed ApexTestSuite, 1 insert, 0 updates, 0 deletes (matches screenshot row 3) -->
           <tr>
-            <td class="diff-zero">false</td>
-            <td class="diff-zero">false</td>
-            <td class="diff-zero">0</td>
-            <td class="diff-upd">1</td>
-            <td class="diff-zero">0</td>
-            <td><span class="pill-type">Flow</span></td>
-            <td>Account_Mise_a_jour_date_dernier_Appel.flow</td>
-            <td></td>
-            <td></td>
+            <td style="text-align:center"></td>
+            <td style="text-align:center"><span class="bdg bdg-changed">Changed</span></td>
+            <td style="text-align:center"><span class="bdg bdg-insert">1</span></td>
+            <td style="text-align:center"><span class="bdg bdg-zero">0</span></td>
+            <td style="text-align:center"><span class="bdg bdg-zero">0</span></td>
+            <td><span class="pill-type">ApexTestSuite</span></td>
+            <td>WFCoreProcess.testSuite</td>
+            <td style="color:#aaa"></td>
+            <td style="color:#aaa"></td>
           </tr>
+          <!-- Row 4 — Changed ApexTrigger, 1 insert, 0 updates, 0 deletes (matches screenshot row 4) -->
           <tr>
-            <td class="diff-zero">false</td>
-            <td class="diff-zero">false</td>
-            <td class="diff-zero">0</td>
-            <td class="diff-upd">1</td>
-            <td class="diff-zero">0</td>
-            <td><span class="pill-type">Flow</span></td>
-            <td>Account_mise_a_jour_filiere.flow</td>
-            <td></td>
-            <td></td>
+            <td style="text-align:center"></td>
+            <td style="text-align:center"><span class="bdg bdg-changed">Changed</span></td>
+            <td style="text-align:center"><span class="bdg bdg-insert">1</span></td>
+            <td style="text-align:center"><span class="bdg bdg-zero">0</span></td>
+            <td style="text-align:center"><span class="bdg bdg-zero">0</span></td>
+            <td><span class="pill-type">ApexTrigger</span></td>
+            <td>AccountAfterUpdate.trigger</td>
+            <td>Bob Johnson</td>
+            <td>2018-04-10 13:58:39</td>
           </tr>
+          <!-- Row 5 — Changed ApexTrigger, 1 insert, 0 updates, 4 deletes (matches screenshot row 5) -->
           <tr>
-            <td class="diff-zero">false</td>
-            <td class="diff-zero">false</td>
-            <td class="diff-zero">0</td>
-            <td class="diff-upd">1</td>
-            <td class="diff-zero">0</td>
-            <td><span class="pill-type">Flow</span></td>
-            <td>Account_Redescente_du_rating_Etablissement_sur_les_affaires.flow</td>
-            <td></td>
-            <td></td>
+            <td style="text-align:center"></td>
+            <td style="text-align:center"><span class="bdg bdg-changed">Changed</span></td>
+            <td style="text-align:center"><span class="bdg bdg-insert">1</span></td>
+            <td style="text-align:center"><span class="bdg bdg-zero">0</span></td>
+            <td style="text-align:center"><span class="bdg bdg-delete">4</span></td>
+            <td><span class="pill-type">ApexTrigger</span></td>
+            <td>Opportunity_Pipeline_BeforeUpdate.trigger</td>
+            <td>John Doe</td>
+            <td>2020-11-02 16:21:08</td>
           </tr>
+          <!-- Row 6 — New CustomField -->
           <tr>
-            <td class="diff-zero">false</td>
-            <td class="diff-zero">false</td>
-            <td class="diff-zero">0</td>
-            <td class="diff-upd">1</td>
-            <td class="diff-zero">0</td>
-            <td><span class="pill-type">Flow</span></td>
-            <td>ACC_MAJ_Jalon_1.flow</td>
-            <td></td>
-            <td></td>
-          </tr>
-          <tr>
-            <td class="diff-zero">false</td>
-            <td class="diff-zero">false</td>
-            <td class="diff-zero">0</td>
-            <td class="diff-upd">1</td>
-            <td class="diff-zero">0</td>
-            <td><span class="pill-type">Flow</span></td>
-            <td>Acheminement_d_l_ments_de_travail.flow</td>
-            <td></td>
-            <td></td>
-          </tr>
-          <tr>
-            <td class="diff-zero">false</td>
-            <td class="diff-zero">false</td>
-            <td class="diff-zero">0</td>
-            <td class="diff-upd">1</td>
-            <td class="diff-zero">0</td>
-            <td><span class="pill-type">Flow</span></td>
-            <td>Action_Action_Hors_Cible_et_Objectifs.flow</td>
-            <td></td>
-            <td></td>
-          </tr>
-          <tr>
-            <td class="diff-zero">false</td>
-            <td class="diff-zero">false</td>
-            <td class="diff-zero">0</td>
-            <td class="diff-upd">1</td>
-            <td class="diff-zero">0</td>
-            <td><span class="pill-type">Flow</span></td>
-            <td>Action_ReOpen_Action.flow</td>
-            <td></td>
-            <td></td>
-          </tr>
-          <tr>
-            <td class="diff-zero">false</td>
-            <td class="diff-zero">false</td>
-            <td class="diff-zero">0</td>
-            <td class="diff-upd">1</td>
-            <td class="diff-zero">0</td>
-            <td><span class="pill-type">Flow</span></td>
-            <td>Affaire_Field_Updates.flow</td>
-            <td></td>
-            <td></td>
-          </tr>
-          <tr>
-            <td class="diff-zero">false</td>
-            <td class="diff-zero">false</td>
-            <td class="diff-zero">0</td>
-            <td class="diff-upd">1</td>
-            <td class="diff-zero">0</td>
-            <td><span class="pill-type">Flow</span></td>
-            <td>Affaire_Mise_jour_Flag_Auto_close.flow</td>
-            <td></td>
-            <td></td>
-          </tr>
-          <tr>
-            <td class="diff-zero">false</td>
-            <td class="diff-zero">false</td>
-            <td class="diff-zero">0</td>
-            <td class="diff-upd">1</td>
-            <td class="diff-zero">0</td>
-            <td><span class="pill-type">Flow</span></td>
-            <td>Affaire_Mise_jour_Flag_Auto_close_3_mois.flow</td>
-            <td></td>
-            <td></td>
-          </tr>
-          <tr>
-            <td class="diff-zero">false</td>
-            <td class="diff-zero">false</td>
-            <td class="diff-zero">0</td>
-            <td class="diff-upd">1</td>
-            <td class="diff-zero">0</td>
-            <td><span class="pill-type">Flow</span></td>
-            <td>Affaire_Mise_jour_Flag_Auto_close_6_mois.flow</td>
-            <td></td>
-            <td></td>
-          </tr>
-          <tr>
-            <td class="diff-zero">false</td>
-            <td class="diff-zero">false</td>
-            <td class="diff-zero">0</td>
-            <td class="diff-upd">1</td>
-            <td class="diff-zero">0</td>
-            <td><span class="pill-type">Flow</span></td>
-            <td>Affaire_Recopie_Specificit_Service_Client_du_contrat_precedent.flow</td>
-            <td></td>
-            <td></td>
-          </tr>
-          <tr>
-            <td class="diff-zero">false</td>
-            <td class="diff-zero">false</td>
-            <td class="diff-zero">0</td>
-            <td class="diff-upd">1</td>
-            <td class="diff-zero">0</td>
-            <td><span class="pill-type">Flow</span></td>
-            <td>Annulation_RIB_apres_Virement_Echoue.flow</td>
-            <td></td>
-            <td></td>
-          </tr>
-          <tr>
-            <td class="diff-zero">false</td>
-            <td class="diff-zero">false</td>
-            <td class="diff-zero">0</td>
-            <td class="diff-upd">1</td>
-            <td class="diff-zero">0</td>
-            <td><span class="pill-type">Flow</span></td>
-            <td>Case_Mise_jour_champs_Pick_list_Omni_Channel.flow</td>
-            <td></td>
-            <td></td>
-          </tr>
-          <tr>
-            <td class="diff-zero">false</td>
-            <td class="diff-zero">false</td>
-            <td class="diff-ins">1</td>
-            <td class="diff-zero">0</td>
-            <td class="diff-zero">0</td>
+            <td style="text-align:center"><span class="bdg bdg-new">New</span></td>
+            <td style="text-align:center"><span class="bdg bdg-ok">OK</span></td>
+            <td style="text-align:center"><span class="bdg bdg-insert">1</span></td>
+            <td style="text-align:center"><span class="bdg bdg-zero">0</span></td>
+            <td style="text-align:center"><span class="bdg bdg-zero">0</span></td>
             <td><span class="pill-type">CustomField</span></td>
             <td>Account.SLA_Expiration_Date__c</td>
             <td>Alice Martin</td>
-            <td>2024-11-14 09:22:05</td>
+            <td>2026-04-14 09:22:05</td>
           </tr>
+          <!-- Row 7 — Changed CustomObject -->
           <tr>
-            <td class="diff-zero">false</td>
-            <td class="diff-zero">false</td>
-            <td class="diff-zero">0</td>
-            <td class="diff-upd">3</td>
-            <td class="diff-zero">0</td>
+            <td style="text-align:center"></td>
+            <td style="text-align:center"><span class="bdg bdg-changed">Changed</span></td>
+            <td style="text-align:center"><span class="bdg bdg-zero">0</span></td>
+            <td style="text-align:center"><span class="bdg bdg-update">3</span></td>
+            <td style="text-align:center"><span class="bdg bdg-zero">0</span></td>
             <td><span class="pill-type">CustomObject</span></td>
             <td>Order__c</td>
             <td>Marc Dupont</td>
-            <td>2024-10-02 16:45:00</td>
+            <td>2026-03-02 16:45:00</td>
           </tr>
+          <!-- Row 8 — Changed Flow -->
           <tr>
-            <td class="diff-zero">false</td>
-            <td class="diff-zero">false</td>
-            <td class="diff-zero">0</td>
-            <td class="diff-upd">1</td>
-            <td class="diff-zero">0</td>
+            <td style="text-align:center"></td>
+            <td style="text-align:center"><span class="bdg bdg-changed">Changed</span></td>
+            <td style="text-align:center"><span class="bdg bdg-zero">0</span></td>
+            <td style="text-align:center"><span class="bdg bdg-update">1</span></td>
+            <td style="text-align:center"><span class="bdg bdg-zero">0</span></td>
+            <td><span class="pill-type">Flow</span></td>
+            <td>Account_Update_LastModifiedDate_Qualification.flow</td>
+            <td style="color:#aaa"></td>
+            <td style="color:#aaa"></td>
+          </tr>
+          <!-- Row 9 — Changed Flow -->
+          <tr>
+            <td style="text-align:center"></td>
+            <td style="text-align:center"><span class="bdg bdg-changed">Changed</span></td>
+            <td style="text-align:center"><span class="bdg bdg-zero">0</span></td>
+            <td style="text-align:center"><span class="bdg bdg-update">1</span></td>
+            <td style="text-align:center"><span class="bdg bdg-zero">0</span></td>
+            <td><span class="pill-type">Flow</span></td>
+            <td>Account_Update_LastCallDate.flow</td>
+            <td style="color:#aaa"></td>
+            <td style="color:#aaa"></td>
+          </tr>
+          <!-- Row 10 — Changed Layout -->
+          <tr>
+            <td style="text-align:center"></td>
+            <td style="text-align:center"><span class="bdg bdg-changed">Changed</span></td>
+            <td style="text-align:center"><span class="bdg bdg-zero">0</span></td>
+            <td style="text-align:center"><span class="bdg bdg-update">1</span></td>
+            <td style="text-align:center"><span class="bdg bdg-zero">0</span></td>
             <td><span class="pill-type">Layout</span></td>
             <td>Account-Account Layout.layout</td>
             <td>Admin</td>
-            <td>2024-12-01 11:00:17</td>
+            <td>2026-04-01 11:00:17</td>
           </tr>
+          <!-- Row 11 — Deleted ValidationRule -->
           <tr>
-            <td class="diff-zero">false</td>
-            <td class="diff-zero">false</td>
-            <td class="diff-zero">0</td>
-            <td class="diff-zero">0</td>
-            <td class="diff-del">1</td>
+            <td style="text-align:center"></td>
+            <td style="text-align:center"><span class="bdg bdg-changed">Changed</span></td>
+            <td style="text-align:center"><span class="bdg bdg-zero">0</span></td>
+            <td style="text-align:center"><span class="bdg bdg-zero">0</span></td>
+            <td style="text-align:center"><span class="bdg bdg-delete">1</span></td>
             <td><span class="pill-type">ValidationRule</span></td>
             <td>Contact.RequireEmailOnLead</td>
             <td>Jane Smith</td>
-            <td>2024-07-19 14:30:00</td>
+            <td>2025-07-19 14:30:00</td>
           </tr>
+          <!-- Row 12 — Changed PermissionSet -->
           <tr>
-            <td class="diff-ins">true</td>
-            <td class="diff-zero">false</td>
-            <td class="diff-ins">1</td>
-            <td class="diff-zero">0</td>
-            <td class="diff-zero">0</td>
-            <td><span class="pill-type">ApexTrigger</span></td>
-            <td>AccountBeforeInsertTrigger</td>
-            <td>John Doe</td>
-            <td>2025-01-08 10:55:42</td>
-          </tr>
-          <tr>
-            <td class="diff-zero">false</td>
-            <td class="diff-zero">false</td>
-            <td class="diff-zero">0</td>
-            <td class="diff-upd">1</td>
-            <td class="diff-zero">0</td>
+            <td style="text-align:center"></td>
+            <td style="text-align:center"><span class="bdg bdg-changed">Changed</span></td>
+            <td style="text-align:center"><span class="bdg bdg-zero">0</span></td>
+            <td style="text-align:center"><span class="bdg bdg-update">2</span></td>
+            <td style="text-align:center"><span class="bdg bdg-zero">0</span></td>
             <td><span class="pill-type">PermissionSet</span></td>
             <td>SalesRep_FullAccess</td>
             <td>Admin</td>
-            <td>2024-11-22 08:14:33</td>
+            <td>2025-11-22 08:14:33</td>
           </tr>
         </tbody>
       </table>
     </div>
 
-  </div>
-</div>
+    <!-- Success notification badge (simulating the InfoCenter slide-in) -->
+    <div class="notif-badge" data-tip="GemsFX InfoCenter notification — slides in from top-right on operation complete">
+      &#10003; Control finished successfully
+    </div>
+
+    <hr class="hsep" style="margin:0 14px 10px">
+
+    <!-- Diff viewer panel (illustrating the double-click popup) -->
+    <div style="padding:0 14px 14px">
+      <div style="font-size:11px;font-weight:700;color:#1a5276;margin-bottom:6px;padding:4px 6px;background:#dbeafe;border-radius:3px;border-left:3px solid #2980b9">
+        Diff Viewer — AccountTriggerHandler.cls &nbsp;<span style="color:#888;font-weight:400">(double-click any changed row to open)</span>
+      </div>
+
+      <div class="diff-wrap" style="max-height:260px;overflow-y:auto">
+        <!-- Left column: old (backup) -->
+        <div class="diff-col">
+          <div class="diff-col-hdr">old (backup)</div>
+          <div class="diff-line diff-same"><span class="diff-ln">1</span><span class="diff-code">global class AccountTriggerHandler {</span></div>
+          <div class="diff-line diff-same"><span class="diff-ln">2</span><span class="diff-code"></span></div>
+          <div class="diff-line diff-same"><span class="diff-ln">3</span><span class="diff-code">    //test</span></div>
+          <div class="diff-line diff-same"><span class="diff-ln">4</span><span class="diff-code"></span></div>
+          <div class="diff-line diff-same"><span class="diff-ln">5</span><span class="diff-code">    /**</span></div>
+          <div class="diff-line diff-same"><span class="diff-ln">6</span><span class="diff-code">     * @author Marc Dupont</span></div>
+          <div class="diff-line diff-del"><span class="diff-ln">7</span><span class="diff-code">     * @date Creation 13.11.2017</span></div>
+          <div class="diff-line diff-same"><span class="diff-ln">8</span><span class="diff-code">     * @description Update AccountRevenue_SIRET__c</span></div>
+          <div class="diff-line diff-same"><span class="diff-ln">9</span><span class="diff-code">     *</span></div>
+          <div class="diff-line diff-same"><span class="diff-ln">10</span><span class="diff-code">     */</span></div>
+          <div class="diff-line diff-same"><span class="diff-ln">11</span><span class="diff-code">    public static void UpdateRevenue(...){</span></div>
+          <div class="diff-line diff-empty"><span class="diff-ln"></span><span class="diff-code"></span></div>
+          <div class="diff-line diff-same"><span class="diff-ln">14</span><span class="diff-code">        map&lt;Id, Id&gt; mapIdSubsidiaryToParent = new map&lt;Id, Id&gt;();</span></div>
+          <div class="diff-line diff-del"><span class="diff-ln">22</span><span class="diff-code">        mapIdSubsidiaries.put(acc.Id, mapTriggerNew.get(acc.Id));</span></div>
+          <div class="diff-line diff-del"><span class="diff-ln">23</span><span class="diff-code">        mapIdSubsidiaryToParent.put(acc.Id, acc.ParentId);</span></div>
+          <div class="diff-line diff-same"><span class="diff-ln">24</span><span class="diff-code">        }</span></div>
+          <div class="diff-line diff-same"><span class="diff-ln">28</span><span class="diff-code">    System.debug(mapIdSubsidiaries);</span></div>
+        </div>
+        <!-- Right column: new (actual) -->
+        <div class="diff-col" style="border-left:1px solid #9AABBF">
+          <div class="diff-col-hdr">new (actual)</div>
+          <div class="diff-line diff-same"><span class="diff-ln">1</span><span class="diff-code">global class AccountTriggerHandler {</span></div>
+          <div class="diff-line diff-same"><span class="diff-ln">2</span><span class="diff-code"></span></div>
+          <div class="diff-line diff-same"><span class="diff-ln">3</span><span class="diff-code">    //test</span></div>
+          <div class="diff-line diff-same"><span class="diff-ln">4</span><span class="diff-code"></span></div>
+          <div class="diff-line diff-same"><span class="diff-ln">5</span><span class="diff-code">    /**</span></div>
+          <div class="diff-line diff-same"><span class="diff-ln">6</span><span class="diff-code">     * @author Marc Dupont</span></div>
+          <div class="diff-line diff-empty"><span class="diff-ln"></span><span class="diff-code"></span></div>
+          <div class="diff-line diff-same"><span class="diff-ln">7</span><span class="diff-code">     * @description Update AccountRevenue_SIRET__c</span></div>
+          <div class="diff-line diff-same"><span class="diff-ln">8</span><span class="diff-code">     *</span></div>
+          <div class="diff-line diff-same"><span class="diff-ln">9</span><span class="diff-code">     */</span></div>
+          <div class="diff-line diff-same"><span class="diff-ln">10</span><span class="diff-code">    public static void UpdateRevenue(...){</span></div>
+          <div class="diff-line diff-add"><span class="diff-ln">12</span><span class="diff-code">        Set&lt;Id&gt; acctParentIds = new Set&lt;Id&gt;();</span></div>
+          <div class="diff-line diff-same"><span class="diff-ln">13</span><span class="diff-code">        map&lt;Id, Id&gt; mapIdSubsidiaryToParent = new map&lt;Id, Id&gt;();</span></div>
+          <div class="diff-line diff-add"><span class="diff-ln">20</span><span class="diff-code">        acctParentIds.add(acc.ParentId);</span></div>
+          <div class="diff-line diff-same"><span class="diff-ln">21</span><span class="diff-code">        }</span></div>
+          <div class="diff-line diff-add"><span class="diff-ln">24</span><span class="diff-code">    // retrieve all related account subsidiaries</span></div>
+          <div class="diff-line diff-add"><span class="diff-ln">25</span><span class="diff-code">    for(Account acctSub : [SELECT Id, AccountRevenue__c, ParentId</span></div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /mockup -->
+</div><!-- /mockup-wrap -->
 
 <!-- Key features modal -->
 <div id="modal-kf" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:999;align-items:center;justify-content:center" onclick="if(event.target===this)this.style.display='none'">
-  <div style="background:#fff;border-radius:8px;padding:28px 32px;max-width:540px;width:90%;color:#1a2a35;box-shadow:0 8px 32px rgba(0,0,0,.3)">
+  <div style="background:#fff;border-radius:8px;padding:28px 32px;max-width:560px;width:90%;color:#1a2a35;box-shadow:0 8px 32px rgba(0,0,0,.3)">
     <h3 style="margin:0 0 14px;color:#2980b9">&#9733; Key features</h3>
     <ul style="margin:0;padding-left:20px;line-height:1.8">
-      <li>Compares the local deployment package against the metadata currently live in the target org</li>
-      <li>Shows per-component Insert / Update / Delete counts so every change is visible before deploy</li>
-      <li>Flags new components (not yet present in the target) in a dedicated "New" column</li>
-      <li>Retrieves and displays the last modifier and modification date from the org for every component</li>
-      <li>Double-click any row to open an inline diff viewer; CustomField picklists open a dedicated picklist comparator</li>
-      <li>Layout rows open a structured layout diff popup to compare section-by-section</li>
-      <li>Checkboxes let you hide unchanged, changed, or new items to focus only on what matters</li>
-      <li>"Reuse Current backup" re-runs the diff against the cached backup without re-fetching from the org</li>
-      <li>Profile rows are hidden by default and shown only when they contain actual updates</li>
-      <li>In-app notification panel slides in from the top-right to report success or failure at the end of the operation</li>
+      <li>Compares the local deployment package against metadata currently live in the target org</li>
+      <li>Shows per-component Insert / Update / Delete counts with color-coded badges before deploy</li>
+      <li>Flags brand-new components (not yet in the target) in a dedicated <em>New</em> badge column</li>
+      <li>Retrieves and displays the last modifier and modification date from the org for each component</li>
+      <li>Double-click any changed row to open an inline side-by-side diff viewer with line-level highlights</li>
+      <li>CustomField picklist rows open a dedicated picklist comparator popup</li>
+      <li>Layout rows open a structured layout diff popup to compare section by section</li>
+      <li>Filter checkboxes let you hide unchanged, changed, or new items to focus only on what matters</li>
+      <li>"Reuse Current backup" re-runs the diff from the cached backup without re-fetching from the org</li>
+      <li>Profile rows hidden by default; shown only when they contain actual updates</li>
+      <li>In-app GemsFX notification slides in from the top-right to report success or failure</li>
+      <li>"Generate AI Prompt" assembles changed file content or paths into a ready-to-paste LLM prompt for functional and technical review</li>
     </ul>
     <div style="text-align:right;margin-top:18px">
       <button class="cal-btn btn-d" onclick="document.getElementById('modal-kf').style.display='none'">Close</button>

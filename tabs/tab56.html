@@ -3,20 +3,137 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Test Suite Manager — Calumet</title>
+<title>TestSuite — Calumet</title>
 <link rel="stylesheet" href="../shared.css">
+<style>
+  .lv-item {
+    padding: 4px 8px;
+    border-bottom: 1px solid #eaf0f5;
+    color: #1a2a35;
+    cursor: default;
+    white-space: nowrap;
+  }
+  .lv-item:last-child { border-bottom: none; }
+  .lv-item.sel {
+    background: #cce4f0;
+    color: #1a5276;
+    font-weight: 600;
+  }
+  .list-hdr {
+    font-size: 13px;
+    font-weight: 700;
+    color: #1a2a35;
+    margin-bottom: 4px;
+  }
+  .transfer-col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: 90px;
+    flex-shrink: 0;
+    padding: 28px 6px 0 6px;
+  }
+  .info-lbl { font-size: 11px; color: #1a2a35; font-weight: 700; }
+  .info-val-ok { font-size: 11px; color: #27ae60; font-weight: 700; }
+</style>
 </head>
 <body class="tab-page">
+
 <div class="sum">
   <div class="sum-title">
-    <h2>Test Suite Manager</h2>
+    <h2>TestSuite</h2>
     <span class="sum-badge">Tab 56</span>
   </div>
-  <p class="sum-desc">Build and manage Apex test suites. Move test classes between suites and synchronise with VS Code.</p>
+  <p class="sum-desc">
+    Build and manage Apex test suites. Move test classes between suites and synchronise with VS Code.
+    <button class="cal-btn btn-d" style="margin-left:10px" onclick="document.getElementById('modal-kf').style.display='flex'">&#9733; Key features</button>
+  </p>
 </div>
+
 <div class="mockup-wrap">
-  <div class="mockup"><div class="vbox" style="gap:0px"><div class="anchor"><div class="hbox" style="gap:6.0px;align-items:center"><button class="cal-btn btn-d" data-tip="Load test classes from the local vsCode project">Read from vsCode</button><button class="cal-btn btn-d" data-tip="Load test classes from the connected Salesforce org">Read from Org</button><div class="vsep"></div><button class="cal-btn btn-d" data-tip="Open a .testSuite-meta.xml file from the vsCode project">Open TestSuite</button><button class="cal-btn btn-d" data-tip="Save the current suite to the vsCode project">Save TestSuite</button><div class="vsep"></div><button class="cal-btn btn-d" data-tip="Deploy the TestSuite to the connected org">Deploy</button><button class="cal-btn btn-d" data-tip="Run the TestSuite on the connected org">Run</button><button class="cal-btn btn-d" data-tip="Load TestSuite classes from the org">Load from Org</button><div class="spacer"></div></div><div class="hbox" style="gap:12.0px;align-items:center"><span class="cal-lbl">TestSuite :</span><input class="cal-tf" placeholder="TestSuite name" data-tip="Name of the TestSuite (without extension)" style="width:200.0px;" readonly><div class="vsep"></div><span class="cal-lbl">vsCode :</span><span class="cal-lbl" style="font-weight:bold">not yet created</span><div class="vsep"></div><span class="cal-lbl">Org :</span><span class="cal-lbl" style="font-weight:bold">not in org</span></div><div class="hbox" style="gap:0.0px;align-items:center"><div class="vbox" style="gap:4.0px"><span class="cal-lbl" style="font-weight:bold;font-size:13px">Test classes to add</span><input class="cal-tf" placeholder="search class…" data-tip="Filter the list of available test classes" style="" readonly><div class="cal-listview"></div></div><div class="vbox" style="gap:12.0px"><button class="cal-btn btn-d" data-tip="Move selected classes to the TestSuite (or double-click)">Add ▶</button><button class="cal-btn btn-d" data-tip="Remove selected classes from the TestSuite (or double-click)">◀ Remove</button></div><div class="vbox" style="gap:4.0px"><span class="cal-lbl" style="font-weight:bold;font-size:13px">TestSuite classes</span><div class="cal-listview"></div></div></div></div></div></div>
+  <div class="mockup" style="padding:10px 10px 12px 10px">
+
+    <!-- Toolbar -->
+    <div class="hbox" style="gap:6px;align-items:center;padding-bottom:7px;flex-wrap:nowrap">
+      <button class="cal-btn btn-d" data-tip="Load test classes from the local vsCode project">Read from vsCode</button>
+      <button class="cal-btn btn-d" data-tip="Load test classes from the connected Salesforce org">Read from Org</button>
+      <div class="vsep"></div>
+      <button class="cal-btn btn-d" data-tip="Open a .testSuite-meta.xml file from the vsCode project">Open TestSuite</button>
+      <button class="cal-btn btn-g" data-tip="Save the current suite to the vsCode project">Save TestSuite</button>
+      <div class="vsep"></div>
+      <button class="cal-btn btn-b" data-tip="Deploy the TestSuite to the connected org">Deploy</button>
+      <button class="cal-btn btn-b" data-tip="Run the TestSuite on the connected org">Run</button>
+      <button class="cal-btn btn-d" data-tip="Load TestSuite classes from the org">Load from Org</button>
+      <div class="spacer"></div>
+      <span style="font-size:13px;font-weight:700;color:#1a5276">SampleSuite</span>
+      <button class="cal-btn btn-d" style="padding:2px 7px;font-size:11px" data-tip="Open TestSuite documentation">?</button>
+    </div>
+
+    <!-- Info bar -->
+    <div class="hbox" style="gap:10px;align-items:center;padding:5px 0 8px 0;border-bottom:1px solid #d0dde6;flex-wrap:nowrap">
+      <span class="info-lbl">TestSuite :</span>
+      <input class="cal-tf" readonly value="SampleSuite" style="width:200px" data-tip="Name of the TestSuite (without extension)">
+      <div class="vsep"></div>
+      <span class="info-lbl">vsCode :</span>
+      <span class="info-val-ok">04/14/2026 16:12:07</span>
+      <div class="vsep"></div>
+      <span class="info-lbl">Org :</span>
+      <span class="info-val-ok">2026-04-14 16:22:07</span>
+    </div>
+
+    <!-- Two-panel list area -->
+    <div style="display:flex;gap:0;margin-top:10px;height:320px">
+
+      <!-- Left — available test classes -->
+      <div class="vbox" style="flex:1;min-width:0;gap:4px">
+        <div class="list-hdr">Test classes to add</div>
+        <input class="cal-tf" readonly placeholder="search class&#8230;" style="width:100%" data-tip="Filter the list of available test classes">
+        <div class="cal-listview" style="flex:1;overflow-y:auto">
+          <div class="lv-item">AccountTeamMemberTrigger_Test</div>
+          <div class="lv-item">CaseEscalation_Test</div>
+          <div class="lv-item sel">ContractRenewal_Test</div>
+          <div class="lv-item">CreditApplication_BatchTest</div>
+          <div class="lv-item">DocumentGeneratorHelper_Test</div>
+          <div class="lv-item sel">EmailNotificationService_Test</div>
+          <div class="lv-item">LeadConversionFlow_Test</div>
+          <div class="lv-item">OpportunityStageUpdate_Test</div>
+          <div class="lv-item">PaymentSchedulerBatch_Test</div>
+          <div class="lv-item">ProductCatalogService_Test</div>
+          <div class="lv-item">RiskAssessmentHelper_Test</div>
+          <div class="lv-item">UserProvisioningFlow_Test</div>
+        </div>
+      </div>
+
+      <!-- Transfer buttons -->
+      <div class="transfer-col">
+        <button class="cal-btn btn-d" style="width:80px" data-tip="Move selected classes to the TestSuite (or double-click)">Add &#x25BA;</button>
+        <button class="cal-btn btn-d" style="width:80px" data-tip="Remove selected classes from the TestSuite (or double-click)">&#x25C4; Remove</button>
+      </div>
+
+      <!-- Right — TestSuite classes -->
+      <div class="vbox" style="flex:1;min-width:0;gap:4px">
+        <div class="list-hdr">TestSuite classes</div>
+        <div class="cal-listview" style="flex:1;overflow-y:auto;margin-top:28px">
+          <div class="lv-item">AP228_Core_AddressUpdate_TEST</div>
+          <div class="lv-item">AccountTriggerHandler_Test</div>
+          <div class="lv-item">CtrlAP201_Core_FlowWrapper_TEST</div>
+          <div class="lv-item">Opportunity_Core_BeforeUpdate_TEST</div>
+          <div class="lv-item">ServiceValidationHelperTEST</div>
+          <div class="lv-item">SampleApproval_BatchTest</div>
+          <div class="lv-item">SampleLimitCalculator_Test</div>
+        </div>
+      </div>
+
+    </div>
+    <!-- end two-panel -->
+
+  </div>
+  <!-- end .mockup -->
 </div>
+<!-- end .mockup-wrap -->
+
 <script>
 function sw(id,idx){
   var tp=document.getElementById(id);
@@ -24,5 +141,26 @@ function sw(id,idx){
   tp.querySelectorAll('.m-panel').forEach(function(p,i){p.classList.toggle('act',i===idx)});
 }
 </script>
+
+<!-- Key features modal -->
+<div id="modal-kf" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:999;align-items:center;justify-content:center" onclick="if(event.target===this)this.style.display='none'">
+  <div style="background:#fff;border-radius:8px;padding:28px 32px;max-width:520px;width:90%;color:#1a2a35;box-shadow:0 8px 32px rgba(0,0,0,.3)">
+    <h3 style="margin:0 0 14px;color:#2980b9">&#9733; Key features</h3>
+    <ul style="margin:0;padding-left:20px;line-height:1.8">
+      <li>Load Apex test classes from a local VS Code project folder or directly from the connected Salesforce org</li>
+      <li>Build a TestSuite by transferring classes: click <b>Add</b> / <b>Remove</b> or double-click items in either list</li>
+      <li>Filter the left-hand list in real time with the search box to quickly locate specific classes</li>
+      <li>Save the composed suite to the VS Code project as a <code style="background:#eef2f5;border-radius:3px;padding:1px 4px;font-family:Consolas,monospace;font-size:12px;color:#c0392b">.testSuite-meta.xml</code> file with one click</li>
+      <li>Auto-load the suite when exactly one <code style="background:#eef2f5;border-radius:3px;padding:1px 4px;font-family:Consolas,monospace;font-size:12px;color:#c0392b">.testSuite-meta.xml</code> exists in the project testSuites folder</li>
+      <li>Deploy the TestSuite to the connected org via Metadata API; vsCode and Org modification dates are tracked in the info bar</li>
+      <li>Run the TestSuite on the org and automatically open the Apex Test Queue in the browser to monitor progress</li>
+      <li>Load the current org version of a TestSuite back into the editor to compare or update</li>
+    </ul>
+    <div style="text-align:right;margin-top:18px">
+      <button class="cal-btn btn-d" onclick="document.getElementById('modal-kf').style.display='none'">Close</button>
+    </div>
+  </div>
+</div>
+
 </body>
 </html>

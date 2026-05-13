@@ -3,20 +3,482 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Test Classes — Calumet</title>
+<title>TestClass — Calumet</title>
 <link rel="stylesheet" href="../shared.css">
 </head>
 <body class="tab-page">
 <div class="sum">
   <div class="sum-title">
-    <h2>Test Classes</h2>
+    <h2>TestClass</h2>
     <span class="sum-badge">Tab 6</span>
   </div>
-  <p class="sum-desc">Manage and run Apex test classes. View coverage results and test execution status.</p>
+  <p class="sum-desc">
+    Manage and run Apex test classes. View coverage results and test execution status.
+    <button class="cal-btn btn-d" style="margin-left:10px" onclick="document.getElementById('modal-kf').style.display='flex'">&#9733; Key features</button>
+  </p>
 </div>
+
 <div class="mockup-wrap">
-  <div class="mockup"><div class="vbox" style="gap:0px"><div class="anchor"><div class="m-tabpane" id="tp26"><div class="m-tabbar"><div class="m-tab act" onclick="sw('tp26',0)">Coverage</div><div class="m-tab" onclick="sw('tp26',1)">Helper</div><div class="m-tab" onclick="sw('tp26',2)">Limits</div><div class="m-tab" onclick="sw('tp26',3)">Results</div></div><div class="m-body"><div class="m-panel act" id="tp26-0"><div class="anchor"><div class="vbox" style="gap:8.0px"><div class="hbox" style="gap:10.0px;align-items:center"><span class="cal-lbl">Modified after:</span><input class="cal-tf" placeholder="Date..." readonly><button class="cal-btn btn-b" data-tip="Fetch Apex coverage from Salesforce">Search</button><div class="spacer"></div><label class="cal-chk"><input type="checkbox" disabled> deploy</label><label class="cal-chk"><input type="checkbox" disabled> retrieve</label><label class="cal-chk"><input type="checkbox" disabled> sfdxProject</label><label class="cal-chk"><input type="checkbox" disabled> calumetProject</label></div><div class="hbox" style="gap:10.0px;align-items:center"><button class="cal-btn btn-b" data-tip="Export test classes for selected items with coverage &gt; 75%">Extract test class &gt;75%</button><button class="cal-btn btn-b" data-tip="Export all test classes for the selected items">Extract all test class</button><div class="spacer"></div><span class="cal-lbl">Filter:</span><input class="cal-tf" placeholder="" style="width:229.0px;" readonly></div><div class="tbl-wrap"><table class="cal-tbl"><thead><tr><th style="width:330.0px">Name</th><th style="width:120.0px">Last modified</th><th style="width:150.0px">Last modified by</th><th style="width:90.0px">Coverage</th><th style="width:90.0px">Covered</th><th style="width:90.0px">Total lines</th><th style="width:90.0px">Class/Trigger</th></tr></thead><tbody><tr><td colspan="20" class="tbl-empty"></td></tr></tbody></table></div></div></div></div><div class="m-panel" id="tp26-1"><div class="anchor"><div class="hbox" style="gap:0px;align-items:center"><div class="vbox" style="gap:8.0px"><span class="cal-lbl">Select the source org to use:</span><div class="hbox" style="gap:8.0px;align-items:center"><select class="cal-cb" style="width:155.0px;"><option class="ph">Select...</option></select><label class="cal-chk"><input type="checkbox" disabled> default</label></div><div class="hbox" style="gap:8.0px;align-items:center"><button class="cal-btn btn-d" data-tip="Refresh the test class cache from Salesforce">Refresh cache</button><span class="cal-lbl" style="font-style:italic">cache date:</span></div><hr class="hsep"><span class="cal-lbl">Test class (MyClass.aMethod is also supported)</span><input class="cal-tf" placeholder="" style="width:240.0px;" readonly><button class="cal-btn btn-b" data-tip="Find test classes for the given Apex class or method">Search</button><hr class="hsep"><span class="cal-lbl">Test Suite</span><input class="cal-tf" placeholder="" style="width:240.0px;" readonly><button class="cal-btn btn-d" data-tip="Create or select a test suite file">Create / Select</button></div><div class="vbox" style="gap:6.0px"><span class="cal-lbl">Test classes found:</span><div class="tbl-wrap"><table class="cal-tbl"><thead><tr><th style="width:200.0px">Class</th><th style="width:120.0px">Coverage</th><th style="width:70.0px">\%</th><th style="width:70.0px">D</th><th style="width:100.0px">Method found</th></tr></thead><tbody><tr><td colspan="20" class="tbl-empty"></td></tr></tbody></table></div></div></div></div></div><div class="m-panel" id="tp26-2"><div class="anchor"><div class="hbox" style="gap:10.0px;align-items:center"><button class="cal-btn btn-b" data-tip="Fetch test limits from Salesforce">Search</button><span class="cal-lbl">0</span><div class="spacer"></div><span class="cal-lbl">Filter:</span><input class="cal-tf" placeholder="" style="width:300.0px;" readonly></div><div class="tbl-wrap"><table class="cal-tbl"><thead><tr><th style="width:200.0px">TestName</th><th style="width:130.0px">RunBy</th><th style="width:120.0px">RunDate</th><th style="width:70.0px">Soql</th><th style="width:80.0px">QueryRows</th><th style="width:70.0px">Dml</th><th style="width:75.0px">DmlRows</th><th style="width:70.0px">Sosl</th><th style="width:70.0px">Async</th><th style="width:70.0px">Email</th><th style="width:70.0px">Mobile</th><th style="width:75.0px">Callouts</th><th style="width:70.0px">Cpu</th><th style="width:75.0px">Duration</th></tr></thead><tbody><tr><td colspan="20" class="tbl-empty"></td></tr></tbody></table></div></div></div><div class="m-panel" id="tp26-3"><div class="anchor"><div class="hbox" style="gap:10.0px;align-items:center"><button class="cal-btn btn-b" data-tip="Fetch test results from Salesforce">Search</button><span class="cal-lbl">0</span><span class="cal-lbl">Filter:</span><input class="cal-tf" placeholder="" style="width:200.0px;" readonly><label class="cal-chk"><input type="checkbox" disabled> hide Success</label><label class="cal-chk"><input type="checkbox" disabled> hide Failed</label><div class="spacer"></div><button class="cal-btn btn-b" data-tip="Keep only the latest test run results">Keep Latest</button><button class="cal-btn btn-r" data-tip="Trigger execution of all test classes">Run All Tests</button></div><div class="tbl-wrap"><table class="cal-tbl"><thead><tr><th style="width:200.0px">ClassName</th><th style="width:200.0px">Method</th><th style="width:90.0px">OutCome</th><th style="width:130.0px">Date</th><th style="width:250.0px">StackTrace</th><th style="width:250.0px">Message</th></tr></thead><tbody><tr><td colspan="20" class="tbl-empty"></td></tr></tbody></table></div></div></div></div></div></div></div></div>
+  <div class="mockup">
+
+    <div class="m-tabpane" id="tp6">
+      <div class="m-tabbar">
+        <div class="m-tab act" onclick="sw('tp6',0)">Coverage</div>
+        <div class="m-tab" onclick="sw('tp6',1)">Helper</div>
+        <div class="m-tab" onclick="sw('tp6',2)">Limits</div>
+        <div class="m-tab" onclick="sw('tp6',3)">Results</div>
+      </div>
+
+      <div class="m-body">
+
+        <!-- ═══════════════════════════════ Coverage ═══════════════════════════════ -->
+        <div class="m-panel act" id="tp6-0">
+          <div class="vbox" style="gap:8px;padding:6px 4px 4px">
+
+            <!-- Row 1: date filter + search + class-filter checkboxes -->
+            <div class="hbox" style="gap:10px;align-items:center">
+              <span class="cal-lbl">Modified after:</span>
+              <input class="cal-tf" value="2026-01-01" style="width:120px" readonly>
+              <button class="cal-btn btn-b" data-tip="Fetch Apex coverage from Salesforce">Search</button>
+              <div class="spacer"></div>
+              <label class="cal-chk"><input type="checkbox" disabled> deploy</label>
+              <label class="cal-chk"><input type="checkbox" disabled> retrieve</label>
+              <label class="cal-chk"><input type="checkbox" checked disabled> sfdxProject</label>
+              <label class="cal-chk"><input type="checkbox" disabled> calumetProject</label>
+            </div>
+
+            <!-- Row 2: extract buttons + filter -->
+            <div class="hbox" style="gap:10px;align-items:center">
+              <button class="cal-btn btn-b" data-tip="Export test classes for selected items with coverage > 75%">Extract test class &gt;75%</button>
+              <button class="cal-btn btn-b" data-tip="Export all test classes for the selected items">Extract all test class</button>
+              <div class="spacer"></div>
+              <span class="cal-lbl">Filter:</span>
+              <input class="cal-tf" value="" style="width:229px" placeholder="type to filter..." readonly>
+            </div>
+
+            <!-- Coverage table -->
+            <div class="tbl-wrap">
+              <table class="cal-tbl">
+                <thead>
+                  <tr>
+                    <th style="width:280px">Name</th>
+                    <th style="width:140px">Last modified</th>
+                    <th style="width:150px">Last modified by</th>
+                    <th style="width:80px">Coverage</th>
+                    <th style="width:70px">Covered</th>
+                    <th style="width:80px">Total lines</th>
+                    <th style="width:90px">Class/Trigger</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr style="background:#e6f9e6">
+                    <td>AccountTriggerHandler</td>
+                    <td>2026-04-20 14:39:08</td>
+                    <td>John Doe</td>
+                    <td style="color:#27ae60;font-weight:700">87.37</td>
+                    <td>354</td>
+                    <td>404</td>
+                    <td>C</td>
+                  </tr>
+                  <tr style="background:#e6f9e6">
+                    <td>InvoiceValidationHelper</td>
+                    <td>2026-04-14 09:56:31</td>
+                    <td>John Doe</td>
+                    <td style="color:#27ae60;font-weight:700">86.90</td>
+                    <td>73</td>
+                    <td>84</td>
+                    <td>C</td>
+                  </tr>
+                  <tr>
+                    <td>FormulaInFieldExtractor</td>
+                    <td>2025-06-04 16:44:21</td>
+                    <td>John Doe</td>
+                    <td style="color:#E74C3C;font-weight:700">0.00</td>
+                    <td>0</td>
+                    <td>66</td>
+                    <td>C</td>
+                  </tr>
+                  <tr style="background:#e6f9e6">
+                    <td>Opportunity_CRM_BeforeUpdate</td>
+                    <td>2026-05-04 17:03:32</td>
+                    <td>Marc Dupont</td>
+                    <td style="color:#27ae60;font-weight:700">97.53</td>
+                    <td>157</td>
+                    <td>162</td>
+                    <td>T</td>
+                  </tr>
+                  <tr>
+                    <td>AccountAfterUpdate</td>
+                    <td>2026-04-20 14:33:22</td>
+                    <td>John Doe</td>
+                    <td style="color:#e67e22;font-weight:700">66.67</td>
+                    <td>14</td>
+                    <td>21</td>
+                    <td>T</td>
+                  </tr>
+                  <tr>
+                    <td>AP217_CRM_DeployFrameworkContract</td>
+                    <td>2026-03-10 11:22:05</td>
+                    <td>Marc Dupont</td>
+                    <td style="color:#E74C3C;font-weight:700">32.14</td>
+                    <td>9</td>
+                    <td>28</td>
+                    <td>C</td>
+                  </tr>
+                  <tr style="background:#e6f9e6">
+                    <td>DataCollectionHandler</td>
+                    <td>2026-04-22 11:45:00</td>
+                    <td>John Doe</td>
+                    <td style="color:#27ae60;font-weight:700">92.11</td>
+                    <td>70</td>
+                    <td>76</td>
+                    <td>C</td>
+                  </tr>
+                  <tr>
+                    <td>BatchPurgeContracts</td>
+                    <td>2026-02-18 09:14:55</td>
+                    <td>John Doe</td>
+                    <td style="color:#e67e22;font-weight:700">49.23</td>
+                    <td>32</td>
+                    <td>65</td>
+                    <td>C</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <span class="cal-lbl" style="color:#888;font-style:italic">8 classes/triggers — rows highlighted in green have coverage &gt; 75%. Double-click a row to open the detail popup.</span>
+          </div>
+        </div>
+
+        <!-- ═══════════════════════════════ Helper ═══════════════════════════════ -->
+        <div class="m-panel" id="tp6-1">
+          <div class="hbox" style="gap:0;align-items:stretch">
+
+            <!-- Left panel -->
+            <div class="vbox" style="gap:8px;min-width:270px;max-width:270px;padding:10px">
+              <span class="cal-lbl">Select the source org to use:</span>
+              <div class="hbox" style="gap:8px;align-items:center">
+                <select class="cal-cb" style="width:155px">
+                  <option>AcmeProd</option>
+                </select>
+                <label class="cal-chk"><input type="checkbox" checked disabled> default</label>
+              </div>
+              <div class="hbox" style="gap:8px;align-items:center">
+                <button class="cal-btn btn-d" data-tip="Refresh the test class cache from Salesforce">refreshCache</button>
+                <span class="cal-lbl" style="font-style:italic;color:#888">cache date: 2026-05-10 08:42:17</span>
+              </div>
+
+              <hr class="hsep">
+
+              <span class="cal-lbl">Test class (MyClass.aMethod is also supported)</span>
+              <input class="cal-tf" value="AccountTriggerHandler" style="width:240px" readonly>
+              <button class="cal-btn btn-b" data-tip="Find test classes for the given Apex class or method">Search</button>
+
+              <hr class="hsep">
+
+              <span class="cal-lbl">Test Suite</span>
+              <input class="cal-tf" value="ProjectTestSuite" style="width:240px" readonly>
+              <button class="cal-btn btn-d" data-tip="Create or select a test suite file">Create / Select</button>
+            </div>
+
+            <!-- Right panel: test class results table -->
+            <div class="vbox" style="gap:6px;flex:1;min-width:0;padding:10px 10px 10px 0">
+              <span class="cal-lbl">Test classes found:</span>
+              <div class="tbl-wrap" style="flex:1">
+                <table class="cal-tbl">
+                  <thead>
+                    <tr>
+                      <th style="width:260px">Class</th>
+                      <th style="width:100px">Coverage</th>
+                      <th style="width:70px">%</th>
+                      <th style="width:70px">D</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>AccountTriggerHandler_Test</td>
+                      <td>304/404</td>
+                      <td style="color:#27ae60;font-weight:700">75.248</td>
+                      <td style="color:#27ae60">75.248</td>
+                    </tr>
+                    <tr>
+                      <td>AP217_CRM_DeployFrameworkContract_TEST</td>
+                      <td>2/404</td>
+                      <td style="color:#e67e22">11.634</td>
+                      <td style="color:#888">0.495</td>
+                    </tr>
+                    <tr>
+                      <td>DataCollectionHandlerTest</td>
+                      <td>0/404</td>
+                      <td style="color:#e67e22">11.139</td>
+                      <td style="color:#888">0</td>
+                    </tr>
+                    <tr>
+                      <td>CtrlAP201_CRM_FluxWrapper_TEST</td>
+                      <td>0/404</td>
+                      <td style="color:#e67e22">11.139</td>
+                      <td style="color:#888">0</td>
+                    </tr>
+                    <tr>
+                      <td>Opportunity_CRM_BeforeUpdate_TEST</td>
+                      <td>0/404</td>
+                      <td style="color:#e67e22">11.139</td>
+                      <td style="color:#888">0</td>
+                    </tr>
+                    <tr>
+                      <td>AP228_CRM_SiteUpdateAddress_TEST</td>
+                      <td>0/404</td>
+                      <td style="color:#e67e22">11.139</td>
+                      <td style="color:#888">0</td>
+                    </tr>
+                    <tr>
+                      <td>BatchPurgeContracts_TEST</td>
+                      <td>0/404</td>
+                      <td style="color:#e67e22">11.139</td>
+                      <td style="color:#888">0</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- ═══════════════════════════════ Limits ═══════════════════════════════ -->
+        <div class="m-panel" id="tp6-2">
+          <div class="vbox" style="gap:8px;padding:6px 4px 4px">
+            <div class="hbox" style="gap:10px;align-items:center">
+              <button class="cal-btn btn-b" data-tip="Fetch test limits from Salesforce">Search</button>
+              <span class="cal-lbl" style="color:#27ae60;font-weight:700">71</span>
+              <div class="spacer"></div>
+              <span class="cal-lbl">Filter:</span>
+              <input class="cal-tf" value="" style="width:300px" placeholder="type to filter..." readonly>
+            </div>
+            <div class="tbl-wrap">
+              <table class="cal-tbl">
+                <thead>
+                  <tr>
+                    <th style="width:300px">TestName</th>
+                    <th style="width:120px">RunBy</th>
+                    <th style="width:140px">RunDate</th>
+                    <th style="width:45px">Soql</th>
+                    <th style="width:70px">QueryRows</th>
+                    <th style="width:45px">Dml</th>
+                    <th style="width:60px">DmlRows</th>
+                    <th style="width:45px">Sosl</th>
+                    <th style="width:50px">Async</th>
+                    <th style="width:50px">Email</th>
+                    <th style="width:55px">Mobile</th>
+                    <th style="width:60px">Callouts</th>
+                    <th style="width:55px">Cpu</th>
+                    <th style="width:65px">Duration</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>CaseMilestoneDeleter_TEST.testBatch</td>
+                    <td>John Doe</td>
+                    <td>2026-01-12 15:41:44</td>
+                    <td>0</td><td>0</td><td>0</td><td>0</td><td>0</td>
+                    <td>1</td><td>0</td><td>0</td><td>0</td><td>0</td>
+                    <td style="color:#e67e22">15426</td>
+                  </tr>
+                  <tr>
+                    <td>BatchPurgeWorkSkillSchedulableTest.testExecuteSchedulesBatch</td>
+                    <td>John Doe</td>
+                    <td>2026-01-21 14:12:12</td>
+                    <td>1</td><td style="color:#e67e22">1</td><td>0</td><td>0</td><td>0</td>
+                    <td>1</td><td>0</td><td>0</td><td>0</td><td>8</td>
+                    <td>408</td>
+                  </tr>
+                  <tr>
+                    <td>GenericBatchPurgeTest.testBatch</td>
+                    <td>John Doe</td>
+                    <td>2026-01-21 14:15:16</td>
+                    <td>7</td><td>3</td><td>4</td><td style="color:#e67e22">4</td><td>0</td>
+                    <td>1</td><td>0</td><td>0</td><td>0</td><td>509</td>
+                    <td style="color:#E74C3C">10721</td>
+                  </tr>
+                  <tr>
+                    <td>AI_Utils_TEST.testCreateNegativeFeedbackNC</td>
+                    <td>Marc Dupont</td>
+                    <td>2026-02-11 16:40:35</td>
+                    <td>2</td><td>2</td><td style="color:#e67e22">1</td><td style="color:#e67e22">1</td><td>0</td>
+                    <td>0</td><td>0</td><td>0</td><td>0</td><td>283</td>
+                    <td>808</td>
+                  </tr>
+                  <tr>
+                    <td>AI_Utils_TEST.testCreateFeedbackNC_Exception</td>
+                    <td>Marc Dupont</td>
+                    <td>2026-02-11 16:40:36</td>
+                    <td>4</td><td>56</td><td style="color:#e67e22">1</td><td style="color:#e67e22">1</td><td>0</td>
+                    <td>0</td><td>0</td><td>0</td><td>0</td><td>0</td>
+                    <td>113</td>
+                  </tr>
+                  <tr>
+                    <td>CtrlAP323RefundLT_STD_TEST.CtrlAP323RefundLT_STD_TEST_recup_code</td>
+                    <td>John Doe</td>
+                    <td>2026-03-09 17:25:02</td>
+                    <td>17</td><td>1226</td><td>0</td><td>0</td><td>0</td>
+                    <td>0</td><td>0</td><td>1</td><td>5</td><td>0</td>
+                    <td style="color:#e67e22">5826</td>
+                  </tr>
+                  <tr>
+                    <td>CtrlAP323RefundLT_STD_TEST.CtrlAP323RefundLT_STD_TEST_layout</td>
+                    <td>John Doe</td>
+                    <td>2026-03-09 17:24:56</td>
+                    <td>51</td><td>2609</td><td>7</td><td>7</td><td>0</td>
+                    <td>0</td><td>0</td><td>0</td><td>4</td><td>0</td>
+                    <td style="color:#E74C3C">6861</td>
+                  </tr>
+                  <tr>
+                    <td>CtrlAP323RefundLT_STD2_TEST.testFonctValid</td>
+                    <td>John Doe</td>
+                    <td>2026-03-09 17:31:57</td>
+                    <td>16</td><td>17</td><td>4</td><td>4</td><td>0</td>
+                    <td>0</td><td>0</td><td>2</td><td>472</td><td>0</td>
+                    <td>1489</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- ═══════════════════════════════ Results ═══════════════════════════════ -->
+        <div class="m-panel" id="tp6-3">
+          <div class="vbox" style="gap:8px;padding:6px 4px 4px">
+            <div class="hbox" style="gap:10px;align-items:center">
+              <button class="cal-btn btn-b" data-tip="Fetch test results from Salesforce">Search</button>
+              <span class="cal-lbl" style="color:#27ae60;font-weight:700">925</span>
+              <span class="cal-lbl" style="margin-left:4px">Filter:</span>
+              <input class="cal-tf" value="" style="width:200px" placeholder="type to filter..." readonly>
+              <label class="cal-chk"><input type="checkbox" disabled> hide Success</label>
+              <label class="cal-chk"><input type="checkbox" disabled> hide Failed</label>
+              <div class="spacer"></div>
+              <button class="cal-btn btn-b" data-tip="Keep only the latest test run results">Keep Latest</button>
+              <button class="cal-btn btn-r" data-tip="Trigger execution of all test classes">Run All Tests</button>
+            </div>
+            <div class="tbl-wrap">
+              <table class="cal-tbl">
+                <thead>
+                  <tr>
+                    <th style="width:220px">ClassName</th>
+                    <th style="width:220px">Method</th>
+                    <th style="width:80px">OutCome</th>
+                    <th style="width:145px">Date</th>
+                    <th style="width:260px">StackTrace</th>
+                    <th style="width:260px">Message</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>GovernanceClosedAccountsTest</td>
+                    <td>testAnalyseSeul</td>
+                    <td style="color:#27ae60;font-weight:700">Pass</td>
+                    <td>2026-05-04 15:31:08</td>
+                    <td></td><td></td>
+                  </tr>
+                  <tr>
+                    <td>GovernanceClosedAccountsTest</td>
+                    <td>testAnalyseEtTraitement</td>
+                    <td style="color:#27ae60;font-weight:700">Pass</td>
+                    <td>2026-05-04 15:30:42</td>
+                    <td></td><td></td>
+                  </tr>
+                  <tr>
+                    <td>GovernanceClosedAccountsTest</td>
+                    <td>makeData</td>
+                    <td style="color:#27ae60;font-weight:700">Pass</td>
+                    <td>2026-05-04 15:30:25</td>
+                    <td></td><td></td>
+                  </tr>
+                  <tr>
+                    <td>AP215InjectDataSchedule_TEST</td>
+                    <td>testPurgeAssert2</td>
+                    <td style="color:#E74C3C;font-weight:700">Fail</td>
+                    <td>2026-04-27 16:04:16</td>
+                    <td style="color:#888;font-size:10px">External entry point</td>
+                    <td style="color:#888;font-size:10px">System.UnexpectedException: No more than one executeBatch can be called</td>
+                  </tr>
+                  <tr>
+                    <td>AP215InjectDataSchedule_TEST</td>
+                    <td>testPurgeAssert</td>
+                    <td style="color:#27ae60;font-weight:700">Pass</td>
+                    <td>2026-04-27 16:04:15</td>
+                    <td></td><td></td>
+                  </tr>
+                  <tr>
+                    <td>AP215InjectDataSchedule_TEST</td>
+                    <td>testPurgeAssert2</td>
+                    <td style="color:#E74C3C;font-weight:700">Fail</td>
+                    <td>2026-04-27 16:03:23</td>
+                    <td style="color:#888;font-size:10px">External entry point</td>
+                    <td style="color:#888;font-size:10px">System.UnexpectedException: No more than one executeBatch can be called</td>
+                  </tr>
+                  <tr>
+                    <td>AP215InjectDataSchedule_TEST</td>
+                    <td>testPurgeAssert2</td>
+                    <td style="color:#E74C3C;font-weight:700">Fail</td>
+                    <td>2026-04-27 15:59:26</td>
+                    <td style="color:#888;font-size:10px">Class.AP215InjectData.execute: line 45, column 1</td>
+                    <td style="color:#888;font-size:10px">System.ListException: Duplicate id in list: a0BX0000003KpQ2EAK</td>
+                  </tr>
+                  <tr>
+                    <td>DataCollectionHandlerTest</td>
+                    <td>testRenderSubjectMergeFields_WithMergeFields</td>
+                    <td style="color:#27ae60;font-weight:700">Pass</td>
+                    <td>2026-04-22 11:45:32</td>
+                    <td></td><td></td>
+                  </tr>
+                  <tr>
+                    <td>DataCollectionHandlerTest</td>
+                    <td>testRenderSubjectMergeFields_NullSubject</td>
+                    <td style="color:#27ae60;font-weight:700">Pass</td>
+                    <td>2026-04-22 11:45:31</td>
+                    <td></td><td></td>
+                  </tr>
+                  <tr>
+                    <td>DataCollectionHandlerTest</td>
+                    <td>testRenderSubjectMergeFields_NullFieldValue</td>
+                    <td style="color:#27ae60;font-weight:700">Pass</td>
+                    <td>2026-04-22 11:45:31</td>
+                    <td></td><td></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /.m-body -->
+    </div><!-- /.m-tabpane -->
+
+  </div><!-- /.mockup -->
+</div><!-- /.mockup-wrap -->
+
+<!-- Key features modal -->
+<div id="modal-kf" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:999;align-items:center;justify-content:center" onclick="if(event.target===this)this.style.display='none'">
+  <div style="background:#fff;border-radius:8px;padding:28px 32px;max-width:540px;width:90%;color:#1a2a35;box-shadow:0 8px 32px rgba(0,0,0,.3)">
+    <h3 style="margin:0 0 14px;color:#2980b9">&#9733; Key features</h3>
+    <ul style="margin:0;padding-left:20px;line-height:1.8">
+      <li><strong>Coverage view</strong> — fetch Apex class and trigger coverage from Salesforce; rows with coverage &gt; 75% are highlighted in green.</li>
+      <li><strong>Date filter</strong> — restrict the coverage search to classes modified after a given date.</li>
+      <li><strong>Source filters</strong> — limit displayed classes to items found in the deploy package, retrieve package, SFDX project, or Calumet project.</li>
+      <li><strong>Extract test classes</strong> — export the list of test classes covering the selected items (all, or only those reaching &gt;75% coverage).</li>
+      <li><strong>Detail popup</strong> — double-click any row to open a per-class coverage breakdown showing which test classes contribute to coverage.</li>
+      <li><strong>Helper search</strong> — enter any class or method name (e.g. <em>MyClass.aMethod</em>) to find which test classes exercise it, using a local cache for speed.</li>
+      <li><strong>Test Suite management</strong> — create or select a <code>.testSuite-meta.xml</code> file; add classes to it via the context menu on the Helper table.</li>
+      <li><strong>Limits tab</strong> — view governor limit consumption per test method execution (SOQL, DML rows, CPU time, callouts, etc.).</li>
+      <li><strong>Results tab</strong> — browse all stored test results; filter by outcome (Pass/Fail), keep only the latest run, or trigger a full test execution on the org.</li>
+    </ul>
+    <div style="text-align:right;margin-top:18px">
+      <button class="cal-btn btn-d" onclick="document.getElementById('modal-kf').style.display='none'">Close</button>
+    </div>
+  </div>
 </div>
+
 <script>
 function sw(id,idx){
   var tp=document.getElementById(id);
