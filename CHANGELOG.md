@@ -3,7 +3,7 @@
 ## v10.5 — 2026-05-20
 
 ### General
-- Tab help panel descriptions now load correctly when running from a fresh JAR installation, without requiring a previous installation.
+- Tab help descriptions now load correctly when running from a fresh JAR installation, without requiring a previous installation.
 
 ---
 
