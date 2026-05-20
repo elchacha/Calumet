@@ -1,6 +1,19 @@
 [version]v10.5[/version]
 [history]
+v10.5
 - General — Tab help descriptions now load correctly when running from a fresh JAR installation, without requiring a previous installation.
+
+v10.4
+- Control — A new Permission Set merge popup lets you compare and selectively copy permissions between two permission sets, with color-coded status badges, row highlights, and a Take All button.
+- Control — Fixed a regression that prevented double-clicking a Salesforce record link in the merge popup from opening it in the browser.
+- Control — The diff count for permission set files now accurately reflects only meaningful changes.
+- Relations — Metadata cache is now initialized correctly on the first extract, preventing empty columns when no cache exists yet.
+
+v10.2
+- General — OAuth authentication flow fixed (ServerSocket and SimpleHttpServer compatibility).
+
+v10.0
+- General — Major version release with new features and improvements.
 [/history]
 [update]dist/CalumetGui-10.5.jar[/update]
 [exe]dist/Calumet-10.5.exe[/exe]
