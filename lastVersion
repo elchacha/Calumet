@@ -1,8 +1,14 @@
-[version]v10.3[/version]
+[version]v10.4[/version]
 [history]
-- ChangeTracker — metadata cache is now persisted to disk and reused across sessions, reducing reload time on subsequent launches
-- OAuth — the authorization callback now correctly handles URL-encoded codes, adds retry loop, and improves logging
+- Control — A new Permission Set merge popup lets you compare and selectively copy permissions between two permission sets, with color-coded status badges, row highlights, and a Take All button
+- Control — Fixed a regression that prevented double-clicking a Salesforce record link in the merge popup from opening it in the browser
+- Control — Improved the diff count logic for permission set files so the summary accurately reflects meaningful changes
+- Relations — Metadata cache is now stored correctly on first extract, preventing empty columns on the initial load
+- Logs — Duration filter buttons no longer get their text truncated on smaller screens
+- Diff viewer — Intra-line changes are now highlighted inline within the diff popup for faster review
+- Diff viewer — Long diff lines no longer cause rows to expand vertically; text wraps to the column width
+- User Access Score — Layout and theme improvements for better readability in all color modes
 [/history]
-[update]dist/CalumetGui-10.3.jar[/update]
-[exe]dist/Calumet-10.3.exe[/exe]
-[updaterVersion]2.9[/updaterVersion]
+[update]dist/CalumetGui-10.4.jar[/update]
+[exe]dist/Calumet-10.4.exe[/exe]
+[updaterVersion]3.0[/updaterVersion]
