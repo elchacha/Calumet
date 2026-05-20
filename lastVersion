@@ -1,5 +1,9 @@
-[version]v10.6[/version]
+[version]v10.7[/version]
 [history]
+v10.7 — 2026-05-20
+DataSeeding
+- DataSeeding module is now embedded in the main application, ensuring all users run the latest version automatically on update.
+
 v10.6 — 2026-05-20
 General
 - Tab descriptions now display correctly for all users after upgrading from a previous version.
@@ -53,6 +57,6 @@ v10.0 — 2026-04-01
 General
 - New OAuth 2.0 authentication flow available alongside the classic SOAP login.
 [/history]
-[update]dist/CalumetGui-10.6.jar[/update]
-[exe]dist/Calumet-10.6.exe[/exe]
-[updaterVersion]3.0[/updaterVersion]
+[update]dist/CalumetGui-10.7.jar[/update]
+[exe]dist/Calumet-10.7.exe[/exe]
+[updaterVersion]3.1[/updaterVersion]
