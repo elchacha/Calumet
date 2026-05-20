@@ -1,5 +1,9 @@
-[version]v10.5[/version]
+[version]v10.6[/version]
 [history]
+v10.6 — 2026-05-20
+General
+- Tab descriptions now display correctly for all users after upgrading from a previous version.
+
 v10.5 — 2026-05-20
 General
 - Tab descriptions now display correctly when running from a fresh installation.
@@ -49,6 +53,6 @@ v10.0 — 2026-04-01
 General
 - New OAuth 2.0 authentication flow available alongside the classic SOAP login.
 [/history]
-[update]dist/CalumetGui-10.5.jar[/update]
-[exe]dist/Calumet-10.5.exe[/exe]
+[update]dist/CalumetGui-10.6.jar[/update]
+[exe]dist/Calumet-10.6.exe[/exe]
 [updaterVersion]3.0[/updaterVersion]
