@@ -1,5 +1,11 @@
-[version]v10.8[/version]
+[version]v10.9[/version]
 [history]
+v10.9 — 2026-05-20
+General
+- Updating the application no longer fails with a file-lock error on Windows: the new JAR is downloaded to a temporary file and then atomically replaces the running one.
+- All update steps are now written to updater.log for easier diagnostics when something goes wrong.
+- Fixed a data-corruption bug in the updater byte reader that could silently truncate downloaded files.
+
 v10.8 — 2026-05-20
 General
 - Update check now always fetches the latest version, bypassing CDN cache. Updates to future releases will be detected immediately after release.
@@ -61,6 +67,6 @@ v10.0 — 2026-04-01
 General
 - New OAuth 2.0 authentication flow available alongside the classic SOAP login.
 [/history]
-[update]dist/CalumetGui-10.8.jar[/update]
-[exe]dist/Calumet-10.8.exe[/exe]
-[updaterVersion]3.2[/updaterVersion]
+[update]dist/CalumetGui-10.9.jar[/update]
+[exe]dist/Calumet-10.9.exe[/exe]
+[updaterVersion]3.3[/updaterVersion]
