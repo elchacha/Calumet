@@ -1,5 +1,13 @@
 # Calumet — Changelog
 
+## v10.10 — 2026-05-20
+
+### General
+- Fixed a regression where the tab description panel (title, "?" button, description text) stopped displaying after upgrading from v10.x. The migration runner was re-applying v9.x migrations on every v10.x upgrade due to a version comparison bug, which overwrote the descriptions file with an outdated version.
+- Fixed the migration runner to use file-position-based ordering instead of string comparison, preventing any future re-application of already-applied migrations.
+
+---
+
 ## v10.5 — 2026-05-20
 
 ### General

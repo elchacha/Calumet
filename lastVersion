@@ -1,5 +1,10 @@
-[version]v10.9[/version]
+[version]v10.10[/version]
 [history]
+v10.10 — 2026-05-20
+General
+- Fixed a regression where the tab description panel (title, "?" button, description text) stopped displaying after upgrading from v10.x. Root cause: the migration runner was re-applying v9.x migrations on every v10.x upgrade due to a lexicographic version comparison bug, which overwrote cfg/TabsDescription.xlsx with an outdated version.
+- Fixed the migration runner to use file-position-based ordering instead of string comparison, preventing any future re-application of already-applied migrations.
+
 v10.9 — 2026-05-20
 General
 - Updating the application no longer fails with a file-lock error on Windows: the new JAR is downloaded to a temporary file and then atomically replaces the running one.
@@ -67,6 +72,6 @@ v10.0 — 2026-04-01
 General
 - New OAuth 2.0 authentication flow available alongside the classic SOAP login.
 [/history]
-[update]dist/CalumetGui-10.9.jar[/update]
-[exe]dist/Calumet-10.9.exe[/exe]
+[update]dist/CalumetGui-10.10.jar[/update]
+[exe]dist/Calumet-10.10.exe[/exe]
 [updaterVersion]3.3[/updaterVersion]
