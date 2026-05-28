@@ -4,11 +4,11 @@
 
 /* ── Site (dark) ── */
 :root{
-  --sbg:#0e1018;--sbg2:#141724;--sborder:#1f2438;
-  --stxt:#e2e8f0;--smut:#8892a4;--sacc:#5b9bac;
-  --scrd:#1a1d2e;--sw:15%;
+  --sbg:#142540;--sbg2:#1a3050;--sborder:#244568;
+  --stxt:#e2e8f0;--smut:#8892a4;--sacc:#2ea4c9;
+  --scrd:#1a3050;--sw:15%;
 }
-body{font-family:"Segoe UI",system-ui,sans-serif;background:#14161f;
+body{font-family:"Segoe UI",system-ui,sans-serif;background:#162840;
      color:var(--stxt);display:flex;height:100vh;overflow:hidden}
 
 /* ── Sidebar ── */
@@ -17,7 +17,7 @@ body{font-family:"Segoe UI",system-ui,sans-serif;background:#14161f;
 #sb-hd{padding:16px 14px 10px;border-bottom:1px solid var(--sborder);flex-shrink:0}
 #sb-hd h1{font-size:15px;font-weight:700;color:#fff;letter-spacing:.3px}
 #sb-hd small{font-size:11px;color:var(--smut)}
-#sb-search{width:100%;margin-top:8px;padding:5px 9px;background:#1a1d2e;
+#sb-search{width:100%;margin-top:8px;padding:5px 9px;background:#1a3050;
   border:1px solid var(--sborder);border-radius:5px;color:var(--stxt);
   font-size:11px;outline:none}
 #sb-search:focus{border-color:var(--sacc)}
@@ -29,13 +29,13 @@ body{font-family:"Segoe UI",system-ui,sans-serif;background:#14161f;
 .nav-a{display:block;padding:4px 12px 4px 18px;font-size:12px;color:#c8d0e0;
   text-decoration:none;border-left:2px solid transparent;cursor:pointer;
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.nav-a:hover{color:#fff;background:rgba(91,155,172,.1)}
-.nav-a.on{color:var(--sacc);border-left-color:var(--sacc);background:rgba(91,155,172,.08)}
+.nav-a:hover{color:#fff;background:rgba(46,164,201,.12)}
+.nav-a.on{color:var(--sacc);border-left-color:var(--sacc);background:rgba(46,164,201,.1)}
 .nav-a .n{font-size:10px;color:var(--smut);margin-left:3px}
 .hidden{display:none!important}
 
 /* ── Main ── */
-#main{flex:1;overflow-y:auto;background:#14161f}
+#main{flex:1;overflow-y:auto;background:#162840}
 #main::-webkit-scrollbar{width:5px}
 #main::-webkit-scrollbar-thumb{background:var(--sborder);border-radius:3px}
 
@@ -46,7 +46,7 @@ body{font-family:"Segoe UI",system-ui,sans-serif;background:#14161f;
 .sum{padding:20px 28px;background:var(--scrd);border-bottom:1px solid var(--sborder)}
 .sum-title{display:flex;align-items:center;gap:10px;margin-bottom:8px}
 .sum-title h2{font-size:18px;font-weight:700;color:#fff}
-.sum-badge{font-size:10px;background:#1f2438;color:var(--smut);
+.sum-badge{font-size:10px;background:#1e3a5e;color:var(--smut);
   padding:2px 8px;border-radius:12px;font-weight:400}
 .sum-desc{font-size:13px;color:#a8b4c8;line-height:1.6;max-width:800px}
 
@@ -122,7 +122,7 @@ body{font-family:"Segoe UI",system-ui,sans-serif;background:#14161f;
 .cal-cb{height:24px;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%239AABBF'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 6px center;padding-right:20px}
 .cal-grow{flex:1;min-width:0}
 .cal-chk{display:flex;align-items:center;gap:4px;font-size:11px;cursor:default;white-space:nowrap}
-.cal-chk input{cursor:default;accent-color:#5b9bac}
+.cal-chk input{cursor:default;accent-color:var(--sacc)}
 
 /* Table */
 .tbl-wrap{overflow-x:auto;border:1px solid #9AABBF;border-radius:3px;margin:2px 0}

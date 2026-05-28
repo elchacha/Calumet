@@ -8,9 +8,30 @@
 <style>
 #main{display:flex;flex-direction:column;overflow:hidden}
 #content{flex:1;display:flex;flex-direction:column;overflow:hidden}
-#desc-panel{flex:0 0 auto;max-height:25vh;overflow:auto;background:#1a1d2e;padding:12px 24px;border-bottom:1px solid #1f2438}
+#desc-panel{flex:0 0 auto;max-height:25vh;overflow:auto;background:#1a3050;padding:12px 24px;border-bottom:1px solid #244568}
 #frame-wrap{flex:1;overflow:hidden}
 #pane{border:none;width:100%;height:100%}
+/* Welcome redesign */
+#welcome{flex-direction:column;align-items:center;justify-content:flex-start;padding:36px 28px}
+.wlc-hero{display:flex;flex-direction:row;align-items:center;gap:32px;max-width:780px;margin-bottom:28px}
+.wlc-hero-text{flex:1}
+.wlc-hero h1{font-size:42px;font-weight:800;color:#fff;letter-spacing:-1px;margin-bottom:2px}
+.wlc-by{font-size:14px;color:var(--sacc);font-weight:600;letter-spacing:.3px;margin-bottom:10px}
+.wlc-tagline{font-size:14px;color:#a8b4c8;line-height:1.6;margin-bottom:0}
+.wlc-mascot-wrap{width:170px;height:170px;flex-shrink:0;background:#fff;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;overflow:hidden;
+  box-shadow:0 0 0 3px rgba(31,120,174,.45),0 8px 32px rgba(0,0,0,.4)}
+.wlc-mascot{width:134px}
+.wlc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;width:100%;max-width:780px}
+.wlc-card{display:flex;gap:12px;align-items:flex-start;background:#1a3050;border:1px solid #244568;
+  border-radius:8px;padding:13px 14px;cursor:pointer;transition:border-color .15s,background .15s}
+.wlc-card:hover{border-color:var(--sacc);background:rgba(46,164,201,.1)}
+.wlc-ico{flex-shrink:0;width:28px;height:28px;color:var(--sacc);margin-top:1px}
+.wlc-ico svg{width:100%;height:100%}
+.wlc-ct{font-size:12px;font-weight:700;color:#e2e8f0;margin-bottom:3px}
+.wlc-cn{font-size:10px;font-weight:400;color:var(--smut);background:#1e3a5e;
+  padding:1px 5px;border-radius:10px;margin-left:3px}
+.wlc-cd{font-size:11px;color:#8892a4;line-height:1.5}
 </style>
 </head>
 <body>
@@ -25,20 +46,56 @@
 <main id="main">
 
 <div id="welcome">
-  <div class="wlc">
-    <h1>Calumet</h1>
-    <p class="wlc-version">v10.0 &mdash; Salesforce Administration Suite</p>
-    <p class="wlc-desc">
-      Calumet is a desktop application for Salesforce administrators and developers.
-      It provides a unified interface for:<br><br>
-      &bull; <strong>Metadata management</strong> &mdash; retrieve, deploy, compare and roll back metadata across orgs<br>
-      &bull; <strong>Apex &amp; testing</strong> &mdash; code coverage, test suites, debug log analysis, dead code detection<br>
-      &bull; <strong>Security &amp; access</strong> &mdash; profile analysis, permission sets, sharing rules, field-level access<br>
-      &bull; <strong>Data operations</strong> &mdash; SOQL explorer, record browser, picklist management<br>
-      &bull; <strong>Org-to-org data migration</strong> &mdash; export, import and clean records while preserving all relationships
-    </p>
-    <p class="wlc-hint">Select a feature from the left sidebar to explore the documentation.</p>
+  <div class="wlc-hero">
+    <div class="wlc-hero-text">
+      <h1>Calumet</h1>
+      <p class="wlc-by">by Little Chaman</p>
+      <p class="wlc-version">v10.0 &mdash; Salesforce Administration Suite</p>
+      <p class="wlc-tagline">A unified desktop workbench for Salesforce administrators and developers.</p>
+    </div>
+    <div class="wlc-mascot-wrap">
+      <img class="wlc-mascot" src="littlechaman-mascot.png" alt="Little Chaman">
+    </div>
   </div>
+  <div class="wlc-grid">
+    <div class="wlc-card" onclick="navCat('Deployment','s2','tab2.html')">
+      <div class="wlc-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg></div>
+      <div><div class="wlc-ct">Deployment <span class="wlc-cn">7</span></div><div class="wlc-cd">Retrieve, deploy, compare and roll back metadata</div></div>
+    </div>
+    <div class="wlc-card" onclick="navCat('Dev','s6','tab6.html')">
+      <div class="wlc-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg></div>
+      <div><div class="wlc-ct">Dev <span class="wlc-cn">8</span></div><div class="wlc-cd">Apex, test coverage, logs, dead code detection</div></div>
+    </div>
+    <div class="wlc-card" onclick="navCat('Security','s7','tab7.html')">
+      <div class="wlc-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+      <div><div class="wlc-ct">Security <span class="wlc-cn">12</span></div><div class="wlc-cd">Profiles, permission sets, sharing rules, user access</div></div>
+    </div>
+    <div class="wlc-card" onclick="navCat('Data','s12','tab12.html')">
+      <div class="wlc-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg></div>
+      <div><div class="wlc-ct">Data <span class="wlc-cn">10</span></div><div class="wlc-cd">SOQL explorer, records, limits, activity analysis</div></div>
+    </div>
+    <div class="wlc-card" onclick="navCat('Model','s13','tab13.html')">
+      <div class="wlc-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="4" r="2"/><circle cx="4" cy="20" r="2"/><circle cx="20" cy="20" r="2"/><line x1="12" y1="6" x2="4" y2="18"/><line x1="12" y1="6" x2="20" y2="18"/></svg></div>
+      <div><div class="wlc-ct">Model <span class="wlc-cn">14</span></div><div class="wlc-cd">Picklists, flows, FlexiPages, field relations</div></div>
+    </div>
+    <div class="wlc-card" onclick="navCat('User','s17','tab17.html')">
+      <div class="wlc-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+      <div><div class="wlc-ct">User <span class="wlc-cn">5</span></div><div class="wlc-cd">Login, licenses, frozen users, app assignments</div></div>
+    </div>
+    <div class="wlc-card" onclick="navCat('Storage','s25','tab25.html')">
+      <div class="wlc-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="21 8 21 21 3 21 3 8"/><rect x="1" y="3" width="22" height="5"/><line x1="10" y1="12" x2="14" y2="12"/></svg></div>
+      <div><div class="wlc-ct">Storage <span class="wlc-cn">2</span></div><div class="wlc-cd">Org storage monitoring and history tracking</div></div>
+    </div>
+    <div class="wlc-card" onclick="navCat('Technical Debt','s28','tab28.html')">
+      <div class="wlc-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg></div>
+      <div><div class="wlc-ct">Technical Debt <span class="wlc-cn">8</span></div><div class="wlc-cd">Unused fields, layouts, profiles and more</div></div>
+    </div>
+    <div class="wlc-card" onclick="navCat('Other','s16','tab16.html')">
+      <div class="wlc-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg></div>
+      <div><div class="wlc-ct">Other <span class="wlc-cn">3</span></div><div class="wlc-cd">Scheduling, record locking, relationship explorer</div></div>
+    </div>
+  </div>
+  <p class="wlc-hint">Select a feature from the sidebar, or click a card to explore.</p>
 </div>
 
 <div id="content" style="display:none">
@@ -49,6 +106,12 @@
 </div>
 </main>
 <script>
+function navCat(cat,sid,file){
+  document.querySelectorAll('.cat').forEach(function(c){
+    if(c.textContent.trim()===cat) c.scrollIntoView({block:'start'});
+  });
+  nav(sid,file);
+}
 function nav(sid,file){
   document.getElementById('welcome').classList.add('h');
   var ct=document.getElementById('content');
