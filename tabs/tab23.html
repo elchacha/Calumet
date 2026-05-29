@@ -3,20 +3,183 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Debug — Calumet</title>
+<title>Sfdx — Calumet</title>
 <link rel="stylesheet" href="../shared.css">
 </head>
 <body class="tab-page">
 <div class="sum">
   <div class="sum-title">
-    <h2>Debug</h2>
+    <h2>Sfdx</h2>
     <span class="sum-badge">Tab 23</span>
   </div>
-  <p class="sum-desc">Execute anonymous Apex code directly in the org and view the debug output in real time.</p>
+  <p class="sum-desc">
+    Integrate with the Salesforce CLI (SFDX): list authenticated orgs, manage aliases, set the default org or DevHub, and create scratch orgs directly from Calumet.
+    <button class="cal-btn btn-d" style="margin-left:10px" onclick="document.getElementById('modal-kf').style.display='flex'">&#9733; Key features</button>
+  </p>
 </div>
+
 <div class="mockup-wrap">
-  <div class="mockup"><div class="vbox" style="gap:0px"><div class="anchor"><div class="m-tabpane" id="tp9"><div class="m-tabbar"><div class="m-tab act" onclick="sw('tp9',0)">Orgs</div></div><div class="m-body"><div class="m-panel act" id="tp9-0"><div class="anchor"><div class="tbl-wrap"><table class="cal-tbl"><thead><tr><th style="width:110.0px">Alias</th><th style="width:300.0px">Alias</th><th style="width:150.0px">Status</th><th style="width:80.0px">DevHub</th><th style="width:80.0px">Def Hub</th><th style="width:80.0px">Def User</th><th style="width:150.0px">Scratch</th></tr></thead><tbody><tr><td colspan="20" class="tbl-empty"></td></tr></tbody></table></div><button class="cal-btn btn-d">Refresh orgs</button><button class="cal-btn btn-d">Create Scratch Org</button></div></div></div></div></div></div></div>
-</div>
+  <div class="mockup">
+
+    <!-- Description bar (rendered by addDescription) -->
+    <div style="background:#d0e8f4;border-bottom:1px solid #9AABBF;padding:4px 10px;font-size:11px;color:#1A5276;">
+      Sfdx &mdash; Integrate with the Salesforce CLI (SFDX): list authenticated orgs, manage aliases, set default org, and create scratch orgs.
+    </div>
+
+    <!-- Single TabPane: Orgs -->
+    <div class="m-tabpane" id="tp23">
+      <div class="m-tabbar">
+        <div class="m-tab act" onclick="sw('tp23',0)">Orgs</div>
+      </div>
+      <div class="m-body">
+        <div class="m-panel act" id="tp23-0" style="padding:10px">
+
+          <!-- Row 1: utility buttons -->
+          <div class="hbox" style="gap:8px;align-items:center;margin-bottom:4px">
+            <button class="cal-btn btn-d" data-tip="Reload the org list from the SFDX CLI">Refresh orgs</button>
+            <button class="cal-btn btn-d" data-tip="Create a new scratch org from the selected DevHub">Create Scratch Org</button>
+          </div>
+
+          <!-- Row 2: context-sensitive action buttons (enabled when a row is selected) -->
+          <div class="hbox" style="gap:6px;align-items:center;margin-bottom:8px">
+            <button class="cal-btn btn-d" data-tip="Rename the SFDX alias for the selected org">Rename Alias</button>
+            <button class="cal-btn btn-b" data-tip="Set the selected org as the default SFDX user">Set Default User</button>
+            <button class="cal-btn btn-r" data-tip="Disconnect (log out) the selected org from the SFDX keychain">Disconnect</button>
+            <button class="cal-btn btn-b" data-tip="Set the selected org as the default Dev Hub">Set Default DevHub</button>
+            <button class="cal-btn btn-r" data-tip="Delete the selected scratch org" disabled>Delete Org</button>
+            <button class="cal-btn btn-g" data-tip="Generate a password for the selected scratch org" disabled>Generate Password</button>
+            <button class="cal-btn btn-o" data-tip="Open the Auth Scratch Org wizard to connect this scratch org to an environment" disabled>Auth Scratch Org</button>
+          </div>
+
+          <!-- Orgs table -->
+          <div class="tbl-wrap">
+            <table class="cal-tbl">
+              <thead>
+                <tr>
+                  <th style="width:130px">Alias</th>
+                  <th style="width:310px">Username</th>
+                  <th style="width:170px">Status</th>
+                  <th style="width:70px;text-align:center">DevHub</th>
+                  <th style="width:70px;text-align:center">Def Hub</th>
+                  <th style="width:70px;text-align:center">Def User</th>
+                  <th style="width:160px">Scratch</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="color:#888"></td>
+                  <td>fabrice@ext.cathayinnovation.com.affinity2</td>
+                  <td style="color:#27ae60">Connected</td>
+                  <td style="text-align:center"></td>
+                  <td style="text-align:center"></td>
+                  <td style="text-align:center"></td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td>CathayDemo</td>
+                  <td>fabrice@ext.cathayinnovation.com.demo</td>
+                  <td style="color:#e67e22">DomainNotFoundError</td>
+                  <td style="text-align:center"></td>
+                  <td style="text-align:center"></td>
+                  <td style="text-align:center"></td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td>CathayDemoNew</td>
+                  <td>fabrice@ext.cathayinnovation.com.cathaydemo</td>
+                  <td style="color:#e67e22">DomainNotFoundError</td>
+                  <td style="text-align:center"></td>
+                  <td style="text-align:center"></td>
+                  <td style="text-align:center"></td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td>CathayPartial</td>
+                  <td>fabrice@ext.cathayinnovation.com.pc</td>
+                  <td style="color:#27ae60">Connected</td>
+                  <td style="text-align:center"></td>
+                  <td style="text-align:center"></td>
+                  <td style="text-align:center"></td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td>cathayPrd</td>
+                  <td>fabrice@ext.cathayinnovation.com</td>
+                  <td style="color:#e67e22">DomainNotFoundError</td>
+                  <td style="text-align:center"><span style="color:#27ae60;font-size:14px;font-weight:bold">&#10003;</span></td>
+                  <td style="text-align:center"><span style="color:#27ae60;font-size:14px;font-weight:bold">&#10003;</span></td>
+                  <td style="text-align:center"></td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td>DataSeeding</td>
+                  <td>fabrice@ext.cathayinnovation.com.seeding</td>
+                  <td style="color:#e67e22">DomainNotFoundError</td>
+                  <td style="text-align:center"></td>
+                  <td style="text-align:center"></td>
+                  <td style="text-align:center"></td>
+                  <td></td>
+                </tr>
+                <tr style="background:#c8dce8">
+                  <td><strong>Malhya</strong></td>
+                  <td>fabricechallier323@agentforce.com</td>
+                  <td style="color:#e67e22">DomainNotFoundError</td>
+                  <td style="text-align:center"><span style="color:#27ae60;font-size:14px;font-weight:bold">&#10003;</span></td>
+                  <td style="text-align:center"></td>
+                  <td style="text-align:center"></td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td>permSet</td>
+                  <td>fabrice@ext.cathayinnovation.com.permset</td>
+                  <td style="color:#e67e22">DomainNotFoundError</td>
+                  <td style="text-align:center"></td>
+                  <td style="text-align:center"></td>
+                  <td style="text-align:center"></td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td>RAD4</td>
+                  <td>fabricechallier4@gmailmars.rad</td>
+                  <td style="color:#e67e22">DomainNotFoundError</td>
+                  <td style="text-align:center"><span style="color:#27ae60;font-size:14px;font-weight:bold">&#10003;</span></td>
+                  <td style="text-align:center"></td>
+                  <td style="text-align:center"></td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td>RADII</td>
+                  <td>fabricechallier5@gmailmars.rad</td>
+                  <td style="color:#e67e22">DomainNotFoundError</td>
+                  <td style="text-align:center"><span style="color:#27ae60;font-size:14px;font-weight:bold">&#10003;</span></td>
+                  <td style="text-align:center"></td>
+                  <td style="text-align:center"></td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td>ScratchDev01</td>
+                  <td>test-kx7f2q@example.com.scratch</td>
+                  <td style="color:#27ae60">Connected</td>
+                  <td style="text-align:center"></td>
+                  <td style="text-align:center"></td>
+                  <td style="text-align:center"><span style="color:#27ae60;font-size:14px;font-weight:bold">&#10003;</span></td>
+                  <td style="color:#888;font-size:10px">Expires 2026-06-14</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div style="margin-top:6px;font-size:10px;color:#888;">
+            11 orgs listed &mdash; Double-click any row to view full connection details (login URL, instance URL, last used).
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /.mockup -->
+</div><!-- /.mockup-wrap -->
+
 <script>
 function sw(id,idx){
   var tp=document.getElementById(id);
@@ -24,5 +187,27 @@ function sw(id,idx){
   tp.querySelectorAll('.m-panel').forEach(function(p,i){p.classList.toggle('act',i===idx)});
 }
 </script>
+
+<!-- Key features modal -->
+<div id="modal-kf" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:999;align-items:center;justify-content:center" onclick="if(event.target===this)this.style.display='none'">
+  <div style="background:#fff;border-radius:8px;padding:28px 32px;max-width:520px;width:90%;color:#1a2a35;box-shadow:0 8px 32px rgba(0,0,0,.3)">
+    <h3 style="margin:0 0 14px;color:#2980b9">&#9733; Key features</h3>
+    <ul style="margin:0;padding-left:20px;line-height:1.8">
+      <li>List all orgs authenticated with the Salesforce CLI, showing alias, username, connection status, and scratch-org expiry</li>
+      <li>Identify DevHub orgs and the currently active default DevHub at a glance with checkmark badges</li>
+      <li>Set any org as the default SFDX user or default DevHub with a single click</li>
+      <li>Rename org aliases directly from the table without leaving Calumet</li>
+      <li>Disconnect (log out) an org from the SFDX keychain to revoke its stored credentials</li>
+      <li>Create new scratch orgs from a selected DevHub via the guided Scratch Org Creation popup</li>
+      <li>Generate a temporary password for a scratch org and copy it instantly</li>
+      <li>Authenticate a scratch org into a Calumet environment via the Auth Scratch Org wizard</li>
+      <li>Double-click any row to inspect full connection details: login URL, instance URL, and last-used timestamp</li>
+    </ul>
+    <div style="text-align:right;margin-top:18px">
+      <button class="cal-btn btn-d" onclick="document.getElementById('modal-kf').style.display='none'">Close</button>
+    </div>
+  </div>
+</div>
+
 </body>
 </html>

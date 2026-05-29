@@ -3,20 +3,382 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Permission Sets — Calumet</title>
+<title>Users: OWD / Sharing Model — Calumet</title>
 <link rel="stylesheet" href="../shared.css">
+<style>
+  /* Sharing Rule Name badges */
+  .badge-owd        { background:#e67e22; color:#fff; border-radius:8px; padding:2px 10px; font-size:12px; font-weight:600; display:inline-block; white-space:nowrap; }
+  .badge-editall    { background:#c0392b; color:#fff; border-radius:8px; padding:2px 10px; font-size:12px; font-weight:600; display:inline-block; white-space:nowrap; }
+  .badge-viewall    { background:#f39c12; color:#fff; border-radius:8px; padding:2px 10px; font-size:12px; font-weight:600; display:inline-block; white-space:nowrap; }
+  .badge-rule       { background:#2980b9; color:#fff; border-radius:8px; padding:2px 10px; font-size:12px; font-weight:600; display:inline-block; white-space:nowrap; }
+  /* Access Level badges */
+  .badge-rw         { background:#e67e22; color:#fff; border-radius:8px; padding:2px 10px; font-size:12px; font-weight:600; display:inline-block; white-space:nowrap; }
+  .badge-read-owd   { background:#888;    color:#fff; border-radius:8px; padding:2px 10px; font-size:12px; font-weight:600; display:inline-block; white-space:nowrap; }
+  .badge-read       { background:#2980b9; color:#fff; border-radius:8px; padding:2px 10px; font-size:12px; font-weight:600; display:inline-block; white-space:nowrap; }
+  .badge-edit       { background:#7f8c8d; color:#fff; border-radius:8px; padding:2px 10px; font-size:12px; font-weight:600; display:inline-block; white-space:nowrap; }
+  .badge-cbp        { background:#555;    color:#fff; border-radius:8px; padding:2px 10px; font-size:12px; font-weight:600; display:inline-block; white-space:nowrap; }
+  /* Check / X cells */
+  .chk-yes { color:#27ae60; font-size:16px; }
+  .chk-no  { color:#e74c3c; font-size:16px; }
+  /* Reason text */
+  .reason  { font-size:11px; color:#555; line-height:1.5; }
+</style>
 </head>
 <body class="tab-page">
+
 <div class="sum">
   <div class="sum-title">
-    <h2>Permission Sets</h2>
+    <h2>Users: OWD / Sharing Model</h2>
     <span class="sum-badge">Tab 49</span>
   </div>
-  <p class="sum-desc">Analyse permission sets: view object/field access granted per permission set and user assignments.</p>
+  <p class="sum-desc">
+    Analyse sharing access for a selected user: view object permissions, record access reasons, and effective sharing rules.
+    <button class="cal-btn btn-d" style="margin-left:10px" onclick="document.getElementById('modal-kf').style.display='flex'">&#9733; Key features</button>
+  </p>
 </div>
+
 <div class="mockup-wrap">
-  <div class="mockup"><div class="vbox" style="gap:0px"><div class="anchor"><span class="cal-lbl">User Name</span><div class="m-tabpane" id="tp23"><div class="m-tabbar"><div class="m-tab act" onclick="sw('tp23',0)">Objects</div><div class="m-tab" onclick="sw('tp23',1)">Sharing</div></div><div class="m-body"><div class="m-panel act" id="tp23-0"><div class="anchor"><div class="tbl-wrap"><table class="cal-tbl"><thead><tr><th>Object Name</th><th>Create</th><th>Read</th><th>Edit</th><th>Delete</th><th>View All</th><th>Edit All</th></tr></thead><tbody><tr><td colspan="20" class="tbl-empty"></td></tr></tbody></table></div></div></div><div class="m-panel" id="tp23-1"><div class="anchor"><div class="tbl-wrap"><table class="cal-tbl"><thead><tr><th>Object Name</th><th>Sharing Rule Name</th><th>Access Level</th><th>Criteria</th><th>Reason</th></tr></thead><tbody><tr><td colspan="20" class="tbl-empty"></td></tr></tbody></table></div></div></div></div></div><button class="cal-btn btn-d">search</button><span class="cal-lbl">Please choose a user</span><button class="cal-btn btn-d">Manage Object Filter</button></div></div></div>
-</div>
+  <div class="mockup">
+    <div class="vbox" style="gap:10px;padding:6px 0 0 0">
+
+      <!-- Top bar: User Name + Search + Manage Object Filter -->
+      <div class="hbox" style="gap:10px;align-items:center">
+        <span class="cal-lbl">User Name</span>
+        <input class="cal-tf" readonly value="Noel CHARPENTIER" style="width:240px" data-tip="Start typing to autocomplete a user from the org">
+        <button class="cal-btn btn-b" data-tip="Load object permissions and sharing rules for the selected user">search</button>
+        <button class="cal-btn btn-d" data-tip="Open the object filter file to restrict which objects are displayed">Manage Object Filter</button>
+      </div>
+
+      <!-- Sub-tabs: Objects / Sharing -->
+      <div class="m-tabpane" id="tp49">
+        <div class="m-tabbar">
+          <div class="m-tab act" onclick="sw('tp49',0)">Objects (221)</div>
+          <div class="m-tab" onclick="sw('tp49',1)">Shraing (478)</div>
+        </div>
+        <div class="m-body">
+
+          <!-- ===== Objects tab ===== -->
+          <div class="m-panel act" id="tp49-0">
+            <div class="tbl-wrap" style="max-height:480px;overflow-y:auto">
+              <table class="cal-tbl">
+                <thead>
+                  <tr>
+                    <th style="width:220px">Object Name</th>
+                    <th style="width:70px;text-align:center">Create</th>
+                    <th style="width:70px;text-align:center">Read</th>
+                    <th style="width:70px;text-align:center">Edit</th>
+                    <th style="width:70px;text-align:center">Delete</th>
+                    <th style="width:70px;text-align:center">View All</th>
+                    <th style="width:70px;text-align:center">Edit All</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Account</td>
+                    <td style="text-align:center"><span class="chk-yes">&#9989;</span></td>
+                    <td style="text-align:center"><span class="chk-yes">&#9989;</span></td>
+                    <td style="text-align:center"><span class="chk-no">&#10060;</span></td>
+                    <td style="text-align:center"><span class="chk-yes">&#9989;</span></td>
+                    <td style="text-align:center"><span class="chk-yes">&#9989;</span></td>
+                    <td style="text-align:center"><span class="chk-no">&#10060;</span></td>
+                  </tr>
+                  <tr>
+                    <td>Actions__c</td>
+                    <td style="text-align:center"><span class="chk-no">&#10060;</span></td>
+                    <td style="text-align:center"><span class="chk-yes">&#9989;</span></td>
+                    <td style="text-align:center"><span class="chk-no">&#10060;</span></td>
+                    <td style="text-align:center"><span class="chk-no">&#10060;</span></td>
+                    <td style="text-align:center"><span class="chk-yes">&#9989;</span></td>
+                    <td style="text-align:center"><span class="chk-no">&#10060;</span></td>
+                  </tr>
+                  <tr>
+                    <td>Asset</td>
+                    <td style="text-align:center"><span class="chk-no">&#10060;</span></td>
+                    <td style="text-align:center"><span class="chk-yes">&#9989;</span></td>
+                    <td style="text-align:center"><span class="chk-no">&#10060;</span></td>
+                    <td style="text-align:center"><span class="chk-no">&#10060;</span></td>
+                    <td style="text-align:center"><span class="chk-yes">&#9989;</span></td>
+                    <td style="text-align:center"><span class="chk-no">&#10060;</span></td>
+                  </tr>
+                  <tr>
+                    <td>BonCommande__c</td>
+                    <td style="text-align:center"><span class="chk-no">&#10060;</span></td>
+                    <td style="text-align:center"><span class="chk-yes">&#9989;</span></td>
+                    <td style="text-align:center"><span class="chk-no">&#10060;</span></td>
+                    <td style="text-align:center"><span class="chk-no">&#10060;</span></td>
+                    <td style="text-align:center"><span class="chk-yes">&#9989;</span></td>
+                    <td style="text-align:center"><span class="chk-no">&#10060;</span></td>
+                  </tr>
+                  <tr>
+                    <td>Campaign</td>
+                    <td style="text-align:center"><span class="chk-no">&#10060;</span></td>
+                    <td style="text-align:center"><span class="chk-yes">&#9989;</span></td>
+                    <td style="text-align:center"><span class="chk-no">&#10060;</span></td>
+                    <td style="text-align:center"><span class="chk-no">&#10060;</span></td>
+                    <td style="text-align:center"><span class="chk-yes">&#9989;</span></td>
+                    <td style="text-align:center"><span class="chk-no">&#10060;</span></td>
+                  </tr>
+                  <tr>
+                    <td>Case</td>
+                    <td style="text-align:center"><span class="chk-yes">&#9989;</span></td>
+                    <td style="text-align:center"><span class="chk-yes">&#9989;</span></td>
+                    <td style="text-align:center"><span class="chk-yes">&#9989;</span></td>
+                    <td style="text-align:center"><span class="chk-yes">&#9989;</span></td>
+                    <td style="text-align:center"><span class="chk-yes">&#9989;</span></td>
+                    <td style="text-align:center"><span class="chk-yes">&#9989;</span></td>
+                  </tr>
+                  <tr>
+                    <td>Contact</td>
+                    <td style="text-align:center"><span class="chk-yes">&#9989;</span></td>
+                    <td style="text-align:center"><span class="chk-yes">&#9989;</span></td>
+                    <td style="text-align:center"><span class="chk-no">&#10060;</span></td>
+                    <td style="text-align:center"><span class="chk-yes">&#9989;</span></td>
+                    <td style="text-align:center"><span class="chk-yes">&#9989;</span></td>
+                    <td style="text-align:center"><span class="chk-yes">&#9989;</span></td>
+                  </tr>
+                  <tr>
+                    <td>ContactSpex__c</td>
+                    <td style="text-align:center"><span class="chk-yes">&#9989;</span></td>
+                    <td style="text-align:center"><span class="chk-yes">&#9989;</span></td>
+                    <td style="text-align:center"><span class="chk-yes">&#9989;</span></td>
+                    <td style="text-align:center"><span class="chk-yes">&#9989;</span></td>
+                    <td style="text-align:center"><span class="chk-yes">&#9989;</span></td>
+                    <td style="text-align:center"><span class="chk-yes">&#9989;</span></td>
+                  </tr>
+                  <tr>
+                    <td>Contract</td>
+                    <td style="text-align:center"><span class="chk-no">&#10060;</span></td>
+                    <td style="text-align:center"><span class="chk-yes">&#9989;</span></td>
+                    <td style="text-align:center"><span class="chk-no">&#10060;</span></td>
+                    <td style="text-align:center"><span class="chk-no">&#10060;</span></td>
+                    <td style="text-align:center"><span class="chk-yes">&#9989;</span></td>
+                    <td style="text-align:center"><span class="chk-no">&#10060;</span></td>
+                  </tr>
+                  <tr>
+                    <td>ContractLineItem</td>
+                    <td style="text-align:center"><span class="chk-no">&#10060;</span></td>
+                    <td style="text-align:center"><span class="chk-yes">&#9989;</span></td>
+                    <td style="text-align:center"><span class="chk-no">&#10060;</span></td>
+                    <td style="text-align:center"><span class="chk-no">&#10060;</span></td>
+                    <td style="text-align:center"><span class="chk-no">&#10060;</span></td>
+                    <td style="text-align:center"><span class="chk-no">&#10060;</span></td>
+                  </tr>
+                  <tr>
+                    <td>CS24__Geocase__c</td>
+                    <td style="text-align:center"><span class="chk-yes">&#9989;</span></td>
+                    <td style="text-align:center"><span class="chk-yes">&#9989;</span></td>
+                    <td style="text-align:center"><span class="chk-yes">&#9989;</span></td>
+                    <td style="text-align:center"><span class="chk-yes">&#9989;</span></td>
+                    <td style="text-align:center"><span class="chk-yes">&#9989;</span></td>
+                    <td style="text-align:center"><span class="chk-yes">&#9989;</span></td>
+                  </tr>
+                  <tr>
+                    <td>CS24__Geocase_Account__c</td>
+                    <td style="text-align:center"><span class="chk-yes">&#9989;</span></td>
+                    <td style="text-align:center"><span class="chk-yes">&#9989;</span></td>
+                    <td style="text-align:center"><span class="chk-no">&#10060;</span></td>
+                    <td style="text-align:center"><span class="chk-yes">&#9989;</span></td>
+                    <td style="text-align:center"><span class="chk-yes">&#9989;</span></td>
+                    <td style="text-align:center"><span class="chk-no">&#10060;</span></td>
+                  </tr>
+                  <tr>
+                    <td>Opportunity</td>
+                    <td style="text-align:center"><span class="chk-yes">&#9989;</span></td>
+                    <td style="text-align:center"><span class="chk-yes">&#9989;</span></td>
+                    <td style="text-align:center"><span class="chk-yes">&#9989;</span></td>
+                    <td style="text-align:center"><span class="chk-no">&#10060;</span></td>
+                    <td style="text-align:center"><span class="chk-yes">&#9989;</span></td>
+                    <td style="text-align:center"><span class="chk-no">&#10060;</span></td>
+                  </tr>
+                  <tr>
+                    <td>Task</td>
+                    <td style="text-align:center"><span class="chk-yes">&#9989;</span></td>
+                    <td style="text-align:center"><span class="chk-yes">&#9989;</span></td>
+                    <td style="text-align:center"><span class="chk-yes">&#9989;</span></td>
+                    <td style="text-align:center"><span class="chk-yes">&#9989;</span></td>
+                    <td style="text-align:center"><span class="chk-yes">&#9989;</span></td>
+                    <td style="text-align:center"><span class="chk-no">&#10060;</span></td>
+                  </tr>
+                  <tr>
+                    <td>User</td>
+                    <td style="text-align:center"><span class="chk-no">&#10060;</span></td>
+                    <td style="text-align:center"><span class="chk-yes">&#9989;</span></td>
+                    <td style="text-align:center"><span class="chk-no">&#10060;</span></td>
+                    <td style="text-align:center"><span class="chk-no">&#10060;</span></td>
+                    <td style="text-align:center"><span class="chk-no">&#10060;</span></td>
+                    <td style="text-align:center"><span class="chk-no">&#10060;</span></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div><!-- /Objects panel -->
+
+          <!-- ===== Sharing (AccessRight) tab ===== -->
+          <div class="m-panel" id="tp49-1">
+            <div class="tbl-wrap" style="max-height:480px;overflow-y:auto">
+              <table class="cal-tbl">
+                <thead>
+                  <tr>
+                    <th style="width:210px">Object Name</th>
+                    <th style="width:160px">Sharing Rule Name</th>
+                    <th style="width:130px">Access Level</th>
+                    <th style="width:140px">Criteria</th>
+                    <th>Reason</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>ContactValideur__c</td>
+                    <td><span class="badge-owd">OWD</span></td>
+                    <td><span class="badge-rw">ReadWrite</span></td>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td>ContactValideur__c</td>
+                    <td><span class="badge-viewall">View All</span></td>
+                    <td><span class="badge-read">Read</span></td>
+                    <td></td>
+                    <td class="reason">Profile : GRC_Admin</td>
+                  </tr>
+                  <tr>
+                    <td>Contract</td>
+                    <td><span class="badge-viewall">View All</span></td>
+                    <td><span class="badge-read">Read</span></td>
+                    <td></td>
+                    <td class="reason">Profile : GRC_Admin</td>
+                  </tr>
+                  <tr>
+                    <td>ContractLineItem</td>
+                    <td><span class="badge-owd">OWD</span></td>
+                    <td><span class="badge-cbp">ControlledByParent</span></td>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td>Courrier__c</td>
+                    <td><span class="badge-owd">OWD</span></td>
+                    <td><span class="badge-rw">ReadWrite</span></td>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td>Courrier__c</td>
+                    <td><span class="badge-viewall">View All</span></td>
+                    <td><span class="badge-read">Read</span></td>
+                    <td></td>
+                    <td class="reason">Profile : GRC_Admin</td>
+                  </tr>
+                  <tr>
+                    <td>CS24__Claim_Interaction_Answer__c</td>
+                    <td><span class="badge-editall">Edit All</span></td>
+                    <td><span class="badge-edit">Edit</span></td>
+                    <td></td>
+                    <td class="reason">PermSet : Geocase_Admin_Access</td>
+                  </tr>
+                  <tr>
+                    <td>CS24__Claim_Interaction_Request__c</td>
+                    <td><span class="badge-owd">OWD</span></td>
+                    <td><span class="badge-cbp">ControlledByParent</span></td>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td>CS24__Claim_Interaction_Request__c</td>
+                    <td><span class="badge-editall">Edit All</span></td>
+                    <td><span class="badge-edit">Edit</span></td>
+                    <td></td>
+                    <td class="reason">PermSet : Geocase_Admin_Access</td>
+                  </tr>
+                  <tr>
+                    <td>CS24__CS2024_Geocase_Email__c</td>
+                    <td><span class="badge-viewall">View All</span></td>
+                    <td><span class="badge-read">Read</span></td>
+                    <td></td>
+                    <td class="reason">PermSet : CS24_Geocase_Access_Manager_Plus<br>PermSet : Geocase_Access<br>PermSet : Geocase_Access_Manager</td>
+                  </tr>
+                  <tr>
+                    <td>CS24__CS24GeocaseAPITemporary__c</td>
+                    <td><span class="badge-owd">OWD</span></td>
+                    <td><span class="badge-rw">ReadWrite</span></td>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td>CS24__CS24GeocaseAPITemporary__c</td>
+                    <td><span class="badge-editall">Edit All</span></td>
+                    <td><span class="badge-edit">Edit</span></td>
+                    <td></td>
+                    <td class="reason">PermSet : Geocase_Access</td>
+                  </tr>
+                  <tr>
+                    <td>CS24__Geocase__c</td>
+                    <td><span class="badge-owd">OWD</span></td>
+                    <td><span class="badge-rw">ReadWrite</span></td>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td>CS24__Geocase__c</td>
+                    <td><span class="badge-editall">Edit All</span></td>
+                    <td><span class="badge-edit">Edit</span></td>
+                    <td></td>
+                    <td class="reason">PermSet : Geocase_Admin_Access</td>
+                  </tr>
+                  <tr>
+                    <td>CS24__Geocase_Account__c</td>
+                    <td><span class="badge-owd">OWD</span></td>
+                    <td><span class="badge-read-owd">Read</span></td>
+                    <td></td>
+                    <td class="reason">PermSet : Geocase_Admin_Access</td>
+                  </tr>
+                  <tr>
+                    <td>CS24__Geocase_Account__c</td>
+                    <td><span class="badge-editall">Edit All</span></td>
+                    <td><span class="badge-edit">Edit</span></td>
+                    <td></td>
+                    <td class="reason">PermSet : Geocase_Admin_Access</td>
+                  </tr>
+                  <tr>
+                    <td>CS24__Geocase_Delivery_speed__c</td>
+                    <td><span class="badge-owd">OWD</span></td>
+                    <td><span class="badge-rw">ReadWrite</span></td>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td>CS24__Geocase_Mapping__c</td>
+                    <td><span class="badge-editall">Edit All</span></td>
+                    <td><span class="badge-edit">Edit</span></td>
+                    <td></td>
+                    <td class="reason">PermSet : Geocase_Admin_Access</td>
+                  </tr>
+                  <tr>
+                    <td>CS24__Interaction_Answer__c</td>
+                    <td><span class="badge-editall">Edit All</span></td>
+                    <td><span class="badge-edit">Edit</span></td>
+                    <td></td>
+                    <td class="reason">PermSet : Geocase_Admin_Access</td>
+                  </tr>
+                  <tr>
+                    <td>Opportunity</td>
+                    <td><span class="badge-rule">Account_Sharing_Rule</span></td>
+                    <td><span class="badge-read">Read</span></td>
+                    <td>OwnerId = CurrentUser</td>
+                    <td class="reason">Profile : GRC_Admin</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div><!-- /Sharing panel -->
+
+        </div><!-- /m-body -->
+      </div><!-- /m-tabpane -->
+
+    </div><!-- /vbox -->
+  </div><!-- /mockup -->
+</div><!-- /mockup-wrap -->
+
 <script>
 function sw(id,idx){
   var tp=document.getElementById(id);
@@ -24,5 +386,27 @@ function sw(id,idx){
   tp.querySelectorAll('.m-panel').forEach(function(p,i){p.classList.toggle('act',i===idx)});
 }
 </script>
+
+<!-- Key features modal -->
+<div id="modal-kf" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:999;align-items:center;justify-content:center" onclick="if(event.target===this)this.style.display='none'">
+  <div style="background:#fff;border-radius:8px;padding:28px 32px;max-width:540px;width:90%;color:#1a2a35;box-shadow:0 8px 32px rgba(0,0,0,.3)">
+    <h3 style="margin:0 0 14px;color:#2980b9">&#9733; Key features</h3>
+    <ul style="margin:0;padding-left:20px;line-height:1.8">
+      <li>Autocomplete user selector — type any part of the name to filter org users instantly</li>
+      <li><strong>Objects tab</strong>: shows all object-level CRUD permissions (Create, Read, Edit, Delete, View All, Edit All) for the chosen user across every accessible SObject</li>
+      <li><strong>Sharing (AccessRight) tab</strong>: lists every sharing entry granting the user access to each object — OWD baseline, sharing rules, and profile/permission-set overrides</li>
+      <li>Sharing Rule Name column uses color-coded badges: OWD (orange), Edit All (red), View All (amber), named sharing rules (blue)</li>
+      <li>Access Level column shows the effective access: ReadWrite (orange), Read (blue/grey), Edit (grey), ControlledByParent (dark grey)</li>
+      <li>Reason column explains why access was granted — shows the Profile name or Permission Set name responsible</li>
+      <li>Object filter file lets you restrict display to a curated list of objects — click <em>Manage Object Filter</em> to open and edit the file</li>
+      <li>Tab counters in the header reflect the exact number of loaded entries after each search (e.g. Objects (221) / Shraing (478))</li>
+      <li>Columns auto-resize after each search for optimal readability</li>
+    </ul>
+    <div style="text-align:right;margin-top:18px">
+      <button class="cal-btn btn-d" onclick="document.getElementById('modal-kf').style.display='none'">Close</button>
+    </div>
+  </div>
+</div>
+
 </body>
 </html>

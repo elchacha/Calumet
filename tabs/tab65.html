@@ -3,20 +3,293 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>App Assignments — Calumet</title>
+<title>Custom App Assignment — Calumet</title>
 <link rel="stylesheet" href="../shared.css">
+<style>
+  .assign-tbl th { background:#b8d5e3; color:#1A5276; font-weight:700; padding:4px 6px;
+    text-align:center; border-right:1px solid #9AABBF; font-size:10px; white-space:nowrap; }
+  .assign-tbl th.col-name { text-align:left; min-width:220px; }
+  .assign-tbl th.col-num  { min-width:50px; }
+  .assign-tbl td { padding:3px 6px; border-top:1px solid #d8e8f0; text-align:center; vertical-align:middle; }
+  .assign-tbl td.col-name { text-align:left; white-space:nowrap; }
+  .assign-tbl td.col-num  { text-align:center; }
+  .assign-tbl tr:hover td { background:#eef6fc; }
+  .cell-add    { background:#fff3cd !important; }
+  .cell-remove { background:#fde8e8 !important; }
+  .badge-ok   { display:inline-block; background:#d4efdf; color:#1e8449;
+                border-radius:10px; padding:1px 7px; font-size:10px; font-weight:700; }
+  .badge-warn { display:inline-block; background:#fdebd0; color:#a04000;
+                border-radius:10px; padding:1px 7px; font-size:10px; font-weight:700; }
+  .badge-err  { display:inline-block; background:#fde8e8; color:#c0392b;
+                border-radius:10px; padding:1px 7px; font-size:10px; font-weight:700; }
+  .check-icon { color:#27ae60; font-size:14px; }
+  .pending-bar { font-size:11px; color:#e67e22; font-weight:700; margin-left:4px; }
+  .hdr-cb-wrap { display:flex; align-items:center; gap:4px; justify-content:center; flex-direction:column; }
+  .hdr-app-name { font-size:10px; font-weight:700; color:#1A5276; }
+  .assign-tbl th.app-col { min-width:88px; max-width:88px; width:88px; }
+</style>
 </head>
 <body class="tab-page">
+
 <div class="sum">
   <div class="sum-title">
-    <h2>App Assignments</h2>
+    <h2>Custom App Assignment</h2>
     <span class="sum-badge">Tab 65</span>
   </div>
-  <p class="sum-desc">View which custom applications are assigned to each profile and permission set.</p>
+  <p class="sum-desc">
+    View which custom applications are assigned to each profile and permission set, and interactively modify assignments directly from the matrix.
+    <button class="cal-btn btn-d" style="margin-left:10px" onclick="document.getElementById('modal-kf').style.display='flex'">&#9733; Key features</button>
+  </p>
 </div>
+
 <div class="mockup-wrap">
-  <div class="mockup"><div class="vbox" style="gap:0px"><div class="anchor"><button class="cal-btn btn-b">Extract</button><button class="cal-btn btn-d">Export to Excel</button><label class="cal-chk"><input type="checkbox" checked disabled> Hide empty columns</label><span class="cal-lbl">Filter:</span><input class="cal-tf" placeholder="filter on first column…" style="width:200.0px;" readonly><div class="tbl-wrap"><table class="cal-tbl"><thead><tr><th style="width:75.0px">C1</th><th style="width:75.0px">C2</th></tr></thead><tbody><tr><td colspan="20" class="tbl-empty"></td></tr></tbody></table></div></div></div></div>
+  <div class="mockup" style="padding:10px">
+
+    <div class="hbox" style="gap:8px;align-items:center;margin-bottom:8px">
+      <button class="cal-btn btn-b" data-tip="Extract custom app assignments from the connected org">Extract</button>
+      <button class="cal-btn btn-d" data-tip="Export the current matrix to an Excel file">Export to Excel</button>
+      <button class="cal-btn btn-g" data-tip="Apply all pending assignment changes to Salesforce">Apply changes</button>
+      <button class="cal-btn btn-r" data-tip="Discard all pending changes">Cancel</button>
+      <span class="pending-bar">3 to assign, 1 to remove</span>
+      <span class="spacer"></span>
+      <label class="cal-chk" data-tip="Hide app columns where no profile has an assignment"><input type="checkbox" checked disabled> Hide empty columns</label>
+      <label class="cal-chk" data-tip="Include the System Administrator profile in the list"><input type="checkbox" disabled> Show System Admin</label>
+    </div>
+
+    <div class="hbox" style="gap:8px;align-items:center;margin-bottom:6px">
+      <span class="cal-lbl">Filter:</span>
+      <input class="cal-tf" style="width:220px" readonly value="Cathay" placeholder="filter on first column...">
+    </div>
+
+    <div class="tbl-wrap" style="max-height:420px;overflow:auto">
+      <table class="cal-tbl assign-tbl">
+        <thead>
+          <tr>
+            <th style="width:28px;min-width:28px;max-width:28px;padding:4px 2px"></th>
+            <th class="col-name">Profile / Permission Set</th>
+            <th class="col-num" data-tip="Number of users assigned to this profile"># users</th>
+            <th class="col-num" data-tip="Number of custom apps currently assigned"># apps</th>
+            <th class="app-col" data-tip="Click 1: remove all  |  Click 2: assign all  |  Click 3: restore">
+              <div class="hdr-cb-wrap"><input type="checkbox" disabled><span class="hdr-app-name">Approvals</span></div>
+            </th>
+            <th class="app-col" data-tip="Click 1: remove all  |  Click 2: assign all  |  Click 3: restore">
+              <div class="hdr-cb-wrap"><input type="checkbox" disabled><span class="hdr-app-name">Cathay Ecosystem</span></div>
+            </th>
+            <th class="app-col" data-tip="Click 1: remove all  |  Click 2: assign all  |  Click 3: restore">
+              <div class="hdr-cb-wrap"><input type="checkbox" disabled><span class="hdr-app-name">Cathay group dashboards</span></div>
+            </th>
+            <th class="app-col" data-tip="Click 1: remove all  |  Click 2: assign all  |  Click 3: restore">
+              <div class="hdr-cb-wrap"><input type="checkbox" disabled><span class="hdr-app-name">Cathay PE (General app)</span></div>
+            </th>
+            <th class="app-col" data-tip="Click 1: remove all  |  Click 2: assign all  |  Click 3: restore">
+              <div class="hdr-cb-wrap"><input type="checkbox" checked disabled><span class="hdr-app-name">Cathay Salesforce Mobile</span></div>
+            </th>
+            <th class="app-col" data-tip="Click 1: remove all  |  Click 2: assign all  |  Click 3: restore">
+              <div class="hdr-cb-wrap"><input type="checkbox" disabled><span class="hdr-app-name">Deal flow</span></div>
+            </th>
+            <th class="app-col" data-tip="Click 1: remove all  |  Click 2: assign all  |  Click 3: restore">
+              <div class="hdr-cb-wrap"><input type="checkbox" disabled><span class="hdr-app-name">FlowApp</span></div>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td style="text-align:center;padding:2px"><input type="checkbox" disabled></td>
+            <td class="col-name">Analytics Cloud Integration User</td>
+            <td class="col-num">1</td><td class="col-num">0</td>
+            <td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+          </tr>
+          <tr>
+            <td style="text-align:center;padding:2px"><input type="checkbox" disabled></td>
+            <td class="col-name">Analytics Cloud Security User</td>
+            <td class="col-num">1</td><td class="col-num">0</td>
+            <td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+          </tr>
+          <tr>
+            <td style="text-align:center;padding:2px"><input type="checkbox" disabled></td>
+            <td class="col-name">Assistant Fundraising</td>
+            <td class="col-num">4</td><td class="col-num"><span class="badge-ok">2</span></td>
+            <td></td>
+            <td style="text-align:center"><span class="check-icon">&#10003;</span></td>
+            <td></td><td></td>
+            <td style="text-align:center"><span class="check-icon">&#10003;</span></td>
+            <td></td><td></td>
+          </tr>
+          <tr>
+            <td style="text-align:center;padding:2px"><input type="checkbox" disabled></td>
+            <td class="col-name">Cathay Knowledge Matchmaking Platform Profile</td>
+            <td class="col-num">1</td><td class="col-num">0</td>
+            <td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+          </tr>
+          <tr>
+            <td style="text-align:center;padding:2px"><input type="checkbox" disabled></td>
+            <td class="col-name">Cathay Knowledge Platform Profile</td>
+            <td class="col-num">3</td><td class="col-num">0</td>
+            <td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+          </tr>
+          <tr>
+            <td style="text-align:center;padding:2px"><input type="checkbox" disabled></td>
+            <td class="col-name">Chatter Free User</td>
+            <td class="col-num">1</td><td class="col-num">0</td>
+            <td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+          </tr>
+          <tr>
+            <td style="text-align:center;padding:2px"><input type="checkbox" disabled></td>
+            <td class="col-name">Community Test Profile</td>
+            <td class="col-num">1</td><td class="col-num"><span class="badge-ok">1</span></td>
+            <td></td>
+            <td style="text-align:center"><span class="check-icon">&#10003;</span></td>
+            <td></td><td></td><td></td><td></td><td></td>
+          </tr>
+          <tr>
+            <td style="text-align:center;padding:2px"><input type="checkbox" disabled></td>
+            <td class="col-name">Deal Cathay</td>
+            <td class="col-num">13</td><td class="col-num"><span class="badge-warn">4</span></td>
+            <td style="text-align:center"><span class="check-icon">&#10003;</span></td>
+            <td style="text-align:center"><span class="check-icon">&#10003;</span></td>
+            <td></td><td></td>
+            <td style="text-align:center"><span class="check-icon">&#10003;</span></td>
+            <td style="text-align:center"><span class="check-icon">&#10003;</span></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td style="text-align:center;padding:2px"><input type="checkbox" disabled></td>
+            <td class="col-name">Deal Cathay LATAM</td>
+            <td class="col-num">2</td><td class="col-num"><span class="badge-warn">5</span></td>
+            <td style="text-align:center"><span class="check-icon">&#10003;</span></td>
+            <td style="text-align:center"><span class="check-icon">&#10003;</span></td>
+            <td></td><td></td>
+            <td style="text-align:center"><span class="check-icon">&#10003;</span></td>
+            <td class="cell-add" style="text-align:center"><span class="check-icon">&#10003;</span></td>
+            <td style="text-align:center"><span class="check-icon">&#10003;</span></td>
+          </tr>
+          <tr>
+            <td style="text-align:center;padding:2px"><input type="checkbox" disabled></td>
+            <td class="col-name">Elavard Profile</td>
+            <td class="col-num">1</td><td class="col-num">0</td>
+            <td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+          </tr>
+          <tr>
+            <td style="text-align:center;padding:2px"><input type="checkbox" disabled></td>
+            <td class="col-name">Fund of Fund (Incl. Fundraising)</td>
+            <td class="col-num">6</td><td class="col-num"><span class="badge-warn">5</span></td>
+            <td style="text-align:center"><span class="check-icon">&#10003;</span></td>
+            <td style="text-align:center"><span class="check-icon">&#10003;</span></td>
+            <td></td><td></td>
+            <td style="text-align:center"><span class="check-icon">&#10003;</span></td>
+            <td style="text-align:center"><span class="check-icon">&#10003;</span></td>
+            <td style="text-align:center"><span class="check-icon">&#10003;</span></td>
+          </tr>
+          <tr>
+            <td style="text-align:center;padding:2px"><input type="checkbox" disabled></td>
+            <td class="col-name">Fundraising Cathay</td>
+            <td class="col-num">12</td><td class="col-num"><span class="badge-warn">4</span></td>
+            <td></td>
+            <td style="text-align:center"><span class="check-icon">&#10003;</span></td>
+            <td></td><td></td>
+            <td style="text-align:center"><span class="check-icon">&#10003;</span></td>
+            <td style="text-align:center"><span class="check-icon">&#10003;</span></td>
+            <td style="text-align:center"><span class="check-icon">&#10003;</span></td>
+          </tr>
+          <tr>
+            <td style="text-align:center;padding:2px"><input type="checkbox" disabled></td>
+            <td class="col-name">Fundraising Cathay Innovation</td>
+            <td class="col-num">13</td><td class="col-num"><span class="badge-warn">4</span></td>
+            <td></td>
+            <td style="text-align:center"><span class="check-icon">&#10003;</span></td>
+            <td></td><td></td>
+            <td class="cell-add" style="text-align:center"><span class="check-icon">&#10003;</span></td>
+            <td style="text-align:center"><span class="check-icon">&#10003;</span></td>
+            <td style="text-align:center"><span class="check-icon">&#10003;</span></td>
+          </tr>
+          <tr>
+            <td style="text-align:center;padding:2px"><input type="checkbox" disabled></td>
+            <td class="col-name">Innovation SP-Communities Login</td>
+            <td class="col-num">24</td><td class="col-num"><span class="badge-ok">1</span></td>
+            <td></td><td></td><td></td><td></td>
+            <td style="text-align:center"><span class="check-icon">&#10003;</span></td>
+            <td></td><td></td>
+          </tr>
+          <tr>
+            <td style="text-align:center;padding:2px"><input type="checkbox" disabled></td>
+            <td class="col-name">Minimum Access - API Only Integrations</td>
+            <td class="col-num">2</td><td class="col-num"><span class="badge-ok">1</span></td>
+            <td></td><td></td><td></td><td></td>
+            <td class="cell-remove" style="text-align:center"></td>
+            <td></td><td></td>
+          </tr>
+          <tr>
+            <td style="text-align:center;padding:2px"><input type="checkbox" disabled></td>
+            <td class="col-name">Read Only</td>
+            <td class="col-num">1</td><td class="col-num">0</td>
+            <td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+          </tr>
+          <tr>
+            <td style="text-align:center;padding:2px"><input type="checkbox" disabled></td>
+            <td class="col-name">Salesforce API Only System Integrations</td>
+            <td class="col-num">1</td><td class="col-num">0</td>
+            <td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+          </tr>
+          <tr>
+            <td style="text-align:center;padding:2px"><input type="checkbox" disabled></td>
+            <td class="col-name">Sales Insight Integration User</td>
+            <td class="col-num">1</td><td class="col-num">0</td>
+            <td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+          </tr>
+          <tr>
+            <td style="text-align:center;padding:2px"><input type="checkbox" disabled></td>
+            <td class="col-name">Sandbox Profile</td>
+            <td class="col-num">1</td><td class="col-num">0</td>
+            <td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+          </tr>
+          <tr>
+            <td style="text-align:center;padding:2px"><input type="checkbox" disabled></td>
+            <td class="col-name">Strategic Fund of Fund Partner Extranet Profile</td>
+            <td class="col-num">1</td><td class="col-num">0</td>
+            <td></td><td></td><td></td><td></td>
+            <td class="cell-add" style="text-align:center"><span class="check-icon">&#10003;</span></td>
+            <td></td><td></td>
+          </tr>
+          <tr>
+            <td style="text-align:center;padding:2px"><input type="checkbox" disabled></td>
+            <td class="col-name">Tech Team</td>
+            <td class="col-num">4</td><td class="col-num"><span class="badge-err">7</span></td>
+            <td style="text-align:center"><span class="check-icon">&#10003;</span></td>
+            <td style="text-align:center"><span class="check-icon">&#10003;</span></td>
+            <td style="text-align:center"><span class="check-icon">&#10003;</span></td>
+            <td style="text-align:center"><span class="check-icon">&#10003;</span></td>
+            <td style="text-align:center"><span class="check-icon">&#10003;</span></td>
+            <td style="text-align:center"><span class="check-icon">&#10003;</span></td>
+            <td style="text-align:center"><span class="check-icon">&#10003;</span></td>
+          </tr>
+          <tr>
+            <td style="text-align:center;padding:2px"><input type="checkbox" disabled></td>
+            <td class="col-name">Twitter Feed Profile</td>
+            <td class="col-num">1</td><td class="col-num"><span class="badge-err">7</span></td>
+            <td style="text-align:center"><span class="check-icon">&#10003;</span></td>
+            <td style="text-align:center"><span class="check-icon">&#10003;</span></td>
+            <td style="text-align:center"><span class="check-icon">&#10003;</span></td>
+            <td style="text-align:center"><span class="check-icon">&#10003;</span></td>
+            <td style="text-align:center"><span class="check-icon">&#10003;</span></td>
+            <td style="text-align:center"><span class="check-icon">&#10003;</span></td>
+            <td style="text-align:center"><span class="check-icon">&#10003;</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="hbox" style="gap:16px;align-items:center;margin-top:8px;font-size:10px;color:#555;flex-wrap:wrap">
+      <span><span style="display:inline-block;width:12px;height:12px;background:#fff3cd;border:1px solid #ccc;vertical-align:middle;margin-right:4px"></span>Pending assignment (to add)</span>
+      <span><span style="display:inline-block;width:12px;height:12px;background:#fde8e8;border:1px solid #ccc;vertical-align:middle;margin-right:4px"></span>Pending removal</span>
+      <span><span class="badge-ok" style="margin-right:2px">1&#x2013;3</span> low</span>
+      <span><span class="badge-warn" style="margin-right:2px">4&#x2013;5</span> medium</span>
+      <span><span class="badge-err" style="margin-right:2px">6+</span> high</span>
+      <span style="margin-left:auto;color:#888">22 profiles shown &bull; filter: "Cathay" &bull; 7 app columns</span>
+    </div>
+
+  </div>
 </div>
+
 <script>
 function sw(id,idx){
   var tp=document.getElementById(id);
@@ -24,5 +297,28 @@ function sw(id,idx){
   tp.querySelectorAll('.m-panel').forEach(function(p,i){p.classList.toggle('act',i===idx)});
 }
 </script>
+
+<!-- Key features modal -->
+<div id="modal-kf" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:999;align-items:center;justify-content:center" onclick="if(event.target===this)this.style.display='none'">
+  <div style="background:#fff;border-radius:8px;padding:28px 32px;max-width:560px;width:90%;color:#1a2a35;box-shadow:0 8px 32px rgba(0,0,0,.3)">
+    <h3 style="margin:0 0 14px;color:#2980b9">&#9733; Key features</h3>
+    <ul style="margin:0;padding-left:20px;line-height:1.9;font-size:13px">
+      <li><strong>Assignment matrix</strong> — profiles and permission sets as rows, custom apps as columns; checkmarks show current assignments at a glance.</li>
+      <li><strong>Inline editing</strong> — click any cell to toggle an assignment; pending changes are highlighted in yellow (add) or red (remove) before being committed.</li>
+      <li><strong>Batch column operations</strong> — each app column header has a 3-state checkbox: click once to remove all assignments, again to assign all, again to restore originals.</li>
+      <li><strong>Row checkbox filter</strong> — tick one or more profile rows to focus columns; only apps relevant to the selected profiles remain visible.</li>
+      <li><strong>Hide empty columns</strong> — automatically hides app columns where no profile has an assignment, reducing visual noise.</li>
+      <li><strong>System Admin toggle</strong> — optionally show or hide the System Administrator profile row.</li>
+      <li><strong>Pending change summary</strong> — a live counter shows how many assignments are queued to be added or removed before applying.</li>
+      <li><strong>Apply / Cancel</strong> — a single click applies all pending changes to Salesforce via the API, or discards them entirely.</li>
+      <li><strong>Export to Excel</strong> — exports the full matrix (all profiles x all apps) to an Excel file for offline review or audit.</li>
+      <li><strong>First-column filter</strong> — type any text to instantly filter profile/permission set rows by name (300 ms debounce).</li>
+    </ul>
+    <div style="text-align:right;margin-top:18px">
+      <button class="cal-btn btn-d" onclick="document.getElementById('modal-kf').style.display='none'">Close</button>
+    </div>
+  </div>
+</div>
+
 </body>
 </html>
