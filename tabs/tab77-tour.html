@@ -256,7 +256,7 @@ var cursor = $("#cursor");
 var ripple = $("#ripple");
 var popup = $("#popup");
 
-var sceneColors = ["#2980b9","#27ae60","#16a085","#16a085","#2980b9","#E74C3C","#27ae60","#e67e22","#27ae60","#e67e22"];
+var sceneColors = ["#2980b9","#8e44ad","#27ae60","#16a085","#16a085","#2980b9","#E74C3C","#27ae60","#e67e22","#27ae60","#e67e22"];
 
 /* timers we must clear on scene change */
 var pending = [];
@@ -409,6 +409,9 @@ function scene1(){
               '<span class="cal-lbl" style="min-width:80px;padding-top:4px">Start query</span>'+
               '<textarea class="cal-ta cal-grow" id="s1-query" readonly rows="3">SELECT Id FROM Case ORDER BY CreatedDate DESC LIMIT 40</textarea>'+
             '</div>'+
+            '<div class="hbox" style="gap:16px;align-items:center">'+
+              '<label class="cal-chk" id="s1-community"><input type="checkbox"> Community users (Experience Cloud)</label>'+
+            '</div>'+
             '<div class="hbox" style="gap:8px;align-items:center">'+
               '<button class="cal-btn btn-d" id="s1-save">Save</button>'+
               '<button class="cal-btn btn-d">Cancel</button>'+
@@ -420,8 +423,16 @@ function scene1(){
     '</div>');
 }
 scene1.run = function(color){
-  var col = "#16a085"; // green-ish for config scene
-  col = sceneColors[0];
+  var col = sceneColors[0];
+  popupNextFn = function(){
+    hidePopup();
+    after(300, function(){
+      pointAt($("#s1-community"),
+        "Community users (Experience Cloud)",
+        "Enable this option <b>only if your org uses Experience Cloud</b> (portal / community users linked to a Contact). When checked, a dedicated <em>Community Users</em> tab appears to export and import them separately from standard records — their usernames are recreated with a custom extension on the target org.",
+        "#8e44ad", "above");
+    });
+  };
   // step 1: click New -> clear form
   pointAt($("#s1-new"), "Step 1 — Configuration",
     "Each config stores a <em>source/target org pair</em> and a seed SOQL query. You can keep several configs for different migration scenarios.",
@@ -458,7 +469,53 @@ scene1.run = function(color){
   });
 };
 
-/* SCENE 2 — Automation */
+/* SCENE 2 — Community Users */
+function sceneCommunity(){
+  sceneBody.innerHTML = chrome(1,
+    '<div class="vbox" style="gap:12px;padding:4px">'+
+      '<div class="hbox" style="gap:10px;align-items:center">'+
+        '<span style="font-weight:bold;min-width:60px">Profile:</span>'+
+        '<select class="cal-cb" style="flex:1"><option>Customer Community Login</option></select>'+
+      '</div>'+
+      '<div class="hbox" style="gap:10px;align-items:center">'+
+        '<span style="font-weight:bold;min-width:240px">Extension for new userNames that will be created:</span>'+
+        '<input class="cal-tf" id="sc-ext" placeholder="e.g. myorg_uat" style="width:180px">'+
+      '</div>'+
+      '<div id="sc-warn" style="display:none;color:#e67e22;font-weight:bold;font-size:12px">'+
+        '&#x26A0; 7 user(s) with this profile already exist in target org &mdash; importing again is usually pointless'+
+      '</div>'+
+      '<div class="hbox" style="gap:10px;align-items:center">'+
+        '<button class="cal-btn btn-b" id="sc-export">Export Community</button>'+
+        '<button class="cal-btn btn-b" id="sc-import">Import Community</button>'+
+      '</div>'+
+      '<div id="sc-stats" style="display:none;padding:8px 12px;background:#f0fff4;border:1px solid #27ae60;border-radius:4px;font-size:12px;color:#27ae60">'+
+        '&#x2705; Export complete &mdash; 7 accounts &nbsp;|&nbsp; 7 contacts &nbsp;|&nbsp; 7 community users'+
+      '</div>'+
+    '</div>');
+}
+sceneCommunity.run = function(){
+  var col = sceneColors[1];
+  after(400, function(){
+    var extEl = $("#sc-ext");
+    var r = extEl ? extEl.getBoundingClientRect() : null;
+    if(r){ cursor.style.transform = "translate("+(r.left+10)+"px,"+(r.top+6)+"px)"; }
+    after(500, function(){
+      if(extEl){ extEl.value = "myorg_uat"; }
+      var warn = $("#sc-warn"); if(warn) warn.style.display = "block";
+    });
+    after(1100, function(){
+      pointAt($("#sc-export"),
+        "Step 1b — Community Users",
+        "Export community accounts, contacts and users from the source org. A username <em>extension</em> (e.g. <code>.myorg_uat</code>) is appended so new users don\'t conflict with existing ones on the target.<br><br>The warning means those users already exist — skip import if you see it.",
+        col, "below");
+      after(800, function(){
+        var stats = $("#sc-stats"); if(stats) stats.style.display="block";
+      });
+    });
+  });
+};
+
+/* SCENE 3 — Automation */
 function sceneAuto(){
   sceneBody.innerHTML = chrome(1,
     '<div class="vbox" style="gap:10px;padding:4px">'+
@@ -937,7 +994,7 @@ function scene8(){
     '<h2>You’re all set!</h2>'+
     '<div class="lead">DataSeeding is ready to use. Start with a small <b>LIMIT</b> in your seed query to validate the full pipeline before running at scale.</div>'+
     '<ul class="recap-list" id="recap-list">'+
-      ['Configuration created','Automations disabled (optional)','Objects selected','Metadata extracted','Traversal plan generated',
+      ['Configuration created','Community Users configured (optional)','Automations disabled (optional)','Objects selected','Metadata extracted','Traversal plan generated',
        'Records exported to CSV','Records imported to target org','Automations re-enabled','Target org cleaned (optional)']
         .map(function(t,i){return '<li id="rl-'+i+'"><span class="chk">✓</span> <span><b>Step '+(i+1)+'</b> — '+t+'</span></li>';}).join("")+
     '</ul>'+
@@ -950,7 +1007,7 @@ function scene8(){
 }
 scene8.run = function(){
   var col = sceneColors[7];
-  for(var i=0;i<9;i++){
+  for(var i=0;i<10;i++){
     (function(i){ after(250 + i*220, function(){ var li=$("#rl-"+i); if(li) li.classList.add("in"); }); })(i);
   }
   after(250 + 7*220 + 300, function(){
@@ -962,8 +1019,9 @@ scene8.run = function(){
 
 /* ───────────────────────── Scene registry ───────────────────────── */
 var scenes = [
-  {fn:scene1,    run:scene1.run},
-  {fn:sceneAuto, run:sceneAuto.run},
+  {fn:scene1,        run:scene1.run},
+  {fn:sceneCommunity,run:sceneCommunity.run},
+  {fn:sceneAuto,     run:sceneAuto.run},
   {fn:scene2,    run:scene2.run},
   {fn:scene3,    run:scene3.run},
   {fn:scene4,    run:scene4.run},
@@ -980,9 +1038,9 @@ var current = 0;
 function buildProgress(){
   var p = $("#progress");
   var html = "";
-  for(var i=0;i<10;i++){
+  for(var i=0;i<11;i++){
     html += '<div class="dot" data-i="'+i+'"><span class="circle">'+(i+1)+'</span></div>';
-    if(i<9) html += '<div class="connector" data-c="'+i+'"></div>';
+    if(i<10) html += '<div class="connector" data-c="'+i+'"></div>';
   }
   p.innerHTML = html;
   p.querySelectorAll(".dot").forEach(function(d){
@@ -1011,7 +1069,7 @@ function goTo(i){
   current = i;
   scenes[i].fn();
   updateProgress();
-  $("#scene-counter").textContent = (i+1) + " / 10";
+  $("#scene-counter").textContent = (i+1) + " / 11";
   $("#btn-prev").disabled = (i===0);
   $("#btn-next").textContent = (i===scenes.length-1) ? "Restart ↺" : "Next →";
   // restore transition then run the scene animation
