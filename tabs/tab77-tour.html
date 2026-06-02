@@ -256,7 +256,7 @@ var cursor = $("#cursor");
 var ripple = $("#ripple");
 var popup = $("#popup");
 
-var sceneColors = ["#2980b9","#27ae60","#16a085","#16a085","#2980b9","#E74C3C","#e67e22","#27ae60"];
+var sceneColors = ["#2980b9","#27ae60","#16a085","#16a085","#2980b9","#E74C3C","#e67e22","#27ae60","#e67e22"];
 
 /* timers we must clear on scene change */
 var pending = [];
@@ -458,7 +458,65 @@ scene1.run = function(color){
   });
 };
 
-/* SCENE 2 — Objects */
+/* SCENE 2 — Automation */
+function sceneAuto(){
+  sceneBody.innerHTML = chrome(1,
+    '<div class="vbox" style="gap:10px;padding:4px">'+
+      '<div class="hbox" style="gap:8px;align-items:center">'+
+        '<button class="cal-btn btn-b" id="sa-check">Check status</button>'+
+        '<span id="sa-tgt" class="cal-lbl" style="color:#2980b9;font-weight:bold;display:none">&#x2192; sandbox-dev1</span>'+
+      '</div>'+
+      '<div class="vbox" style="gap:6px;padding:8px 12px;background:#f4f8fb;border:1px solid #9AABBF;border-radius:4px">'+
+        '<div class="hbox" style="gap:8px;align-items:center">'+
+          '<span style="font-weight:bold;min-width:80px">Status:</span>'+
+          '<span id="sa-status" style="color:#7f8c8d">&#x2014; not checked &#x2014;</span>'+
+        '</div>'+
+        '<div class="hbox" style="gap:8px;align-items:center">'+
+          '<span style="font-weight:bold;min-width:80px">Retrieve dir:</span>'+
+          '<span style="color:#3d7a8a;font-size:11px">C:\\tmp\\seeding\\Config-Alpha\\automation\\</span>'+
+        '</div>'+
+      '</div>'+
+      '<hr style="border:none;border-top:1px solid #d5dfe8">'+
+      '<div class="hbox" style="gap:10px;align-items:center">'+
+        '<button class="cal-btn btn-o" id="sa-disable" style="opacity:.55" disabled>Disable automations</button>'+
+        '<button class="cal-btn btn-g" id="sa-enable" style="opacity:.4" disabled>Re-enable automations</button>'+
+        '<span id="sa-spin" style="display:none;color:#2980b9;font-size:13px">&#x29B5; running&#x2026;</span>'+
+      '</div>'+
+      '<span id="sa-done" style="display:none;color:#27ae60;font-weight:bold;font-size:12px">&#x2705; Automations disabled &#x2014; Flows and Triggers backed up to retrieve dir.</span>'+
+    '</div>');
+}
+sceneAuto.run = function(){
+  var col = sceneColors[8];
+  after(300, function(){
+    var chk = $("#sa-check");
+    if(chk){ chk.removeAttribute("disabled"); }
+    pointAt(chk, "", "", col);
+  });
+  after(1200, function(){
+    var st = $("#sa-status"); if(st) st.innerHTML = '<span style="color:#e67e22">&#x26A0; Automation status unknown</span>';
+    var tgt = $("#sa-tgt"); if(tgt) tgt.style.display="inline";
+    var dis = $("#sa-disable"); if(dis){ dis.removeAttribute("disabled"); dis.style.opacity="1"; }
+  });
+  after(1800, function(){
+    var dis = $("#sa-disable");
+    if(!dis) return;
+    pointAt(dis, "Step 2 — Automation (optional)",
+      "Disable Flows and Triggers on the target org before seeding to avoid unwanted side effects. Re-enable them once the import completes.",
+      col, "below");
+    after(650, function(){
+      if(dis){ dis.setAttribute("disabled",""); dis.style.opacity=".55"; }
+      var sp = $("#sa-spin"); if(sp) sp.style.display="inline";
+    });
+    after(1800, function(){
+      var sp = $("#sa-spin"); if(sp) sp.style.display="none";
+      var en = $("#sa-enable"); if(en){ en.removeAttribute("disabled"); en.style.opacity="1"; }
+      var st = $("#sa-status"); if(st) st.innerHTML='<span style="color:#27ae60;font-weight:bold">&#x2705; DISABLED</span>';
+      var done = $("#sa-done"); if(done) done.style.display="block";
+    });
+  });
+};
+
+/* SCENE 3 (ex-2) — Objects */
 var s2rows = [
   ["Account","Account",true],
   ["Case","Case",true],
@@ -797,7 +855,7 @@ function scene8(){
     '<h2>You’re all set!</h2>'+
     '<div class="lead">DataSeeding is ready to use. Start with a small <b>LIMIT</b> in your seed query to validate the full pipeline before running at scale.</div>'+
     '<ul class="recap-list" id="recap-list">'+
-      ['Configuration created','Objects selected','Metadata extracted','Traversal plan generated',
+      ['Configuration created','Automations disabled (optional)','Objects selected','Metadata extracted','Traversal plan generated',
        'Records exported to CSV','Records imported to target org','Target org cleaned (optional)']
         .map(function(t,i){return '<li id="rl-'+i+'"><span class="chk">✓</span> <span><b>Step '+(i+1)+'</b> — '+t+'</span></li>';}).join("")+
     '</ul>'+
@@ -810,7 +868,7 @@ function scene8(){
 }
 scene8.run = function(){
   var col = sceneColors[7];
-  for(var i=0;i<7;i++){
+  for(var i=0;i<8;i++){
     (function(i){ after(250 + i*220, function(){ var li=$("#rl-"+i); if(li) li.classList.add("in"); }); })(i);
   }
   after(250 + 7*220 + 300, function(){
@@ -822,14 +880,15 @@ scene8.run = function(){
 
 /* ───────────────────────── Scene registry ───────────────────────── */
 var scenes = [
-  {fn:scene1, run:scene1.run},
-  {fn:scene2, run:scene2.run},
-  {fn:scene3, run:scene3.run},
-  {fn:scene4, run:scene4.run},
-  {fn:scene5, run:scene5.run},
-  {fn:scene6, run:scene6.run},
-  {fn:scene7, run:scene7.run},
-  {fn:scene8, run:scene8.run}
+  {fn:scene1,    run:scene1.run},
+  {fn:sceneAuto, run:sceneAuto.run},
+  {fn:scene2,    run:scene2.run},
+  {fn:scene3,    run:scene3.run},
+  {fn:scene4,    run:scene4.run},
+  {fn:scene5,    run:scene5.run},
+  {fn:scene6,    run:scene6.run},
+  {fn:scene7,    run:scene7.run},
+  {fn:scene8,    run:scene8.run}
 ];
 
 /* ───────────────────────── Engine ───────────────────────── */
@@ -838,9 +897,9 @@ var current = 0;
 function buildProgress(){
   var p = $("#progress");
   var html = "";
-  for(var i=0;i<8;i++){
+  for(var i=0;i<9;i++){
     html += '<div class="dot" data-i="'+i+'"><span class="circle">'+(i+1)+'</span></div>';
-    if(i<7) html += '<div class="connector" data-c="'+i+'"></div>';
+    if(i<8) html += '<div class="connector" data-c="'+i+'"></div>';
   }
   p.innerHTML = html;
   p.querySelectorAll(".dot").forEach(function(d){
@@ -869,7 +928,7 @@ function goTo(i){
   current = i;
   scenes[i].fn();
   updateProgress();
-  $("#scene-counter").textContent = (i+1) + " / 8";
+  $("#scene-counter").textContent = (i+1) + " / 9";
   $("#btn-prev").disabled = (i===0);
   $("#btn-next").textContent = (i===scenes.length-1) ? "Restart ↺" : "Next →";
   // restore transition then run the scene animation
