@@ -607,8 +607,8 @@ function scene5(){
       '<div class="split-panel">'+
         '<div class="vbox" style="gap:14px;padding:8px 4px">'+
           '<div class="hbox" style="gap:10px;align-items:center">'+
-            '<span class="cal-lbl" style="font-weight:bold">Retrieve from:</span>'+
-            '<span class="cal-lbl" style="color:#27ae60;font-weight:bold">DEV-sandbox</span>'+
+            '<span class="cal-lbl" style="font-weight:bold;min-width:100px">Retrieve from:</span>'+
+            '<select class="cal-cb" id="s5-org" style="width:180px"><option>DEV-sandbox</option><option>FULL</option><option>fchape3</option></select>'+
           '</div>'+
           '<div class="hbox" style="gap:10px;align-items:center">'+
             '<button class="cal-btn btn-b" id="s5-retrieve" style="padding:8px 22px;font-size:13px">Retrieve</button>'+
@@ -620,22 +620,44 @@ function scene5(){
             '<div class="pbar-track"><div class="pbar-fill" id="s5-bar"></div></div>'+
             '<span style="font-weight:bold;min-width:40px" id="s5-pct">0%</span>'+
           '</div>'+
-          '<span class="greenmsg" id="s5-done" style="display:none">&#9989; Retrieved: 4 files</span>'+
+          '<span class="greenmsg" id="s5-done" style="display:none">&#9989; Retrieved: 4 files &mdash; saved locally to deploy folder</span>'+
+          '<div id="s5-copy-row" style="margin-top:4px;padding:8px 12px;background:#f0faf4;border:1px solid #a8d5b8;border-radius:4px;display:none">'+
+            '<div class="hbox" style="gap:8px;align-items:center">'+
+              '<label class="cal-chk" id="s5-savecopy"><input type="checkbox" checked> <b>Save a copy to project</b></label>'+
+              '<span class="cal-lbl" style="color:#888;font-size:11px">(zip saved locally in your project folder)</span>'+
+            '</div>'+
+            '<div style="font-size:11px;color:#555;margin-top:4px">&#128193; C:\\deploy\\projects\\Sprint-12\\2026-06-02_DEV-sandbox.zip</div>'+
+          '</div>'+
         '</div>'+
       '</div>'+
     '</div>');
 }
 scene5.run = function(){
   var col = sceneColors[4];
-  pointAt($("#s5-retrieve"), "Step 4 — Retrieve",
-    "Downloads the metadata files from the source org into your local deploy folder. Always retrieve from the <em>source org</em>, not the target &mdash; deploying files from the wrong org overwrites work silently.",
-    col, "below");
-  after(640, function(){
+  // Phase 1: cursor → org selector
+  popupNextFn = function(){
+    hidePopup();
+    after(300, function(){
+      var copyRow = $("#s5-copy-row");
+      if(copyRow) copyRow.style.display = "block";
+      pointAt($("#s5-savecopy"),
+        "Save a copy locally",
+        "When a <b>project</b> is selected, Calumet saves a zip snapshot of the retrieved files directly to your project folder on disk &mdash; <em>no Salesforce upload</em>. Use it to archive the exact package for this delivery, or re-deploy it later to another org without re-running ChangeTracker.",
+        "#27ae60", "above");
+    });
+  };
+  // cursor → org selector first
+  after(300, function(){
+    pointAt($("#s5-org"), "Step 4 — Retrieve",
+      "Choose the <b>source org</b> to retrieve from &mdash; the org where development happened. Never retrieve from the target: deploying files from the wrong org silently overwrites the target state.",
+      col, "above");
+  });
+  after(2000, function(){
     $("#s5-retrieve").classList.add("dim");
     $("#s5-spin").innerHTML = '<span class="spin"></span>';
     $("#s5-pbox").style.display = "flex";
   });
-  after(900, function(){
+  after(2500, function(){
     var bar = $("#s5-bar"), pct = $("#s5-pct");
     var start = Date.now(), dur = 2000;
     (function tick(){
