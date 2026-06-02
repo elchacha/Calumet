@@ -534,9 +534,12 @@ function scene2(){
         '<button class="cal-btn btn-b" id="s2-refresh">Refresh</button>'+
         '<div class="vsep"></div>'+
         '<label class="cal-chk"><input type="checkbox"> Hide ignored</label>'+
+        '<label class="cal-chk"><input type="checkbox"> Hide no-relation</label>'+
+        '<div class="vsep"></div>'+
+        '<button class="cal-btn btn-g" id="s2-ignorelist">Ignore list…</button>'+
         '<div class="spacer"></div>'+
         '<span class="cal-lbl" style="color:#888">Ignore profile</span>'+
-        '<select class="cal-cb" style="width:150px"><option>global</option></select>'+
+        '<select class="cal-cb" style="width:130px"><option>global</option></select>'+
         '<button class="cal-btn btn-b">Load</button>'+
         '<button class="cal-btn btn-g">Save</button>'+
       '</div>'+
@@ -552,8 +555,17 @@ function scene2(){
 }
 scene2.run = function(){
   var col = sceneColors[1];
-  pointAt($("#s2-refresh"), "Step 2 — Object Selection",
-    "Select only the objects you want to migrate. <em>Mandatory parent objects</em> are added automatically during import even if unchecked.",
+  popupNextFn = function(){
+    hidePopup();
+    after(300, function(){
+      pointAt($("#s2-ignorelist"),
+        "Ignore list — Permanent exclusions",
+        "Objects added here are <b>permanently excluded for this org</b> — they won\'t appear in future exports regardless of the profile selected. Use it for objects that are never relevant to migrate (e.g. system logs, technical objects).",
+        "#e67e22", "below");
+    });
+  };
+  pointAt($("#s2-refresh"), "Step 3 — Object Selection",
+    "Select the objects you want to migrate. <em>Mandatory parent objects</em> are added automatically during import even if unchecked.",
     col, "below");
   // spinner appears
   after(640, function(){ $("#s2-spin").innerHTML = '<span class="spin"></span>'; });
@@ -947,7 +959,8 @@ function goPrev(){ goTo(current-1); }
 /* ── Controls ── */
 $("#btn-next").addEventListener("click", goNext);
 $("#btn-prev").addEventListener("click", goPrev);
-$(".p-btn", popup).addEventListener("click", goNext);
+var popupNextFn = null;
+$(".p-btn", popup).addEventListener("click", function(){ (popupNextFn || goNext)(); popupNextFn = null; });
 
 document.addEventListener("keydown", function(e){
   if(e.key === "ArrowRight" || e.key === " "){ e.preventDefault(); goNext(); }
