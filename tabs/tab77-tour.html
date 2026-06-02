@@ -487,21 +487,28 @@ function sceneAuto(){
 }
 sceneAuto.run = function(){
   var col = sceneColors[8];
+  // Step 1: cursor → Check status
   after(300, function(){
     var chk = $("#sa-check");
     if(chk){ chk.removeAttribute("disabled"); }
     pointAt(chk, "", "", col);
   });
-  after(1200, function(){
-    var st = $("#sa-status"); if(st) st.innerHTML = '<span style="color:#e67e22">&#x26A0; Automation status unknown</span>';
+  // Check status result appears
+  after(1100, function(){
     var tgt = $("#sa-tgt"); if(tgt) tgt.style.display="inline";
+    var st = $("#sa-status");
+    if(st) st.innerHTML =
+      '<span style="color:#27ae60;font-weight:bold">Active</span>' +
+      '<span style="color:#555"> &mdash; 0 flow(s), 1 trigger(s)</span>' +
+      '<span style="color:#7f8c8d;font-size:11px"> &nbsp;(+ 16 flow(s), 36 trigger(s) from managed packages &mdash; not affected)</span>';
     var dis = $("#sa-disable"); if(dis){ dis.removeAttribute("disabled"); dis.style.opacity="1"; }
   });
-  after(1800, function(){
+  // Step 2: cursor → Disable automations, with popup
+  after(2000, function(){
     var dis = $("#sa-disable");
     if(!dis) return;
     pointAt(dis, "Step 2 — Automation (optional)",
-      "Disable Flows and Triggers on the target org before seeding to avoid unwanted side effects. Re-enable them once the import completes.",
+      "Disable Flows and Triggers on the target org before seeding to avoid unwanted side effects. Managed-package automations are <em>never affected</em>. Re-enable once import completes.",
       col, "below");
     after(650, function(){
       if(dis){ dis.setAttribute("disabled",""); dis.style.opacity=".55"; }
