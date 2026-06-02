@@ -242,7 +242,7 @@ body{
 <div id="popup">
   <div class="p-title"></div>
   <div class="p-text"></div>
-  <button class="p-btn">Compris &rarr;</button>
+  <button class="p-btn">Got it &rarr;</button>
 </div>
 
 <script>
@@ -671,7 +671,7 @@ function scene4(){
 scene4.run = function(){
   var col = sceneColors[3];
   pointAt($("#s4-gen"), "Step 4 — Traversal Plan",
-    "The engine generates all SOQL queries needed to pull every dependent record. <em>202 queries</em> will run in the right dependency order.",
+    "The engine generates all SOQL queries needed to pull every dependent record. <b>At most 202 queries</b> will run — a query only executes if matching records actually exist in the source org.",
     col, "above");
   after(640, function(){
     $("#s4-gen").classList.add("dim");
