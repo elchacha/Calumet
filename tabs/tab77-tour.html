@@ -526,7 +526,11 @@ function sceneAuto(){
       '<div class="vbox" style="gap:6px;padding:8px 12px;background:#f4f8fb;border:1px solid #9AABBF;border-radius:4px">'+
         '<div class="hbox" style="gap:8px;align-items:center">'+
           '<span style="font-weight:bold;min-width:80px">Status:</span>'+
-          '<span id="sa-status" style="color:#7f8c8d">&#x2014; not checked &#x2014;</span>'+
+          '<span id="sa-status">'+
+            '<span style="color:#27ae60;font-weight:bold">Active</span>'+
+            '<span style="color:#555"> &mdash; 0 flow(s), 1 trigger(s)</span>'+
+            '<span style="color:#7f8c8d;font-size:11px"> &nbsp;(+ 16 flow(s), 36 trigger(s) from managed packages &mdash; not affected)</span>'+
+          '</span>'+
         '</div>'+
         '<div class="hbox" style="gap:8px;align-items:center">'+
           '<span style="font-weight:bold;min-width:80px">Retrieve dir:</span>'+
@@ -535,7 +539,7 @@ function sceneAuto(){
       '</div>'+
       '<hr style="border:none;border-top:1px solid #d5dfe8">'+
       '<div class="hbox" style="gap:10px;align-items:center">'+
-        '<button class="cal-btn btn-o" id="sa-disable" style="opacity:.55" disabled>Disable automations</button>'+
+        '<button class="cal-btn btn-o" id="sa-disable">Disable automations</button>'+
         '<button class="cal-btn btn-g" id="sa-enable" style="opacity:.4" disabled>Re-enable automations</button>'+
         '<span id="sa-spin" style="display:none;color:#2980b9;font-size:13px">&#x29B5; running&#x2026;</span>'+
       '</div>'+
@@ -544,37 +548,22 @@ function sceneAuto(){
 }
 sceneAuto.run = function(){
   var col = sceneColors[8];
-  // Step 1: cursor → Check status
-  after(300, function(){
-    var chk = $("#sa-check");
-    if(chk){ chk.removeAttribute("disabled"); }
-    pointAt(chk, "", "", col);
-  });
-  // Check status result appears
-  after(1100, function(){
+  // Status already visible — cursor goes straight to Disable automations
+  after(400, function(){
     var tgt = $("#sa-tgt"); if(tgt) tgt.style.display="inline";
-    var st = $("#sa-status");
-    if(st) st.innerHTML =
-      '<span style="color:#27ae60;font-weight:bold">Active</span>' +
-      '<span style="color:#555"> &mdash; 0 flow(s), 1 trigger(s)</span>' +
-      '<span style="color:#7f8c8d;font-size:11px"> &nbsp;(+ 16 flow(s), 36 trigger(s) from managed packages &mdash; not affected)</span>';
-    var dis = $("#sa-disable"); if(dis){ dis.removeAttribute("disabled"); dis.style.opacity="1"; }
-  });
-  // Step 2: cursor → Disable automations, with popup
-  after(2000, function(){
     var dis = $("#sa-disable");
     if(!dis) return;
-    pointAt(dis, "Step 2 — Automation (optional)",
-      "Disable Flows and Triggers on the target org before seeding to avoid unwanted side effects. Managed-package automations are <em>never affected</em>. Re-enable once import completes.",
+    pointAt(dis, "Step 3 — Automation (optional)",
+      "The status shows what is currently active on the target org. Managed-package automations are <em>never affected</em>.<br><br>Click <b>Disable automations</b> before seeding to avoid unwanted side effects — re-enable them once import completes.",
       col, "below");
-    after(650, function(){
+    after(700, function(){
       if(dis){ dis.setAttribute("disabled",""); dis.style.opacity=".55"; }
       var sp = $("#sa-spin"); if(sp) sp.style.display="inline";
     });
-    after(1800, function(){
+    after(2000, function(){
       var sp = $("#sa-spin"); if(sp) sp.style.display="none";
       var en = $("#sa-enable"); if(en){ en.removeAttribute("disabled"); en.style.opacity="1"; }
-      var st = $("#sa-status"); if(st) st.innerHTML='<span style="color:#27ae60;font-weight:bold">&#x2705; DISABLED</span>';
+      var st = $("#sa-status"); if(st) st.innerHTML='<span style="color:#e67e22;font-weight:bold">&#x2705; DISABLED</span>';
       var done = $("#sa-done"); if(done) done.style.display="block";
     });
   });
