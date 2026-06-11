@@ -12,10 +12,207 @@
     <h2>Sandboxes</h2>
     <span class="sum-badge">Tab 79</span>
   </div>
-  <p class="sum-desc">Manage and monitor Salesforce sandboxes: view sandbox status, refresh history, and compare sandbox configurations across environments.</p>
+  <p class="sum-desc">
+    Lists all sandboxes of the production org (via the <code>SandboxInfo</code> Tooling API) with license type, last modified date, and a one-click shortcut to create the matching org config.
+    <button class="cal-btn btn-d" style="margin-left:10px" onclick="document.getElementById('modal-kf').style.display='flex'">&#9733; Key features</button>
+  </p>
 </div>
 <div class="mockup-wrap">
-  <div class="mockup"><div class="vbox" style="gap:8px"><button class="cal-btn btn-b">Refresh</button><div class="tbl-wrap"><table class="cal-tbl"><thead><tr><th>Name</th><th>Type</th><th>Status</th><th>Last Refresh</th><th>Description</th></tr></thead><tbody><tr><td>DevSandbox</td><td>Developer</td><td>Completed</td><td>2025-04-10</td><td>Main dev sandbox</td></tr><tr><td>QA</td><td>Partial Copy</td><td>Completed</td><td>2025-03-22</td><td>QA testing</td></tr><tr><td>Staging</td><td>Full Copy</td><td>Processing</td><td>—</td><td>Pre-prod</td></tr></tbody></table></div></div></div>
+  <div class="mockup">
+    <div class="vbox" style="gap:8px">
+
+      <!-- Toolbar -->
+      <div class="hbox" style="gap:10px;align-items:center">
+        <button class="cal-btn btn-b" data-tip="Query all sandboxes from the Tooling API (SandboxInfo)">Display</button>
+        <button class="cal-btn btn-d" data-tip="Create a new org config pre-filled with the selected sandbox name and username">New Org</button>
+        <span class="vsep"></span>
+        <span class="cal-lbl">Filter</span>
+        <input class="cal-tf" style="width:200px" placeholder="sandbox name, user, description..." data-tip="Filter all columns (contains, case-insensitive)" readonly>
+        <span class="cal-lbl" style="color:#2980b9;font-style:italic">29 sandbox(es)</span>
+      </div>
+
+      <!-- Results table -->
+      <div class="tbl-wrap">
+        <table class="cal-tbl">
+          <thead>
+            <tr>
+              <th style="width:140px">Sandbox Name</th>
+              <th style="width:130px">License Type</th>
+              <th style="width:300px">Description</th>
+              <th style="width:140px">Last Modified Date</th>
+              <th style="width:160px">Last Modified By</th>
+              <th style="width:170px">Activation User Group</th>
+              <th style="width:140px">Source Sandbox</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td style="text-align:center;font-weight:bold">Sandbox1</td>
+              <td style="text-align:center"><span class="badge" style="background:#7f8c8d;color:#fff;padding:3px 8px;border-radius:4px;font-size:11px">DEVELOPER</span></td>
+              <td style="text-align:center;color:#888"></td>
+              <td style="text-align:center">2026-04-29 14:56</td>
+              <td style="text-align:center"><span class="badge" style="background:#2980b9;color:#fff;padding:3px 8px;border-radius:4px;font-size:11px">John Doe</span></td>
+              <td style="text-align:center"><span class="badge" style="background:#27ae60;color:#fff;padding:3px 8px;border-radius:4px;font-size:11px">IT Team</span></td>
+              <td style="text-align:center"></td>
+            </tr>
+            <tr>
+              <td style="text-align:center;font-weight:bold">DevSandbox</td>
+              <td style="text-align:center"><span class="badge" style="background:#7f8c8d;color:#fff;padding:3px 8px;border-radius:4px;font-size:11px">DEVELOPER</span></td>
+              <td style="text-align:center">Integration test environment for the sample project</td>
+              <td style="text-align:center" data-tip="Stale: last modified more than 6 months ago">&#9888;&#65039; 2025-09-11 15:15</td>
+              <td style="text-align:center"><span class="badge" style="background:#8e44ad;color:#fff;padding:3px 8px;border-radius:4px;font-size:11px">Jane Smith</span></td>
+              <td style="text-align:center"><span class="badge" style="background:#27ae60;color:#fff;padding:3px 8px;border-radius:4px;font-size:11px">IT Team</span></td>
+              <td style="text-align:center"></td>
+            </tr>
+            <tr>
+              <td style="text-align:center;font-weight:bold">IntegrationTest</td>
+              <td style="text-align:center"><span class="badge" style="background:#7f8c8d;color:#fff;padding:3px 8px;border-radius:4px;font-size:11px">DEVELOPER</span></td>
+              <td style="text-align:center">Sandbox dedicated to the sample project.</td>
+              <td style="text-align:center" data-tip="Stale: last modified more than 6 months ago">&#9888;&#65039; 2025-06-27 06:22</td>
+              <td style="text-align:center"><span class="badge" style="background:#8e44ad;color:#fff;padding:3px 8px;border-radius:4px;font-size:11px">Jane Smith</span></td>
+              <td style="text-align:center"><span class="badge" style="background:#27ae60;color:#fff;padding:3px 8px;border-radius:4px;font-size:11px">IT Team</span></td>
+              <td style="text-align:center"></td>
+            </tr>
+            <tr>
+              <td style="text-align:center;font-weight:bold">QASandbox</td>
+              <td style="text-align:center"><span class="badge" style="background:#7f8c8d;color:#fff;padding:3px 8px;border-radius:4px;font-size:11px">DEVELOPER</span></td>
+              <td style="text-align:center">Sandbox made available for code update tests: versioning and optimisation</td>
+              <td style="text-align:center">2026-06-01 12:35</td>
+              <td style="text-align:center"><span class="badge" style="background:#d35400;color:#fff;padding:3px 8px;border-radius:4px;font-size:11px">Admin User</span></td>
+              <td style="text-align:center"><span class="badge" style="background:#27ae60;color:#fff;padding:3px 8px;border-radius:4px;font-size:11px">IT Team</span></td>
+              <td style="text-align:center"></td>
+            </tr>
+            <tr>
+              <td style="text-align:center;font-weight:bold">UATSandbox</td>
+              <td style="text-align:center"><span class="badge" style="background:#7f8c8d;color:#fff;padding:3px 8px;border-radius:4px;font-size:11px">DEVELOPER</span></td>
+              <td style="text-align:center;color:#888"></td>
+              <td style="text-align:center">2026-06-01 08:12</td>
+              <td style="text-align:center"><span class="badge" style="background:#16a085;color:#fff;padding:3px 8px;border-radius:4px;font-size:11px">Marc Dupont</span></td>
+              <td style="text-align:center"><span class="badge" style="background:#27ae60;color:#fff;padding:3px 8px;border-radius:4px;font-size:11px">IT Team</span></td>
+              <td style="text-align:center"></td>
+            </tr>
+            <tr>
+              <td style="text-align:center;font-weight:bold">Sandbox2</td>
+              <td style="text-align:center"><span class="badge" style="background:#7f8c8d;color:#fff;padding:3px 8px;border-radius:4px;font-size:11px">DEVELOPER</span></td>
+              <td style="text-align:center;color:#888"></td>
+              <td style="text-align:center;color:#E74C3C" data-tip="Very stale: last modified more than 2 years ago">&#10071;&#128128; 2024-05-28 09:32</td>
+              <td style="text-align:center"><span class="badge" style="background:#8e44ad;color:#fff;padding:3px 8px;border-radius:4px;font-size:11px">Jane Smith</span></td>
+              <td style="text-align:center"></td>
+              <td style="text-align:center"></td>
+            </tr>
+            <tr>
+              <td style="text-align:center;font-weight:bold">Sandbox3</td>
+              <td style="text-align:center"><span class="badge" style="background:#7f8c8d;color:#fff;padding:3px 8px;border-radius:4px;font-size:11px">DEVELOPER</span></td>
+              <td style="text-align:center;color:#888"></td>
+              <td style="text-align:center;color:#e67e22" data-tip="Stale: last modified more than 1 year ago">&#128293; 2025-05-27 14:59</td>
+              <td style="text-align:center"><span class="badge" style="background:#8e44ad;color:#fff;padding:3px 8px;border-radius:4px;font-size:11px">Jane Smith</span></td>
+              <td style="text-align:center"><span class="badge" style="background:#27ae60;color:#fff;padding:3px 8px;border-radius:4px;font-size:11px">IT Team</span></td>
+              <td style="text-align:center"></td>
+            </tr>
+            <tr>
+              <td style="text-align:center;font-weight:bold">BatchSandbox</td>
+              <td style="text-align:center"><span class="badge" style="background:#7f8c8d;color:#fff;padding:3px 8px;border-radius:4px;font-size:11px">DEVELOPER</span></td>
+              <td style="text-align:center;color:#888"></td>
+              <td style="text-align:center" data-tip="Stale: last modified more than 6 months ago">&#9888;&#65039; 2025-12-08 14:41</td>
+              <td style="text-align:center"><span class="badge" style="background:#c0392b;color:#fff;padding:3px 8px;border-radius:4px;font-size:11px">Alice Martin</span></td>
+              <td style="text-align:center"><span class="badge" style="background:#27ae60;color:#fff;padding:3px 8px;border-radius:4px;font-size:11px">IT Team</span></td>
+              <td style="text-align:center"></td>
+            </tr>
+            <tr>
+              <td style="text-align:center;font-weight:bold">WidgetsSandbox</td>
+              <td style="text-align:center"><span class="badge" style="background:#7f8c8d;color:#fff;padding:3px 8px;border-radius:4px;font-size:11px">DEVELOPER</span></td>
+              <td style="text-align:center;color:#888"></td>
+              <td style="text-align:center" data-tip="Stale: last modified more than 6 months ago">&#9888;&#65039; 2025-08-11 12:55</td>
+              <td style="text-align:center"><span class="badge" style="background:#16a085;color:#fff;padding:3px 8px;border-radius:4px;font-size:11px">Marc Dupont</span></td>
+              <td style="text-align:center"><span class="badge" style="background:#27ae60;color:#fff;padding:3px 8px;border-radius:4px;font-size:11px">IT Team</span></td>
+              <td style="text-align:center"></td>
+            </tr>
+            <tr>
+              <td style="text-align:center;font-weight:bold">GovSandbox</td>
+              <td style="text-align:center"><span class="badge" style="background:#7f8c8d;color:#fff;padding:3px 8px;border-radius:4px;font-size:11px">DEVELOPER</span></td>
+              <td style="text-align:center">Development sandbox for data governance.</td>
+              <td style="text-align:center" data-tip="Stale: last modified more than 6 months ago">&#9888;&#65039; 2025-12-01 09:36</td>
+              <td style="text-align:center"><span class="badge" style="background:#8e44ad;color:#fff;padding:3px 8px;border-radius:4px;font-size:11px">Jane Smith</span></td>
+              <td style="text-align:center"><span class="badge" style="background:#27ae60;color:#fff;padding:3px 8px;border-radius:4px;font-size:11px">IT Team</span></td>
+              <td style="text-align:center"></td>
+            </tr>
+            <tr>
+              <td style="text-align:center;font-weight:bold">Sandbox4</td>
+              <td style="text-align:center"><span class="badge" style="background:#7f8c8d;color:#fff;padding:3px 8px;border-radius:4px;font-size:11px">DEVELOPER</span></td>
+              <td style="text-align:center">Sandbox of Sarah Connor</td>
+              <td style="text-align:center;color:#E74C3C" data-tip="Very stale: last modified more than 2 years ago">&#10071;&#128128; 2023-10-02 08:47</td>
+              <td style="text-align:center"><span class="badge" style="background:#2980b9;color:#fff;padding:3px 8px;border-radius:4px;font-size:11px">John Doe</span></td>
+              <td style="text-align:center"><span class="badge" style="background:#27ae60;color:#fff;padding:3px 8px;border-radius:4px;font-size:11px">IT Team</span></td>
+              <td style="text-align:center"></td>
+            </tr>
+            <tr>
+              <td style="text-align:center;font-weight:bold">EvolSandbox</td>
+              <td style="text-align:center"><span class="badge" style="background:#7f8c8d;color:#fff;padding:3px 8px;border-radius:4px;font-size:11px">DEVELOPER</span></td>
+              <td style="text-align:center;color:#888"></td>
+              <td style="text-align:center">2026-03-27 10:17</td>
+              <td style="text-align:center"><span class="badge" style="background:#2980b9;color:#fff;padding:3px 8px;border-radius:4px;font-size:11px">John Doe</span></td>
+              <td style="text-align:center"></td>
+              <td style="text-align:center"></td>
+            </tr>
+            <tr>
+              <td style="text-align:center;font-weight:bold">PackageSandbox</td>
+              <td style="text-align:center"><span class="badge" style="background:#7f8c8d;color:#fff;padding:3px 8px;border-radius:4px;font-size:11px">DEVELOPER</span></td>
+              <td style="text-align:center">Project 2024Q2: Contact evolutions + Refund request evolutions</td>
+              <td style="text-align:center;color:#e67e22" data-tip="Stale: last modified more than 1 year ago">&#128293; 2024-11-26 12:22</td>
+              <td style="text-align:center"><span class="badge" style="background:#2c3e50;color:#fff;padding:3px 8px;border-radius:4px;font-size:11px">Bob Johnson</span></td>
+              <td style="text-align:center"><span class="badge" style="background:#27ae60;color:#fff;padding:3px 8px;border-radius:4px;font-size:11px">IT Team</span></td>
+              <td style="text-align:center"></td>
+            </tr>
+            <tr>
+              <td style="text-align:center;font-weight:bold">BillingSandbox</td>
+              <td style="text-align:center"><span class="badge" style="background:#7f8c8d;color:#fff;padding:3px 8px;border-radius:4px;font-size:11px">DEVELOPER</span></td>
+              <td style="text-align:center;color:#888"></td>
+              <td style="text-align:center" data-tip="Stale: last modified more than 6 months ago">&#9888;&#65039; 2025-08-26 13:43</td>
+              <td style="text-align:center"><span class="badge" style="background:#16a085;color:#fff;padding:3px 8px;border-radius:4px;font-size:11px">Marc Dupont</span></td>
+              <td style="text-align:center"><span class="badge" style="background:#27ae60;color:#fff;padding:3px 8px;border-radius:4px;font-size:11px">IT Team</span></td>
+              <td style="text-align:center"></td>
+            </tr>
+            <tr>
+              <td style="text-align:center;font-weight:bold">Sandbox5</td>
+              <td style="text-align:center"><span class="badge" style="background:#7f8c8d;color:#fff;padding:3px 8px;border-radius:4px;font-size:11px">DEVELOPER</span></td>
+              <td style="text-align:center;color:#888"></td>
+              <td style="text-align:center">2026-02-18 09:26</td>
+              <td style="text-align:center"><span class="badge" style="background:#c0392b;color:#fff;padding:3px 8px;border-radius:4px;font-size:11px">Alice Martin</span></td>
+              <td style="text-align:center"><span class="badge" style="background:#27ae60;color:#fff;padding:3px 8px;border-radius:4px;font-size:11px">IT Team</span></td>
+              <td style="text-align:center"></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+  </div>
 </div>
+
+<!-- Key features modal -->
+<div id="modal-kf" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:999;align-items:center;justify-content:center" onclick="if(event.target===this)this.style.display='none'">
+  <div style="background:#fff;border-radius:8px;padding:28px 32px;max-width:560px;width:90%;color:#1a2a35;box-shadow:0 8px 32px rgba(0,0,0,.3)">
+    <h3 style="margin:0 0 14px;color:#2980b9">&#9733; Key features</h3>
+    <ul style="margin:0;padding-left:20px;line-height:1.8">
+      <li><b>Display</b> queries every sandbox of the connected <i>production</i> org via the <code>SandboxInfo</code> Tooling API (name, license type, description, last modified, activation group, source sandbox).</li>
+      <li><b>New Org</b> creates a Calumet org config pre-filled with the selected sandbox name and a derived username (<code>base.sandboxname</code>) &mdash; opens the existing config in edit mode if one already matches.</li>
+      <li><b>Staleness indicators</b> on the last modified date: &#9888;&#65039; over 6 months, &#128293; over 1 year, &#10071;&#128128; over 2 years.</li>
+      <li><b>Color-coded badges</b> assign a unique color per <i>Last Modified By</i> user, activation group and source sandbox; rows are tinted to match the editing user.</li>
+      <li><b>Live filter</b> across all columns (sandbox name, description, user, group, source) &mdash; contains, case-insensitive, debounced.</li>
+      <li>Only available on a <b>production</b> org &mdash; a warning is shown otherwise.</li>
+    </ul>
+    <div style="text-align:right;margin-top:18px">
+      <button class="cal-btn btn-d" onclick="document.getElementById('modal-kf').style.display='none'">Close</button>
+    </div>
+  </div>
+</div>
+
+<script>
+function sw(id,idx){
+  var tp=document.getElementById(id);
+  tp.querySelectorAll('.m-tab').forEach(function(t,i){t.classList.toggle('act',i===idx)});
+  tp.querySelectorAll('.m-panel').forEach(function(p,i){p.classList.toggle('act',i===idx)});
+}
+</script>
 </body>
 </html>
