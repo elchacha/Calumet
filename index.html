@@ -3,181 +3,187 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Calumet Documentation</title>
-<link rel="stylesheet" href="shared.css">
+<title>Calumet &mdash; Salesforce Administration Suite</title>
 <style>
-#main{display:flex;flex-direction:column;overflow:hidden}
-#content{flex:1;display:flex;flex-direction:column;overflow:hidden}
-#desc-panel{flex:0 0 auto;max-height:25vh;overflow:auto;background:#1a3050;padding:12px 24px;border-bottom:1px solid #244568}
-#frame-wrap{flex:1;overflow:hidden}
-#pane{border:none;width:100%;height:100%}
-/* Welcome redesign */
-#welcome{flex-direction:column;align-items:center;justify-content:flex-start;padding:36px 28px}
-.wlc-hero{display:flex;flex-direction:row;align-items:center;gap:32px;max-width:780px;margin-bottom:28px}
-.wlc-hero-text{flex:1}
-.wlc-hero h1{font-size:42px;font-weight:800;color:#fff;letter-spacing:-1px;margin-bottom:2px}
-.wlc-by{font-size:14px;color:var(--sacc);font-weight:600;letter-spacing:.3px;margin-bottom:10px}
-.wlc-tagline{font-size:14px;color:#a8b4c8;line-height:1.6;margin-bottom:0}
-.wlc-mascot-wrap{width:170px;height:170px;flex-shrink:0;background:#fff;border-radius:50%;
-  display:flex;align-items:center;justify-content:center;overflow:hidden;
-  box-shadow:0 0 0 3px rgba(31,120,174,.45),0 8px 32px rgba(0,0,0,.4)}
-.wlc-mascot{width:134px}
-.wlc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;width:100%;max-width:780px}
-.wlc-card{display:flex;gap:12px;align-items:flex-start;background:#1a3050;border:1px solid #244568;
-  border-radius:8px;padding:13px 14px;cursor:pointer;transition:border-color .15s,background .15s}
-.wlc-card:hover{border-color:var(--sacc);background:rgba(46,164,201,.1)}
-.wlc-ico{flex-shrink:0;width:28px;height:28px;color:var(--sacc);margin-top:1px}
-.wlc-ico svg{width:100%;height:100%}
-.wlc-ct{font-size:12px;font-weight:700;color:#e2e8f0;margin-bottom:3px}
-.wlc-cn{font-size:10px;font-weight:400;color:var(--smut);background:#1e3a5e;
-  padding:1px 5px;border-radius:10px;margin-left:3px}
-.wlc-cd{font-size:11px;color:#8892a4;line-height:1.5}
-/* Getting-started CTA */
-.wlc-cta{display:flex;align-items:center;gap:14px;width:100%;max-width:780px;margin-bottom:14px;
-  padding:15px 20px;border-radius:10px;text-decoration:none;cursor:pointer;
-  background:linear-gradient(135deg,rgba(46,164,201,.22),rgba(46,164,201,.06));
-  border:1px solid var(--sacc);transition:background .15s,transform .1s}
-.wlc-cta:hover{background:linear-gradient(135deg,rgba(46,164,201,.34),rgba(46,164,201,.12))}
-.wlc-cta:active{transform:translateY(1px)}
-.wlc-cta-ico{flex-shrink:0;width:34px;height:34px;color:var(--sacc)}
-.wlc-cta-ico svg{width:100%;height:100%}
-.wlc-cta-t{font-size:14px;font-weight:700;color:#fff;margin-bottom:2px}
-.wlc-cta-d{font-size:11.5px;color:#a8b4c8;line-height:1.5}
-.wlc-cta-go{margin-left:auto;font-size:20px;color:var(--sacc);font-weight:700}
-/* Sidebar header link */
-.sb-start{display:inline-flex;align-items:center;gap:5px;margin-top:8px;
-  font-size:11px;font-weight:600;color:var(--sacc);text-decoration:none}
-.sb-start:hover{text-decoration:underline}
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#142540;--bg2:#1a3050;--border:#244568;--txt:#e2e8f0;--muted:#8892a4;--acc:#2ea4c9}
+body{font-family:"Segoe UI",system-ui,sans-serif;background:var(--bg);color:var(--txt);
+     min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:0 20px 64px}
+
+/* ── Hero ── */
+.hero{text-align:center;padding:56px 0 40px;max-width:680px;width:100%}
+.mascot-wrap{width:110px;height:110px;background:#fff;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;overflow:hidden;margin:0 auto 22px;
+  box-shadow:0 0 0 3px rgba(46,164,201,.4),0 8px 32px rgba(0,0,0,.4)}
+.mascot{width:86px}
+.hero h1{font-size:50px;font-weight:800;color:#fff;letter-spacing:-2px;margin-bottom:5px}
+.hero-by{font-size:12px;color:var(--acc);font-weight:600;margin-bottom:12px;letter-spacing:.3px}
+.hero-tag{font-size:15px;color:#a8b4c8;line-height:1.7;max-width:500px;margin:0 auto}
+.version-pill{display:inline-block;background:#1e3a5e;color:var(--acc);
+  padding:3px 14px;border-radius:20px;font-size:12px;font-weight:600;margin-top:14px}
+
+/* ── Sections ── */
+.section{width:100%;max-width:700px;margin-bottom:36px}
+.sec-title{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;
+  color:var(--muted);margin-bottom:14px}
+
+/* ── Download ── */
+.dl-row{display:flex;gap:12px;flex-wrap:wrap}
+.dl-btn{display:flex;align-items:center;gap:14px;padding:15px 22px;border-radius:10px;
+  text-decoration:none;border:1px solid;flex:1;min-width:200px;
+  transition:background .15s,transform .1s}
+.dl-btn:active{transform:translateY(1px)}
+.dl-btn.win{background:rgba(46,164,201,.14);border-color:var(--acc)}
+.dl-btn.win:hover{background:rgba(46,164,201,.26)}
+.dl-btn.lnx{background:rgba(80,180,80,.1);border-color:#4caf50}
+.dl-btn.lnx:hover{background:rgba(80,180,80,.22)}
+.dl-ico{font-size:28px;line-height:1;flex-shrink:0}
+.dl-info strong{display:block;font-size:14px;font-weight:700;color:#fff;margin-bottom:2px}
+.dl-info span{font-size:11px;color:var(--muted)}
+.dl-arrow{margin-left:auto;font-size:20px;color:var(--muted);font-weight:300}
+.releases-link{margin-top:10px;font-size:12px;color:var(--muted)}
+.releases-link a{color:var(--acc);text-decoration:none}
+.releases-link a:hover{text-decoration:underline}
+
+/* ── CTA cards ── */
+.cta-row{display:flex;gap:12px;flex-wrap:wrap;width:100%;max-width:700px;margin-bottom:36px}
+.cta{display:flex;align-items:center;gap:14px;flex:1;min-width:220px;padding:18px 22px;
+  border-radius:10px;text-decoration:none;border:1px solid;transition:background .15s,transform .1s}
+.cta:active{transform:translateY(1px)}
+.cta.primary{background:linear-gradient(135deg,rgba(46,164,201,.2),rgba(46,164,201,.05));border-color:var(--acc)}
+.cta.primary:hover{background:linear-gradient(135deg,rgba(46,164,201,.32),rgba(46,164,201,.1))}
+.cta.secondary{background:var(--bg2);border-color:var(--border)}
+.cta.secondary:hover{border-color:var(--acc);background:rgba(46,164,201,.06)}
+.cta-ico{font-size:26px;flex-shrink:0}
+.cta-body{flex:1}
+.cta-t{font-size:14px;font-weight:700;color:#fff;margin-bottom:3px}
+.cta-d{font-size:11.5px;color:#a8b4c8;line-height:1.5}
+.cta-arr{margin-left:auto;font-size:22px;color:var(--acc);font-weight:700;flex-shrink:0}
+
+/* ── Feature grid ── */
+.feat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.feat-card{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:14px 16px}
+.feat-ico{font-size:20px;margin-bottom:8px}
+.feat-t{font-size:12px;font-weight:700;color:#e2e8f0;margin-bottom:4px}
+.feat-d{font-size:11px;color:var(--muted);line-height:1.5}
+
+/* ── Footer ── */
+footer{margin-top:20px;font-size:11px;color:var(--muted);text-align:center;width:100%;max-width:700px;
+  padding-top:28px;border-top:1px solid var(--border)}
+footer a{color:var(--acc);text-decoration:none}
+footer a:hover{text-decoration:underline}
+
+@media(max-width:540px){
+  .hero h1{font-size:38px}
+  .feat-grid{grid-template-columns:1fr 1fr}
+  .dl-btn,.cta{min-width:100%;flex:none}
+}
 </style>
 </head>
 <body>
-<aside id="sb">
-  <div id="sb-hd">
-    <h1>Calumet</h1>
-    <small>v10.0 &mdash; User Documentation</small>
-    <a class="sb-start" href="starting/" onclick="navPage('starting/index.html');return false;">&#128640; Getting Started</a>
-    <input id="sb-search" type="text" placeholder="Search..." autocomplete="off">
-  </div>
-  <nav id="sb-nav"><div class="cat">Deployment</div><div><a class="nav-a" data-sid="s2" onclick="nav('s2','tab2.html')">Retrieve<span style="color:#e33;margin-left:2px;font-size:13px;font-weight:bold" title="Screenshots available">*</span><span class="n">#2</span></a><a class="nav-a" data-sid="s3" onclick="nav('s3','tab3.html')">Deploy<span style="color:#e33;margin-left:2px;font-size:13px;font-weight:bold" title="Screenshots available">*</span><span class="n">#3</span></a><a class="nav-a" data-sid="s4" onclick="nav('s4','tab4.html')">ChangeTracker<span style="color:#e33;margin-left:2px;font-size:13px;font-weight:bold" title="Screenshots available">*</span><span class="n">#4</span></a><a class="nav-a" data-sid="s10" onclick="nav('s10','tab10.html')">History<span style="color:#e33;margin-left:2px;font-size:13px;font-weight:bold" title="Screenshots available">*</span><span class="n">#10</span></a><a class="nav-a" data-sid="s11" onclick="nav('s11','tab11.html')">Audit<span style="color:#e33;margin-left:2px;font-size:13px;font-weight:bold" title="Screenshots available">*</span><span class="n">#11</span></a><a class="nav-a" data-sid="s26" onclick="nav('s26','tab26.html')">Control<span style="color:#e33;margin-left:2px;font-size:13px;font-weight:bold" title="Screenshots available">*</span><span class="n">#26</span></a><a class="nav-a" data-sid="s79" onclick="nav('s79','tab79.html')">Sandboxes<span class="n">#79</span></a></div><div class="cat">Dev</div><div><a class="nav-a" data-sid="s6" onclick="nav('s6','tab6.html')">TestClass<span style="color:#e33;margin-left:2px;font-size:13px;font-weight:bold" title="Screenshots available">*</span><span class="n">#6</span></a><a class="nav-a" data-sid="s21" onclick="nav('s21','tab21.html')">Logs<span style="color:#e33;margin-left:2px;font-size:13px;font-weight:bold" title="Screenshots available">*</span><span class="n">#21</span></a><a class="nav-a" data-sid="s22" onclick="nav('s22','tab22.html')">Apex<span style="color:#e33;margin-left:2px;font-size:13px;font-weight:bold" title="Screenshots available">*</span><span class="n">#22</span></a><a class="nav-a" data-sid="s23" onclick="nav('s23','tab23.html')">Sfdx<span style="color:#e33;margin-left:2px;font-size:13px;font-weight:bold" title="Screenshots available">*</span><span class="n">#23</span></a><a class="nav-a" data-sid="s56" onclick="nav('s56','tab56.html')">TestSuite<span style="color:#e33;margin-left:2px;font-size:13px;font-weight:bold" title="Screenshots available">*</span><span class="n">#56</span></a><a class="nav-a" data-sid="s57" onclick="nav('s57','tab57.html')">UnusedApexMethod<span style="color:#e33;margin-left:2px;font-size:13px;font-weight:bold" title="Screenshots available">*</span><span class="n">#57</span></a></div><div class="cat">Security</div><div><a class="nav-a" data-sid="s7" onclick="nav('s7','tab7.html')">Sharing Settings<span style="color:#e33;margin-left:2px;font-size:13px;font-weight:bold" title="Screenshots available">*</span><span class="n">#7</span></a><a class="nav-a" data-sid="s15" onclick="nav('s15','tab15.html')">Compare All Profile<span style="color:#e33;margin-left:2px;font-size:13px;font-weight:bold" title="Screenshots available">*</span><span class="n">#15</span></a><a class="nav-a" data-sid="s29" onclick="nav('s29','tab29.html')">Profiles<span style="color:#e33;margin-left:2px;font-size:13px;font-weight:bold" title="Screenshots available">*</span><span class="n">#29</span></a><a class="nav-a" data-sid="s30" onclick="nav('s30','tab30.html')">Security<span style="color:#e33;margin-left:2px;font-size:13px;font-weight:bold" title="Screenshots available">*</span><span class="n">#30</span></a><a class="nav-a" data-sid="s37" onclick="nav('s37','tab37.html')">ProfileComparison<span style="color:#e33;margin-left:2px;font-size:13px;font-weight:bold" title="Screenshots available">*</span><span class="n">#37</span></a><a class="nav-a" data-sid="s47" onclick="nav('s47','tab47.html')">ConnectedApp<span style="color:#e33;margin-left:2px;font-size:13px;font-weight:bold" title="Screenshots available">*</span><span class="n">#47</span></a><a class="nav-a" data-sid="s48" onclick="nav('s48','tab48.html')">Children Access<span style="color:#e33;margin-left:2px;font-size:13px;font-weight:bold" title="Screenshots available">*</span><span class="n">#48</span></a><a class="nav-a" data-sid="s49" onclick="nav('s49','tab49.html')">User OWD/Access right<span style="color:#e33;margin-left:2px;font-size:13px;font-weight:bold" title="Screenshots available">*</span><span class="n">#49</span></a><a class="nav-a" data-sid="s54" onclick="nav('s54','tab54.html')">PermissionSetAnalysis<span style="color:#e33;margin-left:2px;font-size:13px;font-weight:bold" title="Screenshots available">*</span><span class="n">#54</span></a><a class="nav-a" data-sid="s64" onclick="nav('s64','tab64.html')">ComparePermissionSet<span class="n">#64</span></a><a class="nav-a" data-sid="s69" onclick="nav('s69','tab69.html')">User Access Score<span style="color:#e33;margin-left:2px;font-size:13px;font-weight:bold" title="Screenshots available">*</span><span class="n">#69</span></a><a class="nav-a" data-sid="s70" onclick="nav('s70','tab70.html')">Profile & Permission Set Optimization<span style="color:#e33;margin-left:2px;font-size:13px;font-weight:bold" title="Screenshots available">*</span><span class="n">#70</span></a><a class="nav-a" data-sid="s73" onclick="nav('s73','tab73.html')">User Access Comparison<span style="color:#e33;margin-left:2px;font-size:13px;font-weight:bold" title="Screenshots available">*</span><span class="n">#73</span></a></div><div class="cat">Data</div><div><a class="nav-a" data-sid="s9" onclick="nav('s9','tab9.html')">LastRecords<span style="color:#e33;margin-left:2px;font-size:13px;font-weight:bold" title="Screenshots available">*</span><span class="n">#9</span></a><a class="nav-a" data-sid="s12" onclick="nav('s12','tab12.html')">Soql<span style="color:#e33;margin-left:2px;font-size:13px;font-weight:bold" title="Screenshots available">*</span><span class="n">#12</span></a><a class="nav-a" data-sid="s18" onclick="nav('s18','tab18.html')">SoqlCounter<span class="n">#18</span></a><a class="nav-a" data-sid="s19" onclick="nav('s19','tab19.html')">Formula<span style="color:#e33;margin-left:2px;font-size:13px;font-weight:bold" title="Screenshots available">*</span><span class="n">#19</span></a><a class="nav-a" data-sid="s20" onclick="nav('s20','tab20.html')">Limits<span style="color:#e33;margin-left:2px;font-size:13px;font-weight:bold" title="Screenshots available">*</span><span class="n">#20</span></a><a class="nav-a" data-sid="s33" onclick="nav('s33','tab33.html')">RecordSharing<span style="color:#e33;margin-left:2px;font-size:13px;font-weight:bold" title="Screenshots available">*</span><span class="n">#33</span></a><a class="nav-a" data-sid="s58" onclick="nav('s58','tab58.html')">Record Comparison<span style="color:#e33;margin-left:2px;font-size:13px;font-weight:bold" title="Screenshots available">*</span><span class="n">#58</span></a><a class="nav-a" data-sid="s66" onclick="nav('s66','tab66.html')">UserRoles<span style="color:#e33;margin-left:2px;font-size:13px;font-weight:bold" title="Screenshots available">*</span><span class="n">#66</span></a><a class="nav-a" data-sid="s71" onclick="nav('s71','tab71.html')">User Activity Analysis<span style="color:#e33;margin-left:2px;font-size:13px;font-weight:bold" title="Screenshots available">*</span><span class="n">#71</span></a><a class="nav-a" data-sid="s74" onclick="nav('s74','tab74.html')">Object Activity<span style="color:#e33;margin-left:2px;font-size:13px;font-weight:bold" title="Screenshots available">*</span><span class="n">#74</span></a><a class="nav-a" data-sid="s77" onclick="nav('s77','tab77.html')">DataSeeding<span style="color:#e33;margin-left:2px;font-size:13px;font-weight:bold" title="Screenshots available">*</span><span class="n">#77</span></a></div><div class="cat">Model</div><div><a class="nav-a" data-sid="s13" onclick="nav('s13','tab13.html')">Search<span style="color:#e33;margin-left:2px;font-size:13px;font-weight:bold" title="Screenshots available">*</span><span class="n">#13</span></a><a class="nav-a" data-sid="s27" onclick="nav('s27','tab27.html')">Picklists<span style="color:#e33;margin-left:2px;font-size:13px;font-weight:bold" title="Screenshots available">*</span><span class="n">#27</span></a><a class="nav-a" data-sid="s31" onclick="nav('s31','tab31.html')">PickListDependent<span class="n">#31</span></a><a class="nav-a" data-sid="s34" onclick="nav('s34','tab34.html')">Flow informations<span style="color:#e33;margin-left:2px;font-size:13px;font-weight:bold" title="Screenshots available">*</span><span class="n">#34</span></a><a class="nav-a" data-sid="s39" onclick="nav('s39','tab39.html')">ValidationRules<span class="n">#39</span></a><a class="nav-a" data-sid="s41" onclick="nav('s41','tab41.html')">ProfilesPermissions<span style="color:#e33;margin-left:2px;font-size:13px;font-weight:bold" title="Screenshots available">*</span><span class="n">#41</span></a><a class="nav-a" data-sid="s42" onclick="nav('s42','tab42.html')">FlexiPages<span style="color:#e33;margin-left:2px;font-size:13px;font-weight:bold" title="Screenshots available">*</span><span class="n">#42</span></a><a class="nav-a" data-sid="s52" onclick="nav('s52','tab52.html')">Object Relations Usage<span style="color:#e33;margin-left:2px;font-size:13px;font-weight:bold" title="Screenshots available">*</span><span class="n">#52</span></a><a class="nav-a" data-sid="s53" onclick="nav('s53','tab53.html')">CustomMetadata Updater<span style="color:#e33;margin-left:2px;font-size:13px;font-weight:bold" title="Screenshots available">*</span><span class="n">#53</span></a><a class="nav-a" data-sid="s59" onclick="nav('s59','tab59.html')">All Relations<span style="color:#e33;margin-left:2px;font-size:13px;font-weight:bold" title="Screenshots available">*</span><span class="n">#59</span></a><a class="nav-a" data-sid="s75" onclick="nav('s75','tab75.html')">FlexiPage Diff<span class="n">#75</span></a><a class="nav-a" data-sid="s78" onclick="nav('s78','tab78.html')">CustomApp Diff<span class="n">#78</span></a></div><div class="cat">Other</div><div><a class="nav-a" data-sid="s16" onclick="nav('s16','tab16.html')">Relations<span style="color:#e33;margin-left:2px;font-size:13px;font-weight:bold" title="Screenshots available">*</span><span class="n">#16</span></a><a class="nav-a" data-sid="s32" onclick="nav('s32','tab32.html')">Schedule<span style="color:#e33;margin-left:2px;font-size:13px;font-weight:bold" title="Screenshots available">*</span><span class="n">#32</span></a></div><div class="cat">User</div><div><a class="nav-a" data-sid="s17" onclick="nav('s17','tab17.html')">LoginAs<span style="color:#e33;margin-left:2px;font-size:13px;font-weight:bold" title="Screenshots available">*</span><span class="n">#17</span></a><a class="nav-a" data-sid="s65" onclick="nav('s65','tab65.html')">CustomAppAssignment<span style="color:#e33;margin-left:2px;font-size:13px;font-weight:bold" title="Screenshots available">*</span><span class="n">#65</span></a><a class="nav-a" data-sid="s76" onclick="nav('s76','tab76.html')">Users & Config<span style="color:#e33;margin-left:2px;font-size:13px;font-weight:bold" title="Screenshots available">*</span><span class="n">#76</span></a></div><div class="cat">Storage</div><div><a class="nav-a" data-sid="s25" onclick="nav('s25','tab25.html')">Storage<span style="color:#e33;margin-left:2px;font-size:13px;font-weight:bold" title="Screenshots available">*</span><span class="n">#25</span></a><a class="nav-a" data-sid="s50" onclick="nav('s50','tab50.html')">HistoryStorage<span style="color:#e33;margin-left:2px;font-size:13px;font-weight:bold" title="Screenshots available">*</span><span class="n">#50</span></a></div><div class="cat">Technical Debt</div><div><a class="nav-a" data-sid="s28" onclick="nav('s28','tab28.html')">ListViews<span style="color:#e33;margin-left:2px;font-size:13px;font-weight:bold" title="Screenshots available">*</span><span class="n">#28</span></a><a class="nav-a" data-sid="s38" onclick="nav('s38','tab38.html')">VFPDeleteHelper<span style="color:#e33;margin-left:2px;font-size:13px;font-weight:bold" title="Screenshots available">*</span><span class="n">#38</span></a><a class="nav-a" data-sid="s43" onclick="nav('s43','tab43.html')">RecordTypeUsage<span style="color:#e33;margin-left:2px;font-size:13px;font-weight:bold" title="Screenshots available">*</span><span class="n">#43</span></a><a class="nav-a" data-sid="s45" onclick="nav('s45','tab45.html')">WeblinksUnused<span style="color:#e33;margin-left:2px;font-size:13px;font-weight:bold" title="Screenshots available">*</span><span class="n">#45</span></a><a class="nav-a" data-sid="s46" onclick="nav('s46','tab46.html')">LayoutUnused<span style="color:#e33;margin-left:2px;font-size:13px;font-weight:bold" title="Screenshots available">*</span><span class="n">#46</span></a><a class="nav-a" data-sid="s51" onclick="nav('s51','tab51.html')">Fields Not Used<span style="color:#e33;margin-left:2px;font-size:13px;font-weight:bold" title="Screenshots available">*</span><span class="n">#51</span></a><a class="nav-a" data-sid="s55" onclick="nav('s55','tab55.html')">CustomFields Usage<span style="color:#e33;margin-left:2px;font-size:13px;font-weight:bold" title="Screenshots available">*</span><span class="n">#55</span></a><a class="nav-a" data-sid="s67" onclick="nav('s67','tab67.html')">Unused Profile<span style="color:#e33;margin-left:2px;font-size:13px;font-weight:bold" title="Screenshots available">*</span><span class="n">#67</span></a></div></nav>
-</aside>
-<main id="main">
 
-<div id="welcome">
-  <div class="wlc-hero">
-    <div class="wlc-hero-text">
-      <h1>Calumet</h1>
-      <p class="wlc-by">by Little Chaman</p>
-      <p class="wlc-version">v10.0 &mdash; Salesforce Administration Suite</p>
-      <p class="wlc-tagline">A unified desktop workbench for Salesforce administrators and developers.</p>
-    </div>
-    <div class="wlc-mascot-wrap">
-      <img class="wlc-mascot" src="littlechaman-mascot.png" alt="Little Chaman">
-    </div>
+<!-- Hero -->
+<div class="hero">
+  <div class="mascot-wrap">
+    <img class="mascot" src="littlechaman-mascot.png" alt="Little Chaman">
   </div>
-  <a class="wlc-cta" href="starting/" onclick="navPage('starting/index.html');return false;">
-    <div class="wlc-cta-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3v4a1 1 0 0 0 1 1h4"/><path d="M5 12V5a2 2 0 0 1 2-2h7l5 5v4"/><path d="M2 18h7"/><path d="m6 15-3 3 3 3"/></svg></div>
-    <div>
-      <div class="wlc-cta-t">New to Calumet? Start here</div>
-      <div class="wlc-cta-d">A 5-step guide: configure, connect your first org, and pick your tabs.</div>
+  <h1>Calumet</h1>
+  <p class="hero-by">by Little Chaman</p>
+  <p class="hero-tag">A unified desktop workbench for Salesforce administrators, developers, and architects.</p>
+  <span class="version-pill">v11 &mdash; Latest</span>
+</div>
+
+<!-- Download -->
+<div class="section">
+  <div class="sec-title">Download</div>
+  <div class="dl-row">
+    <a class="dl-btn win"
+       href="https://github.com/elchacha/calumet25/releases/latest/download/Calumet-windows.zip">
+      <span class="dl-ico">&#x1F5A5;</span>
+      <div class="dl-info">
+        <strong>Windows</strong>
+        <span>ZIP &middot; Java included &middot; 64-bit</span>
+      </div>
+      <span class="dl-arrow">&#8595;</span>
+    </a>
+    <a class="dl-btn lnx"
+       href="https://github.com/elchacha/calumet25/releases/latest/download/Calumet-linux.zip">
+      <span class="dl-ico">&#x1F427;</span>
+      <div class="dl-info">
+        <strong>Linux</strong>
+        <span>ZIP &middot; Java included &middot; 64-bit</span>
+      </div>
+      <span class="dl-arrow">&#8595;</span>
+    </a>
+  </div>
+  <p class="releases-link">All releases &rarr;
+    <a href="https://github.com/elchacha/calumet25/releases" target="_blank">
+      github.com/elchacha/calumet25/releases
+    </a>
+  </p>
+</div>
+
+<!-- CTA: Getting Started + Full Docs -->
+<div class="cta-row">
+  <a class="cta primary" href="starting/">
+    <span class="cta-ico">&#x1F680;</span>
+    <div class="cta-body">
+      <div class="cta-t">Getting Started</div>
+      <div class="cta-d">Connect your first org in 5 steps</div>
     </div>
-    <div class="wlc-cta-go">&rarr;</div>
+    <span class="cta-arr">&rarr;</span>
   </a>
-  <div class="wlc-grid">
-    <div class="wlc-card" onclick="navCat('Deployment','s2','tab2.html')">
-      <div class="wlc-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg></div>
-      <div><div class="wlc-ct">Deployment <span class="wlc-cn">7</span></div><div class="wlc-cd">Retrieve, deploy, compare and roll back metadata</div></div>
+  <a class="cta secondary" href="docs.html">
+    <span class="cta-ico">&#x1F4D6;</span>
+    <div class="cta-body">
+      <div class="cta-t">Full Documentation</div>
+      <div class="cta-d">78 screens &mdash; all features explained</div>
     </div>
-    <div class="wlc-card" onclick="navCat('Dev','s6','tab6.html')">
-      <div class="wlc-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg></div>
-      <div><div class="wlc-ct">Dev <span class="wlc-cn">6</span></div><div class="wlc-cd">Apex, test coverage, logs, dead code detection</div></div>
-    </div>
-    <div class="wlc-card" onclick="navCat('Security','s7','tab7.html')">
-      <div class="wlc-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
-      <div><div class="wlc-ct">Security <span class="wlc-cn">13</span></div><div class="wlc-cd">Profiles, permission sets, sharing rules, user access</div></div>
-    </div>
-    <div class="wlc-card" onclick="navCat('Data','s12','tab12.html')">
-      <div class="wlc-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg></div>
-      <div><div class="wlc-ct">Data <span class="wlc-cn">11</span></div><div class="wlc-cd">SOQL explorer, records, limits, activity analysis</div></div>
-    </div>
-    <div class="wlc-card" onclick="navCat('Model','s13','tab13.html')">
-      <div class="wlc-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="4" r="2"/><circle cx="4" cy="20" r="2"/><circle cx="20" cy="20" r="2"/><line x1="12" y1="6" x2="4" y2="18"/><line x1="12" y1="6" x2="20" y2="18"/></svg></div>
-      <div><div class="wlc-ct">Model <span class="wlc-cn">12</span></div><div class="wlc-cd">Picklists, flows, FlexiPages, field relations</div></div>
-    </div>
-    <div class="wlc-card" onclick="navCat('User','s17','tab17.html')">
-      <div class="wlc-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
-      <div><div class="wlc-ct">User <span class="wlc-cn">3</span></div><div class="wlc-cd">Login, licenses, frozen users, app assignments</div></div>
-    </div>
-    <div class="wlc-card" onclick="navCat('Storage','s25','tab25.html')">
-      <div class="wlc-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="21 8 21 21 3 21 3 8"/><rect x="1" y="3" width="22" height="5"/><line x1="10" y1="12" x2="14" y2="12"/></svg></div>
-      <div><div class="wlc-ct">Storage <span class="wlc-cn">2</span></div><div class="wlc-cd">Org storage monitoring and history tracking</div></div>
-    </div>
-    <div class="wlc-card" onclick="navCat('Technical Debt','s28','tab28.html')">
-      <div class="wlc-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg></div>
-      <div><div class="wlc-ct">Technical Debt <span class="wlc-cn">8</span></div><div class="wlc-cd">Unused fields, layouts, profiles and more</div></div>
-    </div>
-    <div class="wlc-card" onclick="navCat('Other','s16','tab16.html')">
-      <div class="wlc-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg></div>
-      <div><div class="wlc-ct">Other <span class="wlc-cn">2</span></div><div class="wlc-cd">Scheduling, record locking, relationship explorer</div></div>
-    </div>
-  </div>
-  <p class="wlc-hint">Select a feature from the sidebar, or click a card to explore.</p>
+    <span class="cta-arr">&rarr;</span>
+  </a>
 </div>
 
-<div id="content" style="display:none">
-  <div id="desc-panel"></div>
-  <div id="frame-wrap">
-    <iframe id="pane"></iframe>
+<!-- Features -->
+<div class="section">
+  <div class="sec-title">What&rsquo;s inside</div>
+  <div class="feat-grid">
+    <div class="feat-card">
+      <div class="feat-ico">&#x1F4E6;</div>
+      <div class="feat-t">Deployment</div>
+      <div class="feat-d">Retrieve, deploy, compare and roll back metadata</div>
+    </div>
+    <div class="feat-card">
+      <div class="feat-ico">&#x1F6E1;&#xFE0F;</div>
+      <div class="feat-t">Security</div>
+      <div class="feat-d">Profiles, permission sets, sharing rules, user access</div>
+    </div>
+    <div class="feat-card">
+      <div class="feat-ico">&#x1F4BB;</div>
+      <div class="feat-t">Dev</div>
+      <div class="feat-d">Apex, test coverage, logs, dead code detection</div>
+    </div>
+    <div class="feat-card">
+      <div class="feat-ico">&#x1F5C4;&#xFE0F;</div>
+      <div class="feat-t">Data</div>
+      <div class="feat-d">SOQL explorer, records, limits, activity analysis</div>
+    </div>
+    <div class="feat-card">
+      <div class="feat-ico">&#x1F517;</div>
+      <div class="feat-t">Model</div>
+      <div class="feat-d">Picklists, flows, FlexiPages, field relations</div>
+    </div>
+    <div class="feat-card">
+      <div class="feat-ico">&#x1F527;</div>
+      <div class="feat-t">Technical Debt</div>
+      <div class="feat-d">Unused fields, layouts, profiles and more</div>
+    </div>
   </div>
 </div>
-</main>
-<script>
-function navCat(cat,sid,file){
-  document.querySelectorAll('.cat').forEach(function(c){
-    if(c.textContent.trim()===cat) c.scrollIntoView({block:'start'});
-  });
-  nav(sid,file);
-}
-function nav(sid,file){
-  document.getElementById('welcome').classList.add('h');
-  var ct=document.getElementById('content');
-  ct.style.display='flex';
-  document.getElementById('pane').src='tabs/'+file;
-  document.querySelectorAll('.nav-a').forEach(function(a){a.classList.remove('on')});
-  var a=document.querySelector('.nav-a[data-sid="'+sid+'"]');
-  if(a){a.classList.add('on');a.scrollIntoView({block:'nearest'})}
-}
-// Load an arbitrary page (e.g. the Getting Started guide) into the right pane, like a tab.
-function navPage(url){
-  document.getElementById('welcome').classList.add('h');
-  document.getElementById('content').style.display='flex';
-  document.getElementById('pane').src=url;
-  document.querySelectorAll('.nav-a').forEach(function(a){a.classList.remove('on')});
-}
-document.getElementById('pane').addEventListener('load',function(){
-  try{
-    var doc=this.contentDocument;
-    var sum=doc.querySelector('.sum');
-    var dp=document.getElementById('desc-panel');
-    if(sum){dp.innerHTML=sum.outerHTML;sum.style.display='none';}
-    else dp.innerHTML='';
-    var st=doc.createElement('style');
-    st.textContent='.screenshot-block,.scr-gallery,[class*="screenshot"],[class*="scr-"]{display:none!important}';
-    doc.head.appendChild(st);
-  }catch(e){}
-});
-var sb=document.getElementById('sb-search');
-sb.addEventListener('input',function(){
-  var q=this.value.toLowerCase();
-  document.querySelectorAll('.nav-a').forEach(function(a){
-    a.classList.toggle('hidden',!!q&&!a.textContent.toLowerCase().includes(q));
-  });
-  document.querySelectorAll('.cat').forEach(function(c){
-    var grp=c.nextElementSibling;
-    var vis=grp&&[...grp.querySelectorAll('.nav-a')].some(function(a){return !a.classList.contains('hidden')});
-    c.classList.toggle('hidden',!!q&&!vis);
-    if(grp)grp.classList.toggle('hidden',!!q&&!vis);
-  });
-});
-</script>
+
+<footer>
+  Built for Salesforce professionals &mdash;
+  <a href="https://github.com/elchacha/calumet25" target="_blank">GitHub</a>
+</footer>
+
 </body>
 </html>
