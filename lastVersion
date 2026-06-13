@@ -47,6 +47,7 @@ General
 - GitHub Actions workflow added for cross-platform packaging — produces self-contained Windows/Linux ZIPs with bundled Java for users without a local Java install.
 - Local Maven repository committed to source control — enables CI builds without requiring manual dependency setup.
 - SQLite JDBC library (sqlite-jdbc 3.49.1.0) added.
+- Fixed a crash on first launch when setting up the keystore: the popup now opens and saves correctly.
 
 v10.10 — 2026-05-20
 General
@@ -122,4 +123,4 @@ General
 [/history]
 [update]dist/CalumetGui-11.jar[/update]
 [exe]dist/Calumet-11.exe[/exe]
-[updaterVersion]3.4[/updaterVersion]
+[updaterVersion]3.5[/updaterVersion]

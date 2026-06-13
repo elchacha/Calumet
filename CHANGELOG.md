@@ -48,6 +48,7 @@
 - GitHub Actions workflow added for cross-platform packaging — produces self-contained Windows/Linux ZIPs with bundled Java.
 - Local Maven repository committed to source control — enables CI builds without manual dependency setup.
 - SQLite JDBC library (sqlite-jdbc 3.49.1.0) added.
+- Fixed a crash on first launch when setting up the keystore: the popup now opens and saves correctly.
 
 ---
 
