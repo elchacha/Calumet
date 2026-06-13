@@ -1,5 +1,56 @@
 # Calumet — Changelog
 
+## v11 — 2026-06-13
+
+### New screens
+- **PermSet Overlap** — Compare two or more permission sets side by side and identify redundant or conflicting permissions across your org.
+
+### Object Activity
+- Objects with dependencies now show a Dependencies column — click any row to load its Tooling API dependency list on demand.
+- Status badge filter buttons (Active / Stale / Empty) appear above the list for instant narrowing. Last Modified column is sorted by default. Object name is shown in bold.
+
+### User Access Score
+- Six-component score breakdown (Field, Setup, Custom and more) is now shown directly in the detail panel.
+- Configurable weight profiles let you re-score users instantly without re-extracting data.
+- Effective (deduplicated) scores now drive ranking and color coding.
+- Permission-set names in the detail table are clickable links that open the record in Salesforce.
+
+### ComparePermissionSet
+- Permission-set XML files are now reused from the toolingCache populated by the Permission Set Dump screen, skipping a redundant Metadata API download when data is already available.
+
+### Permission Set Dump / Popup
+- Duplicate and missing permission set components that were previously silent are now extracted correctly.
+- Checkboxes in the popup replaced with visual emoji indicators.
+- The permission-set description is now shown in the popup header.
+- Underlined, single-click column names open the corresponding Salesforce record directly.
+- Double-click on field/object rows opens the correct section in Salesforce setup.
+- The Settings URL in the popup is now clickable.
+
+### Object History
+- The rename popup now pre-fills the current name for faster edits, with a Clear button to start fresh.
+
+### TestClass
+- Hide checkboxes are now mutually exclusive (hiding one set un-hides the other).
+- A Package.xml button lets you export passing classes as a deployment package.
+- Delete Selected is disabled when nothing is selected.
+
+### ChangeTracker
+- A single "Use Cache" checkbox replaces the previous options; the cache date is now color-coded by age.
+
+### DataSeeding
+- A Related Objects button lets you select objects related to the seed object for inclusion in a seeding run.
+- A Main column scopes relation traversal from the seed object.
+- An interactive Tutorial button opens a step-by-step guided tour.
+
+### General
+- The application now adapts its minimum size to the screen, preventing content clipping on small screens. The top bar is scrollable when the window is very narrow.
+- Auto-update now uses GitHub Releases as the primary channel, ensuring reliable delivery of future updates.
+- GitHub Actions workflow added for cross-platform packaging — produces self-contained Windows/Linux ZIPs with bundled Java.
+- Local Maven repository committed to source control — enables CI builds without manual dependency setup.
+- SQLite JDBC library (sqlite-jdbc 3.49.1.0) added.
+
+---
+
 ## v10.10 — 2026-05-20
 
 ### General
