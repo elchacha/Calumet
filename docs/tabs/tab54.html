@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Permission Sets — Calumet</title>
+<link rel="stylesheet" href="../shared.css">
+<style>
+/* ── Badge styles for PS / PSG types ── */
+.badge-ps {
+  display:inline-block;padding:1px 7px;border-radius:10px;font-size:10px;font-weight:700;
+  background:#d6eaf8;color:#1A5276;border:1px solid #aed6f1;white-space:nowrap
+}
+.badge-psg {
+  display:inline-block;padding:1px 7px;border-radius:10px;font-size:10px;font-weight:700;
+  background:#d5f5e3;color:#1a5226;border:1px solid #a9dfbf;white-space:nowrap
+}
+/* green checkmark icon */
+.chk-icon {
+  display:inline-block;width:16px;height:16px;border-radius:50%;
+  background:#27ae60;color:#fff;text-align:center;line-height:16px;
+  font-size:10px;font-weight:700
+}
+/* Name column link style */
+.name-link {
+  color:#1a6bb5;text-decoration:underline;cursor:pointer;
+}
+.name-link:hover { color:#0d4f8c; }
+
+/* Blinking row highlight */
+@keyframes blink-row {
+  0%,100% { outline:none; background:transparent; }
+  50%      { outline:2px solid #E74C3C; outline-offset:-2px; background:#fdecea; }
+}
+.row-blink td { animation: blink-row 1.4s ease-in-out infinite; }
+
+/* ── Modal overlay ── */
+#modal-overlay {
+  display:none;position:fixed;inset:0;background:rgba(0,0,0,0.55);
+  z-index:9000;align-items:center;justify-content:center
+}
+#modal-overlay.open { display:flex; }
+
+#modal-box {
+  background:#F8F8F8;border:1px solid #9AABBF;border-radius:6px;
+  width:760px;max-width:96vw;max-height:90vh;display:flex;flex-direction:column;
+  box-shadow:0 8px 32px rgba(0,0,0,0.45);overflow:hidden;color:#1a2a35
+}
+
+/* Modal title bar */
+#modal-titlebar {
+  display:flex;align-items:center;gap:8px;
+  padding:8px 12px;background:#D8E6EE;border-bottom:1px solid #9AABBF;flex-shrink:0
+}
+#modal-title {
+  font-size:13px;font-weight:700;color:#1A5276;flex:1
+}
+#modal-hint {
+  font-size:10px;color:#888;font-style:italic
+}
+#modal-close {
+  padding:2px 8px;border-radius:3px;font-size:12px;font-weight:700;
+  background:#E74C3C;color:#fff;border:1px solid #c03a2b;cursor:pointer
+}
+#modal-open-btn {
+  padding:3px 10px;border-radius:3px;font-size:11px;font-weight:700;
+  background:#e67e22;color:#fff;border:1px solid #b8621a;cursor:default
+}
+
+/* Modal inner tabpane */
+#modal-body { flex:1;overflow:hidden;display:flex;flex-direction:column; }
+
+/* perm checkmark / dash in popup tables */
+.perm-yes  { color:#27ae60;font-weight:700 }
+.perm-no   { color:#bbb }
+
+/* scroll wrapper for popup table */
+.popup-tbl-wrap {
+  overflow:auto;max-height:340px;border:1px solid #9AABBF;border-radius:3px;margin:2px 0
+}
+
+/* ── Toolbar strip above main table ── */
+.toolbar {
+  display:flex;flex-wrap:wrap;gap:6px;align-items:center;
+  padding:6px 10px;background:#EDF3F7;border-bottom:1px solid #9AABBF
+}
+/* ── Info bar below toolbar ── */
+.infobar {
+  display:flex;flex-wrap:wrap;gap:16px;align-items:center;
+  padding:4px 10px;background:#F4F8FB;border-bottom:1px solid #d5e8f0;font-size:11px
+}
+</style>
+</head>
+<body class="tab-page">
+
+<!-- ── Summary card ── -->
+<div class="sum">
+  <div class="sum-title">
+    <h2>Permission Sets</h2>
+    <span class="sum-badge">Tab 54</span>
+  </div>
+  <p class="sum-desc">Browse and inspect all Permission Sets and Permission Set Groups in the connected org. Click a name to open the detail view showing assignees, object permissions, field permissions, and system permissions.</p>
+</div>
+
+<!-- ── Mockup ── -->
+<div class="mockup-wrap">
+  <div class="mockup">
+
+    <!-- toolbar -->
+    <div class="toolbar">
+      <button class="cal-btn btn-b" data-tip="Load all permission sets from the org">Extract</button>
+      <button class="cal-btn btn-d" data-tip="Refresh the list">Refresh</button>
+      <div class="vsep"></div>
+      <label class="cal-chk"><input type="checkbox" checked disabled> Custom only</label>
+      <label class="cal-chk"><input type="checkbox" disabled> PS Groups only</label>
+      <label class="cal-chk"><input type="checkbox" disabled> With users</label>
+      <div class="vsep"></div>
+      <input class="cal-tf" value="" placeholder="Filter by name..." style="width:170px" readonly>
+      <div class="spacer"></div>
+      <button class="cal-btn btn-o" data-tip="Export table to CSV">Export CSV</button>
+    </div>
+
+    <!-- info bar -->
+    <div class="infobar">
+      <span class="cal-lbl"><strong>18</strong> permission sets &nbsp;|&nbsp; <strong>4</strong> groups &nbsp;|&nbsp; <strong>14</strong> plain PS</span>
+      <span class="cal-lbl" style="color:#27ae60">Last extract: 2026-04-29 09:14:02</span>
+    </div>
+
+    <!-- main table -->
+    <div style="padding:6px 8px">
+      <div class="tbl-wrap">
+        <table class="cal-tbl" id="main-tbl">
+          <thead>
+            <tr>
+              <th style="width:30px">Custom</th>
+              <th style="width:52px">Type</th>
+              <th style="width:190px">Name</th>
+              <th style="width:270px">desc</th>
+              <th style="width:130px">modified &#9660;</th>
+              <th style="width:48px">users</th>
+              <th style="width:45px">rights</th>
+              <th style="width:75px">ns</th>
+              <th style="width:230px">Children</th>
+              <th style="width:60px">In Group</th>
+              <th style="width:60px">Parents</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td style="text-align:center"><span class="chk-icon">&#10003;</span></td>
+              <td><span class="badge-ps">PS</span></td>
+              <td><span class="name-link" onclick="openPopup('PermSet_Activity_01','PS',1)">PermSet_Activity_01</span></td>
+              <td style="color:#555">Permset for C2C integration</td>
+              <td>2026-01-12 16:37</td>
+              <td>1</td><td>0</td>
+              <td style="color:#888;font-size:10px">ns_internal</td>
+              <td></td><td></td><td></td>
+            </tr>
+            <tr class="row-blink">
+              <td style="text-align:center"><span class="chk-icon">&#10003;</span></td>
+              <td><span class="badge-psg">PSG</span></td>
+              <td><span class="name-link" onclick="openPopup('PermSet_Group_01','PSG',82)">PermSet_Group_01</span></td>
+              <td></td>
+              <td>2026-01-11 22:11</td>
+              <td>82</td><td>0</td>
+              <td></td>
+              <td style="font-size:10px;color:#1A5276">ChildPS_01, ChildPS_02, ChildPS_03</td>
+              <td></td><td></td>
+            </tr>
+            <tr>
+              <td style="text-align:center"></td>
+              <td><span class="badge-psg">PSG</span></td>
+              <td><span class="name-link" onclick="openPopup('PermSet_Group_02','PSG',45)">PermSet_Group_02</span></td>
+              <td></td>
+              <td>2026-01-11 22:11</td>
+              <td>45</td><td>0</td>
+              <td></td>
+              <td style="font-size:10px;color:#1A5276">ChildPS_04, ChildPS_05, ChildPS_06, ChildPS_07, ChildPS_08</td>
+              <td></td><td></td>
+            </tr>
+            <tr>
+              <td style="text-align:center"><span class="chk-icon">&#10003;</span></td>
+              <td><span class="badge-psg">PSG</span></td>
+              <td><span class="name-link" onclick="openPopup('PermSet_Group_03','PSG',42)">PermSet_Group_03</span></td>
+              <td></td>
+              <td>2026-01-11 22:11</td>
+              <td>42</td><td>0</td>
+              <td></td>
+              <td style="font-size:10px;color:#1A5276">ChildPS_09</td>
+              <td></td><td></td>
+            </tr>
+            <tr>
+              <td style="text-align:center"><span class="chk-icon">&#10003;</span></td>
+              <td><span class="badge-ps">PS</span></td>
+              <td><span class="name-link" onclick="openPopup('PermSet_Manage_01','PS',13)">PermSet_Manage_01</span></td>
+              <td style="color:#555">Manage Strategic Partners</td>
+              <td>2026-01-11 00:10</td>
+              <td>13</td><td>0</td>
+              <td></td><td></td><td></td><td></td>
+            </tr>
+            <tr>
+              <td style="text-align:center"><span class="chk-icon">&#10003;</span></td>
+              <td><span class="badge-ps">PS</span></td>
+              <td><span class="name-link" onclick="openPopup('PermSet_Deploy_01','PS',1)">PermSet_Deploy_01</span></td>
+              <td style="color:#555">Create and manage constraint types in Configurator</td>
+              <td>2026-01-10 06:16</td>
+              <td>1</td><td>0</td>
+              <td style="color:#888;font-size:10px">ns_internal</td>
+              <td></td><td></td><td></td>
+            </tr>
+            <tr>
+              <td style="text-align:center"><span class="chk-icon">&#10003;</span></td>
+              <td><span class="badge-ps">PS</span></td>
+              <td><span class="name-link" onclick="openPopup('PermSet_Access_01','PS',0)">PermSet_Access_01</span></td>
+              <td></td>
+              <td>2025-12-23 20:13</td>
+              <td>0</td><td>0</td>
+              <td></td><td></td><td></td><td></td>
+            </tr>
+            <tr>
+              <td style="text-align:center"><span class="chk-icon">&#10003;</span></td>
+              <td><span class="badge-ps">PS</span></td>
+              <td><span class="name-link" onclick="openPopup('PermSet_Scrub_01','PS',77)">PermSet_Scrub_01</span></td>
+              <td style="color:#555">Give access to specific fields for Contact/Account</td>
+              <td>2025-12-16 21:03</td>
+              <td>77</td><td>0</td>
+              <td></td><td></td><td></td><td></td>
+            </tr>
+            <tr>
+              <td style="text-align:center"><span class="chk-icon">&#10003;</span></td>
+              <td><span class="badge-ps">PS</span></td>
+              <td><span class="name-link" onclick="openPopup('PermSet_Admin_01','PS',1)">PermSet_Admin_01</span></td>
+              <td></td>
+              <td>2025-12-07 10:58</td>
+              <td>1</td><td>0</td>
+              <td style="color:#888;font-size:10px">ns_sapim</td>
+              <td></td><td></td><td></td>
+            </tr>
+            <tr>
+              <td style="text-align:center"><span class="chk-icon">&#10003;</span></td>
+              <td><span class="badge-ps">PS</span></td>
+              <td><span class="name-link" onclick="openPopup('PermSet_User_01','PS',0)">PermSet_User_01</span></td>
+              <td></td>
+              <td>2025-12-07 10:58</td>
+              <td>0</td><td>0</td>
+              <td style="color:#888;font-size:10px">ns_sapim</td>
+              <td></td><td></td><td></td>
+            </tr>
+            <tr>
+              <td style="text-align:center"><span class="chk-icon">&#10003;</span></td>
+              <td><span class="badge-ps">PS</span></td>
+              <td><span class="name-link" onclick="openPopup('PermSet_Sinequa_01','PS',1)">PermSet_Sinequa_01</span></td>
+              <td style="color:#555">Provide view all to integration user sinequa</td>
+              <td>2025-12-06 19:27</td>
+              <td>1</td><td>0</td>
+              <td></td><td></td><td></td><td></td>
+            </tr>
+            <tr>
+              <td style="text-align:center"><span class="chk-icon">&#10003;</span></td>
+              <td><span class="badge-psg">PSG</span></td>
+              <td><span class="name-link" onclick="openPopup('PermSet_Group_04','PSG',0)">PermSet_Group_04</span></td>
+              <td></td>
+              <td>2025-12-05 17:42</td>
+              <td>0</td><td>0</td>
+              <td></td><td></td><td></td><td></td>
+            </tr>
+            <tr>
+              <td style="text-align:center"><span class="chk-icon">&#10003;</span></td>
+              <td><span class="badge-ps">PS</span></td>
+              <td><span class="name-link" onclick="openPopup('PermSet_Conga_01','PS',1)">PermSet_Conga_01</span></td>
+              <td style="color:#555">Give access to Conga app</td>
+              <td>2025-12-04 18:24</td>
+              <td>1</td><td>0</td>
+              <td></td><td></td><td></td><td></td>
+            </tr>
+            <tr>
+              <td style="text-align:center"><span class="chk-icon">&#10003;</span></td>
+              <td><span class="badge-ps">PS</span></td>
+              <td><span class="name-link" onclick="openPopup('PermSet_Surfe_01','PS',4)">PermSet_Surfe_01</span></td>
+              <td style="color:#555">Give the rights to use Surfe on LinkedIn</td>
+              <td>2025-11-04 14:54</td>
+              <td>4</td><td>0</td>
+              <td></td><td></td><td></td><td></td>
+            </tr>
+            <tr>
+              <td style="text-align:center"><span class="chk-icon">&#10003;</span></td>
+              <td><span class="badge-ps">PS</span></td>
+              <td><span class="name-link" onclick="openPopup('PermSet_Connected_01','PS',1)">PermSet_Connected_01</span></td>
+              <td style="color:#555">Users are enabled to connect to Workbench</td>
+              <td>2025-10-02 14:36</td>
+              <td>1</td><td>0</td>
+              <td></td><td></td><td></td><td></td>
+            </tr>
+            <tr>
+              <td style="text-align:center"><span class="chk-icon">&#10003;</span></td>
+              <td><span class="badge-ps">PS</span></td>
+              <td><span class="name-link" onclick="openPopup('PermSet_Chatter_01','PS',2)">PermSet_Chatter_01</span></td>
+              <td></td>
+              <td>2025-09-04 17:59</td>
+              <td>2</td><td>0</td>
+              <td></td><td></td><td></td><td></td>
+            </tr>
+            <tr>
+              <td style="text-align:center"><span class="chk-icon">&#10003;</span></td>
+              <td><span class="badge-ps">PS</span></td>
+              <td><span class="name-link" onclick="openPopup('PermSet_NoMfa_01','PS',0)">PermSet_NoMfa_01</span></td>
+              <td></td>
+              <td>2025-06-24 16:13</td>
+              <td>0</td><td>0</td>
+              <td></td><td></td><td></td><td></td>
+            </tr>
+            <tr>
+              <td style="text-align:center"><span class="chk-icon">&#10003;</span></td>
+              <td><span class="badge-ps">PS</span></td>
+              <td><span class="name-link" onclick="openPopup('PermSet_ScrubAPI_01','PS',0)">PermSet_ScrubAPI_01</span></td>
+              <td></td>
+              <td>2025-05-26 15:51</td>
+              <td>0</td><td>0</td>
+              <td></td><td></td><td></td><td></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div><!-- /.mockup -->
+</div><!-- /.mockup-wrap -->
+
+
+<!-- ═══════════════════════════════════════════
+     MODAL OVERLAY
+     ═══════════════════════════════════════════ -->
+<div id="modal-overlay" onclick="overlayClick(event)">
+  <div id="modal-box">
+
+    <!-- title bar -->
+    <div id="modal-titlebar">
+      <span id="modal-title">PermissionSet : PermSet_Group_01</span>
+      <button id="modal-open-btn">open</button>
+      <span id="modal-hint">you can double click an element to open it in Salesforce</span>
+      <button id="modal-close" onclick="closePopup()">&#10005;</button>
+    </div>
+
+    <!-- inner tab pane -->
+    <div id="modal-body">
+      <div class="m-tabpane" id="tpModal" style="height:100%;display:flex;flex-direction:column">
+        <div class="m-tabbar">
+          <div class="m-tab act"   onclick="sw('tpModal',0)" id="tab-assignees">assignees(82)</div>
+          <div class="m-tab"       onclick="sw('tpModal',1)">system(0)</div>
+          <div class="m-tab"       onclick="sw('tpModal',2)">objects(8)</div>
+          <div class="m-tab"       onclick="sw('tpModal',3)">fields(85)</div>
+          <div class="m-tab"       onclick="sw('tpModal',4)">others(18)</div>
+        </div>
+        <div class="m-body" style="flex:1;overflow:hidden">
+
+          <!-- ── assignees ── -->
+          <div class="m-panel act" id="tpModal-0" style="padding:8px">
+            <div class="popup-tbl-wrap">
+              <table class="cal-tbl">
+                <thead>
+                  <tr>
+                    <th style="width:160px">UserName</th>
+                    <th style="width:130px">Profile</th>
+                    <th style="width:60px">Active</th>
+                    <th>PsGroup</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><td>user_01</td><td>Profile_01</td><td style="color:#27ae60">true</td><td>PermSet_Group_01</td></tr>
+                  <tr><td>user_02</td><td>Profile_01</td><td style="color:#27ae60">true</td><td>PermSet_Group_01</td></tr>
+                  <tr><td>user_03</td><td>Profile_01</td><td style="color:#27ae60">true</td><td>PermSet_Group_01</td></tr>
+                  <tr><td>user_04</td><td>Profile_02</td><td style="color:#27ae60">true</td><td>PermSet_Group_01</td></tr>
+                  <tr><td>user_05</td><td>Profile_03</td><td style="color:#27ae60">true</td><td>PermSet_Group_01</td></tr>
+                  <tr><td>user_06</td><td>Profile_04</td><td style="color:#27ae60">true</td><td>PermSet_Group_01</td></tr>
+                  <tr><td>user_07</td><td>Profile_02</td><td style="color:#27ae60">true</td><td>PermSet_Group_01</td></tr>
+                  <tr><td>user_08</td><td>Profile_03</td><td style="color:#27ae60">true</td><td>PermSet_Group_01</td></tr>
+                  <tr><td>user_09</td><td>Profile_04</td><td style="color:#27ae60">true</td><td>PermSet_Group_01</td></tr>
+                  <tr><td>user_10</td><td>Profile_02</td><td style="color:#27ae60">true</td><td>PermSet_Group_01</td></tr>
+                  <tr><td>user_11</td><td>Profile_04</td><td style="color:#27ae60">true</td><td>PermSet_Group_01</td></tr>
+                  <tr><td>user_12</td><td>Profile_02</td><td style="color:#27ae60">true</td><td>PermSet_Group_01</td></tr>
+                  <tr><td>user_13</td><td>Profile_02</td><td style="color:#27ae60">true</td><td>PermSet_Group_01</td></tr>
+                  <tr><td>user_14</td><td>Profile_04</td><td style="color:#27ae60">true</td><td>PermSet_Group_01</td></tr>
+                  <tr><td>user_15</td><td>Profile_03</td><td style="color:#27ae60">true</td><td>PermSet_Group_01</td></tr>
+                  <tr><td colspan="4" style="color:#888;text-align:center;font-style:italic;font-size:11px">&#8230; 67 more rows &#8230;</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- ── system ── -->
+          <div class="m-panel" id="tpModal-1" style="padding:8px">
+            <div class="popup-tbl-wrap">
+              <table class="cal-tbl">
+                <thead><tr><th style="width:260px">Permission</th><th style="width:60px">Enabled</th></tr></thead>
+                <tbody>
+                  <tr><td colspan="2" style="color:#888;text-align:center;font-style:italic;padding:10px">No system permissions</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- ── objects ── -->
+          <div class="m-panel" id="tpModal-2" style="padding:8px">
+            <div class="popup-tbl-wrap">
+              <table class="cal-tbl">
+                <thead>
+                  <tr>
+                    <th style="width:140px">Object</th>
+                    <th style="width:50px">Read</th>
+                    <th style="width:55px">Create</th>
+                    <th style="width:45px">Edit</th>
+                    <th style="width:55px">Delete</th>
+                    <th style="width:65px">ViewAll</th>
+                    <th style="width:70px">ModifyAll</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Account</td>
+                    <td class="perm-yes">&#10003;</td><td class="perm-yes">&#10003;</td>
+                    <td class="perm-yes">&#10003;</td><td class="perm-yes">&#10003;</td>
+                    <td class="perm-yes">&#10003;</td><td class="perm-yes">&#10003;</td>
+                  </tr>
+                  <tr>
+                    <td>Contact</td>
+                    <td class="perm-yes">&#10003;</td><td class="perm-yes">&#10003;</td>
+                    <td class="perm-yes">&#10003;</td><td class="perm-no">&#8212;</td>
+                    <td class="perm-no">&#8212;</td><td class="perm-no">&#8212;</td>
+                  </tr>
+                  <tr>
+                    <td>Opportunity</td>
+                    <td class="perm-yes">&#10003;</td><td class="perm-yes">&#10003;</td>
+                    <td class="perm-yes">&#10003;</td><td class="perm-no">&#8212;</td>
+                    <td class="perm-no">&#8212;</td><td class="perm-no">&#8212;</td>
+                  </tr>
+                  <tr>
+                    <td>Lead</td>
+                    <td class="perm-yes">&#10003;</td><td class="perm-no">&#8212;</td>
+                    <td class="perm-no">&#8212;</td><td class="perm-no">&#8212;</td>
+                    <td class="perm-no">&#8212;</td><td class="perm-no">&#8212;</td>
+                  </tr>
+                  <tr>
+                    <td>Case</td>
+                    <td class="perm-yes">&#10003;</td><td class="perm-yes">&#10003;</td>
+                    <td class="perm-yes">&#10003;</td><td class="perm-yes">&#10003;</td>
+                    <td class="perm-no">&#8212;</td><td class="perm-no">&#8212;</td>
+                  </tr>
+                  <tr>
+                    <td>CustomObj_01</td>
+                    <td class="perm-yes">&#10003;</td><td class="perm-yes">&#10003;</td>
+                    <td class="perm-yes">&#10003;</td><td class="perm-yes">&#10003;</td>
+                    <td class="perm-yes">&#10003;</td><td class="perm-yes">&#10003;</td>
+                  </tr>
+                  <tr>
+                    <td>CustomObj_02</td>
+                    <td class="perm-yes">&#10003;</td><td class="perm-yes">&#10003;</td>
+                    <td class="perm-no">&#8212;</td><td class="perm-no">&#8212;</td>
+                    <td class="perm-no">&#8212;</td><td class="perm-no">&#8212;</td>
+                  </tr>
+                  <tr>
+                    <td>CustomObj_03</td>
+                    <td class="perm-yes">&#10003;</td><td class="perm-no">&#8212;</td>
+                    <td class="perm-no">&#8212;</td><td class="perm-no">&#8212;</td>
+                    <td class="perm-no">&#8212;</td><td class="perm-no">&#8212;</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- ── fields ── -->
+          <div class="m-panel" id="tpModal-3" style="padding:8px">
+            <div class="popup-tbl-wrap">
+              <table class="cal-tbl">
+                <thead>
+                  <tr>
+                    <th style="width:220px">Field</th>
+                    <th style="width:50px">Read</th>
+                    <th style="width:50px">Edit</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><td>Account.field_01</td><td class="perm-yes">&#10003;</td><td class="perm-yes">&#10003;</td></tr>
+                  <tr><td>Account.field_02</td><td class="perm-yes">&#10003;</td><td class="perm-no">&#8212;</td></tr>
+                  <tr><td>Contact.field_01</td><td class="perm-yes">&#10003;</td><td class="perm-yes">&#10003;</td></tr>
+                  <tr><td>CustomObj_01.field_01</td><td class="perm-yes">&#10003;</td><td class="perm-yes">&#10003;</td></tr>
+                  <tr><td>CustomObj_01.field_02</td><td class="perm-yes">&#10003;</td><td class="perm-no">&#8212;</td></tr>
+                  <tr><td colspan="3" style="color:#888;text-align:center;font-style:italic;font-size:11px">&#8230; 80 more rows &#8230;</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- ── others ── -->
+          <div class="m-panel" id="tpModal-4" style="padding:8px">
+            <div class="popup-tbl-wrap">
+              <table class="cal-tbl">
+                <thead>
+                  <tr>
+                    <th style="width:260px">Setting</th>
+                    <th style="width:60px">Enabled</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><td>ViewSetup</td><td class="perm-yes">&#10003;</td></tr>
+                  <tr><td>ManageUsers</td><td class="perm-no">&#8212;</td></tr>
+                  <tr><td>EditPublicReports</td><td class="perm-yes">&#10003;</td></tr>
+                  <tr><td>CreateReportFolders</td><td class="perm-yes">&#10003;</td></tr>
+                  <tr><td>ViewPublicDashboards</td><td class="perm-yes">&#10003;</td></tr>
+                  <tr><td>CreateDashboardFolders</td><td class="perm-yes">&#10003;</td></tr>
+                  <tr><td>ManageChatter</td><td class="perm-no">&#8212;</td></tr>
+                  <tr><td>SendSitRequests</td><td class="perm-no">&#8212;</td></tr>
+                  <tr><td>ExportReport</td><td class="perm-yes">&#10003;</td></tr>
+                  <tr><td>UseWebLink</td><td class="perm-yes">&#10003;</td></tr>
+                  <tr><td>ViewHelpLink</td><td class="perm-yes">&#10003;</td></tr>
+                  <tr><td>ListEmailSend</td><td class="perm-yes">&#10003;</td></tr>
+                  <tr><td>MassInlineEdit</td><td class="perm-yes">&#10003;</td></tr>
+                  <tr><td>EditTask</td><td class="perm-yes">&#10003;</td></tr>
+                  <tr><td>EditEvent</td><td class="perm-yes">&#10003;</td></tr>
+                  <tr><td>TransferAnyEntity</td><td class="perm-no">&#8212;</td></tr>
+                  <tr><td>ConvertLeads</td><td class="perm-yes">&#10003;</td></tr>
+                  <tr><td>EditBillingInfo</td><td class="perm-no">&#8212;</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+        </div><!-- /.m-body -->
+      </div><!-- /.m-tabpane#tpModal -->
+    </div><!-- /#modal-body -->
+
+  </div><!-- /#modal-box -->
+</div><!-- /#modal-overlay -->
+
+
+<script>
+/* ── tab switcher (shared) ── */
+function sw(id, idx) {
+  var tp = document.getElementById(id);
+  tp.querySelectorAll('.m-tab').forEach(function(t, i) { t.classList.toggle('act', i === idx); });
+  tp.querySelectorAll('.m-panel').forEach(function(p, i) { p.classList.toggle('act', i === idx); });
+}
+
+/* ── modal open / close ── */
+function openPopup(name, type, userCount) {
+  var overlay = document.getElementById('modal-overlay');
+  var title   = document.getElementById('modal-title');
+  var tabLbl  = document.getElementById('tab-assignees');
+
+  title.textContent = 'PermissionSet : ' + name;
+  tabLbl.textContent = 'assignees(' + userCount + ')';
+
+  /* always start on assignees tab */
+  sw('tpModal', 0);
+
+  overlay.classList.add('open');
+}
+
+function closePopup() {
+  document.getElementById('modal-overlay').classList.remove('open');
+}
+
+/* clicking the dark backdrop closes the modal */
+function overlayClick(e) {
+  if (e.target === document.getElementById('modal-overlay')) {
+    closePopup();
+  }
+}
+
+/* ESC key closes the modal */
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') closePopup();
+});
+</script>
+</body>
+</html>

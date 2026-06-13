@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>PickListDependent — Calumet</title>
+<link rel="stylesheet" href="../shared.css">
+</head>
+<body class="tab-page">
+<div class="sum">
+  <div class="sum-title">
+    <h2>PickListDependent</h2>
+    <span class="sum-badge">Tab 31</span>
+  </div>
+  <p class="sum-desc">
+    Visualise dependent picklist configurations on a Salesforce object: each controlling
+    field value (rows) and the dependent options it enables (columns), with Excel/CSV export
+    and round-trip Excel import for a single field.
+    <button class="cal-btn btn-d" style="margin-left:10px" onclick="document.getElementById('modal-kf').style.display='flex'">★ Key features</button>
+  </p>
+</div>
+<div class="mockup-wrap">
+  <div class="mockup">
+
+    <!-- Row 1: object search + format + results header -->
+    <div class="hbox" style="gap:8px;align-items:center">
+      <span class="cal-lbl">Object</span>
+      <input class="cal-tf" style="width:300px" value="Case(Case)" readonly data-tip="Salesforce object whose dependent picklists to analyse">
+      <button class="cal-btn btn-b" data-tip="Load dependent picklists for the selected object">Search</button>
+      <span class="vsep"></span>
+      <label class="cal-chk"><input type="radio" checked disabled> Excel (.xls)</label>
+      <label class="cal-chk"><input type="radio" disabled> CSV</label>
+      <span class="spacer"></span>
+      <span class="cal-lbl">Picklist founds : 3</span>
+      <button class="cal-btn btn-d" data-tip="Go back to the picklist selection panel">Show selection</button>
+    </div>
+
+    <!-- Row 2: extract / export / import actions -->
+    <div class="hbox" style="gap:10px;align-items:center;margin-top:8px">
+      <button class="cal-btn btn-b" data-tip="Extract dependent picklist values for the selected fields">Extract</button>
+      <button class="cal-btn btn-o" data-tip="Write the extracted values to an Excel file">Export to Excel</button>
+      <button class="cal-btn btn-d" data-tip="Import picklist dependencies from an Excel file (single field only)">Import Excel File</button>
+      <span class="spacer"></span>
+      <span class="cal-lbl" style="font-style:italic;color:#5b9bac">Import is available only when a single field is selected</span>
+    </div>
+
+    <!-- Row 3: export path -->
+    <div class="hbox" style="gap:8px;align-items:center;margin-top:8px">
+      <span class="cal-lbl">Export to</span>
+      <input class="cal-tf cal-grow" value="C:\Tool\Calumet\extracted" readonly data-tip="Destination folder for exported files">
+      <button class="cal-btn btn-d" data-tip="Browse for an export folder">Select</button>
+      <button class="cal-btn btn-d" data-tip="Open the export folder in the file explorer">Open folder</button>
+    </div>
+
+    <hr class="hsep">
+
+    <!-- Results TabPane -->
+    <div class="m-tabpane" id="tp31">
+      <div class="m-tabbar">
+        <div class="m-tab" onclick="sw('tp31',0)">Reason</div>
+        <div class="m-tab" onclick="sw('tp31',1)">Response</div>
+        <div class="m-tab act" onclick="sw('tp31',2)">Sub Reason</div>
+      </div>
+      <div class="m-body">
+
+        <!-- Panel 0: Reason -->
+        <div class="m-panel" id="tp31-0">
+          <div class="tbl-wrap">
+            <table class="cal-tbl">
+              <thead><tr>
+                <th style="width:240px">RecordType.Name &gt; Reason__c</th>
+                <th>Type A</th><th>Type B</th><th>Type C</th>
+              </tr></thead>
+              <tbody>
+                <tr><td><b>Category 1</b></td><td>Option A1</td><td>Option A2</td><td>Option A3</td></tr>
+                <tr><td><b>Category 2</b></td><td>Option B1</td><td>Option B2</td><td>Option B3</td></tr>
+                <tr><td><b>Category 3</b></td><td>Option C1</td><td>Option C2</td><td>Option C3</td></tr>
+                <tr><td>Category 4</td><td>Option D1</td><td>Option D2</td><td></td></tr>
+                <tr><td>Category 5</td><td>Option E1</td><td></td><td>Option E3</td></tr>
+                <tr><td>Category 6</td><td></td><td>Option F2</td><td>Option F3</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Panel 1: Response -->
+        <div class="m-panel" id="tp31-1">
+          <div class="tbl-wrap">
+            <table class="cal-tbl">
+              <thead><tr>
+                <th style="width:240px">Reason__c &gt; Response__c</th>
+                <th>Action 1</th><th>Action 2</th><th>Action 3</th>
+              </tr></thead>
+              <tbody>
+                <tr><td><b>Option B1</b></td><td>Response A1</td><td>Response A2</td><td>Response A3</td></tr>
+                <tr><td><b>Option A1</b></td><td>Response B1</td><td>Response B2</td><td>Response B3</td></tr>
+                <tr><td><b>Option A3</b></td><td>Response C1</td><td>Response C2</td><td>Response C3</td></tr>
+                <tr><td>Option D1</td><td>Response D1</td><td>Response D2</td><td></td></tr>
+                <tr><td>Option E1</td><td></td><td>Response E2</td><td>Response E3</td></tr>
+                <tr><td>Option E1b</td><td>Response F1</td><td>Response F2</td><td>Response F3</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Panel 2: Sub Reason (active) -->
+        <div class="m-panel act" id="tp31-2">
+          <div class="tbl-wrap">
+            <table class="cal-tbl">
+              <thead><tr>
+                <th style="width:300px">Reason__c &gt; SubReason__c</th>
+                <th>Category A</th>
+                <th>Category B</th>
+                <th>Category C</th>
+                <th>Category D</th>
+                <th>Category E</th>
+                <th>Category F</th>
+                <th>Category G</th>
+              </tr></thead>
+              <tbody>
+                <tr><td><b>Value 01</b></td><td>Item A1</td><td>Item B1</td><td>Item C1</td><td>Item D1</td><td>Item E1</td><td>Item F1</td><td>Item G1</td></tr>
+                <tr><td><b>Value 02</b></td><td>Item A2</td><td>Item B2</td><td>Item C2</td><td>Item D2</td><td>Item E2</td><td>Item F2</td><td>Item G2</td></tr>
+                <tr><td><b>Value 03</b></td><td>Item A3</td><td>Item B3</td><td>Item C3</td><td>Item D3</td><td>Item E3</td><td>Item F3</td><td>Item G3</td></tr>
+                <tr><td><b>Value 04</b></td><td>Item A4</td><td>Item B4</td><td>Item C4</td><td>Item D4</td><td></td><td>Item F4</td><td>Item G4</td></tr>
+                <tr><td><b>Value 05</b></td><td>Item A5</td><td>Item B5</td><td>Item C5</td><td>Item D5</td><td></td><td></td><td>Item G5</td></tr>
+                <tr><td><b>Value 06</b></td><td>Item A6</td><td></td><td></td><td>Item D6</td><td></td><td></td><td>Item G6</td></tr>
+                <tr><td>Value 07</td><td>Item A7</td><td></td><td></td><td></td><td></td><td></td><td>Item G7</td></tr>
+                <tr><td>Value 08</td><td></td><td></td><td></td><td></td><td></td><td></td><td>Item G8</td></tr>
+                <tr><td>Value 09</td><td></td><td></td><td></td><td></td><td></td><td></td><td>Item G9</td></tr>
+                <tr><td>Value 10</td><td></td><td></td><td></td><td></td><td></td><td></td><td>Item G10</td></tr>
+                <tr><td>Value 11</td><td></td><td></td><td></td><td></td><td></td><td></td><td>Item G11</td></tr>
+                <tr><td>Value 12</td><td></td><td></td><td></td><td></td><td></td><td></td><td>Item G12</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="cal-lbl" style="margin-top:6px;font-style:italic;color:#888">
+            Bold values in the first column are controlling values actually used (referenced by at least one dependent option).
+          </p>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Key features modal -->
+<div id="modal-kf" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:999;align-items:center;justify-content:center" onclick="if(event.target===this)this.style.display='none'">
+  <div style="background:#fff;border-radius:8px;padding:28px 32px;max-width:560px;width:90%;color:#1a2a35;box-shadow:0 8px 32px rgba(0,0,0,.3)">
+    <h3 style="margin:0 0 14px;color:#2980b9">★ Key features</h3>
+    <ul style="margin:0;padding-left:20px;line-height:1.8">
+      <li>Search an object and discover every dependent picklist (controlling &rarr; dependent pairs).</li>
+      <li>Select one, several, or all picklists via checkboxes before extracting.</li>
+      <li>Per-field result tabs showing controlling values (rows) against dependent options (columns).</li>
+      <li>Controlling values actually used are highlighted in bold.</li>
+      <li>Export the matrix to Excel (.xls) or CSV.</li>
+      <li>Round-trip: edit the Excel file and re-import to update dependencies (single field only).</li>
+    </ul>
+    <div style="text-align:right;margin-top:18px">
+      <button class="cal-btn btn-d" onclick="document.getElementById('modal-kf').style.display='none'">Close</button>
+    </div>
+  </div>
+</div>
+
+<script>
+function sw(id,idx){
+  var tp=document.getElementById(id);
+  tp.querySelectorAll('.m-tab').forEach(function(t,i){t.classList.toggle('act',i===idx)});
+  tp.querySelectorAll('.m-panel').forEach(function(p,i){p.classList.toggle('act',i===idx)});
+}
+</script>
+</body>
+</html>

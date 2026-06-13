@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Workspace — Calumet</title>
+<link rel="stylesheet" href="../shared.css">
+</head>
+<body class="tab-page">
+<div class="sum">
+  <div class="sum-title">
+    <h2>Workspace</h2>
+    <span class="sum-badge">Tab 36</span>
+  </div>
+  <p class="sum-desc">Manage local project workspaces: organise files, set paths, and configure project settings.</p>
+</div>
+<div class="mockup-wrap">
+  <div class="mockup"><div class="vbox" style="gap:0px"><div class="anchor"><div class="m-tabpane" id="tp17"><div class="m-tabbar"><div class="m-tab act" onclick="sw('tp17',0)">selection</div><div class="m-tab" onclick="sw('tp17',1)">preparation</div><div class="m-tab" onclick="sw('tp17',2)">cleanMetadatas</div></div><div class="m-body"><div class="m-panel act" id="tp17-0"><div class="anchor"><button class="cal-btn btn-d">Choose a package</button><button class="cal-btn btn-d">Add Metadatas</button><button class="cal-btn btn-d">Process Metadatas</button></div></div><div class="m-panel" id="tp17-1"><div class="anchor"><button class="cal-btn btn-d">Recalculate</button><div class="hbox" style="gap:0px;align-items:center"><div class="vbox" style="gap:0px"><span class="cal-lbl">List of the metadatas to be destroyed</span><div class="tbl-wrap"><table class="cal-tbl"><thead><tr><th>used by</th><th>Type</th><th>FullName</th><th>using</th></tr></thead><tbody><tr><td colspan="20" class="tbl-empty"></td></tr></tbody></table></div></div><div class="vbox" style="gap:0px"><button class="cal-btn btn-d">&lt;--</button><button class="cal-btn btn-d">--&gt;</button></div><div class="vbox" style="gap:0px"><span class="cal-lbl">List of the metadatas to be updated</span><div class="tbl-wrap"><table class="cal-tbl"><thead><tr><th>using</th><th>Type</th><th>FullName</th></tr></thead><tbody><tr><td colspan="20" class="tbl-empty"></td></tr></tbody></table></div></div></div><button class="cal-btn btn-d">generate Destructive</button><span class="cal-lbl">This component will calculate the dependency for a package of metadatas.</span><span class="cal-lbl">Metadata on left are to be destroyed with a destructive package</span><span class="cal-lbl">Metadatas on the right can be retrieved and need to be updated to remove dependency</span><span class="cal-lbl">used by : indicate the number of dependency. ? mean it is not yet calculated ; use reclaculate if needed</span><button class="cal-btn btn-d">cleanMetadata</button><input class="cal-tf" placeholder="" style="width:251.0px;" readonly><label class="cal-chk"><input type="checkbox" disabled> hide reviewed metadatas</label></div></div><div class="m-panel" id="tp17-2"><div class="anchor"><button class="cal-btn btn-d">retrieve</button><label class="cal-chk"><input type="checkbox" disabled> pushToVscode</label><label class="cal-chk"><input type="checkbox" disabled> cleanWorkspace</label><button class="cal-btn btn-d">generate packages</button><button class="cal-btn btn-d">quickCheck</button><button class="cal-btn btn-d">View dependence</button><span class="cal-lbl">&lt;-- Please choose a project to save the generated packages</span><input class="cal-tf" placeholder="" style="width:245.0px;" readonly><span class="cal-lbl">Destructive package Name</span></div></div></div></div></div></div></div>
+</div>
+<script>
+function sw(id,idx){
+  var tp=document.getElementById(id);
+  tp.querySelectorAll('.m-tab').forEach(function(t,i){t.classList.toggle('act',i===idx)});
+  tp.querySelectorAll('.m-panel').forEach(function(p,i){p.classList.toggle('act',i===idx)});
+}
+</script>
+</body>
+</html>

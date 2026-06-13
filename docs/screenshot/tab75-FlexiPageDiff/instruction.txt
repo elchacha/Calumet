@@ -1,0 +1,1 @@
+Place screenshots for tab75-FlexiPageDiff in this directory.

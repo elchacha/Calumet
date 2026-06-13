@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Flow Explorer — Calumet</title>
+<link rel="stylesheet" href="../shared.css">
+</head>
+<body class="tab-page">
+
+<div class="sum">
+  <div class="sum-title">
+    <h2>Flow Explorer</h2>
+    <span class="sum-badge">Tab 34</span>
+  </div>
+  <p class="sum-desc">
+    Browse and manage all Salesforce Flows, Invokable Actions, and SubFlow dependencies in the connected org. Supports filtering by type, status, and text search including inside flow metadata content.
+    <button class="cal-btn btn-d" style="margin-left:10px" onclick="document.getElementById('modal-kf').style.display='flex'">&#9733; Key features</button>
+  </p>
+</div>
+
+<div class="mockup-wrap">
+  <div class="mockup">
+    <div class="m-tabpane" id="tp1">
+      <div class="m-tabbar">
+        <div class="m-tab act" onclick="sw('tp1',0)">Flows</div>
+        <div class="m-tab" onclick="sw('tp1',1)">Invokable</div>
+        <div class="m-tab" onclick="sw('tp1',2)">SubFlows</div>
+      </div>
+      <div class="m-body">
+
+        <!-- TAB 1: Flows -->
+        <div class="m-panel act" id="tp1-0">
+          <div class="vbox" style="gap:6px">
+            <div class="hbox" style="gap:8px;align-items:center;padding:4px 0 0 0">
+              <button class="cal-btn btn-b" data-tip="Retrieve all flows from the connected org">search</button>
+              <label class="cal-chk"><input type="checkbox" checked disabled> flow active</label>
+              <label class="cal-chk"><input type="checkbox" checked disabled> autoLaunched</label>
+              <label class="cal-chk"><input type="checkbox" checked disabled> Flow</label>
+              <label class="cal-chk"><input type="checkbox" checked disabled> Workflow</label>
+              <label class="cal-chk"><input type="checkbox" checked disabled> Trigger</label>
+              <label class="cal-chk"><input type="checkbox" checked disabled> Routing</label>
+              <label class="cal-chk"><input type="checkbox" checked disabled> Invokable</label>
+            </div>
+            <div class="hbox" style="gap:8px;align-items:center">
+              <input class="cal-tf" style="width:342px" readonly placeholder="Filter flows...">
+              <label class="cal-chk"><input type="checkbox" disabled> search Text in flow</label>
+            </div>
+            <div class="tbl-wrap">
+              <table class="cal-tbl">
+                <thead>
+                  <tr>
+                    <th style="min-width:230px">Flow Name</th>
+                    <th style="min-width:180px;max-width:200px">Flow Label</th>
+                    <th style="width:46px">Vers</th>
+                    <th style="width:78px">Status</th>
+                    <th style="width:130px">Type</th>
+                    <th style="width:140px">Trigger Type</th>
+                    <th style="width:120px">Operation</th>
+                    <th style="width:140px">Last Modify by</th>
+                    <th style="width:100px">Last modified</th>
+                    <th style="width:130px">Object Name</th>
+                    <th style="width:120px">Object Label</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Account_Onboarding_Flow</td>
+                    <td>Account Onboarding</td>
+                    <td>7</td>
+                    <td style="color:#27ae60">Active</td>
+                    <td>Flow</td>
+                    <td>RecordBeforeSave</td>
+                    <td>Create</td>
+                    <td>John Doe</td>
+                    <td>2026-04-18</td>
+                    <td>Account</td>
+                    <td>Account</td>
+                  </tr>
+                  <tr>
+                    <td>Auto_Assign_Case_Owner</td>
+                    <td>Auto Assign Case Owner</td>
+                    <td>3</td>
+                    <td style="color:#27ae60">Active</td>
+                    <td>AutoLaunchedFlow</td>
+                    <td>RecordAfterSave</td>
+                    <td>Create, Update</td>
+                    <td>Jane Smith</td>
+                    <td>2026-03-30</td>
+                    <td>Case</td>
+                    <td>Case</td>
+                  </tr>
+                  <tr>
+                    <td>Contact_Welcome_Email</td>
+                    <td>Contact Welcome Email</td>
+                    <td>5</td>
+                    <td style="color:#27ae60">Active</td>
+                    <td>AutoLaunchedFlow</td>
+                    <td>RecordAfterSave</td>
+                    <td>Create</td>
+                    <td>Admin User</td>
+                    <td>2026-03-12</td>
+                    <td>Contact</td>
+                    <td>Contact</td>
+                  </tr>
+                  <tr>
+                    <td>Lead_Qualification_Screen</td>
+                    <td>Lead Qualification</td>
+                    <td>12</td>
+                    <td style="color:#27ae60">Active</td>
+                    <td>Flow</td>
+                    <td></td>
+                    <td></td>
+                    <td>Jane Smith</td>
+                    <td>2026-04-02</td>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td>Opportunity_Stage_Sync</td>
+                    <td>Opportunity Stage Sync</td>
+                    <td>2</td>
+                    <td style="color:#e67e22">Inactive</td>
+                    <td>Workflow</td>
+                    <td></td>
+                    <td>Update</td>
+                    <td>Mark Taylor</td>
+                    <td>2026-02-20</td>
+                    <td>Opportunity</td>
+                    <td>Opportunity</td>
+                  </tr>
+                  <tr>
+                    <td>Order_Approval_Process</td>
+                    <td>Order Approval Process</td>
+                    <td>4</td>
+                    <td style="color:#27ae60">Active</td>
+                    <td>AutoLaunchedFlow</td>
+                    <td>Scheduled</td>
+                    <td>Update</td>
+                    <td>John Doe</td>
+                    <td>2026-04-10</td>
+                    <td>Order</td>
+                    <td>Order</td>
+                  </tr>
+                  <tr>
+                    <td>Route_Service_Case</td>
+                    <td>Route Service Case</td>
+                    <td>1</td>
+                    <td style="color:#27ae60">Active</td>
+                    <td>RoutingFlow</td>
+                    <td></td>
+                    <td></td>
+                    <td>Admin User</td>
+                    <td>2026-01-15</td>
+                    <td>Case</td>
+                    <td>Case</td>
+                  </tr>
+                  <tr>
+                    <td>Send_Contract_Notification</td>
+                    <td>Send Contract Notification</td>
+                    <td>6</td>
+                    <td style="color:#27ae60">Active</td>
+                    <td>InvocableProcess</td>
+                    <td></td>
+                    <td></td>
+                    <td>Jane Smith</td>
+                    <td>2026-04-22</td>
+                    <td>Contract</td>
+                    <td>Contract</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="hbox" style="gap:6px;align-items:center;padding:2px 0">
+              <span class="cal-lbl" style="color:#888">8 flows displayed &mdash; Double-click (left) to open Flow Builder &mdash; Double-click (right) to open Setup page</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB 2: Invokable -->
+        <div class="m-panel" id="tp1-1">
+          <div class="vbox" style="gap:6px">
+            <div class="hbox" style="gap:8px;align-items:center;padding:4px 0 0 0">
+              <button class="cal-btn btn-b" data-tip="Search Apex invokable actions referenced in flows">Search</button>
+              <label class="cal-chk"><input type="checkbox" checked disabled> display active only</label>
+            </div>
+            <div class="hbox" style="gap:8px;align-items:center">
+              <input class="cal-tf" style="width:356px" readonly placeholder="Filter...">
+            </div>
+            <div class="tbl-wrap">
+              <table class="cal-tbl">
+                <thead>
+                  <tr>
+                    <th style="min-width:210px">Apex Class</th>
+                    <th style="min-width:230px">Flow Name</th>
+                    <th style="min-width:190px">Flow Label</th>
+                    <th style="min-width:210px">Invokable Name</th>
+                    <th style="min-width:210px">Invokable Label</th>
+                    <th style="width:80px">Flow active</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>CaseEscalationHandler</td>
+                    <td>Auto_Assign_Case_Owner</td>
+                    <td>Auto Assign Case Owner</td>
+                    <td>escalateCase</td>
+                    <td>Escalate Case</td>
+                    <td style="color:#27ae60">true</td>
+                  </tr>
+                  <tr>
+                    <td>ContractNotificationService</td>
+                    <td>Send_Contract_Notification</td>
+                    <td>Send Contract Notification</td>
+                    <td>sendNotification</td>
+                    <td>Send Notification</td>
+                    <td style="color:#27ae60">true</td>
+                  </tr>
+                  <tr>
+                    <td>LeadScoringEngine</td>
+                    <td>Lead_Qualification_Screen</td>
+                    <td>Lead Qualification</td>
+                    <td>computeScore</td>
+                    <td>Compute Lead Score</td>
+                    <td style="color:#27ae60">true</td>
+                  </tr>
+                  <tr>
+                    <td>OrderValidationService</td>
+                    <td>Order_Approval_Process</td>
+                    <td>Order Approval Process</td>
+                    <td>validateOrder</td>
+                    <td>Validate Order</td>
+                    <td style="color:#27ae60">true</td>
+                  </tr>
+                  <tr>
+                    <td>StageUpdateProcessor</td>
+                    <td>Opportunity_Stage_Sync</td>
+                    <td>Opportunity Stage Sync</td>
+                    <td>syncStage</td>
+                    <td>Sync Opportunity Stage</td>
+                    <td style="color:#e67e22">false</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="hbox" style="gap:6px;align-items:center;padding:2px 0">
+              <span class="cal-lbl" style="color:#888">5 invokable actions &mdash; Double-click Apex Class column to open source &mdash; Double-click other columns to open Flow</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB 3: SubFlows -->
+        <div class="m-panel" id="tp1-2">
+          <div class="vbox" style="gap:6px">
+            <div class="hbox" style="gap:8px;align-items:center;padding:4px 0 0 0">
+              <button class="cal-btn btn-b" data-tip="Search parent-child subflow dependencies across all active flows">Search</button>
+              <label class="cal-chk"><input type="checkbox" checked disabled> display active only</label>
+            </div>
+            <div class="hbox" style="gap:8px;align-items:center">
+              <input class="cal-tf" style="width:356px" readonly placeholder="Filter subflows...">
+            </div>
+            <div class="tbl-wrap">
+              <table class="cal-tbl">
+                <thead>
+                  <tr>
+                    <th style="min-width:240px">SubFlow Name</th>
+                    <th style="min-width:210px">SubFlow Label</th>
+                    <th style="min-width:240px">Flow Parent Name</th>
+                    <th style="min-width:210px">Flow Parent Label</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Contact_Welcome_Email</td>
+                    <td>Contact Welcome Email</td>
+                    <td>Account_Onboarding_Flow</td>
+                    <td>Account Onboarding</td>
+                  </tr>
+                  <tr>
+                    <td>Send_Contract_Notification</td>
+                    <td>Send Contract Notification</td>
+                    <td>Order_Approval_Process</td>
+                    <td>Order Approval Process</td>
+                  </tr>
+                  <tr>
+                    <td>Auto_Assign_Case_Owner</td>
+                    <td>Auto Assign Case Owner</td>
+                    <td>Route_Service_Case</td>
+                    <td>Route Service Case</td>
+                  </tr>
+                  <tr>
+                    <td>Lead_Qualification_Screen</td>
+                    <td>Lead Qualification</td>
+                    <td>Account_Onboarding_Flow</td>
+                    <td>Account Onboarding</td>
+                  </tr>
+                  <tr>
+                    <td>Order_Approval_Process</td>
+                    <td>Order Approval Process</td>
+                    <td>Auto_Assign_Case_Owner</td>
+                    <td>Auto Assign Case Owner</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="hbox" style="gap:6px;align-items:center;padding:2px 0">
+              <span class="cal-lbl" style="color:#888">5 subflow dependencies found &mdash; Double-click (left) to open sub-flow &mdash; Double-click (right) to open parent flow</span>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- .m-body -->
+    </div><!-- .m-tabpane -->
+  </div><!-- .mockup -->
+</div><!-- .mockup-wrap -->
+
+<!-- Key features modal -->
+<div id="modal-kf" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:999;align-items:center;justify-content:center" onclick="if(event.target===this)this.style.display='none'">
+  <div style="background:#fff;border-radius:8px;padding:28px 32px;max-width:520px;width:90%;color:#1a2a35;box-shadow:0 8px 32px rgba(0,0,0,.3)">
+    <h3 style="margin:0 0 14px;color:#2980b9">&#9733; Key features</h3>
+    <ul style="margin:0;padding-left:20px;line-height:1.8">
+      <li>Full inventory of org flows with version, status, process type, trigger, and last modifier</li>
+      <li>Filter by type: Screen Flow, AutoLaunched, Workflow, Trigger, Routing, Invokable</li>
+      <li>Active-only toggle to hide inactive or obsolete flows</li>
+      <li>Free-text search across flow name and label, or deep search inside flow XML metadata</li>
+      <li>Double-click (left button) opens the flow directly in Salesforce Flow Builder</li>
+      <li>Double-click (right button) opens the flow's Setup configuration page in the browser</li>
+      <li>Invokable tab maps Apex invokable methods to the flows that call them</li>
+      <li>SubFlows tab reveals parent-child flow dependencies across the entire org</li>
+      <li>Delete obsolete flow versions from the Flows table using the Delete key (with confirmation dialog; blocked on production unless enabled in global settings)</li>
+    </ul>
+    <div style="text-align:right;margin-top:18px">
+      <button class="cal-btn btn-d" onclick="document.getElementById('modal-kf').style.display='none'">Close</button>
+    </div>
+  </div>
+</div>
+
+<script>
+function sw(id,idx){
+  var tp=document.getElementById(id);
+  tp.querySelectorAll('.m-tab').forEach(function(t,i){t.classList.toggle('act',i===idx)});
+  tp.querySelectorAll('.m-panel').forEach(function(p,i){p.classList.toggle('act',i===idx)});
+}
+</script>
+</body>
+</html>

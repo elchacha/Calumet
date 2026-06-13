@@ -1,0 +1,3 @@
+tu peux supprimer la partie members :8 see ALl Hide All en bas
+les onglets sont actifs c'est bien mais :
+tu dois remplacer la partie en dessous par le contenu de l'onglet et pas mettre le contenu en bas

@@ -1,0 +1,8 @@
+Tu dois afficher d'abord l'écran qui correspond à UserAccessScore.png
+
+tu dois rendre clickable les checbox et indiquer à l'utilisateur de cliquer (option mettre 2,3 checkbox en rouge clignotant)
+
+si 1 ou plusieurs checbox sont cliqué , tu affiches la partie de droite en plus visible sur UserAccessScoreSelection.png
+
+
+les colonnes UserName, Profil et Name à droite doivent etre anonymisés  

@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Record Sharing — Calumet</title>
+<link rel="stylesheet" href="../shared.css">
+<style>
+.pill-right { display:inline-block; padding:1px 8px; border-radius:10px; font-size:11px; font-weight:700; }
+.right-all  { background:#d5f5e3; color:#1e8449; }
+.right-edit { background:#d6eaf8; color:#1a5276; }
+.right-read { background:#fdebd0; color:#935116; }
+.pill-type  { display:inline-block; padding:1px 8px; border-radius:10px; font-size:11px; font-weight:600; }
+.type-user  { background:#e8daef; color:#6c3483; }
+.type-group { background:#f9ebea; color:#922b21; }
+.type-role  { background:#d6eaf8; color:#1a5276; }
+.reason-owner  { color:#27ae60; font-weight:600; }
+.reason-rule   { color:#2980b9; }
+.reason-manual { color:#e67e22; }
+.reason-implicit { color:#888; font-style:italic; }
+</style>
+</head>
+<body class="tab-page">
+
+<div class="sum">
+  <div class="sum-title">
+    <h2>Record Sharing</h2>
+    <span class="sum-badge">Tab 33</span>
+  </div>
+  <p class="sum-desc">
+    Inspect who has access to any Salesforce record and why. Enter a record ID to retrieve the full sharing matrix: owner, sharing rules, role hierarchy, manual shares, and public groups — all with access level and reason.
+    <button class="cal-btn btn-d" style="margin-left:10px" onclick="document.getElementById('modal-kf').style.display='flex'">&#9733; Key features</button>
+  </p>
+</div>
+
+<div class="mockup-wrap">
+  <div class="mockup">
+
+    <!-- Search bar -->
+    <div class="hbox" style="gap:8px;align-items:center;padding:10px 8px 8px;">
+      <span class="cal-lbl">recordId</span>
+      <input class="cal-tf" style="width:220px" value="a00000000000001AAA" readonly>
+      <button class="cal-btn btn-b">Search</button>
+      <button class="cal-btn btn-d">OpenUrl</button>
+    </div>
+
+    <!-- Sharing table -->
+    <div class="tbl-wrap" style="max-height:460px;overflow-y:auto;">
+      <table class="cal-tbl">
+        <thead>
+          <tr>
+            <th style="width:90px">colRight</th>
+            <th style="width:120px">colType</th>
+            <th style="width:120px">colReason</th>
+            <th style="width:260px">colUserOrGroupName</th>
+            <th>colGrpRelatedName</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="pill-right right-all">All</span></td>
+            <td><span class="pill-type type-user">User</span></td>
+            <td class="reason-owner">Owner</td>
+            <td>Admin User (Tech Team)</td>
+            <td style="color:#888"></td>
+          </tr>
+          <tr>
+            <td><span class="pill-right right-edit">Edit</span></td>
+            <td><span class="pill-type type-group">Public Group</span></td>
+            <td class="reason-rule">Rule</td>
+            <td>All internal users</td>
+            <td style="color:#888"></td>
+          </tr>
+          <tr>
+            <td><span class="pill-right right-edit">Edit</span></td>
+            <td><span class="pill-type type-group">Public Group</span></td>
+            <td class="reason-rule">Rule</td>
+            <td>Global Innovation Group</td>
+            <td style="color:#888"></td>
+          </tr>
+          <tr>
+            <td><span class="pill-right right-read">Read</span></td>
+            <td><span class="pill-type type-role">Role</span></td>
+            <td class="reason-rule">Rule</td>
+            <td>Sales EMEA</td>
+            <td style="color:#888"></td>
+          </tr>
+          <tr>
+            <td><span class="pill-right right-edit">Edit</span></td>
+            <td><span class="pill-type type-user">User</span></td>
+            <td class="reason-manual">Manual</td>
+            <td>Alice Martin</td>
+            <td style="color:#888"></td>
+          </tr>
+          <tr>
+            <td><span class="pill-right right-read">Read</span></td>
+            <td><span class="pill-type type-group">Public Group</span></td>
+            <td class="reason-rule">Rule</td>
+            <td>Compliance_Team Members</td>
+            <td>Compliance_Team</td>
+          </tr>
+          <tr>
+            <td><span class="pill-right right-edit">Edit</span></td>
+            <td><span class="pill-type type-role">Role</span></td>
+            <td class="reason-implicit">ImplicitChild</td>
+            <td>Account Owner Role</td>
+            <td style="color:#888"></td>
+          </tr>
+          <tr>
+            <td><span class="pill-right right-read">Read</span></td>
+            <td><span class="pill-type type-group">Public Group</span></td>
+            <td class="reason-rule">Rule</td>
+            <td>Operations - Region West</td>
+            <td>Operations Team</td>
+          </tr>
+          <tr>
+            <td><span class="pill-right right-edit">Edit</span></td>
+            <td><span class="pill-type type-user">User</span></td>
+            <td class="reason-manual">Manual</td>
+            <td>Bob Johnson</td>
+            <td style="color:#888"></td>
+          </tr>
+          <tr>
+            <td><span class="pill-right right-read">Read</span></td>
+            <td><span class="pill-type type-role">Role and Subordinates</span></td>
+            <td class="reason-rule">Rule</td>
+            <td>Sales Management</td>
+            <td style="color:#888"></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+</div>
+
+<!-- Key features modal -->
+<div id="modal-kf" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:999;align-items:center;justify-content:center" onclick="if(event.target===this)this.style.display='none'">
+  <div style="background:#fff;border-radius:8px;padding:28px 32px;max-width:520px;width:90%;color:#1a2a35;box-shadow:0 8px 32px rgba(0,0,0,.3)">
+    <h3 style="margin:0 0 14px;color:#2980b9">&#9733; Key features</h3>
+    <ul style="margin:0;padding-left:20px;line-height:1.8">
+      <li>Enter any 15 or 18-character Salesforce record ID to query sharing</li>
+      <li>Shows access level (All, Edit, Read) for each user/group/role entry</li>
+      <li>Reveals the sharing reason: Owner, Rule, Manual, ImplicitChild, etc.</li>
+      <li>Displays both direct group membership and the related group name</li>
+      <li>One-click "OpenUrl" to jump directly to the record's Sharing Settings page in Salesforce</li>
+      <li>Works on any standard or custom Salesforce object with a sharing model</li>
+    </ul>
+    <div style="text-align:right;margin-top:18px">
+      <button class="cal-btn btn-d" onclick="document.getElementById('modal-kf').style.display='none'">Close</button>
+    </div>
+  </div>
+</div>
+
+<script>
+function sw(id,idx){
+  var tp=document.getElementById(id);
+  tp.querySelectorAll('.m-tab').forEach(function(t,i){t.classList.toggle('act',i===idx)});
+  tp.querySelectorAll('.m-panel').forEach(function(p,i){p.classList.toggle('act',i===idx)});
+}
+</script>
+</body>
+</html>

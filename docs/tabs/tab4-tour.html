@@ -1,0 +1,993 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Deployment Pipeline — Interactive Tour — Calumet</title>
+<style>
+/* ════════════════════════════════════════════════════════════
+   Deployment Pipeline Interactive Tour — fully self-contained
+   Palette adapted from shared.css (Calumet doc pages)
+   ════════════════════════════════════════════════════════════ */
+*{box-sizing:border-box;margin:0;padding:0}
+
+:root{
+  --sbg:#142540;--sbg2:#1a3050;--sborder:#244568;
+  --stxt:#e2e8f0;--smut:#8892a4;--sacc:#2ea4c9;
+  --blue:#2980b9;--green:#27ae60;--orange:#e67e22;--red:#E74C3C;
+  --hdr:#1A5276;
+}
+
+body{
+  font-family:system-ui,-apple-system,"Segoe UI",sans-serif;
+  background:#0f1d33;color:var(--stxt);
+  min-height:100vh;display:flex;flex-direction:column;
+}
+
+/* ── Top bar ── */
+#topbar{
+  background:var(--sbg);border-bottom:1px solid var(--sborder);
+  padding:14px 28px 12px;flex-shrink:0;
+}
+#topbar h1{font-size:18px;font-weight:800;color:#fff;letter-spacing:.2px}
+#topbar h1 .badge{
+  font-size:10px;background:#1e3a5e;color:var(--smut);
+  padding:2px 8px;border-radius:12px;font-weight:400;margin-left:8px;vertical-align:middle}
+#topbar .sub{font-size:12px;color:#a8b4c8;margin-top:3px}
+
+/* ── Progress dots ── */
+#progress{
+  display:flex;align-items:center;gap:0;margin-top:14px;flex-wrap:wrap;
+}
+.dot{
+  display:flex;align-items:center;gap:7px;cursor:pointer;user-select:none;
+}
+.dot .circle{
+  width:26px;height:26px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:12px;font-weight:700;
+  background:var(--sbg2);border:1px solid var(--sborder);color:var(--smut);
+  transition:all .25s ease;
+}
+.dot .lbl{font-size:10.5px;color:var(--smut);white-space:nowrap;transition:color .25s}
+.dot.done .circle{background:var(--green);border-color:var(--green);color:#fff}
+.dot.active .circle{background:var(--sacc);border-color:var(--sacc);color:#fff;
+  box-shadow:0 0 0 4px rgba(46,164,201,.22)}
+.dot.active .lbl{color:#fff;font-weight:700}
+.dot:hover .circle{border-color:var(--sacc)}
+.connector{width:22px;height:2px;background:var(--sborder);margin:0 4px;flex-shrink:0}
+.connector.done{background:var(--green)}
+
+/* ── Stage (mockup area) ── */
+#stage{
+  flex:1;padding:26px 28px;display:flex;flex-direction:column;
+  align-items:center;position:relative;overflow:auto;
+}
+#scene-frame{
+  width:100%;max-width:1000px;background:#e8eef2;border-radius:8px;
+  padding:1px;box-shadow:0 8px 30px rgba(0,0,0,.4);position:relative;
+}
+#scene-body{position:relative}
+
+/* ════════════════════════════════════════════
+   APP MOCKUP STYLES  (light Calumet theme)
+   ════════════════════════════════════════════ */
+.mockup{font-family:"Segoe UI",sans-serif;font-size:12px;color:#1a2a35;background:#F8F8F8;border-radius:8px;overflow:hidden}
+.m-tabpane{display:flex;flex-direction:column;background:#F8F8F8}
+.m-tabbar{display:flex;background:#D8E6EE;border-bottom:1px solid #9AABBF;flex-shrink:0;overflow-x:auto}
+.m-tab{padding:6px 13px;cursor:default;font-weight:700;font-size:11px;color:#2C3E50;border-right:1px solid #b0c8d8;user-select:none;white-space:nowrap}
+.m-tab.act{background:#F8F8F8;color:#1A5276;border-bottom:2px solid #F8F8F8;margin-bottom:-1px}
+.m-body{background:#F8F8F8;padding:12px;min-height:430px}
+
+.vbox{display:flex;flex-direction:column}
+.hbox{display:flex;flex-direction:row;flex-wrap:wrap}
+.split-pane{display:flex;gap:4px}
+.split-panel{flex:1;min-width:0}
+.spacer{flex:1}
+.vsep{width:1px;background:#9AABBF;align-self:stretch;margin:0 4px}
+.hsep{border:none;border-top:1px solid #9AABBF;margin:4px 0}
+
+.cal-btn{padding:4px 11px;border-radius:3px;font-size:11px;font-weight:700;cursor:pointer;border:1px solid #9AABBF;font-family:inherit;white-space:nowrap;transition:opacity .2s,filter .2s}
+.cal-btn:hover{filter:brightness(1.06)}
+.btn-d{background:#E8EEF2;color:#2C3E50;border-color:#9AABBF}
+.btn-b{background:#2980b9;color:#fff;border-color:#1f6699}
+.btn-g{background:#27ae60;color:#fff;border-color:#1e8a4a}
+.btn-o{background:#e67e22;color:#fff;border-color:#b8621a}
+.btn-r{background:#E74C3C;color:#fff;border-color:#c03a2b}
+.cal-btn.dim{opacity:.5;pointer-events:none}
+.cal-btn[disabled]{opacity:.45;pointer-events:none}
+
+.cal-lbl{font-size:12px;color:#1a2a35}
+.cal-tf,.cal-ta,.cal-cb{padding:3px 7px;background:#fff;border:1px solid #9AABBF;border-radius:3px;font-size:11px;color:#1a2a35;font-family:inherit}
+.cal-tf{height:24px}
+.cal-ta{resize:none;width:100%}
+.cal-cb{height:24px}
+.cal-grow{flex:1;min-width:0}
+.cal-chk{display:flex;align-items:center;gap:4px;font-size:11px;white-space:nowrap}
+.cal-chk input{accent-color:var(--sacc)}
+
+.tbl-wrap{overflow-x:auto;border:1px solid #9AABBF;border-radius:3px;margin:2px 0}
+.cal-tbl{border-collapse:collapse;width:100%;font-size:11px}
+.cal-tbl th{background:#b8d5e3;color:#1A5276;font-weight:700;padding:4px 8px;text-align:left;border-right:1px solid #9AABBF;white-space:nowrap}
+.cal-tbl th:last-child{border-right:none}
+.cal-tbl td{padding:3px 8px;border-top:1px solid #d8e8f0}
+.cal-tbl tr.flash-orange{background:#ffe3c4;transition:background .4s}
+.cal-tbl tr.hi-blue td{background:#dbeafe}
+
+.cal-listview{border:1px solid #9AABBF;background:#fff;min-height:80px;border-radius:3px;font-size:11px}
+
+/* badge / pill */
+.pill{display:inline-block;padding:1px 9px;border-radius:10px;font-size:10px;font-weight:700;color:#fff;white-space:nowrap}
+.pill-b{background:#2980b9}
+.pill-g{background:#27ae60}
+.pill-gray{background:#95a5a6}
+
+/* Row fade-in animation */
+.row-in{animation:rowIn .35s ease both}
+@keyframes rowIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+/* Spinner */
+.spin{display:inline-block;width:13px;height:13px;border:2px solid rgba(41,128,185,.25);border-top-color:#2980b9;border-radius:50%;animation:sp .7s linear infinite;vertical-align:middle}
+@keyframes sp{to{transform:rotate(360deg)}}
+
+/* Mockup progress bar */
+.pbar-track{flex:1;height:16px;background:#c8dae6;border-radius:3px;overflow:hidden}
+.pbar-fill{width:0;height:100%;background:#2980b9;transition:width .12s linear}
+
+/* ── Pipeline (scene 1) ── */
+.pipeline{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:0;padding:40px 16px}
+.pipe-node{display:flex;flex-direction:column;align-items:center;gap:6px;
+  padding:14px 16px;border-radius:10px;min-width:108px;
+  opacity:0;transform:translateY(12px);transition:opacity .5s,transform .5s,box-shadow .3s}
+.pipe-node.lit{opacity:1;transform:none;box-shadow:0 4px 14px rgba(0,0,0,.12)}
+.pipe-node .icon{font-size:24px}
+.pipe-node .label{font-size:12px;font-weight:700;text-align:center;white-space:nowrap}
+.pipe-node .tab-ref{font-size:10px;font-weight:400;opacity:.75}
+.pipe-node.src{background:#e8f4f8;color:#1a5276}
+.pipe-node.action{background:#f0faf4;color:#1e8a4a}
+.pipe-node.optional-node{background:#fef9ec;color:#7d5a00;border:1.5px dashed #f0c060}
+.pipe-node.dest{background:#fef3c7;color:#92400e}
+.pipe-arrow{display:flex;align-items:center;padding:0 4px;opacity:0;transition:opacity .5s}
+.pipe-arrow.lit{opacity:1}
+.pipe-arrow svg{width:30px;height:16px}
+.pipe-arrow .flow-line{stroke:#9AABBF;stroke-width:2;fill:none;stroke-dasharray:6 3;animation:dash 1.2s linear infinite}
+.pipe-arrow .arrowhead{fill:#9AABBF}
+@keyframes dash{to{stroke-dashoffset:-18}}
+
+/* option cards (scene 4) */
+.optcard-wrap{display:flex;gap:12px;margin-top:10px;opacity:0;transform:translateY(8px);transition:opacity .4s,transform .4s}
+.optcard-wrap.in{opacity:1;transform:none}
+.optcard{flex:1;min-width:160px;border-radius:8px;padding:11px 14px;font-size:11.5px;line-height:1.45}
+.optcard .oc-title{font-weight:700;font-size:12px;margin-bottom:4px}
+.optcard.green{background:#f0faf4;border:1px solid #b8e6c8}
+.optcard.green .oc-title{color:#1e8a4a}
+.optcard.blue{background:#e8f4f8;border:1px solid #b8d8e8}
+.optcard.blue .oc-title{color:#1a5276}
+
+/* ── Animated cursor ── */
+#cursor{
+  position:fixed;left:0;top:0;width:30px;height:30px;z-index:9999;
+  pointer-events:none;transform:translate(-100px,-100px);
+  transition:transform .6s cubic-bezier(.4,0,.2,1);
+  filter:drop-shadow(0 2px 3px rgba(0,0,0,.45));
+}
+#ripple{
+  position:fixed;left:0;top:0;width:14px;height:14px;border-radius:50%;
+  border:2px solid var(--sacc);background:rgba(46,164,201,.25);
+  z-index:9998;pointer-events:none;opacity:0;
+  transform:translate(-50%,-50%) scale(.3);
+}
+#ripple.go{animation:rip .65s ease-out}
+@keyframes rip{0%{opacity:.9;transform:translate(-50%,-50%) scale(.3)}100%{opacity:0;transform:translate(-50%,-50%) scale(3.4)}}
+
+/* ── Popup bubble ── */
+#popup{
+  position:fixed;z-index:10000;max-width:330px;
+  background:#fff;color:#1a2a35;border-radius:8px;
+  border-left:4px solid var(--sacc);
+  box-shadow:0 10px 36px rgba(0,0,0,.45);
+  padding:14px 16px 13px;opacity:0;pointer-events:none;
+  transform:translateY(8px) scale(.97);transition:opacity .3s,transform .3s;
+}
+#popup.show{opacity:1;pointer-events:auto;transform:none}
+#popup .p-title{font-size:13.5px;font-weight:800;color:var(--hdr);margin-bottom:6px}
+#popup .p-text{font-size:12.5px;line-height:1.55;color:#33485c}
+#popup .p-text em{color:#2980b9;font-style:normal;font-weight:700}
+#popup .p-text code{background:#f1f3f4;padding:1px 5px;border-radius:3px;font-family:Consolas,monospace;font-size:11px;color:#c7254e}
+#popup .p-btn{
+  margin-top:11px;float:right;background:var(--sacc);color:#fff;border:none;
+  padding:5px 14px;border-radius:5px;font-size:12px;font-weight:700;cursor:pointer;
+  font-family:inherit;transition:filter .2s}
+#popup .p-btn:hover{filter:brightness(1.1)}
+#popup::after{clear:both;content:"";display:block}
+
+/* ── Bottom nav ── */
+#nav{
+  flex-shrink:0;background:var(--sbg);border-top:1px solid var(--sborder);
+  padding:11px 28px;display:flex;align-items:center;gap:12px;
+}
+.nav-btn{
+  background:var(--sbg2);color:var(--stxt);border:1px solid var(--sborder);
+  padding:7px 18px;border-radius:6px;font-size:13px;font-weight:700;cursor:pointer;
+  font-family:inherit;transition:all .2s}
+.nav-btn:hover:not(:disabled){background:#244568;border-color:var(--sacc)}
+.nav-btn:disabled{opacity:.35;cursor:not-allowed}
+.nav-btn.primary{background:var(--sacc);border-color:var(--sacc);color:#fff}
+.nav-btn.primary:hover{filter:brightness(1.1);background:var(--sacc)}
+#scene-counter{font-size:12px;color:var(--smut)}
+#nav .spacer{flex:1}
+#autoplay{background:transparent;border:1px solid var(--sborder);color:var(--stxt);
+  width:38px;height:38px;border-radius:8px;font-size:15px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;transition:all .2s}
+#autoplay:hover{border-color:var(--sacc);color:var(--sacc)}
+#autoplay.on{background:var(--sacc);border-color:var(--sacc);color:#fff}
+
+/* ── Recap scene ── */
+.recap{padding:30px 34px;color:#1a2a35;background:#F8F8F8;border-radius:8px}
+.recap h2{font-size:22px;color:var(--hdr);margin-bottom:4px;font-weight:800}
+.recap .lead{font-size:13px;color:#55687a;margin-bottom:20px}
+.recap-list{list-style:none;margin-bottom:24px}
+.recap-list li{
+  display:flex;align-items:center;gap:10px;font-size:13.5px;padding:6px 0;
+  color:#2c3e50;opacity:0;transform:translateX(-10px);transition:all .4s}
+.recap-list li.in{opacity:1;transform:none}
+.recap-list li .chk{
+  width:22px;height:22px;border-radius:50%;background:var(--green);color:#fff;
+  display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0}
+.recap-list li b{color:var(--hdr)}
+.tips{display:flex;gap:14px;flex-wrap:wrap}
+.tip{
+  flex:1;min-width:200px;background:#fff;border:1px solid #d4e2ec;border-radius:8px;
+  padding:14px 16px;font-size:12.5px;line-height:1.5;color:#3a4d5e;
+  border-top:3px solid var(--blue)}
+.tip.warn{border-top-color:var(--orange)}
+.tip.cycle{border-top-color:var(--green)}
+.tip .icon{font-size:20px;display:block;margin-bottom:6px}
+.tip b{color:var(--hdr)}
+
+/* status line inside mockups */
+.statusline{font-size:11px;font-style:italic;transition:opacity .3s}
+.greenmsg{color:#27ae60;font-weight:bold;font-size:12px}
+</style>
+</head>
+<body>
+
+<div id="topbar">
+  <h1>Deployment Pipeline <span class="badge">Tab 4 · Interactive Tour</span></h1>
+  <div class="sub">A guided 10-step walkthrough of the full Salesforce deployment pipeline — ChangeTracker, Retrieve, Control, Deploy, History.</div>
+  <div id="progress"></div>
+</div>
+
+<div id="stage">
+  <div id="scene-frame">
+    <div id="scene-body"></div>
+  </div>
+</div>
+
+<div id="nav">
+  <button class="nav-btn" id="btn-prev">&larr; Prev</button>
+  <span id="scene-counter">1 / 10</span>
+  <div class="spacer"></div>
+  <button id="autoplay" title="Auto-play">&#9654;</button>
+  <button class="nav-btn primary" id="btn-next">Next &rarr;</button>
+</div>
+
+<!-- floating elements -->
+<svg id="cursor" viewBox="0 0 28 28">
+  <path d="M5 2 L5 22 L10 17 L13 24 L16 23 L13 16 L20 16 Z"
+        fill="#fff" stroke="#1a2a35" stroke-width="1.4" stroke-linejoin="round"/>
+</svg>
+<div id="ripple"></div>
+
+<div id="popup">
+  <div class="p-title"></div>
+  <div class="p-text"></div>
+  <button class="p-btn">Got it &rarr;</button>
+</div>
+
+<script>
+"use strict";
+
+/* ───────────────────────── Helpers ───────────────────────── */
+var $ = function(sel,ctx){return (ctx||document).querySelector(sel);};
+var sceneBody = $("#scene-body");
+var sceneFrame = $("#scene-frame");
+var cursor = $("#cursor");
+var ripple = $("#ripple");
+var popup = $("#popup");
+
+/* one accent color per scene (10 scenes) */
+var sceneColors = ["#2980b9","#2980b9","#2980b9","#27ae60","#2980b9","#16a085","#e67e22","#E74C3C","#8e44ad","#27ae60"];
+
+/* timers we must clear on scene change */
+var pending = [];
+function after(ms, fn){ var id = setTimeout(fn, ms); pending.push(id); return id; }
+function clearPending(){ pending.forEach(clearTimeout); pending = []; if(typeInterval){clearInterval(typeInterval);typeInterval=null;} }
+var typeInterval = null;
+
+/* Move the animated cursor to viewport coords of an element, fire ripple + popup */
+function pointAt(targetEl, popupTitle, popupText, color, popupSide){
+  if(!targetEl) return;
+  var r = targetEl.getBoundingClientRect();
+  var x = r.left + r.width/2;
+  var y = r.top + r.height/2;
+  cursor.style.transform = "translate(" + (x-3) + "px," + (y-2) + "px)";
+  after(620, function(){
+    ripple.style.left = x + "px";
+    ripple.style.top = y + "px";
+    ripple.classList.remove("go");
+    void ripple.offsetWidth;
+    ripple.classList.add("go");
+  });
+  after(620 + 800, function(){
+    showPopup(popupTitle, popupText, color, targetEl, popupSide);
+  });
+}
+
+/* move cursor + ripple to an element without a popup */
+function clickAt(targetEl, delay, done){
+  if(!targetEl){ if(done) done(); return; }
+  var r = targetEl.getBoundingClientRect();
+  var x = r.left + r.width/2, y = r.top + r.height/2;
+  cursor.style.transform = "translate(" + (x-3) + "px," + (y-2) + "px)";
+  after((delay||620), function(){
+    ripple.style.left = x + "px"; ripple.style.top = y + "px";
+    ripple.classList.remove("go"); void ripple.offsetWidth; ripple.classList.add("go");
+    if(done) done();
+  });
+}
+
+function showPopup(title, text, color, anchorEl, side){
+  $(".p-title", popup).textContent = title;
+  $(".p-text", popup).innerHTML = text;
+  popup.style.borderLeftColor = color || "#2ea4c9";
+  $(".p-btn", popup).style.background = color || "#2ea4c9";
+  popup.classList.add("show");
+  var pr = popup.getBoundingClientRect();
+  var ar = anchorEl ? anchorEl.getBoundingClientRect() : sceneFrame.getBoundingClientRect();
+  var left = ar.left + ar.width/2 - pr.width/2;
+  var top;
+  if(side === "above"){ top = ar.top - pr.height - 14; }
+  else { top = ar.bottom + 14; }
+  var vw = window.innerWidth, vh = window.innerHeight;
+  if(left < 12) left = 12;
+  if(left + pr.width > vw - 12) left = vw - 12 - pr.width;
+  if(top < 12) top = ar.bottom + 14;
+  if(top + pr.height > vh - 12) top = ar.top - pr.height - 14;
+  if(top < 12) top = 12;
+  popup.style.left = left + "px";
+  popup.style.top = top + "px";
+}
+function hidePopup(){ popup.classList.remove("show"); }
+
+/* append log lines progressively to a textarea */
+function streamLog(el, lines, speed, done){
+  var i = 0;
+  function step(){
+    if(i >= lines.length){ if(done) done(); return; }
+    el.value += (el.value ? "\n" : "") + lines[i++];
+    el.scrollTop = el.scrollHeight;
+    after(speed || 220, step);
+  }
+  step();
+}
+
+/* shared mockup chrome: header + sub-tab bar with one active sub-tab */
+function chrome(activeIdx, innerHTML, optionalBadge){
+  var tabs = ["ChangeTracker","Retrieve","Control","Deploy","History","Audit","Soql","Search"];
+  var bar = tabs.map(function(t,i){
+    return '<div class="m-tab'+(i===activeIdx?' act':'')+'">'+t+'</div>';
+  }).join("");
+  var badge = optionalBadge
+    ? '<span class="pill pill-gray" style="margin-left:8px">Optional</span>' : '';
+  return ''+
+  '<div class="mockup">'+
+    '<div class="hbox" style="gap:8px;align-items:center;padding:6px 12px;background:#dce9f0;border-bottom:1px solid #9AABBF;">'+
+      '<span style="font-weight:bold">Source:</span>'+
+      '<span class="cal-lbl" style="color:#27ae60;font-weight:bold">DEV-sandbox</span>'+
+      '<div class="vsep"></div><span style="font-weight:bold">Target:</span>'+
+      '<span class="cal-lbl" style="color:#e67e22;font-weight:bold">PROD</span>'+
+      badge+
+      '<div class="spacer"></div>'+
+      '<button class="cal-btn btn-d">How To</button>'+
+    '</div>'+
+    '<div class="m-tabpane"><div class="m-tabbar">'+bar+'</div>'+
+    '<div class="m-body">'+innerHTML+'</div></div>'+
+  '</div>';
+}
+
+/* ───────────────────────── Scene 1 — Overview ───────────────────────── */
+function pipeArrow(){
+  return '<div class="pipe-arrow"><svg viewBox="0 0 30 16">'+
+    '<line class="flow-line" x1="0" y1="8" x2="24" y2="8"/>'+
+    '<polygon class="arrowhead" points="24,4 30,8 24,12"/></svg></div>';
+}
+function scene1(){
+  sceneBody.innerHTML =
+  '<div class="mockup" style="min-height:482px;display:flex;flex-direction:column;justify-content:center">'+
+    '<div style="text-align:center;padding:16px 16px 0">'+
+      '<div style="font-size:17px;font-weight:800;color:#1A5276">The Deployment Pipeline</div>'+
+      '<div style="font-size:12px;color:#55687a;margin-top:4px">Each step feeds the next &mdash; from detecting changes to auditing the delivery.</div>'+
+    '</div>'+
+    '<div class="pipeline" id="s1-pipe">'+
+      '<div class="pipe-node src" data-step="0"><span class="icon">&#128269;</span><span class="label">ChangeTracker</span><span class="tab-ref">Tab 4</span></div>'+
+      pipeArrow()+
+      '<div class="pipe-node action" data-step="1"><span class="icon">&#128229;</span><span class="label">Retrieve</span><span class="tab-ref">Tab 2</span></div>'+
+      pipeArrow()+
+      '<div class="pipe-node optional-node" data-step="2"><span class="icon">&#8853;</span><span class="label">Control</span><span class="tab-ref">Tab 26 &#8853;</span></div>'+
+      pipeArrow()+
+      '<div class="pipe-node action" data-step="3"><span class="icon">&#128640;</span><span class="label">Deploy</span><span class="tab-ref">Tab 3</span></div>'+
+      pipeArrow()+
+      '<div class="pipe-node dest" data-step="4"><span class="icon">&#128218;</span><span class="label">History</span><span class="tab-ref">Tab 10 &#8853;</span></div>'+
+    '</div>'+
+    '<div style="text-align:center;font-size:11px;color:#7f8c8d;padding-bottom:8px">&#8853; = optional step</div>'+
+  '</div>';
+}
+scene1.run = function(){
+  var col = sceneColors[0];
+  var nodes = sceneBody.querySelectorAll(".pipe-node");
+  var arrows = sceneBody.querySelectorAll(".pipe-arrow");
+  nodes.forEach(function(n,i){
+    after(i*400, function(){ n.classList.add("lit"); if(arrows[i]) arrows[i].classList.add("lit"); });
+  });
+  after(2500, function(){
+    showPopup("The Deployment Pipeline",
+      "Extract what changed &rarr; download the files &rarr; optionally verify the diff &rarr; push to target &rarr; audit in History. Each step feeds the next automatically.",
+      col, sceneFrame, "below");
+  });
+};
+
+/* ───────────────────────── ChangeTracker panel builder ───────────────────────── */
+function changeTrackerPanel(opts){
+  opts = opts || {};
+  var resultsTbody = opts.rows
+    ? opts.rows : '';
+  var resultsLabel = opts.resultCount ? 'Results('+opts.resultCount+')' : 'Results';
+  return ''+
+  '<div class="vbox" style="gap:9px">'+
+    '<div class="hbox" style="gap:10px;align-items:center">'+
+      '<span class="cal-lbl" style="font-weight:bold;min-width:74px">Start Date</span>'+
+      '<input class="cal-tf" id="ct-start" readonly value="'+(opts.start||'')+'" style="width:104px">'+
+      '<span style="font-size:13px">&#128197;</span>'+
+      '<input class="cal-tf" readonly value="00" style="width:34px;text-align:center">'+
+      '<input class="cal-tf" readonly value="00" style="width:34px;text-align:center">'+
+      '<input class="cal-tf" readonly value="00" style="width:34px;text-align:center">'+
+      '<div class="vsep"></div>'+
+      '<span class="cal-lbl" style="font-weight:bold;min-width:64px">End Date</span>'+
+      '<input class="cal-tf" id="ct-end" readonly value="'+(opts.end||'')+'" style="width:104px">'+
+      '<span style="font-size:13px">&#128197;</span>'+
+      '<input class="cal-tf" readonly value="23" style="width:34px;text-align:center">'+
+      '<input class="cal-tf" readonly value="59" style="width:34px;text-align:center">'+
+      '<input class="cal-tf" readonly value="59" style="width:34px;text-align:center">'+
+    '</div>'+
+    '<div class="hbox" style="gap:10px;align-items:center">'+
+      '<span class="cal-lbl" style="font-weight:bold;min-width:74px">User</span>'+
+      '<input class="cal-tf" readonly value="" placeholder="(all users)" style="width:220px">'+
+      '<label class="cal-chk"><input type="checkbox" checked> Retrieve your only modification</label>'+
+    '</div>'+
+    '<div class="hbox" style="gap:16px;align-items:center">'+
+      '<label class="cal-chk"><input type="checkbox" checked> Exclude metadata from managed package</label>'+
+      '<label class="cal-chk"><input type="checkbox"> Extract EmailTemplate/Report modifications</label>'+
+      '<label class="cal-chk"><input type="checkbox" checked> useCache</label>'+
+    '</div>'+
+    '<hr class="hsep">'+
+    '<div class="hbox" style="gap:10px;align-items:center">'+
+      '<button class="cal-btn btn-b" id="ct-extract">Extract</button>'+
+      '<button class="cal-btn btn-d" disabled>Open csv file</button>'+
+      (opts.chooseBtn ? '<button class="cal-btn btn-g" id="ct-choose">Choose Metadata</button>' : '')+
+      '<span id="ct-spin"></span>'+
+      '<div class="spacer"></div>'+
+      '<span class="cal-lbl statusline" id="ct-status" style="color:#3d7a8a;opacity:0">'+(opts.resultCount||0)+' modification(s) found.</span>'+
+    '</div>'+
+    '<div class="vbox" style="gap:4px">'+
+      '<span style="font-weight:bold;font-size:12px;color:#1A5276" id="ct-reslabel">'+resultsLabel+'</span>'+
+      '<div class="tbl-wrap"><table class="cal-tbl">'+
+        '<thead><tr>'+
+          '<th style="width:46px;text-align:center">Sel.</th>'+
+          '<th style="width:130px">Type</th>'+
+          '<th style="width:200px">Name</th>'+
+          '<th style="width:80px">Object</th>'+
+          '<th style="width:140px">Last Modified</th>'+
+          '<th style="width:90px">By</th>'+
+        '</tr></thead>'+
+        '<tbody id="ct-body">'+resultsTbody+'</tbody>'+
+      '</table></div>'+
+    '</div>'+
+    (opts.optModal ? '<div class="optcard-wrap" id="ct-optmodal">'+
+      '<div class="optcard green"><div class="oc-title">Update package</div>Merges selected components into the existing package.xml</div>'+
+      '<div class="optcard blue"><div class="oc-title">New package</div>Replaces package.xml with only the selected components</div>'+
+    '</div>' : '')+
+  '</div>';
+}
+
+var ctData = [
+  ["ApexClass","AP24MAJCase","&mdash;","2026-06-01 15:15","Fabrice C."],
+  ["Flow","CaseAssignment_Flow","&mdash;","2026-06-01 14:30","Fabrice C."],
+  ["ValidationRule","Case.MandatorySubject","Case","2026-06-01 11:20","Fabrice C."],
+  ["CustomField","Case.Priority__c","Case","2026-05-31 17:45","Fabrice C."],
+  ["Layout","Case-Case Layout","Case","2026-05-31 16:00","Fabrice C."]
+];
+function ctRowsHtml(){
+  return ctData.map(function(r){
+    return '<tr><td style="text-align:center"><input type="checkbox" checked></td>'+
+      '<td><b>'+r[0]+'</b></td><td>'+r[1]+'</td><td>'+r[2]+'</td><td>'+r[3]+'</td><td>'+r[4]+'</td></tr>';
+  }).join("");
+}
+
+/* ───────────────────────── Scene 2 — ChangeTracker date range ───────────────────────── */
+function scene2(){
+  sceneBody.innerHTML = chrome(0, changeTrackerPanel({}));
+}
+scene2.run = function(){
+  var col = sceneColors[1];
+  clickAt($("#ct-start"), 700, function(){ $("#ct-start").value = "01/06/2026"; });
+  after(1500, function(){
+    clickAt($("#ct-end"), 620, function(){ $("#ct-end").value = "02/06/2026"; });
+  });
+  after(2500, function(){
+    pointAt($("#ct-start"), "Step 1 — Set Date Range",
+      "Enter the period since your last deployment. The tool will extract every metadata item modified during this window by all users (or just you if the checkbox is checked).",
+      col, "below");
+  });
+};
+
+/* ───────────────────────── Scene 3 — ChangeTracker extract ───────────────────────── */
+function scene3(){
+  sceneBody.innerHTML = chrome(0, changeTrackerPanel({start:"01/06/2026", end:"02/06/2026"}));
+}
+scene3.run = function(){
+  var col = sceneColors[2];
+  pointAt($("#ct-extract"), "Step 2 — Extract Modifications",
+    "ChangeTracker queries the org and builds the <code>package.xml</code> automatically. Uncheck any item you don't want to deploy &mdash; the selection is saved immediately.",
+    col, "below");
+  after(640, function(){
+    var b = $("#ct-extract");
+    b.classList.add("dim");
+    $("#ct-spin").innerHTML = '<span class="spin"></span>';
+  });
+  after(1400, function(){
+    var body = $("#ct-body");
+    body.innerHTML = "";
+    ctData.forEach(function(r, idx){
+      after(idx*220, function(){
+        var tr = document.createElement("tr");
+        tr.className = "row-in";
+        tr.innerHTML = '<td style="text-align:center"><input type="checkbox" checked></td>'+
+          '<td><b>'+r[0]+'</b></td><td>'+r[1]+'</td><td>'+r[2]+'</td><td>'+r[3]+'</td><td>'+r[4]+'</td>';
+        body.appendChild(tr);
+        if(idx === ctData.length-1){
+          $("#ct-spin").innerHTML = "";
+          $("#ct-extract").classList.remove("dim");
+          $("#ct-reslabel").textContent = "Results(5)";
+          $("#ct-status").style.opacity = "1";
+        }
+      });
+    });
+  });
+};
+
+/* ───────────────────────── Scene 4 — Choose Metadata ───────────────────────── */
+function scene4(){
+  sceneBody.innerHTML = chrome(0, changeTrackerPanel({
+    start:"01/06/2026", end:"02/06/2026",
+    rows: ctRowsHtml(), resultCount:5, chooseBtn:true, optModal:true
+  }));
+  $("#ct-status").style.opacity = "1";
+}
+scene4.run = function(){
+  var col = sceneColors[3];
+  pointAt($("#ct-choose"), "Step 3 — Choose Metadata (optional)",
+    "Add components not captured by ChangeTracker &mdash; merge into the existing package to add extras, or start fresh. Once confirmed, Calumet switches to the Retrieve tab automatically.",
+    col, "below");
+  after(1300, function(){
+    var modal = $("#ct-optmodal");
+    if(modal) modal.classList.add("in");
+  });
+};
+
+/* ───────────────────────── Scene 5 — Retrieve ───────────────────────── */
+function scene5(){
+  sceneBody.innerHTML = chrome(1,
+    '<div class="split-pane" style="gap:12px;min-height:400px">'+
+      '<div class="split-panel" style="max-width:380px">'+
+        '<div class="vbox" style="gap:4px;height:100%">'+
+          '<span style="font-weight:bold;font-size:12px;color:#1A5276">Package contents</span>'+
+          '<div class="cal-listview" style="min-height:360px;padding:8px 10px;font-family:Consolas,monospace;line-height:1.85;font-size:11.5px">'+
+            '<div>&#128230; <b>package.xml</b></div>'+
+            '<div>&nbsp;&#9500;&#9472; ApexClass <span style="color:#888">(2)</span></div>'+
+            '<div>&nbsp;&#9474;&nbsp;&nbsp;&#9500;&#9472; AP24MAJCase</div>'+
+            '<div>&nbsp;&#9474;&nbsp;&nbsp;&#9492;&#9472; CaseController</div>'+
+            '<div>&nbsp;&#9500;&#9472; Flow <span style="color:#888">(1)</span></div>'+
+            '<div>&nbsp;&#9474;&nbsp;&nbsp;&#9492;&#9472; CaseAssignment_Flow</div>'+
+            '<div>&nbsp;&#9492;&#9472; ValidationRule <span style="color:#888">(1)</span></div>'+
+            '<div>&nbsp;&nbsp;&nbsp;&nbsp;&#9492;&#9472; Case.MandatorySubject</div>'+
+          '</div>'+
+        '</div>'+
+      '</div>'+
+      '<div class="split-panel">'+
+        '<div class="vbox" style="gap:14px;padding:8px 4px">'+
+          '<div class="hbox" style="gap:10px;align-items:center">'+
+            '<span class="cal-lbl" style="font-weight:bold;min-width:100px">Retrieve from:</span>'+
+            '<select class="cal-cb" id="s5-org" style="width:180px"><option>DEV-sandbox</option><option>FULL</option><option>fchape3</option></select>'+
+          '</div>'+
+          '<div class="hbox" style="gap:10px;align-items:center">'+
+            '<button class="cal-btn btn-b" id="s5-retrieve" style="padding:8px 22px;font-size:13px">Retrieve</button>'+
+            '<button class="cal-btn btn-d">Open deploy folder</button>'+
+            '<span id="s5-spin"></span>'+
+          '</div>'+
+          '<div class="hbox" id="s5-pbox" style="gap:10px;align-items:center;display:none">'+
+            '<span style="min-width:64px">Progress:</span>'+
+            '<div class="pbar-track"><div class="pbar-fill" id="s5-bar"></div></div>'+
+            '<span style="font-weight:bold;min-width:40px" id="s5-pct">0%</span>'+
+          '</div>'+
+          '<span class="greenmsg" id="s5-done" style="display:none">&#9989; Retrieved: 4 files &mdash; saved locally to deploy folder</span>'+
+          '<div id="s5-copy-row" style="margin-top:4px;padding:8px 12px;background:#f0faf4;border:1px solid #a8d5b8;border-radius:4px;display:none">'+
+            '<div class="hbox" style="gap:8px;align-items:center">'+
+              '<label class="cal-chk" id="s5-savecopy"><input type="checkbox" checked> <b>Save a copy to project</b></label>'+
+              '<span class="cal-lbl" style="color:#888;font-size:11px">(zip saved locally in your project folder)</span>'+
+            '</div>'+
+            '<div style="font-size:11px;color:#555;margin-top:4px">&#128193; C:\\deploy\\projects\\Sprint-12\\2026-06-02_DEV-sandbox.zip</div>'+
+          '</div>'+
+        '</div>'+
+      '</div>'+
+    '</div>');
+}
+scene5.run = function(){
+  var col = sceneColors[4];
+  // Phase 1: cursor → org selector
+  popupNextFn = function(){
+    hidePopup();
+    after(300, function(){
+      var copyRow = $("#s5-copy-row");
+      if(copyRow) copyRow.style.display = "block";
+      pointAt($("#s5-savecopy"),
+        "Save a copy locally",
+        "When a <b>project</b> is selected, Calumet saves a zip snapshot of the retrieved files directly to your project folder on disk &mdash; <em>no Salesforce upload</em>. Use it to archive the exact package for this delivery, or re-deploy it later to another org without re-running ChangeTracker.",
+        "#27ae60", "above");
+    });
+  };
+  // cursor → org selector first
+  after(300, function(){
+    pointAt($("#s5-org"), "Step 4 — Retrieve",
+      "Choose the <b>source org</b> to retrieve from &mdash; the org where development happened. Never retrieve from the target: deploying files from the wrong org silently overwrites the target state.",
+      col, "above");
+  });
+  after(2000, function(){
+    $("#s5-retrieve").classList.add("dim");
+    $("#s5-spin").innerHTML = '<span class="spin"></span>';
+    $("#s5-pbox").style.display = "flex";
+  });
+  after(2500, function(){
+    var bar = $("#s5-bar"), pct = $("#s5-pct");
+    var start = Date.now(), dur = 2000;
+    (function tick(){
+      var t = Math.min(1, (Date.now()-start)/dur);
+      bar.style.width = (t*100)+"%";
+      pct.textContent = Math.round(t*100)+"%";
+      if(t<1){ after(50, tick); }
+      else {
+        pct.textContent = "100%";
+        $("#s5-spin").innerHTML = "";
+        $("#s5-retrieve").classList.remove("dim");
+        $("#s5-done").style.display = "inline";
+      }
+    })();
+  });
+};
+
+/* ───────────────────────── Scene 6 — Control ───────────────────────── */
+var s6rows = [
+  ["ApexClass","AP24MAJCase","&mdash;","Update","b"],
+  ["Flow","CaseAssignment_Flow","&mdash;","Insert","g"],
+  ["ValidationRule","Case.MandatorySubject","Case","Update","b"],
+  ["Layout","Case-Case Layout","Case","Unchanged","gray"]
+];
+function scene6(){
+  sceneBody.innerHTML = chrome(2,
+    '<div class="vbox" style="gap:10px">'+
+      '<div class="hbox" style="gap:10px;align-items:center">'+
+        '<button class="cal-btn btn-b" id="s6-check">Check Package</button>'+
+        '<span class="cal-lbl" style="font-weight:bold;color:#e67e22">&rarr; PROD</span>'+
+        '<label class="cal-chk"><input type="checkbox"> Show unchanged</label>'+
+        '<span id="s6-spin"></span>'+
+      '</div>'+
+      '<div class="vbox" style="gap:4px">'+
+        '<span style="font-weight:bold;font-size:12px;color:#1A5276">Diff against target</span>'+
+        '<div class="tbl-wrap"><table class="cal-tbl">'+
+          '<thead><tr><th style="width:130px">Type</th><th style="width:210px">Name</th>'+
+          '<th style="width:80px">Object</th><th style="width:110px;text-align:center">Status</th></tr></thead>'+
+          '<tbody id="s6-body"></tbody></table></div>'+
+      '</div>'+
+    '</div>', true);
+}
+scene6.run = function(){
+  var col = sceneColors[5];
+  pointAt($("#s6-check"), "Step 5 — Control (optional)",
+    "<b>Update</b> = item exists and will be modified. <b>Insert</b> = new on target. Watch for <b>Update</b> rows you didn't intend to change &mdash; someone may have edited the target directly.",
+    col, "below");
+  after(640, function(){ $("#s6-spin").innerHTML = '<span class="spin"></span>'; });
+  after(1300, function(){
+    var body = $("#s6-body");
+    body.innerHTML = "";
+    s6rows.forEach(function(r, idx){
+      var isUnchanged = r[4] === "gray";
+      after(idx*350, function(){
+        var tr = document.createElement("tr");
+        tr.className = "row-in";
+        var pillCls = r[4]==="b" ? "pill-b" : (r[4]==="g" ? "pill-g" : "pill-gray");
+        tr.innerHTML = '<td><b>'+r[0]+'</b></td><td>'+r[1]+'</td><td>'+r[2]+'</td>'+
+          '<td style="text-align:center"><span class="pill '+pillCls+'">'+r[3]+'</span></td>';
+        if(isUnchanged){ tr.style.display = "none"; tr.id = "s6-unchanged"; }
+        body.appendChild(tr);
+        if(idx === s6rows.length-1){ $("#s6-spin").innerHTML = ""; }
+      });
+    });
+    /* reveal the hidden "Unchanged" row a moment later */
+    after(s6rows.length*350 + 600, function(){
+      var u = $("#s6-unchanged"); if(u){ u.style.display = ""; u.classList.add("row-in"); }
+    });
+  });
+};
+
+/* ───────────────────────── Deploy panel builder ───────────────────────── */
+function deployPanel(deployEnabled){
+  return ''+
+  '<div class="vbox" style="gap:10px">'+
+    '<div class="hbox" style="gap:10px;align-items:center">'+
+      '<button class="cal-btn btn-o" id="s7-validate">Validate</button>'+
+      '<button class="cal-btn btn-r" id="s7-deploy"'+(deployEnabled?'':' disabled')+'>Deploy</button>'+
+      '<span class="cal-lbl" style="font-weight:bold;color:#e67e22">&rarr; PROD</span>'+
+      '<span id="s7-spin"></span>'+
+      '<div class="spacer"></div>'+
+      '<span class="greenmsg" id="s7-saved" style="display:none">&#9989; Deployment saved to History</span>'+
+    '</div>'+
+    '<div class="vbox" style="gap:4px">'+
+      '<span style="font-weight:bold;font-size:12px;color:#1A5276">Deployment log</span>'+
+      '<textarea class="cal-ta" id="s7-log" readonly rows="15" style="font-family:Consolas,monospace;font-size:10.5px">'+(window.__deployLog||"")+'</textarea>'+
+    '</div>'+
+  '</div>';
+}
+
+/* ───────────────────────── Scene 7 — Deploy: Validate ───────────────────────── */
+function scene7(){
+  window.__deployLog = "";
+  sceneBody.innerHTML = chrome(3, deployPanel(false));
+}
+scene7.run = function(){
+  var col = sceneColors[6];
+  pointAt($("#s7-validate"), "Step 6 — Validate then Deploy",
+    "Always validate first on production &mdash; it runs full compilation and tests without committing any changes. Once validation passes, click Deploy. A failing Apex class or test aborts the entire deployment.",
+    col, "below");
+  after(640, function(){
+    $("#s7-validate").classList.add("dim");
+    $("#s7-spin").innerHTML = '<span class="spin"></span>';
+  });
+  after(1200, function(){
+    var log = $("#s7-log");
+    var lines = [
+      "[VALIDATE] AP24MAJCase ... OK",
+      "[VALIDATE] CaseAssignment_Flow ... OK",
+      "[VALIDATE] Case.MandatorySubject ... OK",
+      "✅ Validation successful — 0 errors, 0 warnings"
+    ];
+    streamLog(log, lines, 260, function(){
+      $("#s7-spin").innerHTML = "";
+      $("#s7-validate").classList.remove("dim");
+      var dep = $("#s7-deploy");
+      if(dep) dep.removeAttribute("disabled");
+      window.__deployLog = log.value;
+    });
+  });
+};
+
+/* ───────────────────────── Scene 8 — Deploy: Deploy + log ───────────────────────── */
+function scene8(){
+  sceneBody.innerHTML = chrome(3, deployPanel(true));
+}
+scene8.run = function(){
+  var col = sceneColors[7];
+  pointAt($("#s7-deploy"), "Step 7 — Deployment complete",
+    "The log shows each component. The delivery is automatically saved in History with the full list of components and a diff against the previous state of the target org.",
+    col, "below");
+  after(640, function(){
+    $("#s7-deploy").classList.add("dim");
+    $("#s7-spin").innerHTML = '<span class="spin"></span>';
+  });
+  after(1200, function(){
+    var log = $("#s7-log");
+    var lines = [
+      "[DEPLOY] Deploying 4 components...",
+      "[DEPLOY] AP24MAJCase ... done",
+      "[DEPLOY] CaseAssignment_Flow ... done",
+      "[DEPLOY] Case.MandatorySubject ... done",
+      "✅ Deployment successful — 4 components deployed"
+    ];
+    streamLog(log, lines, 280, function(){
+      $("#s7-spin").innerHTML = "";
+      $("#s7-deploy").classList.remove("dim");
+      var saved = $("#s7-saved"); if(saved) saved.style.display = "inline";
+    });
+  });
+};
+
+/* ───────────────────────── Scene 9 — History ───────────────────────── */
+var s9rows = [
+  ["2026-06-02 16:30","Fabrice C.","Config-Alpha deploy","4 components", true],
+  ["2026-05-28 14:00","Fabrice C.","Hotfix Flow","2 components", false],
+  ["2026-05-20 11:15","Fabrice C.","Sprint 12","8 components", false]
+];
+function scene9(){
+  sceneBody.innerHTML = chrome(4,
+    '<div class="vbox" style="gap:10px">'+
+      '<div class="hbox" style="gap:10px;align-items:center">'+
+        '<button class="cal-btn btn-b" id="s9-search">Search org projects</button>'+
+        '<input class="cal-tf" readonly placeholder="Filter..." style="width:200px">'+
+        '<button class="cal-btn btn-g">Unzip to deploy</button>'+
+        '<span id="s9-spin"></span>'+
+      '</div>'+
+      '<div class="vbox" style="gap:4px">'+
+        '<span style="font-weight:bold;font-size:12px;color:#1A5276">Past deliveries</span>'+
+        '<div class="tbl-wrap"><table class="cal-tbl">'+
+          '<thead><tr><th style="width:150px">Date</th><th style="width:110px">By</th>'+
+          '<th style="width:220px">Comment</th><th style="width:120px">Components</th></tr></thead>'+
+          '<tbody id="s9-body"></tbody></table></div>'+
+      '</div>'+
+    '</div>');
+}
+scene9.run = function(){
+  var col = sceneColors[8];
+  pointAt($("#s9-search"), "Step 8 — History",
+    "Confirm the delivery was recorded at the top of the list. Use <b>Unzip to deploy</b> on any past package to roll back &mdash; the previous files land directly in the deploy folder, ready for Tab 3.",
+    col, "below");
+  after(640, function(){ $("#s9-spin").innerHTML = '<span class="spin"></span>'; });
+  after(1300, function(){
+    var body = $("#s9-body");
+    body.innerHTML = "";
+    s9rows.forEach(function(r, idx){
+      after(idx*350, function(){
+        var tr = document.createElement("tr");
+        tr.className = "row-in" + (r[4] ? " hi-blue" : "");
+        tr.innerHTML = '<td>'+r[0]+'</td><td>'+r[1]+'</td><td>'+(r[4]?'<b>'+r[2]+'</b>':r[2])+'</td><td>'+r[3]+'</td>';
+        body.appendChild(tr);
+        if(idx === s9rows.length-1){ $("#s9-spin").innerHTML = ""; }
+      });
+    });
+  });
+};
+
+/* ───────────────────────── Scene 10 — Recap ───────────────────────── */
+function scene10(){
+  sceneBody.innerHTML =
+  '<div class="recap">'+
+    '<h2>Pipeline complete!</h2>'+
+    '<div class="lead">You walked the full deployment pipeline end to end. Here is the recap of every step.</div>'+
+    '<ul class="recap-list" id="recap-list">'+
+      ['Date range set','Modifications extracted — package.xml built','Metadata chosen / adjusted',
+       'Files retrieved locally','Diff verified on target (optional)','Validated','Deployed','Recorded in History']
+        .map(function(t,i){return '<li id="rl-'+i+'"><span class="chk">✓</span> <span>'+t+'</span></li>';}).join("")+
+    '</ul>'+
+    '<div class="tips">'+
+      '<div class="tip"><span class="icon">&#128161;</span><b>Run Control before every production deployment</b> to spot unexpected target changes.</div>'+
+      '<div class="tip warn"><span class="icon">&#9888;&#65039;</span><b>Never skip Validate on production</b> — a failed mid-deploy can leave the org in an inconsistent state.</div>'+
+      '<div class="tip cycle"><span class="icon">&#128260;</span><b>History keeps every package</b> — rollback is just an Unzip + Deploy away.</div>'+
+    '</div>'+
+  '</div>';
+}
+scene10.run = function(){
+  var col = sceneColors[9];
+  for(var i=0;i<8;i++){
+    (function(i){ after(250 + i*220, function(){ var li=$("#rl-"+i); if(li) li.classList.add("in"); }); })(i);
+  }
+  after(250 + 8*220 + 300, function(){
+    showPopup("Pipeline complete!",
+      "Extract &rarr; Retrieve &rarr; Control &rarr; Deploy &rarr; History. Run a small validation-only pass on production before every real deployment.",
+      col, sceneFrame, "below");
+  });
+};
+
+/* ───────────────────────── Scene registry ───────────────────────── */
+var scenes = [
+  {fn:scene1,  run:scene1.run},
+  {fn:scene2,  run:scene2.run},
+  {fn:scene3,  run:scene3.run},
+  {fn:scene4,  run:scene4.run},
+  {fn:scene5,  run:scene5.run},
+  {fn:scene6,  run:scene6.run},
+  {fn:scene7,  run:scene7.run},
+  {fn:scene8,  run:scene8.run},
+  {fn:scene9,  run:scene9.run},
+  {fn:scene10, run:scene10.run}
+];
+
+var SCENE_LABELS = ["Overview","Date range","Extract","Choose","Retrieve","Control","Validate","Deploy","History","Recap"];
+
+/* ───────────────────────── Engine ───────────────────────── */
+var current = 0;
+
+function buildProgress(){
+  var p = $("#progress");
+  var html = "";
+  for(var i=0;i<scenes.length;i++){
+    html += '<div class="dot" data-i="'+i+'"><span class="circle">'+(i+1)+'</span><span class="lbl">'+SCENE_LABELS[i]+'</span></div>';
+    if(i<scenes.length-1) html += '<div class="connector" data-c="'+i+'"></div>';
+  }
+  p.innerHTML = html;
+  p.querySelectorAll(".dot").forEach(function(d){
+    d.addEventListener("click", function(){ goTo(parseInt(d.getAttribute("data-i"),10)); });
+  });
+}
+
+function updateProgress(){
+  var dots = $("#progress").querySelectorAll(".dot");
+  var conns = $("#progress").querySelectorAll(".connector");
+  dots.forEach(function(d,i){
+    d.classList.toggle("active", i===current);
+    d.classList.toggle("done", i<current);
+  });
+  conns.forEach(function(c,i){ c.classList.toggle("done", i<current); });
+}
+
+function goTo(i){
+  if(i<0 || i>=scenes.length) return;
+  clearPending();
+  hidePopup();
+  cursor.style.transition = "none";
+  cursor.style.transform = "translate(-120px,-120px)";
+  void cursor.offsetWidth;
+  current = i;
+  scenes[i].fn();
+  updateProgress();
+  $("#scene-counter").textContent = (i+1) + " / " + scenes.length;
+  $("#btn-prev").disabled = (i===0);
+  $("#btn-next").textContent = (i===scenes.length-1) ? "Restart ↺" : "Next →";
+  after(60, function(){
+    cursor.style.transition = "transform .6s cubic-bezier(.4,0,.2,1)";
+    scenes[i].run();
+  });
+}
+
+function goNext(){
+  if(current === scenes.length-1){ goTo(0); }
+  else goTo(current+1);
+}
+function goPrev(){ goTo(current-1); }
+
+/* ── Controls ── */
+$("#btn-next").addEventListener("click", goNext);
+$("#btn-prev").addEventListener("click", goPrev);
+var popupNextFn = null;
+$(".p-btn", popup).addEventListener("click", function(){ (popupNextFn || goNext)(); popupNextFn = null; });
+
+document.addEventListener("keydown", function(e){
+  if(e.key === "ArrowRight" || e.key === " "){ e.preventDefault(); goNext(); }
+  else if(e.key === "ArrowLeft"){ e.preventDefault(); goPrev(); }
+});
+
+/* ── Auto-play ── */
+var playTimer = null;
+var autoBtn = $("#autoplay");
+function startAuto(){
+  autoBtn.classList.add("on");
+  autoBtn.innerHTML = "&#10073;&#10073;";
+  playTimer = setInterval(goNext, 5000);
+}
+function stopAuto(){
+  autoBtn.classList.remove("on");
+  autoBtn.innerHTML = "&#9654;";
+  if(playTimer){ clearInterval(playTimer); playTimer = null; }
+}
+autoBtn.addEventListener("click", function(){
+  if(playTimer) stopAuto(); else startAuto();
+});
+
+/* reposition popup on resize */
+window.addEventListener("resize", function(){
+  if(popup.classList.contains("show")) hidePopup();
+});
+
+/* ── Init ── */
+buildProgress();
+goTo(0);
+</script>
+</body>
+</html>

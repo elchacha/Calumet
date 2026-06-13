@@ -1,0 +1,1 @@
+Place screenshots for tab72-ManageFrozenUser in this directory.

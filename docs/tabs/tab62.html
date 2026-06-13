@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Access Score — Calumet</title>
+<link rel="stylesheet" href="../shared.css">
+</head>
+<body class="tab-page">
+<div class="sum">
+  <div class="sum-title">
+    <h2>Access Score</h2>
+    <span class="sum-badge">Tab 62</span>
+  </div>
+  <p class="sum-desc">Score users by their access level (profile + permission sets + object access). Identify over-privileged users.</p>
+</div>
+<div class="mockup-wrap">
+  <div class="mockup"><div class="vbox" style="gap:0px"><div class="anchor"><div class="tbl-wrap"><table class="cal-tbl"><thead><tr><th style="width:144.0px">Username</th><th style="width:138.0px">Profil</th><th style="width:141.0px">Profile Score</th><th style="width:138.0px">Permission Set Access Score</th><th style="width:138.0px">Object Access Score</th><th style="width:141.0px">User Access Score</th></tr></thead><tbody><tr><td colspan="20" class="tbl-empty"></td></tr></tbody></table></div><span class="cal-lbl">Calculate the User Access Score and view the results in the table below, listing users and their respective scores.</span><button class="cal-btn btn-d">Start</button></div></div></div>
+</div>
+<script>
+function sw(id,idx){
+  var tp=document.getElementById(id);
+  tp.querySelectorAll('.m-tab').forEach(function(t,i){t.classList.toggle('act',i===idx)});
+  tp.querySelectorAll('.m-panel').forEach(function(p,i){p.classList.toggle('act',i===idx)});
+}
+</script>
+</body>
+</html>

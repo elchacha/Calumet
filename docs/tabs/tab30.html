@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Security &#8212; Calumet</title>
+<link rel="stylesheet" href="../shared.css">
+<style>
+  .chk-ico{font-size:13px;display:block;text-align:center}
+  .ico-yes{color:#27ae60}
+  .ico-no{color:#E74C3C}
+  .cal-tbl td.center{text-align:center}
+  .filter-row{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-bottom:6px}
+  .hint-lbl{font-size:11px;color:#555;font-style:italic}
+  .profile-hint{font-size:11px;color:#1A5276}
+</style>
+</head>
+<body class="tab-page">
+<div class="sum">
+  <div class="sum-title">
+    <h2>Security</h2>
+    <span class="sum-badge">Tab 30</span>
+  </div>
+  <p class="sum-desc">
+    Review field-level security (FLS) for any Salesforce object by profile, user, or field name.
+    The User sub-tab aggregates system permissions, object permissions, and field permissions across all assigned permission sets and profiles.
+    <button class="cal-btn btn-d" style="margin-left:10px" onclick="document.getElementById('modal-kf').style.display='flex'">&#9733; Key features</button>
+  </p>
+</div>
+<div class="mockup-wrap"><div class="mockup">
+<div class="m-tabpane" id="tp0">
+  <div class="m-tabbar">
+    <div class="m-tab act" onclick="sw('tp0',0)">FLS Profile or User</div>
+    <div class="m-tab" onclick="sw('tp0',1)">User</div>
+  </div>
+  <div class="m-body">
+    <div class="m-panel act" id="tp0-0">
+      <div class="vbox" style="gap:8px;padding:10px">
+        <div class="hbox" style="gap:12px;align-items:center">
+          <span class="cal-lbl" style="width:60px;text-align:right">Profile</span>
+          <input class="cal-tf" style="width:220px" value="GRC_Admin" readonly>
+          <span class="cal-lbl" style="width:72px;text-align:right">User Name</span>
+          <input class="cal-tf" style="width:220px" value="" readonly placeholder="or type a user name">
+        </div>
+        <div class="hbox" style="gap:12px;align-items:center">
+          <span class="cal-lbl" style="width:60px;text-align:right">Object</span>
+          <input class="cal-tf" style="width:220px" value="RIB(RIB__c)" readonly>
+          <button class="cal-btn btn-b" data-tip="Search FLS for the selected profile/user and object">Search</button>
+        </div>
+        <div class="hbox" style="gap:12px;align-items:center">
+          <span class="cal-lbl" style="width:60px;text-align:right">Field</span>
+          <input class="cal-tf" style="width:220px" value="" readonly placeholder="or search by custom field name">
+          <button class="cal-btn btn-d" disabled data-tip="Search FLS for the selected custom field across all profiles and permission sets">Search</button>
+        </div>
+        <div class="hbox" style="gap:12px;align-items:center;margin-top:2px">
+          <span class="cal-lbl" style="width:60px;text-align:right">Filter :</span>
+          <input class="cal-tf" style="width:160px" value="" readonly>
+          <span class="hint-lbl">P: Indicates if you can change the permission and how if you can</span>
+        </div>
+        <div><span class="profile-hint">user profile : GRC_Admin</span></div>
+        <div class="tbl-wrap">
+          <table class="cal-tbl">
+            <thead><tr>
+              <th style="width:210px">Name</th><th style="width:240px">Label</th>
+              <th style="width:30px;text-align:center">R</th><th style="width:30px;text-align:center">W</th>
+              <th style="width:200px">PermSet</th><th style="width:160px">Profile</th>
+            </tr></thead>
+            <tbody>
+<tr><td>SIRET_Compte__c</td><td>SIRET Compte</td><td class="center"><span class="chk-ico ico-yes">&#10004;</span></td><td class="center"><span class="chk-ico ico-no">&#10008;</span></td><td></td><td>GRC_Admin</td></tr>
+<tr><td>Flag_ValidationManuelle325__c</td><td>Flag ValidationManuelle325</td><td class="center"><span class="chk-ico ico-yes">&#10004;</span></td><td class="center"><span class="chk-ico ico-no">&#10008;</span></td><td></td><td>GRC_Admin</td></tr>
+<tr><td>CreeInitialisationContrat__c</td><td>Cree &#224; l&#39;initialisation du contrat</td><td class="center"><span class="chk-ico ico-yes">&#10004;</span></td><td class="center"><span class="chk-ico ico-yes">&#10004;</span></td><td></td><td>GRC_Admin</td></tr>
+<tr><td>Defaut__c</td><td>D&#233;faut</td><td class="center"><span class="chk-ico ico-yes">&#10004;</span></td><td class="center"><span class="chk-ico ico-yes">&#10004;</span></td><td></td><td>GRC_Admin</td></tr>
+<tr><td>DisplayedIBAN__c</td><td>IBAN Crypt&#233;</td><td class="center"><span class="chk-ico ico-yes">&#10004;</span></td><td class="center"><span class="chk-ico ico-yes">&#10004;</span></td><td></td><td>GRC_Admin</td></tr>
+<tr><td>Statut__c</td><td>Statut</td><td class="center"><span class="chk-ico ico-yes">&#10004;</span></td><td class="center"><span class="chk-ico ico-yes">&#10004;</span></td><td></td><td>GRC_Admin</td></tr>
+<tr><td>Tech_BUDemandeRIB__c</td><td>Tech_BUDemandeRIB</td><td class="center"><span class="chk-ico ico-yes">&#10004;</span></td><td class="center"><span class="chk-ico ico-yes">&#10004;</span></td><td></td><td>GRC_Admin</td></tr>
+<tr><td>Tech_DemandeRIBContactId__c</td><td>Tech_DemandeRIBContactId</td><td class="center"><span class="chk-ico ico-yes">&#10004;</span></td><td class="center"><span class="chk-ico ico-yes">&#10004;</span></td><td></td><td>GRC_Admin</td></tr>
+<tr><td>Titulaire_du_RIB__c</td><td>Titulaire du RIB</td><td class="center"><span class="chk-ico ico-yes">&#10004;</span></td><td class="center"><span class="chk-ico ico-no">&#10008;</span></td><td>Validation RIB</td><td></td></tr>
+<tr><td>Motif_d_annulation__c</td><td>Motif d&#39;annulation</td><td class="center"><span class="chk-ico ico-yes">&#10004;</span></td><td class="center"><span class="chk-ico ico-yes">&#10004;</span></td><td>Validation RIB</td><td></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <div class="m-panel" id="tp0-1">
+      <div class="vbox" style="gap:8px;padding:10px">
+        <div class="hbox" style="gap:12px;align-items:center">
+          <span class="cal-lbl">UserName :</span>
+          <input class="cal-tf" style="width:180px" value="Noel CHARPENTIER" readonly>
+          <span class="cal-lbl">Object :</span>
+          <input class="cal-tf" style="width:150px" value="RIB(RIB__c)" readonly>
+          <button class="cal-btn btn-b" data-tip="Load system, object, and field permissions for this user and object">Search</button>
+        </div>
+        <div class="m-tabpane" id="tp1">
+          <div class="m-tabbar">
+            <div class="m-tab" onclick="sw('tp1',0)">system(102)</div>
+            <div class="m-tab act" onclick="sw('tp1',1)">objects(4)</div>
+            <div class="m-tab" onclick="sw('tp1',2)">fields(18)</div>
+          </div>
+          <div class="m-body">
+            <div class="m-panel" id="tp1-0">
+              <div class="tbl-wrap" style="max-height:360px;overflow-y:auto">
+                <table class="cal-tbl">
+                  <thead><tr>
+                    <th style="width:290px">Permission</th><th style="width:290px">Label</th>
+                    <th style="width:210px">Perm set name</th><th style="width:160px">Profile name</th>
+                  </tr></thead>
+                  <tbody>
+                    <tr><td>ViewRoles</td><td>View Roles and Role Hierarchy</td><td></td><td>GRC_Admin</td></tr>
+                    <tr><td>LightningConsoleAllowedForUser</td><td>Lightning Console User</td><td></td><td>GRC_Admin</td></tr>
+                    <tr><td>AllowUniversalSearch</td><td>Allow Access to Customized Actions</td><td></td><td>GRC_Admin</td></tr>
+                    <tr><td>ManageEmailClientConfig</td><td>Manage Email Templates</td><td></td><td>GRC_Admin</td></tr>
+                    <tr><td>CreateReportFolders</td><td>Create Report Folders</td><td></td><td>GRC_Admin</td></tr>
+                    <tr><td>ChatterInternalUser</td><td>Chatter Internal User</td><td></td><td>GRC_Admin</td></tr>
+                    <tr><td>RunReports</td><td>Run Reports</td><td></td><td>GRC_Admin</td></tr>
+                    <tr><td>SendOutboundMessages</td><td>Send Outbound Messages</td><td></td><td>GRC_Admin</td></tr>
+                    <tr><td>EditOpportunityProductSalesPrice</td><td>Edit Opportunity Product Sales Price</td><td></td><td>GRC_Admin</td></tr>
+                    <tr><td>SendEmail</td><td>Send Email</td><td></td><td>GRC_Admin</td></tr>
+                    <tr><td>SendSitRequests</td><td>Send Stay-in-Touch Requests</td><td></td><td>GRC_Admin</td></tr>
+                    <tr><td>ManageTerritories</td><td>Manage Territories</td><td></td><td>GRC_Admin</td></tr>
+                    <tr><td>ModifyAllData</td><td>Modify All Data</td><td>Droits supplementaires Admin GRC</td><td></td></tr>
+                    <tr><td>ViewAllData</td><td>View All Data</td><td>Droits supplementaires Admin GRC</td><td></td></tr>
+                    <tr><td>ManageUsers</td><td>Manage Users</td><td>Droits supplementaires Admin GRC</td><td></td></tr>
+                    <tr><td>ManageProfiles</td><td>Manage Profiles and Permission Sets</td><td>Droits supplementaires Admin GRC</td><td></td></tr>
+                    <tr><td>ViewSetup</td><td>View Setup and Configuration</td><td></td><td>GRC_Admin</td></tr>
+                    <tr><td>EditTask</td><td>Edit Tasks</td><td></td><td>GRC_Admin</td></tr>
+                    <tr><td>ViewPublicReports</td><td>View Reports in Public Folders</td><td></td><td>GRC_Admin</td></tr>
+                    <tr><td>ManageReports</td><td>Manage Public Reports</td><td>Droits supplementaires Admin GRC</td><td></td></tr>
+                    <tr><td>ViewPublicDashboards</td><td>View Dashboards in Public Folders</td><td></td><td>GRC_Admin</td></tr>
+                    <tr><td>ManageDashboards</td><td>Manage Public Dashboards</td><td>Droits supplementaires Admin GRC</td><td></td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <div class="m-panel act" id="tp1-1">
+              <div class="tbl-wrap">
+                <table class="cal-tbl">
+                  <thead><tr>
+                    <th style="width:110px">Object name</th>
+                    <th style="width:56px;text-align:center">Create</th>
+                    <th style="width:56px;text-align:center">Read</th>
+                    <th style="width:56px;text-align:center">Edit</th>
+                    <th style="width:56px;text-align:center">Delete</th>
+                    <th style="width:62px;text-align:center">View all</th>
+                    <th style="width:62px;text-align:center">Edit all</th>
+                    <th style="width:210px">perm set</th>
+                    <th style="width:130px">profile</th>
+                  </tr></thead>
+                  <tbody>
+<tr><td>RIB__c</td><td class="center"><span class="chk-ico ico-no">&#10008;</span></td><td class="center"><span class="chk-ico ico-yes">&#10004;</span></td><td class="center"><span class="chk-ico ico-yes">&#10004;</span></td><td class="center"><span class="chk-ico ico-no">&#10008;</span></td><td class="center"><span class="chk-ico ico-no">&#10008;</span></td><td class="center"><span class="chk-ico ico-no">&#10008;</span></td><td>Validation RIB</td><td></td></tr>
+<tr><td>RIB__c</td><td class="center"><span class="chk-ico ico-yes">&#10004;</span></td><td class="center"><span class="chk-ico ico-yes">&#10004;</span></td><td class="center"><span class="chk-ico ico-yes">&#10004;</span></td><td class="center"><span class="chk-ico ico-yes">&#10004;</span></td><td class="center"><span class="chk-ico ico-yes">&#10004;</span></td><td class="center"><span class="chk-ico ico-yes">&#10004;</span></td><td>Droits supplementaires Admin GRC</td><td></td></tr>
+<tr><td>RIB__c</td><td class="center"><span class="chk-ico ico-yes">&#10004;</span></td><td class="center"><span class="chk-ico ico-yes">&#10004;</span></td><td class="center"><span class="chk-ico ico-yes">&#10004;</span></td><td class="center"><span class="chk-ico ico-no">&#10008;</span></td><td class="center"><span class="chk-ico ico-no">&#10008;</span></td><td class="center"><span class="chk-ico ico-no">&#10008;</span></td><td>Creer RIB</td><td></td></tr>
+<tr><td>RIB__c</td><td class="center"><span class="chk-ico ico-no">&#10008;</span></td><td class="center"><span class="chk-ico ico-yes">&#10004;</span></td><td class="center"><span class="chk-ico ico-no">&#10008;</span></td><td class="center"><span class="chk-ico ico-no">&#10008;</span></td><td class="center"><span class="chk-ico ico-yes">&#10004;</span></td><td class="center"><span class="chk-ico ico-no">&#10008;</span></td><td></td><td>GRC_Admin</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <div class="m-panel" id="tp1-2">
+              <div class="vbox" style="gap:6px">
+              <div class="filter-row">
+                <input class="cal-tf" style="width:200px" value="" readonly placeholder="Filter fields...">
+                <label class="cal-chk"><input type="checkbox" disabled> Edit</label>
+                <label class="cal-chk"><input type="checkbox" disabled> Perm Set</label>
+                <label class="cal-chk"><input type="checkbox" disabled> Profile</label>
+              </div>
+              <div class="tbl-wrap">
+                <table class="cal-tbl">
+                  <thead><tr>
+                    <th style="width:100px">Object type</th><th style="width:230px">Field name</th>
+                    <th style="width:52px;text-align:center">Read</th><th style="width:52px;text-align:center">Edit</th>
+                    <th style="width:200px">Perm set</th><th style="width:140px">Profile</th>
+                  </tr></thead>
+                  <tbody>
+<tr><td>RIB__c</td><td>SIRET_Compte__c</td><td class="center"><span class="chk-ico ico-yes">&#10004;</span></td><td class="center"><span class="chk-ico ico-no">&#10008;</span></td><td>Validation RIB</td><td></td></tr>
+<tr><td>RIB__c</td><td>Titulaire_du_RIB__c</td><td class="center"><span class="chk-ico ico-yes">&#10004;</span></td><td class="center"><span class="chk-ico ico-no">&#10008;</span></td><td>Validation RIB</td><td></td></tr>
+<tr><td>RIB__c</td><td>Motif_d_annulation__c</td><td class="center"><span class="chk-ico ico-yes">&#10004;</span></td><td class="center"><span class="chk-ico ico-yes">&#10004;</span></td><td>Validation RIB</td><td></td></tr>
+<tr><td>RIB__c</td><td>DisplayedIBAN__c</td><td class="center"><span class="chk-ico ico-yes">&#10004;</span></td><td class="center"><span class="chk-ico ico-yes">&#10004;</span></td><td>Droits supplementaires Admin GRC</td><td></td></tr>
+<tr><td>RIB__c</td><td>Statut__c</td><td class="center"><span class="chk-ico ico-yes">&#10004;</span></td><td class="center"><span class="chk-ico ico-yes">&#10004;</span></td><td>Droits supplementaires Admin GRC</td><td></td></tr>
+<tr><td>RIB__c</td><td>Flag_ValidationManuelle325__c</td><td class="center"><span class="chk-ico ico-yes">&#10004;</span></td><td class="center"><span class="chk-ico ico-no">&#10008;</span></td><td></td><td>GRC_Admin</td></tr>
+<tr><td>RIB__c</td><td>CreeInitialisationContrat__c</td><td class="center"><span class="chk-ico ico-yes">&#10004;</span></td><td class="center"><span class="chk-ico ico-yes">&#10004;</span></td><td></td><td>GRC_Admin</td></tr>
+<tr><td>RIB__c</td><td>Tech_BUDemandeRIB__c</td><td class="center"><span class="chk-ico ico-yes">&#10004;</span></td><td class="center"><span class="chk-ico ico-yes">&#10004;</span></td><td></td><td>GRC_Admin</td></tr>
+<tr><td>RIB__c</td><td>Tech_DemandeRIBContactId__c</td><td class="center"><span class="chk-ico ico-yes">&#10004;</span></td><td class="center"><span class="chk-ico ico-yes">&#10004;</span></td><td></td><td>GRC_Admin</td></tr>
+<tr><td>RIB__c</td><td>Defaut__c</td><td class="center"><span class="chk-ico ico-yes">&#10004;</span></td><td class="center"><span class="chk-ico ico-yes">&#10004;</span></td><td></td><td>GRC_Admin</td></tr>
+                  </tbody>
+                </table>
+              </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div></div>
+<div id="modal-kf" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:999;align-items:center;justify-content:center" onclick="if(event.target===this)this.style.display='none'">
+  <div style="background:#fff;border-radius:8px;padding:28px 32px;max-width:540px;width:90%;color:#1a2a35;box-shadow:0 8px 32px rgba(0,0,0,.3)">
+    <h3 style="margin:0 0 14px;color:#2980b9">&#9733; Key features</h3>
+    <ul style="margin:0;padding-left:20px;line-height:1.8">
+      <li>Query field-level security (FLS) for any SObject by profile name, user name, or custom field API name</li>
+      <li>Visual R / W indicators (green check / red cross) show Read and Write access at a glance for every field</li>
+      <li>Real-time Filter bar narrows FLS results by field name, label, profile, or permission set without re-querying</li>
+      <li>User tab aggregates system permissions, object permissions, and field permissions from all permission sets and profiles in a single search</li>
+      <li>Result sub-tabs labeled with live counts after each search &#8212; e.g. system(102), objects(4), fields(18)</li>
+      <li>Fields sub-tab checkboxes independently filter by Edit-only, Permission Set source, or Profile source</li>
+      <li>Double-click any row in the Objects or Fields table to open the corresponding Salesforce Setup page in your browser</li>
+      <li>AutoComplete on Object, User, Profile, and Field inputs for fast lookup without memorising API names</li>
+    </ul>
+    <div style="text-align:right;margin-top:18px">
+      <button class="cal-btn btn-d" onclick="document.getElementById('modal-kf').style.display='none'">Close</button>
+    </div>
+  </div>
+</div>
+<script>
+function sw(id,idx){
+  var tp=document.getElementById(id);
+  tp.querySelectorAll('.m-tab').forEach(function(t,i){t.classList.toggle('act',i===idx)});
+  tp.querySelectorAll('.m-panel').forEach(function(p,i){p.classList.toggle('act',i===idx)});
+}
+</script>
+</body></html>

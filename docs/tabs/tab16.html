@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Relations — Calumet</title>
+<link rel="stylesheet" href="../shared.css">
+<style>
+/* ── Relation badge pills ── */
+.badge-rel-parent{
+  display:inline-block;padding:2px 9px;border-radius:4px;font-size:11px;font-weight:700;
+  background:#e07b2a;color:#fff;white-space:nowrap}
+.badge-rel-child{
+  display:inline-block;padding:2px 9px;border-radius:4px;font-size:11px;font-weight:700;
+  background:#2d8a54;color:#fff;white-space:nowrap}
+
+/* ── Relation type badge pills ── */
+.badge-rel-lookup{
+  display:inline-block;padding:2px 9px;border-radius:4px;font-size:11px;font-weight:700;
+  background:#2a74b8;color:#fff;white-space:nowrap}
+.badge-rel-masterdetail{
+  display:inline-block;padding:2px 9px;border-radius:4px;font-size:11px;font-weight:700;
+  background:#2d8a54;color:#fff;white-space:nowrap}
+.badge-rel-default{
+  display:inline-block;padding:2px 9px;border-radius:4px;font-size:11px;font-weight:700;
+  background:#607080;color:#fff;white-space:nowrap}
+
+/* ── CD / RD icon columns ── */
+.icon-yes{ color:#27ae60; font-size:13px; font-weight:bold }
+.icon-no { color:#E74C3C; font-size:13px; font-weight:bold }
+
+/* ── Controlled-by cell ── */
+.text-error-bold { color:#c0392b; font-weight:700 }
+
+/* ── toolbar row ── */
+.toolbar-row{
+  display:flex;align-items:center;gap:10px;flex-wrap:wrap;
+  padding:10px 12px 6px;background:#f0f4f7;border-bottom:1px solid #c8d4dc}
+
+/* ── legend line ── */
+.legend-line{
+  padding:4px 12px 6px;font-size:11px;font-weight:700;color:#1a2a35;
+  background:#f0f4f7;border-bottom:1px solid #c8d4dc}
+
+</style>
+</head>
+<body class="tab-page">
+
+<!-- ── Summary card ── -->
+<div class="sum">
+  <div class="sum-title">
+    <h2>Relations</h2>
+    <span class="sum-badge">Tab 16</span>
+  </div>
+  <p class="sum-desc">
+    Explore the full relationship graph of any Salesforce SObject. For a selected object, Tab 16
+    queries all parent and child references — Lookup, Master-Detail, and Hierarchical — and
+    displays each relation with its cascade-delete and restricted-delete behaviour.
+    Filters let you hide standard relations, standard user relations, parent-only or child-only
+    links. Results can be exported to Excel for documentation or impact analysis.
+  </p>
+</div>
+
+<div style="background:#1a1d2e;padding:22px 28px 18px">
+  </div>
+
+<!-- ── Mockup ── -->
+<div class="mockup-wrap">
+  <div class="mockup">
+
+    <!-- Toolbar row 1: object selector + Extract + filter checkboxes -->
+    <div class="toolbar-row">
+      <span style="font-size:12px;color:#1a2a35">Object to query</span>
+      <select class="cal-cb" style="width:230px;" disabled>
+        <option selected>Account (Account)</option>
+      </select>
+      <button class="cal-btn btn-b" data-tip="Extract all parent and child relations for the selected object">Extract</button>
+      <div style="width:1px;height:20px;background:#c8d4dc;margin:0 4px"></div>
+      <label class="cal-chk" data-tip="Hide all parent (lookup source) relations from the table">
+        <input type="checkbox" disabled> Hide parent Relations
+      </label>
+      <label class="cal-chk" data-tip="Hide all child (lookup target) relations from the table">
+        <input type="checkbox" disabled> Hide child Relations
+      </label>
+    </div>
+
+    <!-- Toolbar row 2: export + filter standard -->
+    <div class="toolbar-row" style="padding-top:4px;padding-bottom:8px">
+      <button class="cal-btn btn-d" data-tip="Export the current relation list to an XLSX file">Export</button>
+      <div style="width:1px;height:20px;background:#c8d4dc;margin:0 4px"></div>
+      <label class="cal-chk" data-tip="Hide all standard (non-custom) relation entries">
+        <input type="checkbox" checked disabled> hide standard Relations
+      </label>
+      <label class="cal-chk" data-tip="Hide standard relations pointing to the User object (OwnerId, CreatedById, etc.)">
+        <input type="checkbox" checked disabled> hide Standard User Relations
+      </label>
+    </div>
+
+    <!-- Legend -->
+    <div class="legend-line">
+      CD&nbsp;: Cascade delete &nbsp;&nbsp;&nbsp; RD&nbsp;: Restricted delete
+    </div>
+
+    <!-- Relations table -->
+    <div class="tbl-wrap" style="max-height:480px;overflow-y:auto">
+      <table class="cal-tbl">
+        <thead>
+          <tr>
+            <th style="width:80px">Relation</th>
+            <th style="width:230px">Object type</th>
+            <th style="width:200px">Object Label</th>
+            <th style="width:210px">Relation name</th>
+            <th style="width:220px">Field name</th>
+            <th style="width:36px" data-tip="Cascade Delete">CD</th>
+            <th style="width:36px" data-tip="Restricted Delete">RD</th>
+            <th style="width:150px">Type</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Child – Lookup -->
+          <tr>
+            <td><span class="badge-rel-child">Child</span></td>
+            <td>Account</td>
+            <td>Account</td>
+            <td>ChildAccounts</td>
+            <td>ParentId</td>
+            <td class="text-center"><span class="icon-no">&#x2716;</span></td>
+            <td class="text-center"><span class="icon-no">&#x2716;</span></td>
+            <td><span class="badge-rel-lookup">Lookup</span></td>
+          </tr>
+          <!-- Parent – Lookup -->
+          <tr>
+            <td><span class="badge-rel-parent">Parent</span></td>
+            <td>Account</td>
+            <td>Account</td>
+            <td>MasterRecord</td>
+            <td>MasterRecordId</td>
+            <td class="text-center"><span class="icon-no">&#x2716;</span></td>
+            <td class="text-center"><span class="icon-no">&#x2716;</span></td>
+            <td><span class="badge-rel-lookup">Lookup</span></td>
+          </tr>
+          <!-- Parent – Lookup -->
+          <tr>
+            <td><span class="badge-rel-parent">Parent</span></td>
+            <td>Account</td>
+            <td>Account</td>
+            <td>Parent</td>
+            <td>ParentId</td>
+            <td class="text-center"><span class="icon-no">&#x2716;</span></td>
+            <td class="text-center"><span class="icon-no">&#x2716;</span></td>
+            <td><span class="badge-rel-lookup">Lookup</span></td>
+          </tr>
+          <!-- Child – Master-Detail (cascade delete = yes) -->
+          <tr>
+            <td><span class="badge-rel-child">Child</span></td>
+            <td>AccountCategory__c</td>
+            <td>Account Category</td>
+            <td>AccountCategories__r</td>
+            <td class="text-error-bold" data-tip="Controlled by">Account__c</td>
+            <td class="text-center"><span class="icon-yes">&#x2714;</span></td>
+            <td class="text-center"><span class="icon-no">&#x2716;</span></td>
+            <td><span class="badge-rel-masterdetail">Master-Detail</span></td>
+          </tr>
+          <!-- Child – Lookup -->
+          <tr>
+            <td><span class="badge-rel-child">Child</span></td>
+            <td>ActionItem__c</td>
+            <td>Action Item</td>
+            <td>ActionItems__r</td>
+            <td>RelatedAccount__c</td>
+            <td class="text-center"><span class="icon-no">&#x2716;</span></td>
+            <td class="text-center"><span class="icon-no">&#x2716;</span></td>
+            <td><span class="badge-rel-lookup">Lookup</span></td>
+          </tr>
+          <!-- Child – Lookup -->
+          <tr>
+            <td><span class="badge-rel-child">Child</span></td>
+            <td>Contact_Role__c</td>
+            <td>Contact Role</td>
+            <td>ContactRoles__r</td>
+            <td>RelatedCompany__c</td>
+            <td class="text-center"><span class="icon-no">&#x2716;</span></td>
+            <td class="text-center"><span class="icon-no">&#x2716;</span></td>
+            <td><span class="badge-rel-lookup">Lookup</span></td>
+          </tr>
+          <!-- Child – Master-Detail -->
+          <tr>
+            <td><span class="badge-rel-child">Child</span></td>
+            <td>Contact_Role__c</td>
+            <td>Contact Role</td>
+            <td>ContactRoleLinks__r</td>
+            <td class="text-error-bold" data-tip="Controlled by">ParentAccount__c</td>
+            <td class="text-center"><span class="icon-yes">&#x2714;</span></td>
+            <td class="text-center"><span class="icon-no">&#x2716;</span></td>
+            <td><span class="badge-rel-masterdetail">Master-Detail</span></td>
+          </tr>
+          <!-- Child – Lookup -->
+          <tr>
+            <td><span class="badge-rel-child">Child</span></td>
+            <td>Project__c</td>
+            <td>Project</td>
+            <td>ProjectProspects__r</td>
+            <td>ProspectAccount__c</td>
+            <td class="text-center"><span class="icon-no">&#x2716;</span></td>
+            <td class="text-center"><span class="icon-no">&#x2716;</span></td>
+            <td><span class="badge-rel-lookup">Lookup</span></td>
+          </tr>
+          <!-- Child – Lookup -->
+          <tr>
+            <td><span class="badge-rel-child">Child</span></td>
+            <td>Project__c</td>
+            <td>Project</td>
+            <td>ProjectSeekers__r</td>
+            <td>SeekerAccount__c</td>
+            <td class="text-center"><span class="icon-no">&#x2716;</span></td>
+            <td class="text-center"><span class="icon-no">&#x2716;</span></td>
+            <td><span class="badge-rel-lookup">Lookup</span></td>
+          </tr>
+          <!-- Child – Lookup (RD = yes) -->
+          <tr>
+            <td><span class="badge-rel-child">Child</span></td>
+            <td>Investment__c</td>
+            <td>Investments</td>
+            <td>Investments__r</td>
+            <td>TargetCompany__c</td>
+            <td class="text-center"><span class="icon-no">&#x2716;</span></td>
+            <td class="text-center"><span class="icon-yes">&#x2714;</span></td>
+            <td><span class="badge-rel-lookup">Lookup</span></td>
+          </tr>
+          <!-- Child – Master-Detail (controlled by primary) -->
+          <tr>
+            <td><span class="badge-rel-child">Child</span></td>
+            <td>Investment__c</td>
+            <td>Investments</td>
+            <td>CoInvestors__r</td>
+            <td class="text-error-bold" data-tip="Controlled by &amp; Primary Master">InvestorAccount__c</td>
+            <td class="text-center"><span class="icon-yes">&#x2714;</span></td>
+            <td class="text-center"><span class="icon-no">&#x2716;</span></td>
+            <td><span class="badge-rel-masterdetail">Master-Detail (P)</span></td>
+          </tr>
+          <!-- Child – Lookup -->
+          <tr>
+            <td><span class="badge-rel-child">Child</span></td>
+            <td>Contract__c</td>
+            <td>Contract</td>
+            <td>VehicleContracts__r</td>
+            <td>Asset__c</td>
+            <td class="text-center"><span class="icon-no">&#x2716;</span></td>
+            <td class="text-center"><span class="icon-no">&#x2716;</span></td>
+            <td><span class="badge-rel-lookup">Lookup</span></td>
+          </tr>
+          <!-- Child – Lookup (RD = yes) -->
+          <tr>
+            <td><span class="badge-rel-child">Child</span></td>
+            <td>Contract__c</td>
+            <td>Contract</td>
+            <td>InvestorContracts__r</td>
+            <td>InvestorRef__c</td>
+            <td class="text-center"><span class="icon-no">&#x2716;</span></td>
+            <td class="text-center"><span class="icon-yes">&#x2714;</span></td>
+            <td><span class="badge-rel-lookup">Lookup</span></td>
+          </tr>
+          <!-- Child – Lookup (RD = yes) -->
+          <tr>
+            <td><span class="badge-rel-child">Child</span></td>
+            <td>PartnerAccount__c</td>
+            <td>Partner Account</td>
+            <td>PartnerAccounts__r</td>
+            <td>Account__c</td>
+            <td class="text-center"><span class="icon-no">&#x2716;</span></td>
+            <td class="text-center"><span class="icon-yes">&#x2714;</span></td>
+            <td><span class="badge-rel-lookup">Lookup</span></td>
+          </tr>
+          <!-- Child – Lookup -->
+          <tr>
+            <td><span class="badge-rel-child">Child</span></td>
+            <td>PartnerSearchItem__c</td>
+            <td>Partner Search Item</td>
+            <td>PartnerSearchItems__r</td>
+            <td>PartnerRef__c</td>
+            <td class="text-center"><span class="icon-no">&#x2716;</span></td>
+            <td class="text-center"><span class="icon-no">&#x2716;</span></td>
+            <td><span class="badge-rel-lookup">Lookup</span></td>
+          </tr>
+          <!-- Child – Master-Detail -->
+          <tr>
+            <td><span class="badge-rel-child">Child</span></td>
+            <td>Order__c</td>
+            <td>Order</td>
+            <td>Orders__r</td>
+            <td class="text-error-bold" data-tip="Controlled by">RelatedAccount__c</td>
+            <td class="text-center"><span class="icon-yes">&#x2714;</span></td>
+            <td class="text-center"><span class="icon-no">&#x2716;</span></td>
+            <td><span class="badge-rel-masterdetail">Master-Detail</span></td>
+          </tr>
+          <!-- Child – Lookup -->
+          <tr>
+            <td><span class="badge-rel-child">Child</span></td>
+            <td>Task__c</td>
+            <td>Task</td>
+            <td>Tasks__r</td>
+            <td>Account__c</td>
+            <td class="text-center"><span class="icon-no">&#x2716;</span></td>
+            <td class="text-center"><span class="icon-no">&#x2716;</span></td>
+            <td><span class="badge-rel-lookup">Lookup</span></td>
+          </tr>
+          <!-- Child – Lookup -->
+          <tr>
+            <td><span class="badge-rel-child">Child</span></td>
+            <td>Report__c</td>
+            <td>Report</td>
+            <td>ReportOwners__r</td>
+            <td>OwnerCompany__c</td>
+            <td class="text-center"><span class="icon-no">&#x2716;</span></td>
+            <td class="text-center"><span class="icon-no">&#x2716;</span></td>
+            <td><span class="badge-rel-lookup">Lookup</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Row count -->
+    <div style="padding:6px 12px;font-size:11px;color:#607080;background:#f0f4f7;border-top:1px solid #c8d4dc">
+      18 relation(s) displayed &nbsp;&middot;&nbsp; standard &amp; standard User Relations hidden &nbsp;&middot;&nbsp; object: Account
+    </div>
+
+  </div><!-- /.mockup -->
+</div><!-- /.mockup-wrap -->
+
+<script>
+function sw(id,idx){
+  var tp=document.getElementById(id);
+  tp.querySelectorAll('.m-tab').forEach(function(t,i){t.classList.toggle('act',i===idx)});
+  tp.querySelectorAll('.m-panel').forEach(function(p,i){p.classList.toggle('act',i===idx)});
+}
+</script>
+</body>
+</html>

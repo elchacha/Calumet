@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Object Activity — Calumet</title>
+<link rel="stylesheet" href="../shared.css">
+<style>
+  /* Activity status badges */
+  .badge-act {
+    display:inline-block;padding:2px 8px;border-radius:3px;
+    font-size:10px;font-weight:700;white-space:nowrap;
+  }
+  .badge-active  { background:#27ae60;color:#fff; }
+  .badge-stale6m { background:#e67e22;color:#fff; }
+  .badge-stale1y { background:#c0392b;color:#fff; }
+  .badge-stale2y { background:#8e1010;color:#fff; }
+  .badge-empty   { background:#95a5a6;color:#fff; }
+
+  /* Stats bar inline labels */
+  .stat-total  { color:#2c3e50;font-size:12px; }
+  .stat-active { color:#27ae60;font-size:12px;font-weight:700; }
+  .stat-stale  { color:#e67e22;font-size:12px;font-weight:700; }
+  .stat-empty  { color:#95a5a6;font-size:12px;font-weight:700; }
+
+  /* Progress / cache line */
+  .progress-lbl { color:#2980b9;font-style:italic;font-size:12px; }
+
+  </style>
+</head>
+<body class="tab-page">
+
+<div class="sum">
+  <div class="sum-title">
+    <h2>Object Activity</h2>
+    <span class="sum-badge">Tab 74</span>
+  </div>
+  <p class="sum-desc">
+    Analyse SObject record activity across the org. For each object, shows total record count, last creation
+    and last modification dates, days of inactivity, and a colour-coded status (Active, Stale 6m, Stale 1y,
+    Stale 2y+, Empty). Results are cached per org on disk and reloaded automatically on the next session —
+    click Analyse a second time to force a full refresh.
+  </p>
+</div>
+
+<div class="mockup-wrap">
+  <div class="mockup">
+
+    <!-- ── Toolbar ── -->
+    <div class="hbox" style="gap:8px;align-items:center;padding:8px 8px 0 8px;">
+      <button class="cal-btn btn-b"
+              data-tip="Query all objects to find their last creation and modification dates (may take several minutes on large orgs)">
+        Analyse
+      </button>
+      <div class="vsep"></div>
+      <label class="cal-chk" data-tip="Hide Active objects — show only stale and empty ones">
+        <input type="checkbox" disabled> Show stale only
+      </label>
+      <div class="vsep"></div>
+      <label class="cal-chk" data-tip="Show only custom objects (QualifiedApiName contains __)">
+        <input type="checkbox" checked disabled> Hide standard objects
+      </label>
+      <div class="vsep"></div>
+      <label class="cal-chk" data-tip="Hide objects belonging to a managed package (NamespacePrefix is non-empty)">
+        <input type="checkbox" checked disabled> Hide Managed Objects
+      </label>
+      <div class="vsep"></div>
+      <span class="cal-lbl">Filter</span>
+      <input class="cal-tf" style="width:200px;" placeholder="object name…"
+             data-tip="Filter results by object name (contains, case-insensitive)" readonly>
+    </div>
+
+    <!-- ── Progress line ── -->
+    <div class="hbox" style="padding:4px 8px 0 8px;">
+      <span class="progress-lbl">427 objects — 29/04/2026 08:22</span>
+    </div>
+
+    <!-- ── Stats bar ── -->
+    <div class="hbox" style="gap:16px;align-items:center;padding:4px 8px 6px 8px;">
+      <span class="stat-total">354 / 427 objects</span>
+      <div class="vsep"></div>
+      <span class="stat-active">41 active</span>
+      <div class="vsep"></div>
+      <span class="stat-stale">2 stale</span>
+      <div class="vsep"></div>
+      <span class="stat-empty">311 empty</span>
+    </div>
+
+    <!-- ── Results table ── -->
+    <div style="padding:0 8px 8px 8px;">
+      <div class="tbl-wrap">
+        <table class="cal-tbl">
+          <thead>
+            <tr>
+              <th style="width:220px">Object</th>
+              <th style="width:110px">Total Records</th>
+              <th style="width:120px">Last Created</th>
+              <th style="width:120px">Last Modified</th>
+              <th style="width:110px">Days inactive</th>
+              <th style="width:110px">Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Stale 2y+ first (statusOrder=0) -->
+            <tr>
+              <td>Pricebook2</td>
+              <td>1</td>
+              <td>2010-01-08</td>
+              <td>2010-02-03</td>
+              <td>5929 days</td>
+              <td><span class="badge-act badge-stale2y">Stale 2y+</span></td>
+            </tr>
+            <!-- Stale 6m (statusOrder=2) -->
+            <tr>
+              <td>MessagingChannel</td>
+              <td>1</td>
+              <td>2025-10-06</td>
+              <td>2025-10-06</td>
+              <td>205 days</td>
+              <td><span class="badge-act badge-stale6m">Stale 6m</span></td>
+            </tr>
+            <!-- Active objects -->
+            <tr>
+              <td>Case</td>
+              <td>6</td>
+              <td>2026-04-21</td>
+              <td>2026-04-21</td>
+              <td>8 days</td>
+              <td><span class="badge-act badge-active">Active</span></td>
+            </tr>
+            <tr>
+              <td>Opportunity</td>
+              <td>73</td>
+              <td>2026-04-27</td>
+              <td>2026-04-27</td>
+              <td>2 days</td>
+              <td><span class="badge-act badge-active">Active</span></td>
+            </tr>
+            <tr>
+              <td>AccountTeamMember</td>
+              <td>10</td>
+              <td>2026-04-28</td>
+              <td>2026-04-28</td>
+              <td>1 days</td>
+              <td><span class="badge-act badge-active">Active</span></td>
+            </tr>
+            <tr>
+              <td>FeedItem</td>
+              <td>10</td>
+              <td>2026-04-28</td>
+              <td>2026-04-28</td>
+              <td>1 days</td>
+              <td><span class="badge-act badge-active">Active</span></td>
+            </tr>
+            <tr>
+              <td>Contact</td>
+              <td>11</td>
+              <td>2026-04-27</td>
+              <td>2026-04-27</td>
+              <td>2 days</td>
+              <td><span class="badge-act badge-active">Active</span></td>
+            </tr>
+            <tr>
+              <td>Lead</td>
+              <td>12</td>
+              <td>2026-04-27</td>
+              <td>2026-04-28</td>
+              <td>1 days</td>
+              <td><span class="badge-act badge-active">Active</span></td>
+            </tr>
+            <tr>
+              <td>Dashboard</td>
+              <td>427</td>
+              <td>2026-04-10</td>
+              <td>2026-04-20</td>
+              <td>9 days</td>
+              <td><span class="badge-act badge-active">Active</span></td>
+            </tr>
+            <tr>
+              <td>Account</td>
+              <td>16</td>
+              <td>2026-04-27</td>
+              <td>2026-04-28</td>
+              <td>1 days</td>
+              <td><span class="badge-act badge-active">Active</span></td>
+            </tr>
+            <tr>
+              <td>Territory2Model</td>
+              <td>1</td>
+              <td>2016-12-09</td>
+              <td>2026-01-13</td>
+              <td>106 days</td>
+              <td><span class="badge-act badge-active">Active</span></td>
+            </tr>
+            <tr>
+              <td>ProductRelationshipType</td>
+              <td>4</td>
+              <td>2026-03-06</td>
+              <td>2026-03-06</td>
+              <td>54 days</td>
+              <td><span class="badge-act badge-active">Active</span></td>
+            </tr>
+            <tr>
+              <td>FlowRecordVersionOccurrence</td>
+              <td>690</td>
+              <td>2026-03-06</td>
+              <td>2026-03-06</td>
+              <td>54 days</td>
+              <td><span class="badge-act badge-active">Active</span></td>
+            </tr>
+            <tr>
+              <td>Report__c</td>
+              <td>1</td>
+              <td>2026-04-27</td>
+              <td>2026-04-27</td>
+              <td>2 days</td>
+              <td><span class="badge-act badge-active">Active</span></td>
+            </tr>
+            <tr>
+              <td>Contract__c</td>
+              <td>18</td>
+              <td>2026-04-21</td>
+              <td>2026-04-21</td>
+              <td>8 days</td>
+              <td><span class="badge-act badge-active">Active</span></td>
+            </tr>
+            <tr>
+              <td>Asset__c</td>
+              <td>5</td>
+              <td>2026-04-27</td>
+              <td>2026-04-27</td>
+              <td>2 days</td>
+              <td><span class="badge-act badge-active">Active</span></td>
+            </tr>
+            <tr>
+              <td>Task__c</td>
+              <td>7</td>
+              <td>2026-04-27</td>
+              <td>2026-04-27</td>
+              <td>2 days</td>
+              <td><span class="badge-act badge-active">Active</span></td>
+            </tr>
+            <tr>
+              <td>Invoice__c</td>
+              <td>3</td>
+              <td>2026-04-22</td>
+              <td>2026-04-22</td>
+              <td>7 days</td>
+              <td><span class="badge-act badge-active">Active</span></td>
+            </tr>
+            <tr>
+              <td>Order__c</td>
+              <td>30</td>
+              <td>2026-04-21</td>
+              <td>2026-04-21</td>
+              <td>8 days</td>
+              <td><span class="badge-act badge-active">Active</span></td>
+            </tr>
+            <tr>
+              <td>Ticket__c</td>
+              <td>2</td>
+              <td>2026-04-28</td>
+              <td>2026-04-28</td>
+              <td>1 days</td>
+              <td><span class="badge-act badge-active">Active</span></td>
+            </tr>
+            <tr>
+              <td>Project__c</td>
+              <td>75</td>
+              <td>2026-04-27</td>
+              <td>2026-04-27</td>
+              <td>2 days</td>
+              <td><span class="badge-act badge-active">Active</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div style="padding:0 8px 12px 8px;">
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+function sw(id,idx){
+  var tp=document.getElementById(id);
+  tp.querySelectorAll('.m-tab').forEach(function(t,i){t.classList.toggle('act',i===idx)});
+  tp.querySelectorAll('.m-panel').forEach(function(p,i){p.classList.toggle('act',i===idx)});
+}
+</script>
+</body>
+</html>

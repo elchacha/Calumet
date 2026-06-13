@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Weblinks Unused — Calumet</title>
+<link rel="stylesheet" href="../shared.css">
+</head>
+<body class="tab-page">
+
+<div class="sum">
+  <div class="sum-title">
+    <h2>Weblinks Unused</h2>
+    <span class="sum-badge">Tab 45</span>
+  </div>
+  <p class="sum-desc">
+    Identifies Salesforce WebLink (Custom Button &amp; Link) metadata that is no longer referenced in any page layout. Helps clean up stale buttons and links that accumulate over time.
+    <button class="cal-btn btn-d" style="margin-left:10px" onclick="document.getElementById('modal-kf').style.display='flex'">&#9733; Key features</button>
+  </p>
+</div>
+
+<div class="mockup-wrap">
+  <div class="mockup">
+    <div class="anchor" style="padding:10px;gap:8px">
+
+      <!-- Toolbar row -->
+      <div class="hbox" style="gap:8px;align-items:center">
+        <button class="cal-btn btn-b" data-tip="Query all WebLinks and cross-check against page layout references to find unused ones">Extract</button>
+        <input class="cal-tf cal-grow" style="max-width:340px" placeholder="Filter results (semicolon-separated keywords)…" value="Account" readonly
+               data-tip="Type keywords separated by ; to filter the table. Matches against all columns.">
+        <span class="cal-lbl" style="color:#888;font-size:11px">14 weblinks found &nbsp;|&nbsp; <span style="color:#E74C3C;font-weight:700">11 unused</span></span>
+      </div>
+
+      <!-- Results table -->
+      <div class="tbl-wrap">
+        <table class="cal-tbl">
+          <thead>
+            <tr>
+              <th style="width:145px">CreatedDate</th>
+              <th style="width:145px">LastModifyDate</th>
+              <th style="width:160px">lastModifyBy</th>
+              <th style="width:170px">ObjectName</th>
+              <th style="width:190px">MasterLabel</th>
+              <th style="width:200px">Name</th>
+              <th style="width:260px">Comment</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td style="color:#888">2019-04-11 08:23:14</td>
+              <td style="color:#888">2021-06-30 14:05:00</td>
+              <td>Marc Dupont</td>
+              <td>Account</td>
+              <td>View in ERP</td>
+              <td>Account_ViewInERP</td>
+              <td style="color:#888"></td>
+            </tr>
+            <tr>
+              <td style="color:#888">2020-01-22 11:44:57</td>
+              <td style="color:#888">2022-03-15 09:30:00</td>
+              <td>Alice Martin</td>
+              <td>Account</td>
+              <td>Open Billing Portal</td>
+              <td>Account_OpenBillingPortal</td>
+              <td style="color:#888"></td>
+            </tr>
+            <tr>
+              <td style="color:#888">2018-09-03 16:02:33</td>
+              <td style="color:#888">2020-11-20 17:18:00</td>
+              <td>Admin</td>
+              <td>Opportunity</td>
+              <td>Generate Quote PDF</td>
+              <td>Opportunity_GenerateQuotePDF</td>
+              <td style="color:#888"></td>
+            </tr>
+            <tr>
+              <td style="color:#888">2021-07-14 13:10:00</td>
+              <td style="color:#888">2023-02-08 10:55:00</td>
+              <td>Bob Johnson</td>
+              <td>Contact</td>
+              <td>Send Welcome Email</td>
+              <td>Contact_SendWelcomeEmail</td>
+              <td style="color:#888"></td>
+            </tr>
+            <tr>
+              <td style="color:#888">2017-11-28 09:45:11</td>
+              <td style="color:#888">2019-04-01 11:20:00</td>
+              <td>Admin</td>
+              <td>CustomPageItem</td>
+              <td>Dashboard Shortcut</td>
+              <td>Home_DashboardShortcut</td>
+              <td style="color:#e67e22;font-weight:600">Warning : can be used in a homePage</td>
+            </tr>
+            <tr>
+              <td style="color:#888">2019-05-06 15:30:22</td>
+              <td style="color:#888">2021-09-14 08:40:00</td>
+              <td>Alice Martin</td>
+              <td>Case</td>
+              <td>Escalate to Tier 2</td>
+              <td>Case_EscalateToTier2</td>
+              <td style="color:#888"></td>
+            </tr>
+            <tr>
+              <td style="color:#888">2020-08-19 10:00:00</td>
+              <td style="color:#888">2022-12-01 16:05:00</td>
+              <td>Marc Dupont</td>
+              <td>Lead</td>
+              <td>Sync to Marketing</td>
+              <td>Lead_SyncToMarketing</td>
+              <td style="color:#888"></td>
+            </tr>
+            <tr>
+              <td style="color:#888">2016-03-14 07:55:44</td>
+              <td style="color:#888">2018-07-22 13:15:00</td>
+              <td>Admin</td>
+              <td>Contract</td>
+              <td>Export Contract DOCX</td>
+              <td>Contract_ExportDOCX</td>
+              <td style="color:#888"></td>
+            </tr>
+            <tr>
+              <td style="color:#888">2022-01-10 12:30:00</td>
+              <td style="color:#888">2023-11-28 09:00:00</td>
+              <td>Bob Johnson</td>
+              <td>Opportunity</td>
+              <td>Create Project Record</td>
+              <td>Opportunity_CreateProject</td>
+              <td style="color:#888"></td>
+            </tr>
+            <tr>
+              <td style="color:#888">2021-03-25 14:22:00</td>
+              <td style="color:#888">2024-01-17 11:45:00</td>
+              <td>Alice Martin</td>
+              <td>Account</td>
+              <td>Open Support Ticket</td>
+              <td>Account_OpenSupportTicket</td>
+              <td style="color:#888"></td>
+            </tr>
+            <tr>
+              <td style="color:#888">2023-06-05 08:10:00</td>
+              <td style="color:#888">2024-04-09 15:30:00</td>
+              <td>Admin</td>
+              <td>CustomPageItem</td>
+              <td>Legacy Home Link</td>
+              <td>Home_LegacyHomeLink</td>
+              <td style="color:#e67e22;font-weight:600">Warning : can be used in a homePage</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="hbox" style="gap:8px;align-items:center;margin-top:2px">
+        <span class="cal-lbl" style="color:#888;font-size:10px;font-style:italic">
+          Double-click a row to open the WebLink in Salesforce Setup.
+          Unused weblinks are those not referenced by any page layout (Custom Buttons, Lightning Actions, Related List Buttons, or Custom Links sections).
+        </span>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+function sw(id,idx){
+  var tp=document.getElementById(id);
+  tp.querySelectorAll('.m-tab').forEach(function(t,i){t.classList.toggle('act',i===idx)});
+  tp.querySelectorAll('.m-panel').forEach(function(p,i){p.classList.toggle('act',i===idx)});
+}
+</script>
+
+<!-- Key features modal -->
+<div id="modal-kf" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:999;align-items:center;justify-content:center" onclick="if(event.target===this)this.style.display='none'">
+  <div style="background:#fff;border-radius:8px;padding:28px 32px;max-width:520px;width:90%;color:#1a2a35;box-shadow:0 8px 32px rgba(0,0,0,.3)">
+    <h3 style="margin:0 0 14px;color:#2980b9">&#9733; Key features</h3>
+    <ul style="margin:0;padding-left:20px;line-height:1.8">
+      <li>Queries all WebLink metadata (Custom Buttons &amp; Links) in the org, excluding managed packages.</li>
+      <li>Cross-references every layout via the Tooling API cache to detect links that appear in no layout — Custom Buttons, Lightning Actions, Related List Buttons, and Custom Link sections are all checked.</li>
+      <li>Flags <em>CustomPageItem</em> weblinks with a warning, as they may still be in use on Home Page layouts even when not found in standard page layouts.</li>
+      <li>Live filter field with debounce: type one or more semicolon-separated keywords to narrow down the results across all columns instantly.</li>
+      <li>Double-click any row to open the WebLink directly in Salesforce Setup via the browser.</li>
+      <li>Helps enforce org hygiene by surfacing obsolete buttons and links that can be safely deleted to reduce metadata clutter.</li>
+    </ul>
+    <div style="text-align:right;margin-top:18px">
+      <button class="cal-btn btn-d" onclick="document.getElementById('modal-kf').style.display='none'">Close</button>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

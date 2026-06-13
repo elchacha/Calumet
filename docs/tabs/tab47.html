@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ConnectedApp — Calumet</title>
+<link rel="stylesheet" href="../shared.css">
+</head>
+<body class="tab-page">
+
+<div class="sum">
+  <div class="sum-title">
+    <h2>ConnectedApp</h2>
+    <span class="sum-badge">Tab 47</span>
+  </div>
+  <p class="sum-desc">
+    Audits all OAuth-connected apps in the org — usage counts, active users, admin-controlled flags, and per-user token details. Lets administrators identify over-permissioned or stale integrations and revoke individual tokens directly from the UI.
+    <button class="cal-btn btn-d" style="margin-left:10px" onclick="document.getElementById('modal-kf').style.display='flex'">★ Key features</button>
+  </p>
+</div>
+
+<div class="mockup-wrap">
+  <div class="mockup">
+
+    <div class="m-tabpane" id="tp47">
+      <div class="m-tabbar">
+        <div class="m-tab act" onclick="sw('tp47',0)">Global</div>
+        <div class="m-tab" onclick="sw('tp47',1)">Detailed</div>
+      </div>
+      <div class="m-body">
+
+        <!-- ═══════════════ GLOBAL TAB ═══════════════ -->
+        <div class="m-panel act" id="tp47-0">
+          <div class="anchor" style="padding:10px;gap:8px">
+
+            <!-- Toolbar -->
+            <div class="hbox" style="gap:8px;align-items:center">
+              <button class="cal-btn btn-b"
+                      data-tip="Query all connected apps via Salesforce OAuth token API and aggregate usage per app">
+                extract
+              </button>
+              <input class="cal-tf" style="width:253px" readonly placeholder="filter…">
+            </div>
+
+            <!-- Global summary table -->
+            <div class="tbl-wrap">
+              <table class="cal-tbl">
+                <thead>
+                  <tr>
+                    <th style="width:170px">AppName</th>
+                    <th style="width:140px">Label</th>
+                    <th style="width:100px">CreatedDate</th>
+                    <th style="width:160px">CreatedBy</th>
+                    <th style="width:100px">LastUsedDate</th>
+                    <th style="width:60px">Usage</th>
+                    <th style="width:55px">Users</th>
+                    <th style="width:110px">AdminControlled</th>
+                    <th>Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Insights</td>
+                    <td style="color:#888"></td>
+                    <td style="color:#888">2026-05-04</td>
+                    <td style="color:#888"></td>
+                    <td style="color:#888">2026-05-04</td>
+                    <td>195</td>
+                    <td>1</td>
+                    <td style="color:#888"></td>
+                    <td style="color:#888"></td>
+                  </tr>
+                  <tr>
+                    <td>apexguru_c2c_Production</td>
+                    <td style="color:#888"></td>
+                    <td style="color:#888">2025-10-23</td>
+                    <td style="color:#888"></td>
+                    <td style="color:#888">2026-04-30</td>
+                    <td>517</td>
+                    <td>1</td>
+                    <td style="color:#888"></td>
+                    <td style="color:#888"></td>
+                  </tr>
+                  <tr>
+                    <td>Calumet</td>
+                    <td>Calumet</td>
+                    <td style="color:#888">2025-12-04</td>
+                    <td>Fabrice Challier</td>
+                    <td style="color:#888">2026-04-30</td>
+                    <td>435</td>
+                    <td>1</td>
+                    <td style="color:#e67e22">false</td>
+                    <td style="color:#888"></td>
+                  </tr>
+                  <tr>
+                    <td>Own for Salesforce</td>
+                    <td style="color:#888"></td>
+                    <td style="color:#888">2026-01-22</td>
+                    <td style="color:#888"></td>
+                    <td style="color:#888">2026-05-04</td>
+                    <td>310</td>
+                    <td>1</td>
+                    <td style="color:#888"></td>
+                    <td style="color:#888"></td>
+                  </tr>
+                  <tr>
+                    <td>Surfe</td>
+                    <td>Surfe</td>
+                    <td style="color:#888">2025-11-04</td>
+                    <td>Catherine Chen</td>
+                    <td style="color:#888">2026-05-04</td>
+                    <td>38</td>
+                    <td>2</td>
+                    <td style="color:#27ae60">true</td>
+                    <td style="font-style:italic;color:#555">Automated enrichment of LinkedIn data in your CRM. Connects and syncs conversations and leads directly from Salesforce to LinkedIn.</td>
+                  </tr>
+                  <tr>
+                    <td>CalumetHttp2</td>
+                    <td style="color:#888"></td>
+                    <td style="color:#888">2023-04-04</td>
+                    <td style="color:#888"></td>
+                    <td style="color:#888">2026-05-04</td>
+                    <td style="font-weight:700">2232</td>
+                    <td>1</td>
+                    <td style="color:#888"></td>
+                    <td style="color:#888"></td>
+                  </tr>
+                  <tr>
+                    <td>Salesforce for Android</td>
+                    <td style="color:#888"></td>
+                    <td style="color:#888">2021-09-09</td>
+                    <td style="color:#888"></td>
+                    <td style="color:#888">2025-07-16</td>
+                    <td>1228</td>
+                    <td>4</td>
+                    <td style="color:#888"></td>
+                    <td style="color:#888"></td>
+                  </tr>
+                  <tr>
+                    <td>Workbench</td>
+                    <td>Workbench</td>
+                    <td style="color:#888">2014-12-04</td>
+                    <td>Automated Process</td>
+                    <td style="color:#888">2026-04-30</td>
+                    <td>6</td>
+                    <td>1</td>
+                    <td style="color:#27ae60">true</td>
+                    <td style="font-style:italic;color:#555">Workbench is a powerful, web-based suite of tools for administrators and developers to interact with Salesforce orgs via Force.com APIs.</td>
+                  </tr>
+                  <tr>
+                    <td>Salesforce CLI</td>
+                    <td style="color:#888"></td>
+                    <td style="color:#888">2026-01-30</td>
+                    <td style="color:#888"></td>
+                    <td style="color:#888">2026-04-10</td>
+                    <td>30</td>
+                    <td>1</td>
+                    <td style="color:#e67e22">false</td>
+                    <td style="color:#888"></td>
+                  </tr>
+                  <tr>
+                    <td>tbid.digital.salesforce.com</td>
+                    <td style="color:#888"></td>
+                    <td style="color:#888">2023-11-29</td>
+                    <td style="color:#888"></td>
+                    <td style="color:#888">2023-11-29</td>
+                    <td>11</td>
+                    <td>6</td>
+                    <td style="color:#888"></td>
+                    <td style="color:#888"></td>
+                  </tr>
+                  <tr>
+                    <td>Wave Web</td>
+                    <td style="color:#888"></td>
+                    <td style="color:#888">2025-11-13</td>
+                    <td style="color:#888"></td>
+                    <td style="color:#888">2025-11-13</td>
+                    <td style="color:#E74C3C">0</td>
+                    <td>2</td>
+                    <td style="color:#888"></td>
+                    <td style="color:#888"></td>
+                  </tr>
+                  <tr>
+                    <td>Backup_and_Restore</td>
+                    <td>Backup_and_Restore</td>
+                    <td style="color:#888">2023-11-28</td>
+                    <td>Cathay Administrator (Tech Team)</td>
+                    <td style="color:#888">2026-05-04</td>
+                    <td style="font-weight:700">182141</td>
+                    <td>1</td>
+                    <td style="color:#e67e22">false</td>
+                    <td style="color:#888"></td>
+                  </tr>
+                  <tr>
+                    <td>Salesforce for iOS</td>
+                    <td style="color:#888"></td>
+                    <td style="color:#888">2024-08-21</td>
+                    <td style="color:#888"></td>
+                    <td style="color:#888">2024-08-21</td>
+                    <td>921</td>
+                    <td>32</td>
+                    <td style="color:#888"></td>
+                    <td style="color:#888"></td>
+                  </tr>
+                  <tr>
+                    <td>sAPIm</td>
+                    <td>sAPIm</td>
+                    <td style="color:#888">2025-12-05</td>
+                    <td>Fabrice Challier</td>
+                    <td style="color:#888">2026-05-04</td>
+                    <td>16619</td>
+                    <td>1</td>
+                    <td style="color:#e67e22">false</td>
+                    <td style="font-style:italic;color:#555">Simple API Monitor</td>
+                  </tr>
+                  <tr>
+                    <td>Own for Salesforce Metadata</td>
+                    <td style="color:#888"></td>
+                    <td style="color:#888">2026-01-22</td>
+                    <td style="color:#888"></td>
+                    <td style="color:#888">2026-05-04</td>
+                    <td>221</td>
+                    <td>1</td>
+                    <td style="color:#888"></td>
+                    <td style="color:#888"></td>
+                  </tr>
+                  <tr>
+                    <td>Microsoft Power Platform</td>
+                    <td style="color:#888"></td>
+                    <td style="color:#888">2024-01-22</td>
+                    <td style="color:#888"></td>
+                    <td style="color:#888">2025-11-03</td>
+                    <td>3095</td>
+                    <td>2</td>
+                    <td style="color:#888"></td>
+                    <td style="color:#888"></td>
+                  </tr>
+                  <tr>
+                    <td>SourceScrub</td>
+                    <td style="color:#888"></td>
+                    <td style="color:#888">2025-05-22</td>
+                    <td style="color:#888"></td>
+                    <td style="color:#888">2026-05-04</td>
+                    <td>259</td>
+                    <td>2</td>
+                    <td style="color:#888"></td>
+                    <td style="color:#888"></td>
+                  </tr>
+                  <tr>
+                    <td>Conga Platform</td>
+                    <td style="color:#888"></td>
+                    <td style="color:#888">2024-01-17</td>
+                    <td style="color:#888"></td>
+                    <td style="color:#888">2024-01-17</td>
+                    <td>3</td>
+                    <td>1</td>
+                    <td style="color:#888"></td>
+                    <td style="color:#888"></td>
+                  </tr>
+                  <tr>
+                    <td>XL-Connector</td>
+                    <td style="color:#888"></td>
+                    <td style="color:#888">2026-04-30</td>
+                    <td style="color:#888"></td>
+                    <td style="color:#888">2026-04-30</td>
+                    <td>1</td>
+                    <td>1</td>
+                    <td style="color:#888"></td>
+                    <td style="color:#888"></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div class="hbox" style="gap:6px;align-items:center">
+              <span class="cal-lbl" style="color:#888;font-style:italic">19 connected apps found</span>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- ═══════════════ DETAILED TAB ═══════════════ -->
+        <div class="m-panel" id="tp47-1">
+          <div class="anchor" style="padding:10px;gap:8px">
+
+            <!-- Toolbar -->
+            <div class="hbox" style="gap:8px;align-items:center">
+              <button class="cal-btn btn-b"
+                      data-tip="Query all OAuth tokens for every user and every connected app in the org">
+                extract
+              </button>
+              <button class="cal-btn btn-r"
+                      data-tip="Revoke the OAuth tokens for all selected rows — users will need to re-authorise">
+                revoke selected token
+              </button>
+            </div>
+
+            <!-- Filter row -->
+            <div class="hbox" style="gap:8px;align-items:center">
+              <span class="cal-lbl">filters</span>
+              <input class="cal-tf" style="width:253px" readonly value="">
+              <span class="cal-lbl" style="color:#1A5276;font-weight:700">62 records</span>
+            </div>
+
+            <!-- Detailed per-user table -->
+            <div class="tbl-wrap">
+              <table class="cal-tbl">
+                <thead>
+                  <tr>
+                    <th style="width:160px">AppName</th>
+                    <th style="width:100px">CreatedDate</th>
+                    <th style="width:110px">LastUsedDate</th>
+                    <th style="width:200px">UserName</th>
+                    <th style="width:55px">Active</th>
+                    <th style="width:230px">Profile</th>
+                    <th style="width:65px">Usage</th>
+                    <th style="width:110px">AdminControlled</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Salesforce for iOS</td>
+                    <td style="color:#888">2024-08-21</td>
+                    <td style="color:#888">2024-08-21</td>
+                    <td>Elijah Yi</td>
+                    <td style="color:#27ae60">true</td>
+                    <td>Deal Cathay Innovation</td>
+                    <td>1</td>
+                    <td style="color:#888"></td>
+                  </tr>
+                  <tr>
+                    <td>Backup_and_Restore</td>
+                    <td style="color:#888">2023-11-28</td>
+                    <td style="color:#888">2026-05-04</td>
+                    <td>Cathay Administrator (Tech Team)</td>
+                    <td style="color:#27ae60">true</td>
+                    <td>System Administrator</td>
+                    <td style="font-weight:700">182141</td>
+                    <td style="color:#e67e22">false</td>
+                  </tr>
+                  <tr>
+                    <td>Insights</td>
+                    <td style="color:#888">2026-05-04</td>
+                    <td style="color:#888">2026-05-04</td>
+                    <td>Integration User</td>
+                    <td style="color:#27ae60">true</td>
+                    <td>Analytics Cloud Integration User</td>
+                    <td>195</td>
+                    <td style="color:#888"></td>
+                  </tr>
+                  <tr>
+                    <td>Salesforce for iOS</td>
+                    <td style="color:#888">2024-09-05</td>
+                    <td style="color:#888">2025-09-08</td>
+                    <td>Jinchen CAI</td>
+                    <td style="color:#27ae60">true</td>
+                    <td>Deal Cathay</td>
+                    <td>128</td>
+                    <td style="color:#888"></td>
+                  </tr>
+                  <tr>
+                    <td>Salesforce for iOS</td>
+                    <td style="color:#888">2023-10-16</td>
+                    <td style="color:#888">2023-11-19</td>
+                    <td>Maximillian GAIRARD</td>
+                    <td style="color:#27ae60">true</td>
+                    <td>Deal Cathay</td>
+                    <td>6</td>
+                    <td style="color:#888"></td>
+                  </tr>
+                  <tr>
+                    <td>Salesforce for iOS</td>
+                    <td style="color:#888">2023-12-20</td>
+                    <td style="color:#888">2024-01-09</td>
+                    <td>Matthieu VAN DER ELST</td>
+                    <td style="color:#27ae60">true</td>
+                    <td>Fundraising Cathay Innovation</td>
+                    <td>24</td>
+                    <td style="color:#888"></td>
+                  </tr>
+                  <tr>
+                    <td>Salesforce for iOS</td>
+                    <td style="color:#888">2024-12-20</td>
+                    <td style="color:#888">2026-03-25</td>
+                    <td>Matthieu Soulé</td>
+                    <td style="color:#27ae60">true</td>
+                    <td>Deal Cathay Innovation</td>
+                    <td>85</td>
+                    <td style="color:#e67e22">false</td>
+                  </tr>
+                  <tr>
+                    <td>Salesforce for iOS</td>
+                    <td style="color:#888">2025-09-03</td>
+                    <td style="color:#888">2026-04-30</td>
+                    <td>Katharina Schild</td>
+                    <td style="color:#27ae60">true</td>
+                    <td>Deal Cathay Innovation</td>
+                    <td>60</td>
+                    <td style="color:#e67e22">false</td>
+                  </tr>
+                  <tr>
+                    <td>Salesforce for Android</td>
+                    <td style="color:#888">2021-09-09</td>
+                    <td style="color:#888">2025-07-16</td>
+                    <td>Margot Briole</td>
+                    <td style="color:#27ae60">true</td>
+                    <td>Assistant Fundraising</td>
+                    <td>402</td>
+                    <td style="color:#888"></td>
+                  </tr>
+                  <tr>
+                    <td>Salesforce for iOS</td>
+                    <td style="color:#888">2024-09-10</td>
+                    <td style="color:#888">2025-09-15</td>
+                    <td>Elijah Yi</td>
+                    <td style="color:#27ae60">true</td>
+                    <td>Deal Cathay Innovation</td>
+                    <td>120</td>
+                    <td style="color:#e67e22">false</td>
+                  </tr>
+                  <tr>
+                    <td>Salesforce for iOS</td>
+                    <td style="color:#888">2021-05-20</td>
+                    <td style="color:#888">2023-08-08</td>
+                    <td>Benoît SERINGE</td>
+                    <td style="color:#27ae60">true</td>
+                    <td>Fundraising Cathay</td>
+                    <td>11</td>
+                    <td style="color:#888"></td>
+                  </tr>
+                  <tr>
+                    <td>Salesforce for iOS</td>
+                    <td style="color:#888">2021-05-07</td>
+                    <td style="color:#888">2023-05-12</td>
+                    <td>Romain Dufourcq</td>
+                    <td style="color:#27ae60">true</td>
+                    <td>Deal Cathay Innovation</td>
+                    <td>40</td>
+                    <td style="color:#888"></td>
+                  </tr>
+                  <tr>
+                    <td>tbid.digital.salesforce.com</td>
+                    <td style="color:#888">2023-11-29</td>
+                    <td style="color:#888">2023-11-29</td>
+                    <td>Cathay Administrator (Tech Team)</td>
+                    <td style="color:#27ae60">true</td>
+                    <td>System Administrator</td>
+                    <td>2</td>
+                    <td style="color:#888"></td>
+                  </tr>
+                  <tr>
+                    <td>apexguru_c2c_Production</td>
+                    <td style="color:#888">2025-10-23</td>
+                    <td style="color:#888">2026-04-30</td>
+                    <td>Platform Integration User</td>
+                    <td style="color:#27ae60">true</td>
+                    <td style="color:#888"></td>
+                    <td>517</td>
+                    <td style="color:#888"></td>
+                  </tr>
+                  <tr>
+                    <td>Surfe</td>
+                    <td style="color:#888">2026-04-28</td>
+                    <td style="color:#888">2026-05-04</td>
+                    <td>Emanuele DELEONARDIS</td>
+                    <td style="color:#27ae60">true</td>
+                    <td>Deal Cathay Innovation</td>
+                    <td>31</td>
+                    <td style="color:#27ae60">true</td>
+                  </tr>
+                  <tr>
+                    <td>Salesforce for iOS</td>
+                    <td style="color:#888">2023-11-09</td>
+                    <td style="color:#888">2025-10-09</td>
+                    <td>Benoît SERINGE</td>
+                    <td style="color:#27ae60">true</td>
+                    <td>Fundraising Cathay</td>
+                    <td>10</td>
+                    <td style="color:#e67e22">false</td>
+                  </tr>
+                  <tr>
+                    <td>Salesforce for iOS</td>
+                    <td style="color:#888">2022-10-21</td>
+                    <td style="color:#888">2023-09-27</td>
+                    <td>Fabien Wesse</td>
+                    <td style="color:#27ae60">true</td>
+                    <td>Fundraising Cathay</td>
+                    <td>19</td>
+                    <td style="color:#888"></td>
+                  </tr>
+                  <tr>
+                    <td>Salesforce for Android</td>
+                    <td style="color:#888">2024-09-24</td>
+                    <td style="color:#888">2024-10-08</td>
+                    <td>Felix WANG</td>
+                    <td style="color:#27ae60">true</td>
+                    <td>Deal Cathay</td>
+                    <td>7</td>
+                    <td style="color:#888"></td>
+                  </tr>
+                  <tr>
+                    <td>CalumetHttp2</td>
+                    <td style="color:#888">2023-04-04</td>
+                    <td style="color:#888">2026-05-04</td>
+                    <td>Fabrice Challier</td>
+                    <td style="color:#27ae60">true</td>
+                    <td>System Administrator</td>
+                    <td style="font-weight:700">2232</td>
+                    <td style="color:#888"></td>
+                  </tr>
+                  <tr>
+                    <td>Own for Salesforce</td>
+                    <td style="color:#888">2026-01-22</td>
+                    <td style="color:#888">2026-05-04</td>
+                    <td>Fabrice Challier</td>
+                    <td style="color:#27ae60">true</td>
+                    <td>System Administrator</td>
+                    <td>310</td>
+                    <td style="color:#888"></td>
+                  </tr>
+                  <tr>
+                    <td>SourceScrub</td>
+                    <td style="color:#888">2025-05-22</td>
+                    <td style="color:#888">2026-05-04</td>
+                    <td>source scrub</td>
+                    <td style="color:#27ae60">true</td>
+                    <td>Minimum Access - API Only Integrations</td>
+                    <td>258</td>
+                    <td style="color:#888"></td>
+                  </tr>
+                  <tr>
+                    <td>Salesforce for iOS</td>
+                    <td style="color:#888">2023-06-28</td>
+                    <td style="color:#888">2026-04-30</td>
+                    <td>Romain Dufourcq</td>
+                    <td style="color:#27ae60">true</td>
+                    <td>Deal Cathay Innovation</td>
+                    <td>78</td>
+                    <td style="color:#e67e22">false</td>
+                  </tr>
+                  <tr>
+                    <td>Salesforce CLI</td>
+                    <td style="color:#888">2026-01-30</td>
+                    <td style="color:#888">2026-04-10</td>
+                    <td>Fabrice Challier</td>
+                    <td style="color:#27ae60">true</td>
+                    <td>System Administrator</td>
+                    <td>30</td>
+                    <td style="color:#e67e22">false</td>
+                  </tr>
+                  <tr>
+                    <td>Wave Web</td>
+                    <td style="color:#888">2025-11-13</td>
+                    <td style="color:#888">2025-11-13</td>
+                    <td>Fabrice Challier</td>
+                    <td style="color:#27ae60">true</td>
+                    <td>System Administrator</td>
+                    <td style="color:#E74C3C">0</td>
+                    <td style="color:#888"></td>
+                  </tr>
+                  <tr>
+                    <td>Salesforce for iOS</td>
+                    <td style="color:#888">2024-05-27</td>
+                    <td style="color:#888">2024-05-27</td>
+                    <td>Brian Schwarzbach</td>
+                    <td style="color:#E74C3C">false</td>
+                    <td>Deal Cathay Innovation</td>
+                    <td>1</td>
+                    <td style="color:#888"></td>
+                  </tr>
+                  <tr>
+                    <td>Salesforce for iOS</td>
+                    <td style="color:#888">2023-09-25</td>
+                    <td style="color:#888">2023-09-25</td>
+                    <td>Nicolas DUCRAY</td>
+                    <td style="color:#27ae60">true</td>
+                    <td>Fundraising Cathay Innovation</td>
+                    <td>11</td>
+                    <td style="color:#888"></td>
+                  </tr>
+                  <tr>
+                    <td>Salesforce for iOS</td>
+                    <td style="color:#888">2025-07-24</td>
+                    <td style="color:#888">2025-09-12</td>
+                    <td>Rose Yuan</td>
+                    <td style="color:#27ae60">true</td>
+                    <td>Deal Cathay Innovation</td>
+                    <td>3</td>
+                    <td style="color:#e67e22">false</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div class="hbox" style="gap:6px;align-items:center">
+              <span class="cal-lbl" style="color:#888;font-style:italic">62 records — select rows and click "revoke selected token" to remove OAuth access for specific users</span>
+            </div>
+
+          </div>
+        </div>
+
+      </div><!-- /m-body -->
+    </div><!-- /m-tabpane -->
+
+  </div><!-- /mockup -->
+</div><!-- /mockup-wrap -->
+
+<script>
+function sw(id,idx){
+  var tp=document.getElementById(id);
+  tp.querySelectorAll('.m-tab').forEach(function(t,i){t.classList.toggle('act',i===idx)});
+  tp.querySelectorAll('.m-panel').forEach(function(p,i){p.classList.toggle('act',i===idx)});
+}
+</script>
+
+<!-- Key features modal -->
+<div id="modal-kf" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:999;align-items:center;justify-content:center" onclick="if(event.target===this)this.style.display='none'">
+  <div style="background:#fff;border-radius:8px;padding:28px 32px;max-width:520px;width:90%;color:#1a2a35;box-shadow:0 8px 32px rgba(0,0,0,.3)">
+    <h3 style="margin:0 0 14px;color:#2980b9">★ Key features</h3>
+    <ul style="margin:0;padding-left:20px;line-height:1.8">
+      <li><strong>Global view</strong> — one row per connected app showing aggregated usage count, distinct user count, admin-controlled flag, and description</li>
+      <li><strong>Detailed view</strong> — one row per user × app combination, showing the individual token creation date, last used date, profile, and usage count</li>
+      <li>Quickly spot <strong>stale integrations</strong>: apps with zero usage or tokens not used in months</li>
+      <li>Identify <strong>over-permissioned apps</strong> via the AdminControlled column — apps not admin-controlled can be self-authorised by any user</li>
+      <li><strong>Revoke tokens</strong> directly from the Detailed view: select one or more rows and click "revoke selected token" to cut access immediately without going to Setup</li>
+      <li><strong>Filter</strong> by typing in the filter field (semicolon-separated terms for AND logic) — the record counter updates in real time</li>
+      <li>Refreshes the org's API callout limit counter after each extract</li>
+    </ul>
+    <div style="text-align:right;margin-top:18px">
+      <button class="cal-btn btn-d" onclick="document.getElementById('modal-kf').style.display='none'">Close</button>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

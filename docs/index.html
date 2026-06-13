@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Calumet &mdash; Salesforce Administration Suite</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#142540;--bg2:#1a3050;--border:#244568;--txt:#e2e8f0;--muted:#8892a4;--acc:#2ea4c9}
+body{font-family:"Segoe UI",system-ui,sans-serif;background:var(--bg);color:var(--txt);
+     min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:0 20px 64px}
+
+/* ── Hero ── */
+.hero{text-align:center;padding:56px 0 40px;max-width:680px;width:100%}
+.mascot-wrap{width:110px;height:110px;background:#fff;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;overflow:hidden;margin:0 auto 22px;
+  box-shadow:0 0 0 3px rgba(46,164,201,.4),0 8px 32px rgba(0,0,0,.4)}
+.mascot{width:86px}
+.hero h1{font-size:50px;font-weight:800;color:#fff;letter-spacing:-2px;margin-bottom:5px}
+.hero-by{font-size:12px;color:var(--acc);font-weight:600;margin-bottom:12px;letter-spacing:.3px}
+.hero-tag{font-size:15px;color:#a8b4c8;line-height:1.7;max-width:500px;margin:0 auto}
+.version-pill{display:inline-block;background:#1e3a5e;color:var(--acc);
+  padding:3px 14px;border-radius:20px;font-size:12px;font-weight:600;margin-top:14px}
+
+/* ── Sections ── */
+.section{width:100%;max-width:700px;margin-bottom:36px}
+.sec-title{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;
+  color:var(--muted);margin-bottom:14px}
+
+/* ── Download ── */
+.dl-row{display:flex;gap:12px;flex-wrap:wrap}
+.dl-btn{display:flex;align-items:center;gap:14px;padding:15px 22px;border-radius:10px;
+  text-decoration:none;border:1px solid;flex:1;min-width:200px;
+  transition:background .15s,transform .1s}
+.dl-btn:active{transform:translateY(1px)}
+.dl-btn.win{background:rgba(46,164,201,.14);border-color:var(--acc)}
+.dl-btn.win:hover{background:rgba(46,164,201,.26)}
+.dl-btn.lnx{background:rgba(80,180,80,.1);border-color:#4caf50}
+.dl-btn.lnx:hover{background:rgba(80,180,80,.22)}
+.dl-ico{font-size:28px;line-height:1;flex-shrink:0}
+.dl-info strong{display:block;font-size:14px;font-weight:700;color:#fff;margin-bottom:2px}
+.dl-info span{font-size:11px;color:var(--muted)}
+.dl-arrow{margin-left:auto;font-size:20px;color:var(--muted);font-weight:300}
+.releases-link{margin-top:10px;font-size:12px;color:var(--muted)}
+.releases-link a{color:var(--acc);text-decoration:none}
+.releases-link a:hover{text-decoration:underline}
+
+/* ── CTA cards ── */
+.cta-row{display:flex;gap:12px;flex-wrap:wrap;width:100%;max-width:700px;margin-bottom:36px}
+.cta{display:flex;align-items:center;gap:14px;flex:1;min-width:220px;padding:18px 22px;
+  border-radius:10px;text-decoration:none;border:1px solid;transition:background .15s,transform .1s}
+.cta:active{transform:translateY(1px)}
+.cta.primary{background:linear-gradient(135deg,rgba(46,164,201,.2),rgba(46,164,201,.05));border-color:var(--acc)}
+.cta.primary:hover{background:linear-gradient(135deg,rgba(46,164,201,.32),rgba(46,164,201,.1))}
+.cta.secondary{background:var(--bg2);border-color:var(--border)}
+.cta.secondary:hover{border-color:var(--acc);background:rgba(46,164,201,.06)}
+.cta-ico{font-size:26px;flex-shrink:0}
+.cta-body{flex:1}
+.cta-t{font-size:14px;font-weight:700;color:#fff;margin-bottom:3px}
+.cta-d{font-size:11.5px;color:#a8b4c8;line-height:1.5}
+.cta-arr{margin-left:auto;font-size:22px;color:var(--acc);font-weight:700;flex-shrink:0}
+
+/* ── Feature grid ── */
+.feat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.feat-card{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:14px 16px}
+.feat-ico{font-size:20px;margin-bottom:8px}
+.feat-t{font-size:12px;font-weight:700;color:#e2e8f0;margin-bottom:4px}
+.feat-d{font-size:11px;color:var(--muted);line-height:1.5}
+
+/* ── Footer ── */
+footer{margin-top:20px;font-size:11px;color:var(--muted);text-align:center;width:100%;max-width:700px;
+  padding-top:28px;border-top:1px solid var(--border)}
+footer a{color:var(--acc);text-decoration:none}
+footer a:hover{text-decoration:underline}
+
+@media(max-width:540px){
+  .hero h1{font-size:38px}
+  .feat-grid{grid-template-columns:1fr 1fr}
+  .dl-btn,.cta{min-width:100%;flex:none}
+}
+</style>
+</head>
+<body>
+
+<!-- Hero -->
+<div class="hero">
+  <div class="mascot-wrap">
+    <img class="mascot" src="littlechaman-mascot.png" alt="Little Chaman">
+  </div>
+  <h1>Calumet</h1>
+  <p class="hero-by">by Little Chaman</p>
+  <p class="hero-tag">A unified desktop workbench for Salesforce administrators, developers, and architects.</p>
+  <span class="version-pill">v11 &mdash; Latest</span>
+</div>
+
+<!-- Download -->
+<div class="section">
+  <div class="sec-title">Download</div>
+  <div class="dl-row">
+    <a class="dl-btn win"
+       href="https://github.com/elchacha/Calumet/releases/latest/download/Calumet-windows.zip">
+      <span class="dl-ico">&#x1F5A5;</span>
+      <div class="dl-info">
+        <strong>Windows</strong>
+        <span>ZIP &middot; Java included &middot; 64-bit</span>
+      </div>
+      <span class="dl-arrow">&#8595;</span>
+    </a>
+    <a class="dl-btn lnx"
+       href="https://github.com/elchacha/Calumet/releases/latest/download/Calumet-linux.zip">
+      <span class="dl-ico">&#x1F427;</span>
+      <div class="dl-info">
+        <strong>Linux</strong>
+        <span>ZIP &middot; Java included &middot; 64-bit</span>
+      </div>
+      <span class="dl-arrow">&#8595;</span>
+    </a>
+  </div>
+  <p class="releases-link">All releases &rarr;
+    <a href="https://github.com/elchacha/Calumet/releases" target="_blank">
+      github.com/elchacha/calumet25/releases
+    </a>
+  </p>
+</div>
+
+<!-- CTA: Getting Started + Full Docs -->
+<div class="cta-row">
+  <a class="cta primary" href="starting/">
+    <span class="cta-ico">&#x1F680;</span>
+    <div class="cta-body">
+      <div class="cta-t">Getting Started</div>
+      <div class="cta-d">Connect your first org in 5 steps</div>
+    </div>
+    <span class="cta-arr">&rarr;</span>
+  </a>
+  <a class="cta secondary" href="docs.html">
+    <span class="cta-ico">&#x1F4D6;</span>
+    <div class="cta-body">
+      <div class="cta-t">Full Documentation</div>
+      <div class="cta-d">78 screens &mdash; all features explained</div>
+    </div>
+    <span class="cta-arr">&rarr;</span>
+  </a>
+</div>
+
+<!-- Features -->
+<div class="section">
+  <div class="sec-title">What&rsquo;s inside</div>
+  <div class="feat-grid">
+    <div class="feat-card">
+      <div class="feat-ico">&#x1F4E6;</div>
+      <div class="feat-t">Deployment</div>
+      <div class="feat-d">Retrieve, deploy, compare and roll back metadata</div>
+    </div>
+    <div class="feat-card">
+      <div class="feat-ico">&#x1F6E1;&#xFE0F;</div>
+      <div class="feat-t">Security</div>
+      <div class="feat-d">Profiles, permission sets, sharing rules, user access</div>
+    </div>
+    <div class="feat-card">
+      <div class="feat-ico">&#x1F4BB;</div>
+      <div class="feat-t">Dev</div>
+      <div class="feat-d">Apex, test coverage, logs, dead code detection</div>
+    </div>
+    <div class="feat-card">
+      <div class="feat-ico">&#x1F5C4;&#xFE0F;</div>
+      <div class="feat-t">Data</div>
+      <div class="feat-d">SOQL explorer, records, limits, activity analysis</div>
+    </div>
+    <div class="feat-card">
+      <div class="feat-ico">&#x1F517;</div>
+      <div class="feat-t">Model</div>
+      <div class="feat-d">Picklists, flows, FlexiPages, field relations</div>
+    </div>
+    <div class="feat-card">
+      <div class="feat-ico">&#x1F527;</div>
+      <div class="feat-t">Technical Debt</div>
+      <div class="feat-d">Unused fields, layouts, profiles and more</div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  Built for Salesforce professionals &mdash;
+  <a href="https://github.com/elchacha/calumet25" target="_blank">GitHub</a>
+</footer>
+
+</body>
+</html>

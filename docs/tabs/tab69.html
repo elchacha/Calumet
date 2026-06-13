@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>User Access Score — Calumet</title>
+<link rel="stylesheet" href="../shared.css">
+<style>
+/* ── Privilege level row colors ── */
+.row-critical  { background:#f5b8b8 !important; }
+.row-very-high { background:#fad7a0 !important; }
+.row-high      { background:#fef9e7 !important; }
+.row-moderate  { background:#ffffff !important; }
+
+/* ── Checkbox column ── */
+.sel-chk { width:14px; height:14px; cursor:pointer; accent-color:#2980b9; }
+
+/* ── Rank / Score cells ── */
+.rank-cell  { font-weight:700; font-size:11px; text-align:right; padding-right:8px !important; }
+.score-cell { font-weight:700; text-align:right; padding-right:10px !important; }
+
+/* ── Type badges ── */
+.badge-ps {
+  display:inline-block; padding:2px 7px; border-radius:10px;
+  background:#2980b9; color:#fff; font-size:10px; font-weight:700;
+  white-space:nowrap; min-width:28px; text-align:center;
+}
+.badge-profile {
+  display:inline-block; padding:2px 5px; border-radius:10px;
+  background:#7f8c8d; color:#fff; font-size:10px; font-weight:700;
+  white-space:nowrap; min-width:46px; text-align:center;
+}
+
+/* ── Blinking invite animation ── */
+@keyframes blink-invite {
+  0%,100% { outline:2px solid transparent; box-shadow:none; }
+  45%,55% { outline:2px solid #E74C3C; box-shadow:0 0 7px rgba(231,76,60,.7); }
+}
+.invite-blink { animation:blink-invite 1.7s ease-in-out infinite; border-radius:2px; }
+
+/* ── Split layout ── */
+#score-layout { display:flex; gap:6px; align-items:flex-start; }
+#left-panel   { flex:1 1 55%; min-width:0; }
+#right-panel  { flex:0 0 43%; min-width:0; display:none;
+                border:1px solid #9AABBF; border-radius:3px; background:#fff; padding:6px; }
+#right-panel.visible { display:block; }
+
+/* ── Action bar (Assign/UnAssign) ── */
+#action-bar         { display:none; gap:6px; align-items:center; margin-bottom:6px; }
+#action-bar.visible { display:flex; }
+
+/* ── Hint ── */
+#invite-hint { font-size:10px; color:#2980b9; font-style:italic; margin-bottom:5px; }
+
+/* ── Checked row highlight ── */
+tr.checked-row td { background:#d6eaf8 !important; }
+
+/* ── Left table scroll ── */
+#left-tbl-wrap { max-height:400px; overflow-y:auto;
+  border:1px solid #9AABBF; border-radius:3px; }
+#left-tbl-wrap::-webkit-scrollbar { width:4px; }
+#left-tbl-wrap::-webkit-scrollbar-thumb { background:#9AABBF; border-radius:2px; }
+
+/* ── Right table scroll ── */
+#right-tbl-wrap { max-height:360px; overflow-y:auto; }
+#right-tbl-wrap::-webkit-scrollbar { width:4px; }
+#right-tbl-wrap::-webkit-scrollbar-thumb { background:#9AABBF; border-radius:2px; }
+
+/* ── Right panel header ── */
+#detail-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:5px; }
+#detail-title  { font-weight:700; font-size:12px; color:#1A5276; }
+#selected-count-label { font-size:11px; color:#888; }
+
+/* ── User columns in right table ── */
+.user-col-hdr {
+  background:#2980b9; color:#fff; font-weight:700; font-size:10px;
+  text-align:center; padding:4px 4px; border-right:1px solid #9AABBF;
+  white-space:nowrap; min-width:46px;
+}
+.user-col-cell { text-align:center; }
+</style>
+</head>
+<body class="tab-page">
+
+<div class="sum">
+  <div class="sum-title">
+    <h2>User Access Score</h2>
+    <span class="sum-badge">Tab 69</span>
+  </div>
+  <p class="sum-desc">Assess user privilege levels. Users are ranked by access score and color-coded from Minimal to CRITICAL. Select 2–5 users using the checkboxes to compare their permission sets side-by-side.</p>
+</div>
+
+<div class="mockup-wrap">
+  <div class="mockup" style="padding:10px 12px">
+
+    <!-- ── Panel title ── -->
+    <div class="vbox" style="gap:2px;margin-bottom:6px">
+      <span style="font-weight:700;font-size:13px;color:#1a2a35">User Access Score</span>
+      <span style="font-size:11px;color:#555">Assess user privilege levels. Users are ranked by access score and color-coded from Minimal to CRITICAL.</span>
+    </div>
+
+    <!-- ── Privilege level filter row ── -->
+    <div class="hbox" style="gap:0;align-items:center;margin-bottom:6px;flex-wrap:nowrap">
+      <span class="cal-lbl" style="font-weight:600;margin-right:8px;white-space:nowrap">Filter by privilege level:</span>
+      <label class="cal-chk" style="margin-right:10px"><input type="checkbox" checked disabled> <span style="color:#555">Minimal (0-20%)</span></label>
+      <label class="cal-chk" style="margin-right:10px"><input type="checkbox" checked disabled> <span style="color:#555">Moderate (20-50%)</span></label>
+      <label class="cal-chk" style="margin-right:10px"><input type="checkbox" checked disabled> <span style="color:#555">High (50-80%)</span></label>
+      <label class="cal-chk" style="margin-right:10px"><input type="checkbox" checked disabled> <span style="color:#e67e22">Very High (80-95%)</span></label>
+      <label class="cal-chk"><input type="checkbox" checked disabled> <span style="color:#E74C3C;font-weight:700">CRITICAL (95-100%)</span></label>
+    </div>
+
+    <!-- ── Toolbar ── -->
+    <div class="hbox" style="gap:6px;align-items:center;margin-bottom:6px">
+      <button class="cal-btn btn-b" data-tip="Reload user access scores from Salesforce">Refresh</button>
+      <button class="cal-btn btn-d" data-tip="Show or hide the detail panel for selected users">show detail</button>
+      <span class="cal-lbl" style="color:#888;margin-left:4px">Cache: 29/04/2026 15:13</span>
+    </div>
+
+    <!-- ── Filter bar ── -->
+    <div class="hbox" style="gap:8px;align-items:center;margin-bottom:6px">
+      <input class="cal-tf" placeholder="filter" style="width:150px" readonly>
+      <label class="cal-chk"><input type="checkbox" disabled> exact word</label>
+      <label class="cal-chk"><input type="checkbox" disabled> include permset to filter</label>
+    </div>
+
+    <!-- ── Invite hint ── -->
+    <div id="invite-hint">&#9757; Click the blinking checkboxes to compare users side-by-side</div>
+
+    <!-- ── Main split layout ── -->
+    <div id="score-layout">
+
+      <!-- LEFT: all users table -->
+      <div id="left-panel">
+        <div id="left-tbl-wrap">
+          <table class="cal-tbl" style="width:100%">
+            <thead>
+              <tr>
+                <th style="width:20px"></th>
+                <th style="width:36px;text-align:right;padding-right:8px">Rank</th>
+                <th style="width:160px">Username</th>
+                <th style="width:155px">Profil</th>
+                <th style="width:52px">Alias</th>
+                <th style="width:62px;text-align:right;padding-right:10px">Score</th>
+                <th style="width:68px;text-align:right;padding-right:10px">Score(M)</th>
+              </tr>
+            </thead>
+            <tbody id="user-tbody">
+              <tr class="row-critical" data-row="1" data-alias="u001">
+                <td style="padding:2px 3px;text-align:center"><input type="checkbox" class="sel-chk" onchange="toggleRow(this,'u001')" data-tip="Select to compare"></td>
+                <td class="rank-cell">1</td><td>user_01</td><td>Profile_01</td><td>u001</td>
+                <td class="score-cell">25885</td><td class="score-cell">26135</td>
+              </tr>
+              <tr class="row-very-high" data-alias="u002">
+                <td style="padding:2px 3px;text-align:center"><input type="checkbox" class="sel-chk invite-blink" onchange="toggleRow(this,'u002')" data-tip="Click to compare this user"></td>
+                <td class="rank-cell">2</td><td>user_02</td><td>Profile_01</td><td>u002</td>
+                <td class="score-cell">14587</td><td class="score-cell">14816</td>
+              </tr>
+              <tr class="row-very-high" data-alias="u003">
+                <td style="padding:2px 3px;text-align:center"><input type="checkbox" class="sel-chk" onchange="toggleRow(this,'u003')" data-tip="Select to compare"></td>
+                <td class="rank-cell">3</td><td>user_03</td><td>Profile_01</td><td>u003</td>
+                <td class="score-cell">14532</td><td class="score-cell">14763</td>
+              </tr>
+              <tr class="row-very-high" data-alias="u004">
+                <td style="padding:2px 3px;text-align:center"><input type="checkbox" class="sel-chk" onchange="toggleRow(this,'u004')" data-tip="Select to compare"></td>
+                <td class="rank-cell">4</td><td>user_04</td><td>Profile_01</td><td>u004</td>
+                <td class="score-cell">13748</td><td class="score-cell">13982</td>
+              </tr>
+              <tr class="row-very-high" data-alias="u005">
+                <td style="padding:2px 3px;text-align:center"><input type="checkbox" class="sel-chk" onchange="toggleRow(this,'u005')" data-tip="Select to compare"></td>
+                <td class="rank-cell">5</td><td>user_05</td><td>Profile_01</td><td>u005</td>
+                <td class="score-cell">13585</td><td class="score-cell">13837</td>
+              </tr>
+              <tr class="row-very-high" data-alias="u006">
+                <td style="padding:2px 3px;text-align:center"><input type="checkbox" class="sel-chk invite-blink" onchange="toggleRow(this,'u006')" data-tip="Click to compare this user"></td>
+                <td class="rank-cell">6</td><td>user_06</td><td>Profile_01</td><td>u006</td>
+                <td class="score-cell">13496</td><td class="score-cell">13730</td>
+              </tr>
+              <tr class="row-very-high" data-alias="u007">
+                <td style="padding:2px 3px;text-align:center"><input type="checkbox" class="sel-chk invite-blink" onchange="toggleRow(this,'u007')" data-tip="Click to compare this user"></td>
+                <td class="rank-cell">7</td><td>user_07</td><td>Profile_01</td><td>u007</td>
+                <td class="score-cell">13297</td><td class="score-cell">13526</td>
+              </tr>
+              <tr class="row-very-high" data-alias="u008">
+                <td style="padding:2px 3px;text-align:center"><input type="checkbox" class="sel-chk" onchange="toggleRow(this,'u008')" data-tip="Select to compare"></td>
+                <td class="rank-cell">8</td><td>user_08</td><td>Profile_01</td><td>u008</td>
+                <td class="score-cell">13277</td><td class="score-cell">13507</td>
+              </tr>
+              <tr class="row-very-high" data-alias="u009">
+                <td style="padding:2px 3px;text-align:center"><input type="checkbox" class="sel-chk" onchange="toggleRow(this,'u009')" data-tip="Select to compare"></td>
+                <td class="rank-cell">9</td><td>user_09</td><td>Profile_01</td><td>u009</td>
+                <td class="score-cell">13262</td><td class="score-cell">13492</td>
+              </tr>
+              <tr class="row-very-high" data-alias="u010">
+                <td style="padding:2px 3px;text-align:center"><input type="checkbox" class="sel-chk" onchange="toggleRow(this,'u010')" data-tip="Select to compare"></td>
+                <td class="rank-cell">10</td><td>user_10</td><td>Profile_02</td><td>u010</td>
+                <td class="score-cell">13246</td><td class="score-cell">13475</td>
+              </tr>
+              <tr class="row-high" data-alias="u011">
+                <td style="padding:2px 3px;text-align:center"><input type="checkbox" class="sel-chk" onchange="toggleRow(this,'u011')" data-tip="Select to compare"></td>
+                <td class="rank-cell">11</td><td>user_11</td><td>Profile_02</td><td>u011</td>
+                <td class="score-cell">12761</td><td class="score-cell">12886</td>
+              </tr>
+              <tr class="row-high" data-alias="u012">
+                <td style="padding:2px 3px;text-align:center"><input type="checkbox" class="sel-chk" onchange="toggleRow(this,'u012')" data-tip="Select to compare"></td>
+                <td class="rank-cell">12</td><td>user_12</td><td>Profile_03</td><td>u012</td>
+                <td class="score-cell">9065</td><td class="score-cell">9118</td>
+              </tr>
+              <tr class="row-high" data-alias="u013">
+                <td style="padding:2px 3px;text-align:center"><input type="checkbox" class="sel-chk" onchange="toggleRow(this,'u013')" data-tip="Select to compare"></td>
+                <td class="rank-cell">13</td><td>user_13</td><td>Profile_02</td><td>u013</td>
+                <td class="score-cell">8556</td><td class="score-cell">8656</td>
+              </tr>
+              <tr class="row-high" data-alias="u014">
+                <td style="padding:2px 3px;text-align:center"><input type="checkbox" class="sel-chk" onchange="toggleRow(this,'u014')" data-tip="Select to compare"></td>
+                <td class="rank-cell">14</td><td>user_14</td><td>Profile_02</td><td>u014</td>
+                <td class="score-cell">8555</td><td class="score-cell">8666</td>
+              </tr>
+              <tr class="row-moderate" data-alias="u015">
+                <td style="padding:2px 3px;text-align:center"><input type="checkbox" class="sel-chk" onchange="toggleRow(this,'u015')" data-tip="Select to compare"></td>
+                <td class="rank-cell">15</td><td>user_15</td><td>Profile_02</td><td>u015</td>
+                <td class="score-cell">7859</td><td class="score-cell">7926</td>
+              </tr>
+              <tr class="row-moderate" data-alias="u016">
+                <td style="padding:2px 3px;text-align:center"><input type="checkbox" class="sel-chk" onchange="toggleRow(this,'u016')" data-tip="Select to compare"></td>
+                <td class="rank-cell">16</td><td>user_16</td><td>Profile_04</td><td>u016</td>
+                <td class="score-cell">6750</td><td class="score-cell">6834</td>
+              </tr>
+              <tr class="row-moderate" data-alias="u017">
+                <td style="padding:2px 3px;text-align:center"><input type="checkbox" class="sel-chk" onchange="toggleRow(this,'u017')" data-tip="Select to compare"></td>
+                <td class="rank-cell">17</td><td>user_17</td><td>Profile_03</td><td>u017</td>
+                <td class="score-cell">6386</td><td class="score-cell">6440</td>
+              </tr>
+              <tr class="row-moderate" data-alias="u018">
+                <td style="padding:2px 3px;text-align:center"><input type="checkbox" class="sel-chk" onchange="toggleRow(this,'u018')" data-tip="Select to compare"></td>
+                <td class="rank-cell">18</td><td>user_18</td><td>Profile_02</td><td>u018</td>
+                <td class="score-cell">6369</td><td class="score-cell">6482</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div><!-- end left-panel -->
+
+      <!-- RIGHT: permission set comparison (shown when >= 1 checkbox checked) -->
+      <div id="right-panel">
+        <div id="action-bar">
+          <button class="cal-btn btn-r" data-tip="Assign selected permission set to the chosen users">Assign</button>
+          <button class="cal-btn btn-o" data-tip="Unassign selected permission set from the chosen users">UnAssign</button>
+        </div>
+        <div id="detail-header">
+          <span id="detail-title">Permission Set Detail</span>
+          <span id="selected-count-label">0 users selected</span>
+        </div>
+        <div id="right-tbl-wrap">
+          <table class="cal-tbl" id="detail-table" style="width:100%">
+            <thead id="detail-thead">
+              <tr>
+                <th style="width:44px">Type</th>
+                <th>Name</th>
+                <th style="width:52px;text-align:right;padding-right:8px">Score</th>
+              </tr>
+            </thead>
+            <tbody id="detail-tbody"></tbody>
+          </table>
+        </div>
+      </div><!-- end right-panel -->
+
+    </div><!-- end score-layout -->
+
+  </div><!-- end mockup -->
+</div><!-- end mockup-wrap -->
+
+<script>
+/* ─────────────────────────────────────────────
+   sw() — sub-tab switcher (standard pattern)
+───────────────────────────────────────────── */
+function sw(id,idx){
+  var tp=document.getElementById(id);
+  tp.querySelectorAll('.m-tab').forEach(function(t,i){t.classList.toggle('act',i===idx)});
+  tp.querySelectorAll('.m-panel').forEach(function(p,i){p.classList.toggle('act',i===idx)});
+}
+
+/* ─────────────────────────────────────────────
+   Permission set database (anonymised)
+   Each entry: name, score, users[], optional type
+───────────────────────────────────────────── */
+var PERMSETS = [
+  { name:'PermSet_Admin_User',       score:1245, users:['u006'],            type:'PS'      },
+  { name:'PermSet_LiveChat',         score:125,  users:['u007'],            type:'PS'      },
+  { name:'PermSet_WS_Pro',           score:83,   users:['u006'],            type:'PS'      },
+  { name:'PermSet_Supervision',      score:59,   users:['u007'],            type:'PS'      },
+  { name:'SecurityUpdate',           score:32,   users:['u006','u007'],     type:'PS'      },
+  { name:'PermSet_Rapport_WF',       score:15,   users:['u006'],            type:'PS'      },
+  { name:'PermSet_Validations',      score:6,    users:['u006','u007'],     type:'PS'      },
+  { name:'PermSet_ByPass',           score:5,    users:['u006'],            type:'PS'      },
+  { name:'PermSet_MFA_Required',     score:120,  users:['u002','u003','u004','u005'], type:'PS' },
+  { name:'PermSet_API_Only',         score:95,   users:['u003','u008'],     type:'PS'      },
+  { name:'PermSet_ReadOnly_Reports', score:40,   users:['u004','u007','u009'], type:'PS'   },
+  { name:'PermSet_Chatter_Free',     score:12,   users:['u005','u010'],     type:'PS'      },
+  { name:'PermSet_Flow_Manager',     score:220,  users:['u001','u002'],     type:'PS'      },
+  { name:'PermSet_Debug_Access',     score:310,  users:['u001'],            type:'PS'      },
+  { name:'PermSet_Security_Audit',   score:480,  users:['u001','u002'],     type:'PS'      },
+  { name:'Profile_SysAdmin',         score:1800, users:['u001','u002','u003','u004','u005','u006','u007','u008','u009'], type:'Profile' },
+  { name:'Profile_Profile_02',        score:950,  users:['u010','u011','u013','u014','u015'], type:'Profile' },
+  { name:'Profile_03',               score:410,  users:['u012','u017'],     type:'Profile' },
+  { name:'Profile_Profile_04',          score:320,  users:['u016'],            type:'Profile' },
+];
+
+/* currently selected user aliases */
+var selectedUsers = {};
+
+function toggleRow(chk, alias) {
+  var tr = chk.closest('tr');
+  var count = Object.keys(selectedUsers).length;
+
+  if (chk.checked) {
+    if (count >= 5) {
+      /* max 5 users */
+      chk.checked = false;
+      return;
+    }
+    selectedUsers[alias] = true;
+    tr.classList.add('checked-row');
+    chk.classList.remove('invite-blink'); /* stop blinking once user interacted */
+  } else {
+    delete selectedUsers[alias];
+    tr.classList.remove('checked-row');
+  }
+
+  /* hide/show invite hint */
+  var hint = document.getElementById('invite-hint');
+  hint.style.display = (Object.keys(selectedUsers).length > 0) ? 'none' : 'block';
+
+  updateRightPanel();
+}
+
+function updateRightPanel() {
+  var aliases = Object.keys(selectedUsers);
+  var panel = document.getElementById('right-panel');
+  var actionBar = document.getElementById('action-bar');
+  var countLabel = document.getElementById('selected-count-label');
+
+  if (aliases.length === 0) {
+    panel.classList.remove('visible');
+    actionBar.classList.remove('visible');
+    return;
+  }
+
+  panel.classList.add('visible');
+  actionBar.classList.add('visible');
+  countLabel.textContent = aliases.length + ' user' + (aliases.length > 1 ? 's' : '') + ' selected';
+
+  /* ── Rebuild table header ── */
+  var headerRow = document.querySelector('#detail-thead tr');
+  /* remove existing user columns (keep first 3: Type, Name, Score) */
+  while (headerRow.cells.length > 3) {
+    headerRow.deleteCell(3);
+  }
+  aliases.forEach(function(alias) {
+    var th = document.createElement('th');
+    th.className = 'user-col-hdr';
+    th.textContent = alias;
+    headerRow.appendChild(th);
+  });
+
+  /* ── Filter: only permsets where at least one selected user appears ── */
+  var relevant = PERMSETS.filter(function(ps) {
+    return aliases.some(function(a) { return ps.users.indexOf(a) !== -1; });
+  });
+  relevant.sort(function(a, b) { return b.score - a.score; });
+
+  /* ── Rebuild tbody ── */
+  var tbody = document.getElementById('detail-tbody');
+  tbody.innerHTML = '';
+
+  relevant.forEach(function(ps) {
+    var tr = document.createElement('tr');
+
+    /* Type badge */
+    var tdType = document.createElement('td');
+    tdType.style.textAlign = 'center';
+    tdType.style.padding = '3px 4px';
+    var badge = document.createElement('span');
+    badge.className = (ps.type === 'Profile') ? 'badge-profile' : 'badge-ps';
+    badge.textContent = (ps.type === 'Profile') ? 'Profile' : 'PS';
+    tdType.appendChild(badge);
+    tr.appendChild(tdType);
+
+    /* Name */
+    var tdName = document.createElement('td');
+    tdName.textContent = ps.name;
+    tr.appendChild(tdName);
+
+    /* Score */
+    var tdScore = document.createElement('td');
+    tdScore.className = 'score-cell';
+    tdScore.textContent = ps.score;
+    tr.appendChild(tdScore);
+
+    /* One cell per selected user */
+    aliases.forEach(function(alias) {
+      var td = document.createElement('td');
+      td.className = 'user-col-cell';
+      if (ps.users.indexOf(alias) !== -1) {
+        td.innerHTML = '<span style="color:#E74C3C;font-weight:900;font-size:13px">X</span>';
+      }
+      tr.appendChild(td);
+    });
+
+    tbody.appendChild(tr);
+  });
+}
+</script>
+</body>
+</html>

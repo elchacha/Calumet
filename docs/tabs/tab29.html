@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Profiles Modification — Calumet</title>
+<link rel="stylesheet" href="../shared.css">
+<style>
+.type-fls  { display:inline-block; padding:1px 7px; border-radius:10px; font-size:10px; font-weight:700; background:#d6eaf8; color:#1a5276; }
+.type-apex { display:inline-block; padding:1px 7px; border-radius:10px; font-size:10px; font-weight:700; background:#e8daef; color:#6c3483; }
+.type-obj  { display:inline-block; padding:1px 7px; border-radius:10px; font-size:10px; font-weight:700; background:#d5f5e3; color:#1e8449; }
+.type-sys  { display:inline-block; padding:1px 7px; border-radius:10px; font-size:10px; font-weight:700; background:#fdebd0; color:#935116; }
+.val-none  { color:#888; font-style:italic; }
+.val-new   { color:#27ae60; font-weight:600; }
+</style>
+</head>
+<body class="tab-page">
+
+<div class="sum">
+  <div class="sum-title">
+    <h2>Profiles Modification</h2>
+    <span class="sum-badge">Tab 29</span>
+  </div>
+  <p class="sum-desc">
+    Track every permission change made to Salesforce profiles over a date range. View field-level security, Apex permissions, object permissions, and system permission modifications — who changed what and when.
+    <button class="cal-btn btn-d" style="margin-left:10px" onclick="document.getElementById('modal-kf').style.display='flex'">&#9733; Key features</button>
+  </p>
+</div>
+
+<div class="mockup-wrap">
+  <div class="mockup" style="padding:10px 12px">
+
+    <!-- Row 1: Date pickers -->
+    <div class="hbox" style="gap:16px;align-items:center;padding:8px 0 6px">
+      <span class="cal-lbl">Start date</span>
+      <input class="cal-tf" style="width:140px" value="04/01/2026" readonly>
+      <span class="cal-lbl">End date</span>
+      <input class="cal-tf" style="width:140px" value="04/30/2026" readonly>
+    </div>
+
+    <!-- Row 2: Action bar -->
+    <div class="hbox" style="gap:8px;align-items:center;padding:6px 0 6px">
+      <button class="cal-btn btn-b">Search</button>
+      <label class="cal-chk"><input type="checkbox" disabled> Display full history</label>
+      <span class="cal-lbl" style="margin-left:8px;font-weight:700">nbRecords : 83</span>
+      <button class="cal-btn btn-d" data-tip="Add selected (or all) profiles to the Retrieve list">Add to Retrieve</button>
+      <label class="cal-chk"><input type="checkbox" disabled> clean target first</label>
+      <button class="cal-btn btn-d" style="opacity:.55" disabled data-tip="Save as a .zip package in the current project">Save in Project</button>
+    </div>
+
+    <!-- Row 3: Filter bar -->
+    <div class="hbox" style="gap:8px;align-items:center;padding:4px 0 8px">
+      <span class="cal-lbl">Filters :</span>
+      <input class="cal-tf" style="width:260px" placeholder="" readonly>
+      <span style="font-size:11px;color:#555">add ; to filter on multi criteria (ex : Administrative Permissions;Api)</span>
+    </div>
+
+    <hr class="hsep">
+
+    <!-- Results table -->
+    <div class="tbl-wrap" style="max-height:480px;overflow-y:auto;margin-top:6px">
+      <table class="cal-tbl">
+        <thead>
+          <tr>
+            <th style="width:170px">Profile</th>
+            <th style="width:190px">Parent</th>
+            <th style="width:260px">ObjectLabel</th>
+            <th style="width:140px">Type</th>
+            <th style="width:120px">Modified by</th>
+            <th style="width:150px">Modified</th>
+            <th style="width:90px">Old Value</th>
+            <th style="width:90px">New Value</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Admin</td>
+            <td>Contract (Contract__c)</td>
+            <td>Invoice Number (Invoice__c)</td>
+            <td><span class="type-fls">Field-Level Security</span></td>
+            <td>John Doe</td>
+            <td>2026-04-20 17:22:40</td>
+            <td><span class="val-none">No Access</span></td>
+            <td><span class="val-new">Read/Write</span></td>
+          </tr>
+          <tr>
+            <td>Service_Level2</td>
+            <td>Usage Report (Report__c)</td>
+            <td>Case (Case__c)</td>
+            <td><span class="type-fls">Field-Level Security</span></td>
+            <td>Bob Johnson</td>
+            <td>2026-04-20 12:47:01</td>
+            <td><span class="val-none">No Access</span></td>
+            <td><span class="val-new">Read/Write</span></td>
+          </tr>
+          <tr>
+            <td>Service_Level2</td>
+            <td></td>
+            <td>SuiviUsageController</td>
+            <td><span class="type-apex">Apex Permissions</span></td>
+            <td>Bob Johnson</td>
+            <td>2026-04-20 12:47:01</td>
+            <td></td>
+            <td><span class="val-new">enabled</span></td>
+          </tr>
+          <tr>
+            <td>Support_REQ</td>
+            <td>Usage Report (Report__c)</td>
+            <td>Case (Case__c)</td>
+            <td><span class="type-fls">Field-Level Security</span></td>
+            <td>Bob Johnson</td>
+            <td>2026-04-20 12:47:01</td>
+            <td><span class="val-none">No Access</span></td>
+            <td><span class="val-new">Read/Write</span></td>
+          </tr>
+          <tr>
+            <td>Support_REQ</td>
+            <td>Usage Report (Report__c)</td>
+            <td>Activity (Task__c)</td>
+            <td><span class="type-fls">Field-Level Security</span></td>
+            <td>Bob Johnson</td>
+            <td>2026-04-20 12:47:01</td>
+            <td><span class="val-none">No Access</span></td>
+            <td>Read Only</td>
+          </tr>
+          <tr>
+            <td>Support_REQ</td>
+            <td>Usage Report (Report__c)</td>
+            <td>Site (Asset__c)</td>
+            <td><span class="type-fls">Field-Level Security</span></td>
+            <td>Bob Johnson</td>
+            <td>2026-04-20 12:47:01</td>
+            <td><span class="val-none">No Access</span></td>
+            <td>Read Only</td>
+          </tr>
+          <tr>
+            <td>Support_REQ</td>
+            <td>Usage Report (Report__c)</td>
+            <td>Tool (Ticket__c)</td>
+            <td><span class="type-fls">Field-Level Security</span></td>
+            <td>Bob Johnson</td>
+            <td>2026-04-20 12:47:01</td>
+            <td><span class="val-none">No Access</span></td>
+            <td><span class="val-new">Read/Write</span></td>
+          </tr>
+          <tr>
+            <td>Support_REQ</td>
+            <td></td>
+            <td>SuiviUsageController</td>
+            <td><span class="type-apex">Apex Permissions</span></td>
+            <td>Bob Johnson</td>
+            <td>2026-04-20 12:47:00</td>
+            <td></td>
+            <td><span class="val-new">enabled</span></td>
+          </tr>
+          <tr>
+            <td>Support_Level2</td>
+            <td>Usage Report (Report__c)</td>
+            <td>Case (Case__c)</td>
+            <td><span class="type-fls">Field-Level Security</span></td>
+            <td>Bob Johnson</td>
+            <td>2026-04-20 12:47:00</td>
+            <td><span class="val-none">No Access</span></td>
+            <td><span class="val-new">Read/Write</span></td>
+          </tr>
+          <tr>
+            <td>Support_Level2</td>
+            <td></td>
+            <td>SuiviUsageController</td>
+            <td><span class="type-apex">Apex Permissions</span></td>
+            <td>Bob Johnson</td>
+            <td>2026-04-20 12:46:59</td>
+            <td></td>
+            <td><span class="val-new">enabled</span></td>
+          </tr>
+          <tr>
+            <td>Support_Level1</td>
+            <td></td>
+            <td>SuiviUsageController</td>
+            <td><span class="type-apex">Apex Permissions</span></td>
+            <td>Bob Johnson</td>
+            <td>2026-04-20 12:46:59</td>
+            <td></td>
+            <td><span class="val-new">enabled</span></td>
+          </tr>
+          <tr>
+            <td>Support_Partner_REQ</td>
+            <td>Usage Report (Report__c)</td>
+            <td>Case (Case__c)</td>
+            <td><span class="type-fls">Field-Level Security</span></td>
+            <td>Bob Johnson</td>
+            <td>2026-04-20 12:46:59</td>
+            <td><span class="val-none">No Access</span></td>
+            <td><span class="val-new">Read/Write</span></td>
+          </tr>
+          <tr>
+            <td>Support_Partner_REQ</td>
+            <td></td>
+            <td>SuiviUsageController</td>
+            <td><span class="type-apex">Apex Permissions</span></td>
+            <td>Bob Johnson</td>
+            <td>2026-04-20 12:46:59</td>
+            <td></td>
+            <td><span class="val-new">enabled</span></td>
+          </tr>
+          <tr>
+            <td>Support_Partner_Level2</td>
+            <td>Usage Report (Report__c)</td>
+            <td>Case (Case__c)</td>
+            <td><span class="type-fls">Field-Level Security</span></td>
+            <td>Bob Johnson</td>
+            <td>2026-04-20 12:46:58</td>
+            <td><span class="val-none">No Access</span></td>
+            <td><span class="val-new">Read/Write</span></td>
+          </tr>
+          <tr>
+            <td>Support_Partner_Level2</td>
+            <td></td>
+            <td>SuiviUsageController</td>
+            <td><span class="type-apex">Apex Permissions</span></td>
+            <td>Bob Johnson</td>
+            <td>2026-04-20 12:46:58</td>
+            <td></td>
+            <td><span class="val-new">enabled</span></td>
+          </tr>
+          <tr>
+            <td>Operations_DRC</td>
+            <td>Usage Report (Report__c)</td>
+            <td>Case (Case__c)</td>
+            <td><span class="type-fls">Field-Level Security</span></td>
+            <td>Bob Johnson</td>
+            <td>2026-04-20 12:46:58</td>
+            <td><span class="val-none">No Access</span></td>
+            <td><span class="val-new">Read/Write</span></td>
+          </tr>
+          <tr>
+            <td>Operations_DRC</td>
+            <td></td>
+            <td>SuiviUsageController</td>
+            <td><span class="type-apex">Apex Permissions</span></td>
+            <td>Bob Johnson</td>
+            <td>2026-04-20 12:46:57</td>
+            <td></td>
+            <td><span class="val-new">enabled</span></td>
+          </tr>
+          <tr>
+            <td>Finance_REQ</td>
+            <td>Usage Report (Report__c)</td>
+            <td>Case (Case__c)</td>
+            <td><span class="type-fls">Field-Level Security</span></td>
+            <td>Bob Johnson</td>
+            <td>2026-04-20 12:46:57</td>
+            <td><span class="val-none">No Access</span></td>
+            <td><span class="val-new">Read/Write</span></td>
+          </tr>
+          <tr>
+            <td>Finance_REQ</td>
+            <td></td>
+            <td>SuiviUsageController</td>
+            <td><span class="type-apex">Apex Permissions</span></td>
+            <td>Bob Johnson</td>
+            <td>2026-04-20 12:46:56</td>
+            <td></td>
+            <td><span class="val-new">enabled</span></td>
+          </tr>
+          <tr>
+            <td>Finance_Base</td>
+            <td>Usage Report (Report__c)</td>
+            <td>Case (Case__c)</td>
+            <td><span class="type-fls">Field-Level Security</span></td>
+            <td>Bob Johnson</td>
+            <td>2026-04-20 12:46:56</td>
+            <td><span class="val-none">No Access</span></td>
+            <td><span class="val-new">Read/Write</span></td>
+          </tr>
+          <tr>
+            <td>Finance_Base</td>
+            <td></td>
+            <td>SuiviUsageController</td>
+            <td><span class="type-apex">Apex Permissions</span></td>
+            <td>Bob Johnson</td>
+            <td>2026-04-20 12:46:56</td>
+            <td></td>
+            <td><span class="val-new">enabled</span></td>
+          </tr>
+          <tr>
+            <td>Insurance_Profile</td>
+            <td>Usage Report (Report__c)</td>
+            <td>Case (Case__c)</td>
+            <td><span class="type-fls">Field-Level Security</span></td>
+            <td>Bob Johnson</td>
+            <td>2026-04-20 12:46:56</td>
+            <td><span class="val-none">No Access</span></td>
+            <td><span class="val-new">Read/Write</span></td>
+          </tr>
+          <tr>
+            <td>Insurance_Profile</td>
+            <td></td>
+            <td>SuiviUsageController</td>
+            <td><span class="type-apex">Apex Permissions</span></td>
+            <td>Bob Johnson</td>
+            <td>2026-04-20 12:46:56</td>
+            <td></td>
+            <td><span class="val-new">enabled</span></td>
+          </tr>
+          <tr>
+            <td>Org_Admin</td>
+            <td>Usage Report (Report__c)</td>
+            <td>Case (Case__c)</td>
+            <td><span class="type-fls">Field-Level Security</span></td>
+            <td>Bob Johnson</td>
+            <td>2026-04-20 12:46:55</td>
+            <td><span class="val-none">No Access</span></td>
+            <td><span class="val-new">Read/Write</span></td>
+          </tr>
+          <tr>
+            <td>Org_Admin</td>
+            <td>Usage Report (Report__c)</td>
+            <td>Activity (Task__c)</td>
+            <td><span class="type-fls">Field-Level Security</span></td>
+            <td>Bob Johnson</td>
+            <td>2026-04-20 12:46:55</td>
+            <td><span class="val-none">No Access</span></td>
+            <td>Read Only</td>
+          </tr>
+          <tr>
+            <td>Org_Admin</td>
+            <td>Usage Report (Report__c)</td>
+            <td>Site (Asset__c)</td>
+            <td><span class="type-fls">Field-Level Security</span></td>
+            <td>Bob Johnson</td>
+            <td>2026-04-20 12:46:55</td>
+            <td><span class="val-none">No Access</span></td>
+            <td>Read Only</td>
+          </tr>
+          <tr>
+            <td>Org_Admin</td>
+            <td>Usage Report (Report__c)</td>
+            <td>Tool (Ticket__c)</td>
+            <td><span class="type-fls">Field-Level Security</span></td>
+            <td>Bob Johnson</td>
+            <td>2026-04-20 12:46:55</td>
+            <td><span class="val-none">No Access</span></td>
+            <td><span class="val-new">Read/Write</span></td>
+          </tr>
+          <tr>
+            <td>Org_Admin</td>
+            <td></td>
+            <td>SuiviUsageController</td>
+            <td><span class="type-apex">Apex Permissions</span></td>
+            <td>Bob Johnson</td>
+            <td>2026-04-20 12:46:55</td>
+            <td></td>
+            <td><span class="val-new">enabled</span></td>
+          </tr>
+          <tr>
+            <td>Sales_Rep_Profile</td>
+            <td>Account</td>
+            <td>Annual Revenue (AnnualRevenue)</td>
+            <td><span class="type-fls">Field-Level Security</span></td>
+            <td>Admin User</td>
+            <td>2026-04-18 09:15:33</td>
+            <td>Read Only</td>
+            <td><span class="val-new">Read/Write</span></td>
+          </tr>
+          <tr>
+            <td>Sales_Rep_Profile</td>
+            <td>Opportunity</td>
+            <td>Close Date (CloseDate)</td>
+            <td><span class="type-fls">Field-Level Security</span></td>
+            <td>Admin User</td>
+            <td>2026-04-18 09:15:33</td>
+            <td><span class="val-none">No Access</span></td>
+            <td>Read Only</td>
+          </tr>
+          <tr>
+            <td>Support_Agent</td>
+            <td>Case</td>
+            <td>Priority (Priority)</td>
+            <td><span class="type-obj">Object Permissions</span></td>
+            <td>Sarah Connor</td>
+            <td>2026-04-15 14:30:10</td>
+            <td>Read</td>
+            <td><span class="val-new">Read/Write</span></td>
+          </tr>
+          <tr>
+            <td>Support_Agent</td>
+            <td></td>
+            <td>ManageCases</td>
+            <td><span class="type-sys">System Permission</span></td>
+            <td>Sarah Connor</td>
+            <td>2026-04-15 14:30:10</td>
+            <td><span class="val-none">disabled</span></td>
+            <td><span class="val-new">enabled</span></td>
+          </tr>
+          <tr>
+            <td>Marketing_Manager</td>
+            <td>Campaign</td>
+            <td>Expected Revenue (ExpectedRevenue)</td>
+            <td><span class="type-fls">Field-Level Security</span></td>
+            <td>Marc Dupont</td>
+            <td>2026-04-12 11:05:22</td>
+            <td><span class="val-none">No Access</span></td>
+            <td>Read Only</td>
+          </tr>
+          <tr>
+            <td>Marketing_Manager</td>
+            <td></td>
+            <td>CampaignController</td>
+            <td><span class="type-apex">Apex Permissions</span></td>
+            <td>Marc Dupont</td>
+            <td>2026-04-12 11:05:22</td>
+            <td></td>
+            <td><span class="val-new">enabled</span></td>
+          </tr>
+          <tr>
+            <td>Finance_Read_Only</td>
+            <td>Contract</td>
+            <td>Total Amount (TotalAmount)</td>
+            <td><span class="type-fls">Field-Level Security</span></td>
+            <td>Admin</td>
+            <td>2026-04-10 08:45:00</td>
+            <td><span class="val-none">No Access</span></td>
+            <td>Read Only</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+</div>
+
+<!-- Key features modal -->
+<div id="modal-kf" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:999;align-items:center;justify-content:center" onclick="if(event.target===this)this.style.display='none'">
+  <div style="background:#fff;border-radius:8px;padding:28px 32px;max-width:520px;width:90%;color:#1a2a35;box-shadow:0 8px 32px rgba(0,0,0,.3)">
+    <h3 style="margin:0 0 14px;color:#2980b9">&#9733; Key features</h3>
+    <ul style="margin:0;padding-left:20px;line-height:1.8">
+      <li>Query the Salesforce Setup Audit Trail for all profile permission changes within a date range</li>
+      <li>Show field-level security, Apex class, object permission, and system permission changes side-by-side with old and new values</li>
+      <li>Filter results by any keyword or multiple semicolon-separated criteria (e.g. <code>Field-Level;Admin</code>)</li>
+      <li>Toggle "Display full history" to retrieve changes beyond the standard 6-month audit trail window</li>
+      <li>Select rows and add changed profiles directly to the Retrieve list for deployment</li>
+      <li>Save a filtered set of profile changes as a deployable ZIP package into the current project</li>
+      <li>Remove individual rows from the results locally using Delete / Backspace without re-querying</li>
+    </ul>
+    <div style="text-align:right;margin-top:18px">
+      <button class="cal-btn btn-d" onclick="document.getElementById('modal-kf').style.display='none'">Close</button>
+    </div>
+  </div>
+</div>
+
+<script>
+function sw(id,idx){
+  var tp=document.getElementById(id);
+  tp.querySelectorAll('.m-tab').forEach(function(t,i){t.classList.toggle('act',i===idx)});
+  tp.querySelectorAll('.m-panel').forEach(function(p,i){p.classList.toggle('act',i===idx)});
+}
+</script>
+</body>
+</html>

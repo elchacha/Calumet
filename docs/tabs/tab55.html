@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>CustomFields Usage — Calumet</title>
+<link rel="stylesheet" href="../shared.css">
+<style>
+/* ── Badge styles: field types ── */
+.badge-type {
+  display:inline-block;padding:1px 7px;border-radius:10px;font-size:10px;font-weight:700;
+  white-space:nowrap;border:1px solid transparent
+}
+.badge-type-text      { background:#d6eaf8;color:#1A5276;border-color:#aed6f1 }
+.badge-type-number    { background:#d5f5e3;color:#1a5226;border-color:#a9dfbf }
+.badge-type-date      { background:#e8d5f5;color:#5b1aa6;border-color:#c4a9df }
+.badge-type-boolean   { background:#fdebd0;color:#784212;border-color:#f0c994 }
+.badge-type-picklist  { background:#e67e22;color:#fff;border-color:#b8621a }
+.badge-type-relation  { background:#2980b9;color:#fff;border-color:#1f6699 }
+.badge-type-datetime  { background:#c8d5f5;color:#1a2a7a;border-color:#a0b2e8 }
+.badge-type-other     { background:#e8e8e8;color:#555;border-color:#ccc }
+
+/* ── Badge styles: usage / percent / score ── */
+.badge-usage {
+  display:inline-block;padding:1px 8px;border-radius:10px;font-size:10px;font-weight:700;
+  white-space:nowrap;text-align:center;min-width:46px
+}
+.badge-usage-full   { background:#27ae60;color:#fff }
+.badge-usage-good   { background:#2ecc71;color:#fff }
+.badge-usage-medium { background:#e67e22;color:#fff }
+.badge-usage-low    { background:#E74C3C;color:#fff }
+.badge-usage-empty  { background:#bdc3c7;color:#fff }
+
+/* ── Picklist row coloring ── */
+tr.pl-active td { color:#1a5226 }
+tr.pl-inactive td { color:#888 }
+
+/* ── Object info label ── */
+.obj-info {
+  font-weight:700;font-size:14px;color:#1A5276
+}
+
+/* ── Stats bar ── */
+.stats-bar {
+  font-size:11px;color:#7f8c8d;font-style:italic
+}
+.stats-bar .sep {
+  display:inline-block;width:1px;height:11px;background:#9AABBF;
+  margin:0 8px;vertical-align:middle
+}
+
+/* ── Running analysis label ── */
+.running-lbl {
+  font-weight:700;color:#b21c1c;font-size:12px
+}
+
+/* ── Scrollable table body ── */
+.tbl-scroll { max-height:340px;overflow-y:auto }
+
+/* ── Split layout ── */
+.three-split { display:flex;gap:6px;align-items:flex-start }
+.three-split .panel-main  { flex:2;min-width:0 }
+.three-split .panel-side  { flex:1;min-width:0 }
+</style>
+</head>
+<body class="tab-page">
+
+<!-- ── Summary card ── -->
+<div class="sum">
+  <div class="sum-title">
+    <h2>CustomFields Usage</h2>
+    <span class="sum-badge">Tab 55</span>
+  </div>
+  <p class="sum-desc">
+    Analyse custom field usage for any Salesforce object, broken down by field type and Record Type, to identify unused or underused fields.
+    <button class="cal-btn btn-d" style="margin-left:10px" onclick="document.getElementById('modal-kf').style.display='flex'">&#9733; Key features</button>
+  </p>
+</div>
+
+<!-- ── Mockup ── -->
+<div class="mockup-wrap">
+  <div class="mockup" style="padding:10px">
+
+    <!-- Row 1: Search bar -->
+    <div class="hbox" style="gap:8px;align-items:center;margin-bottom:6px">
+      <span class="cal-lbl">Object</span>
+      <input class="cal-tf cal-grow" readonly value="Account(Account)"
+             data-tip="Type an object name and select from autocomplete suggestions"
+             style="max-width:220px">
+      <button class="cal-btn btn-b"
+              data-tip="Load field metadata and last analysis results for this object">Display</button>
+      <div class="vsep"></div>
+      <span class="cal-lbl" style="color:#7f8c8d">Threads</span>
+      <input class="cal-tf" readonly value="15" style="width:50px">
+      <span style="color:#aab0b5;font-size:11px">(max 25)</span>
+    </div>
+
+    <!-- Row 2: Object info + record type + actions -->
+    <div class="hbox" style="gap:10px;align-items:center;margin-bottom:4px">
+      <span class="obj-info">Account : 72&nbsp;262 records</span>
+      <select class="cal-cb" style="width:240px"
+              data-tip="Filter analysis by RecordType">
+        <option>All</option>
+        <option>Standard Account</option>
+        <option>Enterprise Account</option>
+        <option>Partner Account</option>
+        <option>Reseller</option>
+      </select>
+      <div class="spacer"></div>
+      <button class="cal-btn btn-b"
+              data-tip="Run field usage analysis for all records of this object">Analyse</button>
+      <button class="cal-btn btn-d"
+              data-tip="Export analysis results to an Excel file">Export</button>
+    </div>
+
+    <!-- Row 3: Stats bar -->
+    <div class="hbox stats-bar" style="gap:0;align-items:center;margin-bottom:8px">
+      <span>Last Analysis :&nbsp; 2026-05-03</span>
+      <span class="sep"></span>
+      <span>nb fields : 190</span>
+      <span class="sep"></span>
+      <span>execution : 0 mn 8 s</span>
+    </div>
+
+    <!-- Row 4: Three-column split -->
+    <!-- State A: Picklist field selected — shows picklist table on right -->
+    <div id="view-picklist" class="three-split">
+
+      <!-- Main field analysis table -->
+      <div class="panel-main">
+        <div class="tbl-wrap tbl-scroll"
+             data-tip="Click a row to see detail (picklist values or usage by RecordType) — double-click to open in Salesforce">
+          <table class="cal-tbl">
+            <thead>
+              <tr>
+                <th style="width:160px">Field Name</th>
+                <th style="width:160px">Label</th>
+                <th style="width:100px">Last Modified</th>
+                <th style="width:100px">Type</th>
+                <th style="width:70px">Usage</th>
+                <th style="width:80px">Percent</th>
+                <th style="width:80px">Score</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Status__c</td>
+                <td>Status</td>
+                <td>2026-05-02</td>
+                <td><span class="badge-type badge-type-picklist">picklist</span></td>
+                <td>72&nbsp;262</td>
+                <td><span class="badge-usage badge-usage-full">100.0</span></td>
+                <td><span class="badge-usage badge-usage-full">100.0</span></td>
+              </tr>
+              <tr>
+                <td>Category__c</td>
+                <td>Category</td>
+                <td>2026-05-02</td>
+                <td><span class="badge-type badge-type-picklist">picklist</span></td>
+                <td>72&nbsp;262</td>
+                <td><span class="badge-usage badge-usage-full">100.0</span></td>
+                <td><span class="badge-usage badge-usage-full">100.0</span></td>
+              </tr>
+              <tr>
+                <td>Region__c</td>
+                <td>Account Region</td>
+                <td>2026-05-02</td>
+                <td><span class="badge-type badge-type-picklist">picklist</span></td>
+                <td>63&nbsp;381</td>
+                <td><span class="badge-usage badge-usage-good">87.7</span></td>
+                <td><span class="badge-usage badge-usage-good">87.7</span></td>
+              </tr>
+              <tr>
+                <td>Segment__c</td>
+                <td>Segment</td>
+                <td>2026-04-08</td>
+                <td><span class="badge-type badge-type-picklist">picklist</span></td>
+                <td>22&nbsp;202</td>
+                <td><span class="badge-usage badge-usage-medium">30.7</span></td>
+                <td><span class="badge-usage badge-usage-medium">30.7</span></td>
+              </tr>
+              <tr style="background:#d6eaf8">
+                <td><strong>CustomerType__c</strong></td>
+                <td><strong>Customer Type</strong></td>
+                <td>2026-04-27</td>
+                <td><span class="badge-type badge-type-picklist">picklist</span></td>
+                <td>1&nbsp;183</td>
+                <td><span class="badge-usage badge-usage-low">1.6</span></td>
+                <td><span class="badge-usage badge-usage-low">1.6</span></td>
+              </tr>
+              <tr>
+                <td>PartnerType__c</td>
+                <td>Partner Type</td>
+                <td>2026-01-11</td>
+                <td><span class="badge-type badge-type-picklist">picklist</span></td>
+                <td>1&nbsp;134</td>
+                <td><span class="badge-usage badge-usage-low">1.6</span></td>
+                <td><span class="badge-usage badge-usage-low">1.6</span></td>
+              </tr>
+              <tr>
+                <td>AssignedTo__c</td>
+                <td>Assigned To</td>
+                <td>2026-05-02</td>
+                <td><span class="badge-type badge-type-relation">reference</span></td>
+                <td>72&nbsp;132</td>
+                <td><span class="badge-usage badge-usage-full">99.8</span></td>
+                <td><span class="badge-usage badge-usage-full">100.0</span></td>
+              </tr>
+              <tr>
+                <td>TotalAmount__c</td>
+                <td>Total Amount</td>
+                <td>2026-05-02</td>
+                <td><span class="badge-type badge-type-number">currency</span></td>
+                <td>71&nbsp;936</td>
+                <td><span class="badge-usage badge-usage-full">99.5</span></td>
+                <td><span class="badge-usage badge-usage-full">100.0</span></td>
+              </tr>
+              <tr>
+                <td>CloseDate__c</td>
+                <td>Next Step Date</td>
+                <td>2026-04-28</td>
+                <td><span class="badge-type badge-type-date">date</span></td>
+                <td>26&nbsp;388</td>
+                <td><span class="badge-usage badge-usage-medium">36.5</span></td>
+                <td><span class="badge-usage badge-usage-medium">43.0</span></td>
+              </tr>
+              <tr>
+                <td>StartDate__c</td>
+                <td>Start Date</td>
+                <td>2026-04-21</td>
+                <td><span class="badge-type badge-type-date">date</span></td>
+                <td>16&nbsp;062</td>
+                <td><span class="badge-usage badge-usage-low">22.2</span></td>
+                <td><span class="badge-usage badge-usage-medium">26.0</span></td>
+              </tr>
+              <tr>
+                <td>MigrationDate__c</td>
+                <td>Migration Date</td>
+                <td>2026-05-01</td>
+                <td><span class="badge-type badge-type-datetime" style="background:#c8d5f5;color:#1a2a7a;border-color:#a0b2e8">datetime</span></td>
+                <td>44&nbsp;734</td>
+                <td><span class="badge-usage badge-usage-good">61.9</span></td>
+                <td><span class="badge-usage badge-usage-full">72.0</span></td>
+              </tr>
+              <tr>
+                <td>ReferenceDate__c</td>
+                <td>Reference Date</td>
+                <td style="color:#aaa"></td>
+                <td><span class="badge-type badge-type-date">date</span></td>
+                <td>0</td>
+                <td><span class="badge-usage badge-usage-empty">0.0</span></td>
+                <td><span class="badge-usage badge-usage-empty">0.0</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Right side: Picklist values table (shown when a picklist field is selected) -->
+      <div class="panel-side">
+        <div style="font-size:11px;font-weight:700;color:#1A5276;margin-bottom:4px">
+          Picklist values — Customer Type
+        </div>
+        <div class="tbl-wrap tbl-scroll">
+          <table class="cal-tbl">
+            <thead>
+              <tr>
+                <th style="width:130px">Label</th>
+                <th style="width:55px">Usage</th>
+                <th style="width:60px">Percent</th>
+                <th style="width:90px">Modified</th>
+                <th style="width:45px">Active</th>
+                <th style="width:50px">Default</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="pl-active">
+                <td style="color:#888;font-style:italic">(empty)</td>
+                <td>70&nbsp;675</td>
+                <td>97.8</td>
+                <td>2026-05-02</td>
+                <td style="color:#888">false</td>
+                <td style="color:#888">false</td>
+              </tr>
+              <tr class="pl-active">
+                <td>Direct</td>
+                <td>437</td>
+                <td>0.6</td>
+                <td>2026-01-11</td>
+                <td style="color:#27ae60;font-weight:700">true</td>
+                <td style="color:#888">false</td>
+              </tr>
+              <tr class="pl-active">
+                <td>Enterprise</td>
+                <td>199</td>
+                <td>0.28</td>
+                <td>2026-04-27</td>
+                <td style="color:#27ae60;font-weight:700">true</td>
+                <td style="color:#888">false</td>
+              </tr>
+              <tr class="pl-active">
+                <td>Government</td>
+                <td>152</td>
+                <td>0.21</td>
+                <td>2026-01-11</td>
+                <td style="color:#27ae60;font-weight:700">true</td>
+                <td style="color:#888">false</td>
+              </tr>
+              <tr class="pl-active">
+                <td>Non-Profit</td>
+                <td>112</td>
+                <td>0.15</td>
+                <td>2026-01-11</td>
+                <td style="color:#27ae60;font-weight:700">true</td>
+                <td style="color:#888">false</td>
+              </tr>
+              <tr class="pl-active">
+                <td>Corporate</td>
+                <td>100</td>
+                <td>0.14</td>
+                <td>2026-01-11</td>
+                <td style="color:#27ae60;font-weight:700">true</td>
+                <td style="color:#888">false</td>
+              </tr>
+              <tr class="pl-active">
+                <td>Reseller</td>
+                <td>71</td>
+                <td>0.10</td>
+                <td>2026-01-11</td>
+                <td style="color:#27ae60;font-weight:700">true</td>
+                <td style="color:#888">false</td>
+              </tr>
+              <tr class="pl-active">
+                <td>SMB</td>
+                <td>64</td>
+                <td>0.09</td>
+                <td>2026-01-11</td>
+                <td style="color:#27ae60;font-weight:700">true</td>
+                <td style="color:#888">false</td>
+              </tr>
+              <tr class="pl-active">
+                <td>Other</td>
+                <td>47</td>
+                <td>0.07</td>
+                <td>2026-01-11</td>
+                <td style="color:#27ae60;font-weight:700">true</td>
+                <td style="color:#888">false</td>
+              </tr>
+              <tr class="pl-inactive">
+                <td>Legacy</td>
+                <td>1</td>
+                <td>0.0</td>
+                <td>2026-01-11</td>
+                <td style="color:#888">false</td>
+                <td style="color:#888">false</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div><!-- end view-picklist -->
+
+    <!-- State B: non-picklist field selected — shows RecordType breakdown (toggle via button) -->
+    <div id="view-recordtype" style="display:none" class="three-split">
+      <div class="panel-main">
+        <div class="tbl-wrap tbl-scroll">
+          <table class="cal-tbl">
+            <thead>
+              <tr>
+                <th style="width:160px">Field Name</th>
+                <th style="width:160px">Label</th>
+                <th style="width:100px">Last Modified</th>
+                <th style="width:100px">Type</th>
+                <th style="width:70px">Usage</th>
+                <th style="width:80px">Percent</th>
+                <th style="width:80px">Score</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr style="background:#d6eaf8">
+                <td><strong>CloseDate__c</strong></td>
+                <td><strong>Next Step Date</strong></td>
+                <td>2026-04-28</td>
+                <td><span class="badge-type badge-type-date">date</span></td>
+                <td>26&nbsp;388</td>
+                <td><span class="badge-usage badge-usage-medium">36.5</span></td>
+                <td><span class="badge-usage badge-usage-medium">43.0</span></td>
+              </tr>
+              <tr>
+                <td>StartDate__c</td>
+                <td>Start Date</td>
+                <td>2026-04-21</td>
+                <td><span class="badge-type badge-type-date">date</span></td>
+                <td>16&nbsp;062</td>
+                <td><span class="badge-usage badge-usage-low">22.2</span></td>
+                <td><span class="badge-usage badge-usage-medium">26.0</span></td>
+              </tr>
+              <tr>
+                <td>TotalAmount__c</td>
+                <td>Total Amount</td>
+                <td>2026-05-02</td>
+                <td><span class="badge-type badge-type-number">currency</span></td>
+                <td>71&nbsp;936</td>
+                <td><span class="badge-usage badge-usage-full">99.5</span></td>
+                <td><span class="badge-usage badge-usage-full">100.0</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="panel-side">
+        <div style="font-size:11px;font-weight:700;color:#1A5276;margin-bottom:4px">
+          Usage by RecordType — Next Step Date
+        </div>
+        <div class="tbl-wrap">
+          <table class="cal-tbl">
+            <thead>
+              <tr>
+                <th style="width:160px">RecordType</th>
+                <th style="width:70px">Usage</th>
+                <th style="width:70px">Total</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Standard Account</td>
+                <td>25&nbsp;971</td>
+                <td>60&nbsp;865</td>
+              </tr>
+              <tr>
+                <td>Enterprise Account</td>
+                <td>95</td>
+                <td>2&nbsp;486</td>
+              </tr>
+              <tr>
+                <td>Partner Account</td>
+                <td>68</td>
+                <td>4&nbsp;066</td>
+              </tr>
+              <tr>
+                <td>Reseller</td>
+                <td>49</td>
+                <td>2&nbsp;467</td>
+              </tr>
+              <tr>
+                <td>Corporate</td>
+                <td>39</td>
+                <td>339</td>
+              </tr>
+              <tr>
+                <td>Other</td>
+                <td>12</td>
+                <td>1&nbsp;689</td>
+              </tr>
+              <tr>
+                <td>Strategic Partner</td>
+                <td>1</td>
+                <td>38</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div><!-- end view-recordtype -->
+
+    <!-- Toggle demo buttons -->
+    <div class="hbox" style="gap:8px;margin-top:10px;align-items:center">
+      <span style="font-size:11px;color:#7f8c8d;font-style:italic">View mode demo:</span>
+      <button class="cal-btn btn-d" onclick="showView('view-picklist')">Picklist field selected</button>
+      <button class="cal-btn btn-d" onclick="showView('view-recordtype')">Non-picklist field selected</button>
+    </div>
+
+  </div><!-- .mockup -->
+</div><!-- .mockup-wrap -->
+
+<!-- Key features modal -->
+<div id="modal-kf" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:999;align-items:center;justify-content:center" onclick="if(event.target===this)this.style.display='none'">
+  <div style="background:#fff;border-radius:8px;padding:28px 32px;max-width:560px;width:90%;color:#1a2a35;box-shadow:0 8px 32px rgba(0,0,0,.3)">
+    <h3 style="margin:0 0 14px;color:#2980b9">&#9733; Key features</h3>
+    <ul style="margin:0;padding-left:20px;line-height:1.8">
+      <li>Loads all custom fields for any Salesforce object via autocomplete selection</li>
+      <li>Runs a parallel multi-threaded analysis (up to 25 threads) across all records to count how many populate each field</li>
+      <li>Displays Usage count, Percent, and composite Score badges color-coded from green (full) to red (empty)</li>
+      <li>Type badges visually distinguish text, number, date, boolean, picklist, reference, and datetime fields</li>
+      <li>Single-click a picklist field to reveal per-value usage with active/inactive row coloring</li>
+      <li>Single-click any non-picklist field to see usage broken down by RecordType</li>
+      <li>Double-click any field row to open its setup page directly in Salesforce</li>
+      <li>Filter the entire analysis by a specific RecordType via the dropdown (picklist fields hidden in filtered view)</li>
+      <li>Analysis results are cached locally; re-running prompts for confirmation before overwriting</li>
+      <li>Export the full analysis to Excel for offline review and sharing</li>
+    </ul>
+    <div style="text-align:right;margin-top:18px">
+      <button class="cal-btn btn-d" onclick="document.getElementById('modal-kf').style.display='none'">Close</button>
+    </div>
+  </div>
+</div>
+
+<script>
+function sw(id,idx){
+  var tp=document.getElementById(id);
+  tp.querySelectorAll('.m-tab').forEach(function(t,i){t.classList.toggle('act',i===idx)});
+  tp.querySelectorAll('.m-panel').forEach(function(p,i){p.classList.toggle('act',i===idx)});
+}
+function showView(id){
+  ['view-picklist','view-recordtype'].forEach(function(v){
+    document.getElementById(v).style.display=(v===id)?'flex':'none';
+  });
+}
+</script>
+</body>
+</html>

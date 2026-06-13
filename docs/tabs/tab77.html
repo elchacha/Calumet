@@ -1,0 +1,1100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>DataSeeding — Calumet</title>
+<link rel="stylesheet" href="../shared.css">
+</head>
+<body class="tab-page">
+
+<div class="sum">
+  <div class="sum-title">
+    <h2>DataSeeding</h2>
+    <span class="sum-badge">Tab 77</span>
+  </div>
+  <p class="sum-desc">
+    Org-to-org data migration tool — configure source/target orgs, export records with dependency traversal, and import them into the target org.
+    <button class="cal-btn btn-d" style="margin-left:10px" onclick="document.getElementById('modal-kf').style.display='flex'">&#9733; Key features</button>
+  </p>
+</div>
+
+<div class="mockup-wrap">
+  <div class="mockup">
+
+    <!-- Global header -->
+    <div class="hbox" style="gap:8px;align-items:center;padding:6px 12px;background:#dce9f0;border-bottom:1px solid #9AABBF;">
+      <span style="font-weight:bold">Active config:</span>
+      <select class="cal-cb" style="width:180px" disabled><option>Config-Alpha</option></select>
+      <span class="cal-lbl" style="color:#2980b9;font-style:italic">Applied: Config-Alpha</span>
+      <div class="vsep"></div>
+      <span style="font-weight:bold">Source:</span>
+      <span class="cal-lbl" style="color:#27ae60;font-weight:bold">FULL</span>
+      <div class="vsep"></div>
+      <span style="font-weight:bold">Target:</span>
+      <span class="cal-lbl" style="color:#27ae60;font-weight:bold">sandbox-uat</span>
+      <div class="vsep"></div>
+      <button class="cal-btn btn-d" data-tip="Open the main folder of the active configuration">Open</button>
+      <div class="spacer"></div>
+      <button class="cal-btn btn-d" data-tip="Open Data Seeding step-by-step guide">How To</button>
+    </div>
+
+    <!-- Sub-tab pane -->
+    <div class="m-tabpane" id="tp77">
+      <div class="m-tabbar">
+        <div class="m-tab act"  onclick="sw('tp77',0)">Config</div>
+        <div class="m-tab"     onclick="sw('tp77',1)">Community Users</div>
+        <div class="m-tab"     onclick="sw('tp77',2)">Automation</div>
+        <div class="m-tab"     onclick="sw('tp77',3)">Objects</div>
+        <div class="m-tab"     onclick="sw('tp77',4)">Prepare</div>
+        <div class="m-tab"     onclick="sw('tp77',5)">Export</div>
+        <div class="m-tab"     onclick="sw('tp77',6)">Import</div>
+        <div class="m-tab"     onclick="sw('tp77',7)">Clean</div>
+        <div class="m-tab"     onclick="sw('tp77',8)">IDs Export</div>
+        <div class="m-tab"     onclick="sw('tp77',9)">Debug Import</div>
+      </div>
+      <div class="m-body">
+
+        <!-- ══ Sub-tab 0 : Config ══ -->
+        <div class="m-panel act" id="tp77-0">
+          <div class="vbox" style="gap:8px">
+
+            <!-- Config directory row -->
+            <div class="hbox" style="gap:8px;align-items:center">
+              <span class="cal-lbl" style="min-width:120px">Config directory:</span>
+              <input class="cal-tf cal-grow" readonly value="C:\tmp\seeding">
+              <button class="cal-btn btn-d">Browse...</button>
+            </div>
+
+            <!-- Left panel + right form split -->
+            <div class="split-pane" style="gap:0;min-height:380px">
+
+              <!-- Left: config list -->
+              <div class="split-panel" style="max-width:220px;min-width:160px;padding-right:8px;border-right:1px solid #9AABBF">
+                <div class="vbox" style="gap:6px">
+                  <span style="font-weight:bold;font-size:11px;color:#1A5276">Configurations</span>
+                  <div class="hbox" style="gap:6px">
+                    <button class="cal-btn btn-g" style="flex:1" data-tip="Create a new configuration">New</button>
+                    <button class="cal-btn btn-o" style="flex:1" data-tip="Clone the selected configuration">Clone</button>
+                    <button class="cal-btn btn-r" style="flex:1" data-tip="Delete the selected configuration">Delete</button>
+                  </div>
+                  <div class="cal-listview" style="min-height:220px;padding:4px 0">
+                    <div style="padding:3px 10px;color:#888">Config-Beta</div>
+                    <div style="padding:3px 10px;background:#d0e8f4;color:#1A5276;font-weight:bold">Config-Alpha</div>
+                    <div style="padding:3px 10px;color:#888">Config-Gamma</div>
+                    <div style="padding:3px 10px;color:#888">Config-Delta</div>
+                    <div style="padding:3px 10px;color:#888">test</div>
+                    <div style="padding:3px 10px;color:#888">test2</div>
+                    <div style="padding:3px 10px;color:#888">test3</div>
+                    <div style="padding:3px 10px;color:#888">testTmp</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Right: edit form -->
+              <div class="split-panel" style="padding-left:14px;overflow-y:auto">
+                <div class="vbox" style="gap:8px">
+                  <span style="font-weight:bold;font-size:13px;color:#1A5276">Edit: Config-Alpha</span>
+
+                  <!-- Name + max depth -->
+                  <div class="hbox" style="gap:10px;align-items:center">
+                    <span class="cal-lbl" style="min-width:80px">Name</span>
+                    <input class="cal-tf" readonly value="Config-Alpha" style="width:180px">
+                    <span class="cal-lbl" style="padding-left:6px">Max depth</span>
+                    <input class="cal-tf" readonly value="15" style="width:52px" data-tip="Maximum traversal depth (higher = more relations resolved)">
+                  </div>
+
+                  <!-- Source + target org -->
+                  <div class="hbox" style="gap:10px;align-items:center">
+                    <span class="cal-lbl" style="min-width:80px">Source org</span>
+                    <select class="cal-cb cal-grow" disabled><option>FULL</option></select>
+                    <span class="cal-lbl" style="min-width:80px;padding-left:6px">Target org</span>
+                    <select class="cal-cb cal-grow" disabled><option>sandbox-uat</option></select>
+                  </div>
+
+                  <!-- Main path -->
+                  <div class="hbox" style="gap:10px;align-items:center">
+                    <span class="cal-lbl" style="min-width:80px">Main path</span>
+                    <input class="cal-tf cal-grow" readonly value="C:\tmp\seeding\Config-Alpha">
+                    <button class="cal-btn btn-d" style="width:32px" data-tip="Choose main path directory">...</button>
+                  </div>
+
+                  <!-- Community users checkbox -->
+                  <label class="cal-chk" data-tip="Shows the Community Users tab when enabled">
+                    <input type="checkbox" disabled> Community users (Experience Cloud)
+                  </label>
+
+                  <!-- Single query + optional parents -->
+                  <div class="hbox" style="gap:24px;align-items:center">
+                    <label class="cal-chk" data-tip="Only the seed query and its mandatory parent queries are generated — no children">
+                      <input type="checkbox" disabled> Single query (seed + mandatory parents only)
+                    </label>
+                    <label class="cal-chk" style="opacity:.5">
+                      <input type="checkbox" disabled> Optional parents (+1 level)
+                    </label>
+                  </div>
+
+                  <!-- Start query -->
+                  <div class="hbox" style="gap:10px;align-items:flex-start">
+                    <span class="cal-lbl" style="min-width:80px;padding-top:4px">Start query</span>
+                    <textarea class="cal-ta cal-grow" readonly rows="3">SELECT Id FROM Case ORDER BY CreatedDate desc LIMIT 40</textarea>
+                  </div>
+
+                  <!-- Import after -->
+                  <div class="hbox" style="gap:10px;align-items:center">
+                    <span class="cal-lbl" style="min-width:80px">Import after</span>
+                    <select class="cal-cb cal-grow" disabled data-tip="If set, import will pre-load oldNewIds from this config and skip records already imported there"><option value="">None (independent import)</option></select>
+                  </div>
+
+                  <!-- Save / Cancel / Status -->
+                  <div class="hbox" style="gap:8px;align-items:center">
+                    <button class="cal-btn btn-d">Save</button>
+                    <button class="cal-btn btn-d">Cancel</button>
+                    <span class="cal-lbl" style="color:#2980b9;padding-left:6px">Saved: Config-Alpha</span>
+                  </div>
+
+                  <hr class="hsep">
+                  <span class="cal-lbl" style="color:#888">advanced features</span>
+
+                  <!-- Debug mode + include system -->
+                  <label class="cal-chk">
+                    <input type="checkbox" checked disabled> Enable debug mode (one CSV per query, IDs analyser and import debugger)
+                  </label>
+                  <label class="cal-chk" data-tip="Include queries with category SYSTEM in the traversal plan">
+                    <input type="checkbox" disabled> Include system queries
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ══ Sub-tab 1 : Community Users ══ -->
+        <div class="m-panel" id="tp77-1">
+          <div class="vbox" style="gap:14px">
+
+            <!-- Profile selector -->
+            <div class="hbox" style="gap:10px;align-items:center">
+              <span class="cal-lbl" style="min-width:60px;font-weight:bold">Profile:</span>
+              <select class="cal-cb cal-grow" disabled data-tip="Community profiles loaded from source org (users with a ContactId)">
+                <option>Customer Community Login</option>
+              </select>
+            </div>
+
+            <!-- Username extension field -->
+            <div class="hbox" style="gap:10px;align-items:center">
+              <span class="cal-lbl" style="font-weight:bold">Extension for new userNames that will be created:</span>
+              <input class="cal-tf" readonly placeholder="e.g. myorg_uat" style="width:200px">
+            </div>
+
+            <!-- Warning -->
+            <span class="cal-lbl" style="color:#e67e22;font-weight:bold">
+              &#9888; 7 user(s) with this profile already exist in target org &mdash; importing again is usually pointless
+            </span>
+
+            <!-- Action buttons -->
+            <div class="hbox" style="gap:12px;align-items:center">
+              <button class="cal-btn btn-b" data-tip="Export community Account, Contact and User records from source org">Export Community</button>
+              <button class="cal-btn btn-b" data-tip="Import community Account, Contact and User records into target org">Import Community</button>
+            </div>
+
+            <!-- Export stats box -->
+            <div class="vbox" style="gap:4px;background:#dce9f0;border:1px solid #9AABBF;border-radius:4px;padding:8px 12px">
+              <span style="font-family:Consolas,monospace;color:#27ae60;font-weight:bold">&#10003; Export: 7 accounts  |  7 contacts  |  7 users</span>
+              <span class="cal-lbl" style="color:#888;font-size:11px">Source: FULL &middot; CSVs written to C:\tmp\seeding\Config-Alpha\community\</span>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- ══ Sub-tab 2 : Automation ══ -->
+        <div class="m-panel" id="tp77-2">
+          <div class="vbox" style="gap:12px">
+
+            <!-- Check status row -->
+            <div class="hbox" style="gap:10px;align-items:center">
+              <button class="cal-btn btn-b" data-tip="Query the target org to get current automation status">Check status</button>
+              <span class="cal-lbl" style="font-weight:bold;color:#27ae60">&#8594; sandbox-uat</span>
+            </div>
+
+            <!-- Status box -->
+            <div class="vbox" style="gap:6px;background:#dce9f0;border:1px solid #9AABBF;border-radius:4px;padding:8px 12px">
+              <div class="hbox" style="gap:8px;align-items:center">
+                <span style="font-weight:bold;min-width:80px">Status:</span>
+                <span style="color:#27ae60;font-weight:bold">DISABLED (15 flows, 3 triggers backed up)</span>
+              </div>
+              <div class="hbox" style="gap:8px;align-items:center">
+                <span style="font-weight:bold;min-width:80px">Retrieve dir:</span>
+                <span style="color:#2980b9">C:\tmp\seeding\Config-Alpha\automation\</span>
+                <button class="cal-btn btn-d" style="margin-left:4px" data-tip="Open the retrieve directory in the file explorer">Open</button>
+              </div>
+            </div>
+
+            <hr class="hsep">
+
+            <!-- Action buttons -->
+            <div class="hbox" style="gap:12px;align-items:center">
+              <button class="cal-btn btn-o" data-tip="Retrieve, backup and deactivate all flows and triggers on the target org">Disable automations</button>
+              <button class="cal-btn btn-g" data-tip="Restore automations from backup and deploy to the target org">Re-enable automations</button>
+              <button class="cal-btn btn-d" data-tip="Show full operation log">View log</button>
+            </div>
+
+            <span class="cal-lbl" style="color:#888;font-size:11px;font-style:italic">Last action: 2026-06-01 09:14:22 — Disable automations completed (15 flows, 3 triggers)</span>
+          </div>
+        </div>
+
+        <!-- ══ Sub-tab 3 : Objects ══ -->
+        <div class="m-panel" id="tp77-3">
+          <div class="vbox" style="gap:8px">
+
+            <!-- Toolbar row 1 -->
+            <div class="hbox" style="gap:8px;align-items:center;flex-wrap:wrap">
+              <button class="cal-btn btn-b" data-tip="Retrieve all objects and relations from Salesforce">Refresh</button>
+              <div class="vsep"></div>
+              <label class="cal-chk" data-tip="Hide ignored objects from the table"><input type="checkbox" disabled> Hide ignored</label>
+              <div class="vsep"></div>
+              <label class="cal-chk" data-tip="Hide objects with no parent and no child relations"><input type="checkbox" disabled> Hide no-relation</label>
+              <label class="cal-chk" data-tip="Hide objects that have at least one parent relation"><input type="checkbox" disabled> Hide with parents</label>
+              <label class="cal-chk" data-tip="Hide objects that have at least one child relation"><input type="checkbox" disabled> Hide with children</label>
+              <div class="vsep"></div>
+              <span class="cal-lbl" style="color:#3d7a8a;font-style:italic">215 objects loaded (2 ignored).</span>
+              <button class="cal-btn btn-g" data-tip="Open the ignore list manager">Ignore list...</button>
+              <div class="spacer"></div>
+              <div class="vsep"></div>
+              <span class="cal-lbl" style="color:#888">Ignore profile</span>
+              <select class="cal-cb" style="width:160px" disabled><option>global</option></select>
+              <button class="cal-btn btn-b" data-tip="Load profile: reset all checkboxes then apply saved selection">Load</button>
+              <button class="cal-btn btn-g" data-tip="Save current checkbox state under this profile name">Save</button>
+              <button class="cal-btn btn-r" data-tip="Delete this profile">Delete</button>
+            </div>
+
+            <!-- Toolbar row 2 -->
+            <div class="hbox" style="gap:8px;align-items:center">
+              <button class="cal-btn btn-g" data-tip="Select all visible objects for export">Select All</button>
+              <button class="cal-btn btn-o" data-tip="Deselect all visible objects">Deselect All</button>
+              <button class="cal-btn btn-b" data-tip="Query target org — objects not found are added to the ignore list">Check objects exist on target</button>
+            </div>
+
+            <!-- Objects table -->
+            <div class="tbl-wrap">
+              <table class="cal-tbl">
+                <thead>
+                  <tr>
+                    <th style="width:55px;text-align:center">Export</th>
+                    <th style="width:220px">API Name</th>
+                    <th style="width:180px">Label</th>
+                    <th style="width:85px;text-align:right">Records</th>
+                    <th style="width:70px;text-align:center">Parents</th>
+                    <th style="width:70px;text-align:center">Children</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td style="text-align:center"><input type="checkbox" checked disabled></td>
+                    <td>Project__c</td>
+                    <td>Issues &amp; Projects</td>
+                    <td style="text-align:right">1</td>
+                    <td style="text-align:center">5</td>
+                    <td style="text-align:center">2</td>
+                  </tr>
+                  <tr>
+                    <td style="text-align:center"><input type="checkbox" checked disabled></td>
+                    <td>Asset__c</td>
+                    <td>Related Asset</td>
+                    <td style="text-align:right">98</td>
+                    <td style="text-align:center">2</td>
+                    <td style="text-align:center">1</td>
+                  </tr>
+                  <tr>
+                    <td style="text-align:center"><input type="checkbox" checked disabled></td>
+                    <td>Ticket__c</td>
+                    <td>Opportunity Ticket</td>
+                    <td style="text-align:right">1</td>
+                    <td style="text-align:center">2</td>
+                    <td style="text-align:center">2 &#9889;</td>
+                  </tr>
+                  <tr>
+                    <td style="text-align:center"><input type="checkbox" checked disabled></td>
+                    <td>Task__c</td>
+                    <td>Action</td>
+                    <td style="text-align:right">258,136</td>
+                    <td style="text-align:center">4</td>
+                    <td style="text-align:center">1</td>
+                  </tr>
+                  <tr>
+                    <td style="text-align:center"><input type="checkbox" checked disabled></td>
+                    <td>Report__c</td>
+                    <td>Report Reference</td>
+                    <td style="text-align:right">2,446</td>
+                    <td style="text-align:center"></td>
+                    <td style="text-align:center">2</td>
+                  </tr>
+                  <tr>
+                    <td style="text-align:center"><input type="checkbox" checked disabled></td>
+                    <td>Contract__c</td>
+                    <td>Contract Reference</td>
+                    <td style="text-align:right">252</td>
+                    <td style="text-align:center"></td>
+                    <td style="text-align:center">16</td>
+                  </tr>
+                  <tr>
+                    <td style="text-align:center"><input type="checkbox" checked disabled></td>
+                    <td>Order__c</td>
+                    <td>Order Update Log</td>
+                    <td style="text-align:right">1,216,671</td>
+                    <td style="text-align:center">1</td>
+                    <td style="text-align:center">1</td>
+                  </tr>
+                  <tr>
+                    <td style="text-align:center"><input type="checkbox" checked disabled></td>
+                    <td>Invoice__c</td>
+                    <td>Invoice Risk</td>
+                    <td style="text-align:right">7,360</td>
+                    <td style="text-align:center">2</td>
+                    <td style="text-align:center">2 &#9889;</td>
+                  </tr>
+                  <tr>
+                    <td style="text-align:center"><input type="checkbox" checked disabled></td>
+                    <td>CustomEvent__c</td>
+                    <td>Client Event</td>
+                    <td style="text-align:right">580,946</td>
+                    <td style="text-align:center">2</td>
+                    <td style="text-align:center">2 &#9889;</td>
+                  </tr>
+                  <tr>
+                    <td style="text-align:center"><input type="checkbox" checked disabled></td>
+                    <td>CustomLog__c</td>
+                    <td>CustomLog</td>
+                    <td style="text-align:right">2,573,274</td>
+                    <td style="text-align:center">1</td>
+                    <td style="text-align:center">1</td>
+                  </tr>
+                  <tr>
+                    <td style="text-align:center"><input type="checkbox" checked disabled></td>
+                    <td>ExternalAccount__c</td>
+                    <td>External Account</td>
+                    <td style="text-align:right">27,087</td>
+                    <td style="text-align:center">2</td>
+                    <td style="text-align:center">1</td>
+                  </tr>
+                  <tr>
+                    <td style="text-align:center"><input type="checkbox" checked disabled></td>
+                    <td>FileRef__c</td>
+                    <td>FileRef</td>
+                    <td style="text-align:right">3,687,148</td>
+                    <td style="text-align:center"></td>
+                    <td style="text-align:center">1</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <span class="cal-lbl" style="color:#888;font-size:11px">&#9889; Children column: &#9889; = has at least one mandatory (non-optional) child relation</span>
+          </div>
+        </div>
+
+        <!-- ══ Sub-tab 4 : Prepare ══ -->
+        <div class="m-panel" id="tp77-4">
+          <div class="vbox" style="gap:8px">
+
+            <!-- Button bar -->
+            <div class="hbox" style="gap:10px;align-items:center;flex-wrap:wrap">
+              <button class="cal-btn btn-g" data-tip="Run ExtractMetadata: reads listeObjets.txt and produces _relations.csv">1 · Extract Metadata</button>
+              <button class="cal-btn btn-g" data-tip="Run GenerateRelationQueries: reads _relations.csv and produces traversal_plan.json">2 · Generate Relation Queries</button>
+              <span class="cal-lbl" style="color:#e67e22;font-style:italic">&#9888; Limits have been set — clicking Generate will clear those limits.</span>
+              <div class="spacer"></div>
+              <button class="cal-btn btn-d" data-tip="Save current limits to limitObjects.ser">Save limits</button>
+              <button class="cal-btn btn-d" data-tip="Restore limits from limitObjects.ser for objects still present in the plan">Load limits</button>
+              <div class="vsep"></div>
+              <button class="cal-btn btn-d" data-tip="Reload traversal_plan.json from disk and refresh stats">Reload plan</button>
+            </div>
+
+            <!-- Plan info -->
+            <div class="vbox" style="gap:6px;background:#dce9f0;border:1px solid #9AABBF;border-radius:4px;padding:8px 12px">
+              <span style="font-weight:bold;font-size:12px;color:#1A5276">Traversal Plan</span>
+              <div class="hbox" style="gap:24px">
+                <span class="cal-lbl">Total: 202</span>
+                <span style="color:#2980b9;font-weight:bold">SEED: 1</span>
+                <span style="color:#27ae60;font-weight:bold">SELECTED: 201</span>
+                <span style="color:#888;font-weight:bold">SYSTEM: 0</span>
+              </div>
+              <div class="hbox" style="gap:6px">
+                <span style="font-weight:bold">Start query:</span>
+                <span style="font-style:italic">SELECT Id FROM Case ORDER BY CreatedDate desc LIMIT 40</span>
+              </div>
+            </div>
+
+            <!-- Split: Query Recap (left) | Execution log (right) -->
+            <div class="split-pane" style="gap:8px;min-height:360px">
+
+              <!-- Left: Query Recap table -->
+              <div class="split-panel" style="max-width:560px;min-width:300px">
+                <div class="vbox" style="gap:4px">
+                  <div class="hbox" style="gap:10px;align-items:center">
+                    <span style="font-weight:bold;font-size:12px;color:#1A5276">Query Recap</span>
+                    <button class="cal-btn btn-g" data-tip="Auto-apply a limit to all objects that have more than N records (requires Objects tab data)">Add limits...</button>
+                  </div>
+                  <span class="cal-lbl" style="color:#888;font-size:11px;font-style:italic">&#9998; Double-click the Limit column to edit — auto-saved</span>
+                  <span class="cal-lbl" style="font-size:11px;color:#555">Queries: total SOQL queries planned for this object &middot; From: relations where this object is the source &middot; Related: relations where this object is the target</span>
+                  <div class="tbl-wrap">
+                    <table class="cal-tbl">
+                      <thead>
+                        <tr>
+                          <th style="width:190px">Object</th>
+                          <th style="width:60px;text-align:center">Queries</th>
+                          <th style="width:50px;text-align:center">From</th>
+                          <th style="width:60px;text-align:center">Related</th>
+                          <th style="width:85px;text-align:right">Records</th>
+                          <th style="width:90px;text-align:center">&#9998; Limit</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td>Case</td>
+                          <td style="text-align:center;color:#2980b9;cursor:pointer;text-decoration:underline">14</td>
+                          <td style="text-align:center;color:#2980b9;cursor:pointer;text-decoration:underline">21</td>
+                          <td style="text-align:center;color:#2980b9;cursor:pointer;text-decoration:underline">28</td>
+                          <td style="text-align:right">14,450,396</td>
+                          <td style="text-align:center"></td>
+                        </tr>
+                        <tr>
+                          <td>Contact</td>
+                          <td style="text-align:center;color:#2980b9;cursor:pointer;text-decoration:underline">35</td>
+                          <td style="text-align:center;color:#2980b9;cursor:pointer;text-decoration:underline">7</td>
+                          <td style="text-align:center;color:#2980b9;cursor:pointer;text-decoration:underline">35</td>
+                          <td style="text-align:right">5,738,589</td>
+                          <td style="text-align:center">100</td>
+                        </tr>
+                        <tr>
+                          <td>Account</td>
+                          <td style="text-align:center;color:#2980b9;cursor:pointer;text-decoration:underline">35</td>
+                          <td style="text-align:center;color:#2980b9;cursor:pointer;text-decoration:underline">20</td>
+                          <td style="text-align:center;color:#2980b9;cursor:pointer;text-decoration:underline">35</td>
+                          <td style="text-align:right">5,844,058</td>
+                          <td style="text-align:center">100</td>
+                        </tr>
+                        <tr>
+                          <td>EmailMessage</td>
+                          <td style="text-align:center;color:#2980b9;cursor:pointer;text-decoration:underline">4</td>
+                          <td style="text-align:center;color:#2980b9;cursor:pointer;text-decoration:underline">6</td>
+                          <td style="text-align:center;color:#2980b9;cursor:pointer;text-decoration:underline">4</td>
+                          <td style="text-align:right">918,700</td>
+                          <td style="text-align:center">100</td>
+                        </tr>
+                        <tr>
+                          <td>SocialPost</td>
+                          <td style="text-align:center;color:#2980b9;cursor:pointer;text-decoration:underline">4</td>
+                          <td style="text-align:center;color:#2980b9;cursor:pointer;text-decoration:underline">7</td>
+                          <td style="text-align:center;color:#2980b9;cursor:pointer;text-decoration:underline">4</td>
+                          <td style="text-align:right">325,834</td>
+                          <td style="text-align:center">100</td>
+                        </tr>
+                        <tr>
+                          <td>Tracker__c</td>
+                          <td style="text-align:center;color:#2980b9;cursor:pointer;text-decoration:underline">2</td>
+                          <td style="text-align:center;color:#2980b9;cursor:pointer;text-decoration:underline">7</td>
+                          <td style="text-align:center;color:#2980b9;cursor:pointer;text-decoration:underline">2</td>
+                          <td style="text-align:right">12,362,944</td>
+                          <td style="text-align:center">100</td>
+                        </tr>
+                        <tr>
+                          <td>ServiceContract__c</td>
+                          <td style="text-align:center;color:#2980b9;cursor:pointer;text-decoration:underline">15</td>
+                          <td style="text-align:center;color:#2980b9;cursor:pointer;text-decoration:underline">9</td>
+                          <td style="text-align:center;color:#2980b9;cursor:pointer;text-decoration:underline">15</td>
+                          <td style="text-align:right">476,298</td>
+                          <td style="text-align:center">100</td>
+                        </tr>
+                        <tr>
+                          <td>CustomEvent__c</td>
+                          <td style="text-align:center;color:#2980b9;cursor:pointer;text-decoration:underline">1</td>
+                          <td style="text-align:center;color:#2980b9;cursor:pointer;text-decoration:underline">1</td>
+                          <td style="text-align:center;color:#2980b9;cursor:pointer;text-decoration:underline">1</td>
+                          <td style="text-align:right">580,946</td>
+                          <td style="text-align:center">100</td>
+                        </tr>
+                        <tr>
+                          <td>Refund__c</td>
+                          <td style="text-align:center;color:#2980b9;cursor:pointer;text-decoration:underline">2</td>
+                          <td style="text-align:center;color:#2980b9;cursor:pointer;text-decoration:underline">7</td>
+                          <td style="text-align:center;color:#2980b9;cursor:pointer;text-decoration:underline">2</td>
+                          <td style="text-align:right">189,611</td>
+                          <td style="text-align:center">100</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Right: Execution log -->
+              <div class="split-panel">
+                <div class="vbox" style="gap:4px;height:100%">
+                  <span style="font-weight:bold;font-size:12px;color:#1A5276">Execution log</span>
+                  <textarea class="cal-ta" readonly rows="20" style="font-family:Consolas,monospace;font-size:10px;flex:1">[CACHE] ServiceTerms__c
+[DONE]  ServiceTerms__c
+[CACHE] ServiceException__c
+[DONE]  ServiceException__c
+[CACHE] ServiceInvoice__c
+[DONE]  ServiceInvoice__c
+[CACHE] ServiceContract__c
+[DONE]  ServiceContract__c
+[CACHE] ServicePricing__c
+[DONE]  ServicePricing__c
+[CACHE] ServicePickup__c
+[DONE]  ServicePickup__c
+[CACHE] ServiceDetail__c
+[DONE]  ServiceDetail__c
+[CACHE] ServiceNegLink__c
+[DONE]  ServiceNegLink__c
+[CACHE] ServicePeriod__c
+[DONE]  ServicePeriod__c
+[DONE]  Traversal plan generated: 202 queries total (1 SEED, 201 SELECTED, 0 SYSTEM)</textarea>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ══ Sub-tab 5 : Export ══ -->
+        <div class="m-panel" id="tp77-5">
+          <div class="vbox" style="gap:10px">
+
+            <!-- Button bar -->
+            <div class="hbox" style="gap:10px;align-items:center;flex-wrap:wrap">
+              <button class="cal-btn btn-b" data-tip="Execute ExportSelectionNeeded: runs all queries from the traversal plan and saves CSVs to selectionDir">Export Records</button>
+              <button class="cal-btn btn-b" data-tip="Dry-run: execute SELECT Id FROM ... for each query to count records without writing any CSV. Use this to estimate volumes and adjust limits.">Count Records</button>
+              <span class="cal-lbl" style="font-weight:bold;color:#27ae60">&#8594; FULL</span>
+              <div class="vsep"></div>
+              <button class="cal-btn btn-d" data-tip="Checks that all required parent IDs are present in the exported CSVs">Check IDs</button>
+              <div class="vsep"></div>
+              <button class="cal-btn btn-d" data-tip="Checks that each userId in the exported CSVs has an active counterpart in the target org with the same profile">Check Users</button>
+            </div>
+
+            <!-- Progress bar (completed) -->
+            <div class="vbox" style="gap:6px;background:#dce9f0;border:1px solid #9AABBF;border-radius:4px;padding:8px 12px">
+              <div class="hbox" style="gap:10px;align-items:center">
+                <span style="min-width:70px">Progress:</span>
+                <div style="flex:1;height:16px;background:#c8dae6;border-radius:3px;overflow:hidden">
+                  <div style="width:100%;height:100%;background:#2980b9"></div>
+                </div>
+                <span style="font-weight:bold;min-width:60px">202 / 202</span>
+              </div>
+              <span class="cal-lbl" style="font-style:italic;color:#3d7a8a">Completed — all queries executed successfully.</span>
+            </div>
+
+            <!-- Results + Execution log split -->
+            <div class="split-pane" style="gap:8px;min-height:300px">
+
+              <!-- Left: Results table -->
+              <div class="split-panel" style="flex:0.6">
+                <div class="vbox" style="gap:4px">
+                  <span style="font-weight:bold;font-size:12px;color:#1A5276">Results</span>
+                  <div class="tbl-wrap">
+                    <table class="cal-tbl">
+                      <thead>
+                        <tr>
+                          <th style="width:220px">Object</th>
+                          <th style="width:90px;text-align:right">Records</th>
+                          <th style="width:100px;text-align:right">CSV (export)</th>
+                          <th style="width:70px;text-align:right">Diff</th>
+                          <th style="width:120px;text-align:center">Failed</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td>Case</td>
+                          <td style="text-align:right">40</td>
+                          <td style="text-align:right">40</td>
+                          <td style="text-align:right;color:#27ae60;font-weight:bold">0</td>
+                          <td style="text-align:center"></td>
+                        </tr>
+                        <tr>
+                          <td>Contact</td>
+                          <td style="text-align:right">100</td>
+                          <td style="text-align:right">100</td>
+                          <td style="text-align:right;color:#27ae60;font-weight:bold">0</td>
+                          <td style="text-align:center"></td>
+                        </tr>
+                        <tr>
+                          <td>Account</td>
+                          <td style="text-align:right">100</td>
+                          <td style="text-align:right">100</td>
+                          <td style="text-align:right;color:#27ae60;font-weight:bold">0</td>
+                          <td style="text-align:center"></td>
+                        </tr>
+                        <tr>
+                          <td>EmailMessage</td>
+                          <td style="text-align:right">87</td>
+                          <td style="text-align:right">87</td>
+                          <td style="text-align:right;color:#27ae60;font-weight:bold">0</td>
+                          <td style="text-align:center"></td>
+                        </tr>
+                        <tr>
+                          <td>Report__c</td>
+                          <td style="text-align:right">2</td>
+                          <td style="text-align:right">2</td>
+                          <td style="text-align:right;color:#27ae60;font-weight:bold">0</td>
+                          <td style="text-align:center"></td>
+                        </tr>
+                        <tr>
+                          <td>Contract__c</td>
+                          <td style="text-align:right">1</td>
+                          <td style="text-align:right">1</td>
+                          <td style="text-align:right;color:#27ae60;font-weight:bold">0</td>
+                          <td style="text-align:center"></td>
+                        </tr>
+                        <tr>
+                          <td>Tracker__c</td>
+                          <td style="text-align:right">100</td>
+                          <td style="text-align:right">100</td>
+                          <td style="text-align:right;color:#27ae60;font-weight:bold">0</td>
+                          <td style="text-align:center"></td>
+                        </tr>
+                        <tr>
+                          <td>ServiceContract__c</td>
+                          <td style="text-align:right">100</td>
+                          <td style="text-align:right">97</td>
+                          <td style="text-align:right;color:#E74C3C;font-weight:bold">3</td>
+                          <td style="text-align:center;color:#C0392B;font-weight:bold;cursor:pointer;text-decoration:underline">#12, #13</td>
+                        </tr>
+                        <tr>
+                          <td>Violation__c</td>
+                          <td style="text-align:right">16</td>
+                          <td style="text-align:right">16</td>
+                          <td style="text-align:right;color:#27ae60;font-weight:bold">0</td>
+                          <td style="text-align:center"></td>
+                        </tr>
+                        <tr>
+                          <td>Survey__c</td>
+                          <td style="text-align:right">40</td>
+                          <td style="text-align:right">40</td>
+                          <td style="text-align:right;color:#27ae60;font-weight:bold">0</td>
+                          <td style="text-align:center"></td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Right: Execution log -->
+              <div class="split-panel" style="flex:0.4">
+                <div class="vbox" style="gap:4px;height:100%">
+                  <span style="font-weight:bold;font-size:12px;color:#1A5276">Execution log</span>
+                  <textarea class="cal-ta" readonly rows="16" style="font-family:Consolas,monospace;font-size:10px;flex:1">[09:22:01] Starting export — 202 queries in plan
+[09:22:02] [QUERY #1] SEED: SELECT Id FROM Case ORDER BY CreatedDate desc LIMIT 40 -> 40 rows
+[09:22:03] [QUERY #2] Contact WHERE Id IN (...) -> 100 rows
+[09:22:04] [QUERY #3] Account WHERE Id IN (...) -> 100 rows
+[09:22:05] [QUERY #7] EmailMessage WHERE ParentId IN (...) -> 87 rows
+[09:22:06] [QUERY #12] ServiceContract__c WHERE AccountId IN (...) -> 97 rows [3 filtered]
+[09:22:07] [QUERY #13] ServiceContract__c WHERE ContactId IN (...) -> PARTIAL — 3 records skipped
+[09:22:08] [QUERY #14] Violation__c -> 16 rows
+[09:22:09] [QUERY #20] Tracker__c -> 100 rows
+[09:22:41] Export complete — 10 objects, 686 total records
+[09:22:41] CSVs written to: C:\tmp\seeding\Config-Alpha\selection\</textarea>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ══ Sub-tab 6 : Import ══ -->
+        <div class="m-panel" id="tp77-6">
+          <div class="vbox" style="gap:10px">
+
+            <!-- Button bar -->
+            <div class="hbox" style="gap:10px;align-items:center">
+              <button class="cal-btn btn-r" data-tip="Import all exported CSVs into the target org (ImportObjects.execute)">Run Import</button>
+              <span class="cal-lbl" style="font-weight:bold;color:#27ae60">&#8594; sandbox-uat</span>
+            </div>
+
+            <!-- Objects to import -->
+            <div class="vbox" style="gap:4px">
+              <span style="font-weight:bold;font-size:12px;color:#1A5276">Objects to Import</span>
+              <div class="tbl-wrap">
+                <table class="cal-tbl">
+                  <thead>
+                    <tr>
+                      <th style="width:260px">Object</th>
+                      <th style="width:90px;text-align:right">Records</th>
+                      <th style="width:70px;text-align:center">Errors</th>
+                      <th>Error file</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>Report__c</td>
+                      <td style="text-align:right">2</td>
+                      <td style="text-align:center;color:#27ae60">&#10004;</td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>Contract__c</td>
+                      <td style="text-align:right">1</td>
+                      <td style="text-align:center;color:#27ae60">&#10004;</td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>Violation__c</td>
+                      <td style="text-align:right">16</td>
+                      <td style="text-align:center;color:#27ae60">&#10004;</td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>Survey__c</td>
+                      <td style="text-align:right">40</td>
+                      <td style="text-align:center;color:#27ae60">&#10004;</td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>Tracker__c</td>
+                      <td style="text-align:right">13</td>
+                      <td style="text-align:center;color:#27ae60">&#10004;</td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>UsageLog__c</td>
+                      <td style="text-align:right">20</td>
+                      <td style="text-align:center;color:#27ae60">&#10004;</td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>Account</td>
+                      <td style="text-align:right">31</td>
+                      <td style="text-align:center;color:#27ae60">&#10004;</td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>Case</td>
+                      <td style="text-align:right">40</td>
+                      <td style="text-align:center;color:#E74C3C;font-weight:bold">3 &#10008;</td>
+                      <td><span style="color:#2980b9;cursor:pointer;text-decoration:underline">Case_errors.csv</span></td>
+                    </tr>
+                    <tr>
+                      <td>Contact</td>
+                      <td style="text-align:right">30</td>
+                      <td style="text-align:center;color:#27ae60">&#10004;</td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>TrackerGroup__c</td>
+                      <td style="text-align:right">27</td>
+                      <td style="text-align:center;color:#27ae60">&#10004;</td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>Entitlement</td>
+                      <td style="text-align:right">1</td>
+                      <td style="text-align:center;color:#27ae60">&#10004;</td>
+                      <td></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ══ Sub-tab 7 : Clean ══ -->
+        <div class="m-panel" id="tp77-7">
+          <div class="vbox" style="gap:10px">
+
+            <!-- Button bar -->
+            <div class="hbox" style="gap:10px;align-items:center;flex-wrap:wrap">
+              <button class="cal-btn btn-r" data-tip="Delete all records from the target org (CleanOrg.cleanAll)">Clean org</button>
+              <span class="cal-lbl" style="font-weight:bold;color:#27ae60">&#8594; sandbox-uat</span>
+              <label class="cal-chk" data-tip="If checked, only deletes records for objects that have an exported CSV file">
+                <input type="checkbox" checked disabled> Imported objects only
+              </label>
+              <div class="vsep"></div>
+              <label class="cal-chk" data-tip="Show only objects targeted for deletion (hide skipped objects)">
+                <input type="checkbox" checked disabled> Deletable only
+              </label>
+              <div class="vsep"></div>
+              <span class="cal-lbl" style="color:#888">Stop after</span>
+              <input class="cal-tf" readonly value="500" style="width:55px;text-align:right" data-tip="Stop deleting an object when this many errors are reached and show 500+ in After column">
+              <span class="cal-lbl" style="color:#888">errors</span>
+              <div class="vsep"></div>
+              <span class="cal-lbl" style="color:#888">Created after</span>
+              <input class="cal-tf" readonly value="2026-06-01T08:00:00Z" style="width:190px" data-tip="If set, only delete records created after this datetime (SOQL format: yyyy-MM-ddTHH:mm:ssZ)">
+              <button class="cal-btn btn-d" data-tip="Fill 'Created after' with current UTC datetime">Now</button>
+              <div class="vsep"></div>
+              <span class="cal-lbl" style="color:#888">Created before</span>
+              <input class="cal-tf" readonly placeholder="2026-06-01T14:23:29Z (optional)" style="width:220px" data-tip="If set, only delete records created before this datetime">
+            </div>
+
+            <!-- Clean results table -->
+            <div class="vbox" style="gap:4px">
+              <span style="font-weight:bold;font-size:12px;color:#1A5276">Clean results</span>
+              <div class="tbl-wrap">
+                <table class="cal-tbl">
+                  <thead>
+                    <tr>
+                      <th style="width:220px">Object</th>
+                      <th style="width:80px;text-align:right">Records</th>
+                      <th style="width:75px;text-align:center">Delete?</th>
+                      <th style="width:80px;text-align:right">After</th>
+                      <th style="width:70px;text-align:center">Errors</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>Case</td>
+                      <td style="text-align:right">40</td>
+                      <td style="text-align:center;color:#27ae60">&#10004;</td>
+                      <td style="text-align:right;color:#27ae60;font-weight:bold">0</td>
+                      <td style="text-align:center;color:#27ae60">0</td>
+                    </tr>
+                    <tr>
+                      <td>Contact</td>
+                      <td style="text-align:right">30</td>
+                      <td style="text-align:center;color:#27ae60">&#10004;</td>
+                      <td style="text-align:right;color:#27ae60;font-weight:bold">0</td>
+                      <td style="text-align:center;color:#27ae60">0</td>
+                    </tr>
+                    <tr>
+                      <td>Account</td>
+                      <td style="text-align:right">31</td>
+                      <td style="text-align:center;color:#27ae60">&#10004;</td>
+                      <td style="text-align:right;color:#27ae60;font-weight:bold">0</td>
+                      <td style="text-align:center;color:#27ae60">0</td>
+                    </tr>
+                    <tr>
+                      <td>EmailMessage</td>
+                      <td style="text-align:right">87</td>
+                      <td style="text-align:center;color:#888">&#8212;</td>
+                      <td style="text-align:right;color:#888">87</td>
+                      <td style="text-align:center;color:#27ae60">0</td>
+                    </tr>
+                    <tr>
+                      <td>Tracker__c</td>
+                      <td style="text-align:right">13</td>
+                      <td style="text-align:center;color:#27ae60">&#10004;</td>
+                      <td style="text-align:right;color:#27ae60;font-weight:bold">0</td>
+                      <td style="text-align:center;color:#27ae60">0</td>
+                    </tr>
+                    <tr>
+                      <td>ServiceContract__c</td>
+                      <td style="text-align:right">97</td>
+                      <td style="text-align:center;color:#27ae60">&#10004;</td>
+                      <td style="text-align:right;color:#E74C3C;font-weight:bold">3</td>
+                      <td style="text-align:center;color:#E74C3C;font-weight:bold;cursor:pointer;text-decoration:underline">3</td>
+                    </tr>
+                    <tr>
+                      <td>Violation__c</td>
+                      <td style="text-align:right">16</td>
+                      <td style="text-align:center;color:#27ae60">&#10004;</td>
+                      <td style="text-align:right;color:#27ae60;font-weight:bold">0</td>
+                      <td style="text-align:center;color:#27ae60">0</td>
+                    </tr>
+                    <tr>
+                      <td>Entitlement</td>
+                      <td style="text-align:right">1</td>
+                      <td style="text-align:center;color:#27ae60">&#10004;</td>
+                      <td style="text-align:right;color:#27ae60;font-weight:bold">0</td>
+                      <td style="text-align:center;color:#27ae60">0</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ══ Sub-tab 8 : IDs Export ══ -->
+        <div class="m-panel" id="tp77-8">
+          <div class="vbox" style="gap:8px">
+
+            <!-- Toolbar -->
+            <div class="hbox" style="gap:10px;align-items:center">
+              <button class="cal-btn btn-b" data-tip="Reload the list of exported objects from selectionDir">Reload</button>
+              <span class="cal-lbl" style="color:#3d7a8a;font-style:italic">11 objects loaded from C:\tmp\seeding\Config-Alpha\selection\</span>
+            </div>
+
+            <!-- Split: object list (left) | IDs table (right) -->
+            <div class="split-pane" style="gap:8px;min-height:300px">
+
+              <!-- Left: object list -->
+              <div class="split-panel" style="max-width:200px;min-width:140px">
+                <div class="vbox" style="gap:4px">
+                  <span style="font-weight:bold;font-size:12px;color:#1A5276">Exported Objects</span>
+                  <div class="cal-listview" style="min-height:260px;padding:4px 0">
+                    <div style="padding:3px 10px;background:#d0e8f4;color:#1A5276;font-weight:bold">Case</div>
+                    <div style="padding:3px 10px;color:#555">Contact</div>
+                    <div style="padding:3px 10px;color:#555">Account</div>
+                    <div style="padding:3px 10px;color:#555">EmailMessage</div>
+                    <div style="padding:3px 10px;color:#555">Tracker__c</div>
+                    <div style="padding:3px 10px;color:#555">Violation__c</div>
+                    <div style="padding:3px 10px;color:#555">ServiceContract__c</div>
+                    <div style="padding:3px 10px;color:#555">Entitlement</div>
+                    <div style="padding:3px 10px;color:#555">Report__c</div>
+                    <div style="padding:3px 10px;color:#555">Contract__c</div>
+                    <div style="padding:3px 10px;color:#555">Survey__c</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Right: IDs table -->
+              <div class="split-panel">
+                <div class="vbox" style="gap:4px">
+                  <span style="font-weight:bold;font-size:12px">Case — ID fields</span>
+                  <div class="tbl-wrap">
+                    <table class="cal-tbl">
+                      <thead>
+                        <tr>
+                          <th style="width:185px">Id</th>
+                          <th style="width:185px">AccountId</th>
+                          <th style="width:185px">ContactId</th>
+                          <th style="width:185px">OwnerId</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td style="font-family:monospace;font-size:10px">5001X000007AaAbQAK</td>
+                          <td style="font-family:monospace;font-size:10px">001X000004CcCdQAK</td>
+                          <td style="font-family:monospace;font-size:10px">003X000001DdDeQAK</td>
+                          <td style="font-family:monospace;font-size:10px">005X000000EeEfQAK</td>
+                        </tr>
+                        <tr>
+                          <td style="font-family:monospace;font-size:10px">5001X000007BbBcQAK</td>
+                          <td style="font-family:monospace;font-size:10px">001X000004FfFgQAK</td>
+                          <td style="font-family:monospace;font-size:10px">003X000001GgGhQAK</td>
+                          <td style="font-family:monospace;font-size:10px">005X000000EeEfQAK</td>
+                        </tr>
+                        <tr>
+                          <td style="font-family:monospace;font-size:10px">5001X000007CcCdQAK</td>
+                          <td style="font-family:monospace;font-size:10px">001X000004HhHiQAK</td>
+                          <td style="font-family:monospace;font-size:10px"></td>
+                          <td style="font-family:monospace;font-size:10px">005X000000JjJkQAK</td>
+                        </tr>
+                        <tr>
+                          <td style="font-family:monospace;font-size:10px">5001X000007DdDeQAK</td>
+                          <td style="font-family:monospace;font-size:10px">001X000004CcCdQAK</td>
+                          <td style="font-family:monospace;font-size:10px">003X000001LlLmQAK</td>
+                          <td style="font-family:monospace;font-size:10px">005X000000EeEfQAK</td>
+                        </tr>
+                        <tr>
+                          <td style="font-family:monospace;font-size:10px">5001X000007EeEfQAK</td>
+                          <td style="font-family:monospace;font-size:10px">001X000004MmMnQAK</td>
+                          <td style="font-family:monospace;font-size:10px">003X000001NnNoQAK</td>
+                          <td style="font-family:monospace;font-size:10px">005X000000EeEfQAK</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ══ Sub-tab 9 : Debug Import ══ -->
+        <div class="m-panel" id="tp77-9">
+          <div class="vbox" style="gap:8px">
+
+            <!-- Toolbar -->
+            <div class="hbox" style="gap:10px;align-items:center">
+              <button class="cal-btn btn-b" data-tip="Load the olNewIds file (oldId to newId mappings) from the import/ directory">Load olNewIds</button>
+              <button class="cal-btn btn-o" data-tip="Inject the serialized userRemap file (sourceUserId to targetUserId) into the table">Load User Remap</button>
+              <span class="cal-lbl" style="color:#3d7a8a;font-style:italic">1,247 / 1,247 mappings</span>
+              <div class="spacer"></div>
+              <span class="cal-lbl">Filter:</span>
+              <input class="cal-tf" readonly placeholder="Filter by ID (old or new)..." style="width:280px">
+            </div>
+
+            <!-- Old to New IDs table -->
+            <div class="tbl-wrap">
+              <table class="cal-tbl">
+                <thead>
+                  <tr>
+                    <th style="width:80px">Type</th>
+                    <th style="width:300px">Old ID (source)</th>
+                    <th style="width:300px">New ID (target)</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><span style="background:#2980b9;color:#fff;padding:2px 6px;border-radius:8px;font-size:10px">Record</span></td>
+                    <td style="font-family:monospace;font-size:10px">5001X000007AaAbQAK</td>
+                    <td style="font-family:monospace;font-size:10px">5003Z000008XxXyQAK</td>
+                  </tr>
+                  <tr>
+                    <td><span style="background:#2980b9;color:#fff;padding:2px 6px;border-radius:8px;font-size:10px">Record</span></td>
+                    <td style="font-family:monospace;font-size:10px">5001X000007BbBcQAK</td>
+                    <td style="font-family:monospace;font-size:10px">5003Z000008YyYzQAK</td>
+                  </tr>
+                  <tr>
+                    <td><span style="background:#2980b9;color:#fff;padding:2px 6px;border-radius:8px;font-size:10px">Record</span></td>
+                    <td style="font-family:monospace;font-size:10px">001X000004CcCdQAK</td>
+                    <td style="font-family:monospace;font-size:10px">001Z000006PpPqQAK</td>
+                  </tr>
+                  <tr>
+                    <td><span style="background:#e67e22;color:#fff;padding:2px 6px;border-radius:8px;font-size:10px">User</span></td>
+                    <td style="font-family:monospace;font-size:10px">005X000000EeEfQAK</td>
+                    <td style="font-family:monospace;font-size:10px">005Z000000MmMnQAK</td>
+                  </tr>
+                  <tr>
+                    <td><span style="background:#2980b9;color:#fff;padding:2px 6px;border-radius:8px;font-size:10px">Record</span></td>
+                    <td style="font-family:monospace;font-size:10px">003X000001DdDeQAK</td>
+                    <td style="font-family:monospace;font-size:10px">003Z000003QqQrQAK</td>
+                  </tr>
+                  <tr>
+                    <td><span style="background:#e67e22;color:#fff;padding:2px 6px;border-radius:8px;font-size:10px">User</span></td>
+                    <td style="font-family:monospace;font-size:10px">005X000000JjJkQAK</td>
+                    <td style="font-family:monospace;font-size:10px">005Z000000NnNoQAK</td>
+                  </tr>
+                  <tr>
+                    <td><span style="background:#2980b9;color:#fff;padding:2px 6px;border-radius:8px;font-size:10px">Record</span></td>
+                    <td style="font-family:monospace;font-size:10px">001X000004HhHiQAK</td>
+                    <td style="font-family:monospace;font-size:10px">001Z000006RrRsQAK</td>
+                  </tr>
+                  <tr>
+                    <td><span style="background:#2980b9;color:#fff;padding:2px 6px;border-radius:8px;font-size:10px">Record</span></td>
+                    <td style="font-family:monospace;font-size:10px">003X000001LlLmQAK</td>
+                    <td style="font-family:monospace;font-size:10px">003Z000003TtTuQAK</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- .m-body -->
+    </div><!-- .m-tabpane -->
+
+  </div><!-- .mockup -->
+</div><!-- .mockup-wrap -->
+
+<script>
+function sw(id,idx){
+  var tp=document.getElementById(id);
+  tp.querySelectorAll('.m-tab').forEach(function(t,i){t.classList.toggle('act',i===idx)});
+  tp.querySelectorAll('.m-panel').forEach(function(p,i){p.classList.toggle('act',i===idx)});
+}
+</script>
+
+<!-- Key features modal -->
+<div id="modal-kf" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:999;align-items:center;justify-content:center" onclick="if(event.target===this)this.style.display='none'">
+  <div style="background:#fff;border-radius:8px;padding:28px 32px;max-width:560px;width:90%;color:#1a2a35;box-shadow:0 8px 32px rgba(0,0,0,.3)">
+    <h3 style="margin:0 0 14px;color:#2980b9">&#9733; Key features</h3>
+    <ul style="margin:0;padding-left:20px;line-height:1.8">
+      <li><strong>Named configurations</strong> — create, clone and switch between multiple seeding configurations, each with its own source/target org pair and main path.</li>
+      <li><strong>Dependency traversal</strong> — automatically discovers parent and child relations up to a configurable depth and generates a full traversal plan (traversal_plan.json).</li>
+      <li><strong>Per-object record limits</strong> — edit SOQL LIMIT constraints inline per object in the Query Recap table; limits are auto-saved and can be persisted to disk.</li>
+      <li><strong>Export Records</strong> — executes all queries in the traversal plan and writes results to CSV files; a dry-run Count Records mode estimates volumes first.</li>
+      <li><strong>Check IDs / Check Users</strong> — validates parent ID integrity across all exported CSVs, and verifies that source users have matching profiles in the target org before import.</li>
+      <li><strong>Import with Bulk API v2</strong> — imports all CSVs into the target org in dependency order; orphaned relation rows are remapped automatically using the oldId-to-newId table.</li>
+      <li><strong>Clean with date-range filtering</strong> — delete previously imported records from the target org, optionally constrained to a Created After / Created Before window.</li>
+      <li><strong>Automation management</strong> — disable all flows and triggers on the target org before import, then re-enable them from a local backup after completion.</li>
+      <li><strong>Community Users support</strong> — export and import Experience Cloud community users (Account + Contact + User) with username extension renaming for the target org.</li>
+      <li><strong>Debug modes</strong> — IDs Export tab inspects every ID-type field per exported object; Debug Import tab shows the full oldId-to-newId mapping table with user-remap injection support.</li>
+      <li><strong>Import dependency chaining</strong> — configure one config to pre-load oldNewIds from another config so shared parent records are not duplicated across linked configs.</li>
+    </ul>
+    <div style="text-align:right;margin-top:18px">
+      <button class="cal-btn btn-d" onclick="document.getElementById('modal-kf').style.display='none'">Close</button>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

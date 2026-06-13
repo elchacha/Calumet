@@ -1,0 +1,1 @@
+Place screenshots for tab48-CompareLayout in this directory.

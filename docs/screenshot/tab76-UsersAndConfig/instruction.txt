@@ -1,0 +1,1 @@
+Place screenshots for tab76-UsersAndConfig in this directory.

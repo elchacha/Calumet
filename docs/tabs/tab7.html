@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Sharing Settings — Calumet</title>
+<link rel="stylesheet" href="../shared.css">
+<style>
+/* Badge pills for Security Type column */
+.badge-profile {
+  display:inline-block;padding:2px 9px;border-radius:3px;font-size:10px;font-weight:700;
+  background:#2980b9;color:#fff;
+}
+.badge-permset {
+  display:inline-block;padding:2px 9px;border-radius:3px;font-size:10px;font-weight:700;
+  background:#8e44ad;color:#fff;
+}
+/* Bool cells */
+.bool-true  { color:#27ae60;font-weight:700;text-align:center; }
+.bool-false { color:#E74C3C;font-weight:700;text-align:center; }
+.cache-lbl { font-size:11px;color:#888;margin-left:8px; }
+.nb-lbl    { font-size:11px;color:#1a2a35;margin-left:16px; }
+/* Filter toolbar */
+.toolbar { display:flex;flex-wrap:wrap;align-items:center;gap:6px;padding:6px 8px;
+           background:#dce8f0;border-bottom:1px solid #9AABBF; }
+.filter-row { display:flex;flex-wrap:wrap;align-items:center;gap:8px;
+              padding:4px 8px;background:#eaf2f7;border-bottom:1px solid #c8dce8; }
+</style>
+</head>
+<body class="tab-page">
+
+<div class="sum">
+  <div class="sum-title">
+    <h2>Sharing Settings</h2>
+    <span class="sum-badge">Tab 7</span>
+  </div>
+  <p class="sum-desc">
+    Audit object-level permissions for every Profile and Permission Set in the org, and
+    browse all sharing rules with their access levels and sharing targets.
+    <button class="cal-btn btn-d" style="margin-left:10px" onclick="document.getElementById('modal-kf').style.display='flex'">&#9733; Key features</button>
+  </p>
+</div>
+
+<div class="mockup-wrap">
+  <div class="mockup">
+
+    <div class="m-tabpane" id="tp7">
+      <div class="m-tabbar">
+        <div class="m-tab act" onclick="sw('tp7',0)">Object Permission</div>
+        <div class="m-tab"     onclick="sw('tp7',1)">Sharings</div>
+      </div>
+
+      <!-- ═══════════════════ TAB 1 — Object Permission ═══════════════════ -->
+      <div class="m-panel act" id="tp7-0">
+
+        <!-- Toolbar -->
+        <div class="toolbar">
+          <button class="cal-btn btn-b" data-tip="Load object permissions from cache or Salesforce">Search</button>
+          <button class="cal-btn btn-b" data-tip="Force re-extract from Salesforce (clears cache)">Refresh</button>
+          <button class="cal-btn btn-d" data-tip="Export results to Excel (.xlsx)">Export</button>
+          <span class="cache-lbl">cached at 04/05/2026 16:41</span>
+          <span class="nb-lbl">nb records <strong>5818</strong></span>
+        </div>
+
+        <!-- Filter row -->
+        <div class="filter-row">
+          <span class="cal-lbl">Object Name:</span>
+          <input class="cal-tf" style="width:220px" placeholder="filter by object name&hellip;" readonly>
+          <label class="cal-chk"><input type="checkbox" checked disabled> display profile</label>
+          <label class="cal-chk"><input type="checkbox" checked disabled> display permset</label>
+          <label class="cal-chk"><input type="checkbox" checked disabled> hide unused</label>
+        </div>
+
+        <!-- Table -->
+        <div class="tbl-wrap" style="max-height:420px;overflow-y:auto">
+          <table class="cal-tbl">
+            <thead>
+              <tr>
+                <th style="min-width:160px">Object Name</th>
+                <th style="min-width:220px">Security Name</th>
+                <th style="min-width:90px">Security Type</th>
+                <th style="min-width:60px">IsCustom</th>
+                <th style="min-width:55px">isUsed</th>
+                <th style="min-width:45px">Users</th>
+                <th style="min-width:50px">Create</th>
+                <th style="min-width:50px">Read</th>
+                <th style="min-width:50px">Edit</th>
+                <th style="min-width:55px">Delete</th>
+                <th style="min-width:60px">View All</th>
+                <th style="min-width:70px">Modify All</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Account</td>
+                <td>System Administrator</td>
+                <td><span class="badge-profile">Profile</span></td>
+                <td>false</td><td>true</td><td>48</td>
+                <td class="bool-true">&#10003;</td>
+                <td class="bool-true">&#10003;</td>
+                <td class="bool-true">&#10003;</td>
+                <td class="bool-true">&#10003;</td>
+                <td class="bool-true">&#10003;</td>
+                <td class="bool-true">&#10003;</td>
+              </tr>
+              <tr>
+                <td>Contact</td>
+                <td>User_API_Consigne_en_ligne</td>
+                <td><span class="badge-permset">PermSet</span></td>
+                <td>true</td><td>true</td><td>1</td>
+                <td class="bool-false">&#10007;</td>
+                <td class="bool-true">&#10003;</td>
+                <td class="bool-false">&#10007;</td>
+                <td class="bool-false">&#10007;</td>
+                <td class="bool-false">&#10007;</td>
+                <td class="bool-false">&#10007;</td>
+              </tr>
+              <tr>
+                <td>SFA2_Contrat_Non_Eligible__c</td>
+                <td>Lot2 - API</td>
+                <td><span class="badge-profile">Profile</span></td>
+                <td>true</td><td>true</td><td>7</td>
+                <td class="bool-true">&#10003;</td>
+                <td class="bool-true">&#10003;</td>
+                <td class="bool-true">&#10003;</td>
+                <td class="bool-true">&#10003;</td>
+                <td class="bool-false">&#10007;</td>
+                <td class="bool-false">&#10007;</td>
+              </tr>
+              <tr>
+                <td>LiveChatVisitor</td>
+                <td>SPS_Lecture_Ecriture</td>
+                <td><span class="badge-profile">Profile</span></td>
+                <td>true</td><td>true</td><td>4</td>
+                <td class="bool-false">&#10007;</td>
+                <td class="bool-true">&#10003;</td>
+                <td class="bool-false">&#10007;</td>
+                <td class="bool-false">&#10007;</td>
+                <td class="bool-false">&#10007;</td>
+                <td class="bool-false">&#10007;</td>
+              </tr>
+              <tr>
+                <td>GRC_Enquete__c</td>
+                <td>Sales Insights Integration User</td>
+                <td><span class="badge-profile">Profile</span></td>
+                <td>false</td><td>true</td><td>1</td>
+                <td class="bool-false">&#10007;</td>
+                <td class="bool-true">&#10003;</td>
+                <td class="bool-false">&#10007;</td>
+                <td class="bool-false">&#10007;</td>
+                <td class="bool-true">&#10003;</td>
+                <td class="bool-false">&#10007;</td>
+              </tr>
+              <tr>
+                <td>GRC_Tech_Offre__c</td>
+                <td>Reclamation_Facturation_ARC</td>
+                <td><span class="badge-profile">Profile</span></td>
+                <td>true</td><td>true</td><td>12</td>
+                <td class="bool-false">&#10007;</td>
+                <td class="bool-true">&#10003;</td>
+                <td class="bool-false">&#10007;</td>
+                <td class="bool-false">&#10007;</td>
+                <td class="bool-false">&#10007;</td>
+                <td class="bool-false">&#10007;</td>
+              </tr>
+              <tr>
+                <td>MatriceRetardRemb__c</td>
+                <td>GRC_e-TC REQ</td>
+                <td><span class="badge-profile">Profile</span></td>
+                <td>true</td><td>true</td><td>98</td>
+                <td class="bool-false">&#10007;</td>
+                <td class="bool-true">&#10003;</td>
+                <td class="bool-false">&#10007;</td>
+                <td class="bool-false">&#10007;</td>
+                <td class="bool-false">&#10007;</td>
+                <td class="bool-false">&#10007;</td>
+              </tr>
+              <tr>
+                <td>ContactSpex__c</td>
+                <td>System Administrator</td>
+                <td><span class="badge-profile">Profile</span></td>
+                <td>false</td><td>true</td><td>10</td>
+                <td class="bool-true">&#10003;</td>
+                <td class="bool-true">&#10003;</td>
+                <td class="bool-true">&#10003;</td>
+                <td class="bool-true">&#10003;</td>
+                <td class="bool-true">&#10003;</td>
+                <td class="bool-true">&#10003;</td>
+              </tr>
+              <tr>
+                <td>Plan_d_action__c</td>
+                <td>P1 - Force de ventes CAF sedentaire - SFA2</td>
+                <td><span class="badge-profile">Profile</span></td>
+                <td>true</td><td>true</td><td>48</td>
+                <td class="bool-false">&#10007;</td>
+                <td class="bool-true">&#10003;</td>
+                <td class="bool-false">&#10007;</td>
+                <td class="bool-false">&#10007;</td>
+                <td class="bool-false">&#10007;</td>
+                <td class="bool-false">&#10007;</td>
+              </tr>
+              <tr>
+                <td>Qualification_Client__c</td>
+                <td>Administrateur des ventes - SFA2</td>
+                <td><span class="badge-profile">Profile</span></td>
+                <td>true</td><td>true</td><td>3</td>
+                <td class="bool-true">&#10003;</td>
+                <td class="bool-true">&#10003;</td>
+                <td class="bool-true">&#10003;</td>
+                <td class="bool-true">&#10003;</td>
+                <td class="bool-false">&#10007;</td>
+                <td class="bool-false">&#10007;</td>
+              </tr>
+              <tr>
+                <td>dqeone_DqeOneEvent__e</td>
+                <td>Sans Droits</td>
+                <td><span class="badge-profile">Profile</span></td>
+                <td>true</td><td>true</td><td>20</td>
+                <td class="bool-true">&#10003;</td>
+                <td class="bool-true">&#10003;</td>
+                <td class="bool-true">&#10003;</td>
+                <td class="bool-true">&#10003;</td>
+                <td class="bool-false">&#10007;</td>
+                <td class="bool-false">&#10007;</td>
+              </tr>
+              <tr>
+                <td>GRC_Tech_Compo_Combi__c</td>
+                <td>GRC_TC Niveau 2</td>
+                <td><span class="badge-profile">Profile</span></td>
+                <td>true</td><td>true</td><td>1018</td>
+                <td class="bool-false">&#10007;</td>
+                <td class="bool-true">&#10003;</td>
+                <td class="bool-false">&#10007;</td>
+                <td class="bool-false">&#10007;</td>
+                <td class="bool-false">&#10007;</td>
+                <td class="bool-false">&#10007;</td>
+              </tr>
+              <tr>
+                <td>Produit_Associe__c</td>
+                <td>Analytics Cloud Integration User</td>
+                <td><span class="badge-profile">Profile</span></td>
+                <td>false</td><td>true</td><td>1</td>
+                <td class="bool-false">&#10007;</td>
+                <td class="bool-true">&#10003;</td>
+                <td class="bool-false">&#10007;</td>
+                <td class="bool-false">&#10007;</td>
+                <td class="bool-false">&#10007;</td>
+                <td class="bool-false">&#10007;</td>
+              </tr>
+              <tr>
+                <td>Opportunity</td>
+                <td>Sales_Manager_Full_Access</td>
+                <td><span class="badge-permset">PermSet</span></td>
+                <td>false</td><td>true</td><td>14</td>
+                <td class="bool-true">&#10003;</td>
+                <td class="bool-true">&#10003;</td>
+                <td class="bool-true">&#10003;</td>
+                <td class="bool-true">&#10003;</td>
+                <td class="bool-true">&#10003;</td>
+                <td class="bool-false">&#10007;</td>
+              </tr>
+              <tr>
+                <td>FiltreMailing_From__c</td>
+                <td>Lot2 - API</td>
+                <td><span class="badge-profile">Profile</span></td>
+                <td>true</td><td>true</td><td>7</td>
+                <td class="bool-false">&#10007;</td>
+                <td class="bool-true">&#10003;</td>
+                <td class="bool-false">&#10007;</td>
+                <td class="bool-false">&#10007;</td>
+                <td class="bool-false">&#10007;</td>
+                <td class="bool-false">&#10007;</td>
+              </tr>
+              <tr>
+                <td>Risques_et_Pertes__c</td>
+                <td>P1 - Force de ventes CAF sedentaire - SFA2</td>
+                <td><span class="badge-profile">Profile</span></td>
+                <td>true</td><td>true</td><td>48</td>
+                <td class="bool-true">&#10003;</td>
+                <td class="bool-true">&#10003;</td>
+                <td class="bool-true">&#10003;</td>
+                <td class="bool-false">&#10007;</td>
+                <td class="bool-false">&#10007;</td>
+                <td class="bool-false">&#10007;</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div><!-- /tp7-0 -->
+
+      <!-- ═══════════════════ TAB 2 — Sharings ═══════════════════ -->
+      <div class="m-panel" id="tp7-1">
+
+        <!-- Toolbar -->
+        <div class="toolbar">
+          <button class="cal-btn btn-b" data-tip="Load sharing rules from cache or Salesforce">Search</button>
+          <button class="cal-btn btn-b" data-tip="Force re-extract sharing rules (clears cache)">Refresh</button>
+          <span class="cache-lbl">cached at 04/05/2026 16:44</span>
+        </div>
+
+        <!-- Filter row -->
+        <div class="filter-row">
+          <span class="cal-lbl">Object Name:</span>
+          <input class="cal-tf" style="width:260px" placeholder="filter&hellip;" readonly>
+        </div>
+
+        <!-- Table -->
+        <div class="tbl-wrap" style="max-height:420px;overflow-y:auto">
+          <table class="cal-tbl">
+            <thead>
+              <tr>
+                <th style="min-width:160px">Object Name</th>
+                <th style="min-width:200px">Sharing Name</th>
+                <th style="min-width:100px">Access Level</th>
+                <th style="min-width:180px">Criterias</th>
+                <th style="min-width:160px">SharedTo</th>
+                <th style="min-width:160px">Modify By</th>
+                <th style="min-width:130px">Modified Date</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Account</td>
+                <td>Account_Territory_Sharing</td>
+                <td style="color:#27ae60">Read</td>
+                <td style="color:#888;font-style:italic">Territory-based</td>
+                <td>AllInternalUsers</td>
+                <td>j.dupont@acme.org</td>
+                <td>2026-03-15 10:22</td>
+              </tr>
+              <tr>
+                <td>Account</td>
+                <td>Account_Owner_Sharing</td>
+                <td style="color:#27ae60">ReadWrite</td>
+                <td style="color:#888;font-style:italic">Owner-based</td>
+                <td>RoleAndSubordinates:Sales Team</td>
+                <td>admin@acme.org</td>
+                <td>2026-01-08 09:15</td>
+              </tr>
+              <tr>
+                <td>Opportunity</td>
+                <td>Opportunity_Sales_Sharing</td>
+                <td style="color:#27ae60">ReadWrite</td>
+                <td>StageName = 'Closed Won'</td>
+                <td>Role:VP of Sales</td>
+                <td>admin@acme.org</td>
+                <td>2026-02-20 14:37</td>
+              </tr>
+              <tr>
+                <td>Opportunity</td>
+                <td>Opp_Partner_Visibility</td>
+                <td style="color:#27ae60">Read</td>
+                <td>Type = 'Partner Deal'</td>
+                <td>Group:Partner_Users</td>
+                <td>s.martin@acme.org</td>
+                <td>2026-01-30 11:00</td>
+              </tr>
+              <tr>
+                <td>GRC_Enquete__c</td>
+                <td>GRC_Enquete_Internal_Share</td>
+                <td style="color:#27ae60">Read</td>
+                <td>Status__c = 'Open'</td>
+                <td>Role:GRC Manager</td>
+                <td>f.leroy@acme.org</td>
+                <td>2026-03-02 08:45</td>
+              </tr>
+              <tr>
+                <td>GRC_Enquete__c</td>
+                <td>GRC_Enquete_Group_Share</td>
+                <td style="color:#e67e22">ReadWrite</td>
+                <td>Region__c = 'Nord'</td>
+                <td>Group:GRC_Agents_Nord</td>
+                <td>admin@acme.org</td>
+                <td>2025-11-12 16:30</td>
+              </tr>
+              <tr>
+                <td>Qualification_Client__c</td>
+                <td>QC_Ventes_Sharing</td>
+                <td style="color:#27ae60">Read</td>
+                <td>Segment__c != null</td>
+                <td>RoleAndSubordinates:Sales Director</td>
+                <td>admin@acme.org</td>
+                <td>2026-04-01 13:10</td>
+              </tr>
+              <tr>
+                <td>Plan_d_action__c</td>
+                <td>PlanAction_Manager_Share</td>
+                <td style="color:#e67e22">ReadWrite</td>
+                <td>Priority__c = 'High'</td>
+                <td>Role:Commercial Manager</td>
+                <td>j.dupont@acme.org</td>
+                <td>2026-03-22 17:05</td>
+              </tr>
+              <tr>
+                <td>Contact</td>
+                <td>Contact_AllInternal_Share</td>
+                <td style="color:#27ae60">Read</td>
+                <td style="color:#888;font-style:italic">Owner-based</td>
+                <td>AllInternalUsers</td>
+                <td>admin@acme.org</td>
+                <td>2025-09-01 00:00</td>
+              </tr>
+              <tr>
+                <td>Risques_et_Pertes__c</td>
+                <td>Risques_Direction_Share</td>
+                <td style="color:#27ae60">Read</td>
+                <td>Montant__c &gt; 10000</td>
+                <td>Role:Direction Generale</td>
+                <td>c.moreau@acme.org</td>
+                <td>2026-04-18 09:55</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div><!-- /tp7-1 -->
+
+    </div><!-- /tp7 -->
+
+  </div><!-- /mockup -->
+</div><!-- /mockup-wrap -->
+
+<script>
+function sw(id,idx){
+  var tp=document.getElementById(id);
+  tp.querySelectorAll('.m-tab').forEach(function(t,i){t.classList.toggle('act',i===idx)});
+  tp.querySelectorAll('.m-panel').forEach(function(p,i){p.classList.toggle('act',i===idx)});
+}
+</script>
+
+<!-- Key features modal -->
+<div id="modal-kf" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:999;align-items:center;justify-content:center" onclick="if(event.target===this)this.style.display='none'">
+  <div style="background:#fff;border-radius:8px;padding:28px 32px;max-width:540px;width:90%;color:#1a2a35;box-shadow:0 8px 32px rgba(0,0,0,.3)">
+    <h3 style="margin:0 0 14px;color:#2980b9">&#9733; Key features</h3>
+    <ul style="margin:0;padding-left:20px;line-height:1.9;color:#1a2a35">
+      <li><strong>Object Permission audit</strong> — view Create / Read / Edit / Delete / View All / Modify All for every Profile and Permission Set in a single table.</li>
+      <li><strong>Security Type badges</strong> — Profile rows are highlighted in blue, Permission Set rows in purple, making it easy to distinguish them at a glance.</li>
+      <li><strong>Smart filtering</strong> — filter by object name, toggle Profiles / Permission Sets on or off, and hide entries with no assigned users.</li>
+      <li><strong>Sharing rules browser</strong> — list all sharing rules per object with their access level (Read / ReadWrite), criteria, sharing target, and last modified date.</li>
+      <li><strong>Disk cache</strong> — results are cached per org to <code>cache/object_access.cache</code> and <code>cache/sharings.cache</code>, with cache date displayed in the toolbar.</li>
+      <li><strong>Excel export</strong> — export the full Object Permission matrix to <code>.xlsx</code> for offline analysis or audit reporting.</li>
+      <li><strong>User count column</strong> — the <em>Users</em> column shows how many users are assigned to each Profile / Permission Set, helping identify orphaned or over-provisioned entries.</li>
+    </ul>
+    <div style="text-align:right;margin-top:18px">
+      <button class="cal-btn btn-d" onclick="document.getElementById('modal-kf').style.display='none'">Close</button>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

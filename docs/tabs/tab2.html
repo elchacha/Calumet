@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Retrieve — Calumet</title>
+<link rel="stylesheet" href="../shared.css">
+<style>
+.tree-wrap{background:#fff;border:1px solid #b0bec5;border-radius:4px;padding:6px 4px;font-family:"Segoe UI",monospace;font-size:12px;overflow-y:auto;min-height:280px;max-height:380px}
+.tree-node{display:flex;align-items:center;gap:4px;padding:1px 0;cursor:pointer;user-select:none}
+.tree-node .arrow{color:#555;font-size:10px;width:14px;display:inline-block}
+.tree-node .node-name{color:#1a2a35}
+.tree-node.cat-node{font-weight:600;color:#1a6fa0}
+.tree-node.leaf{color:#333;padding-left:28px}
+.tree-node.leaf.missing{color:#E74C3C}
+.tree-node.bold-type{font-weight:700}
+.pkg-path{font-size:11px;color:#555;margin:4px 6px;font-style:italic}
+</style>
+</head>
+<body class="tab-page">
+
+<div class="sum">
+  <div class="sum-title">
+    <h2>Retrieve</h2>
+    <span class="sum-badge">Tab 2</span>
+  </div>
+  <p class="sum-desc">
+    Retrieve metadata from the connected Salesforce org into your local project folder using the Metadata API. Manages package.xml, profile changes, layout assignments and API version checks.
+    <button class="cal-btn btn-d" style="margin-left:10px" onclick="document.getElementById('modal-kf').style.display='flex'">&#9733; Key features</button>
+  </p>
+</div>
+
+<div class="mockup-wrap">
+  <div class="mockup">
+
+    <div class="hbox" style="gap:0;align-items:flex-start;padding:0">
+
+      <!-- Left panel: options -->
+      <div class="vbox" style="gap:0;min-width:410px;max-width:420px;padding:8px 10px 8px 10px;border-right:1px solid #b0bec5;background:#f4f7f9;">
+
+        <!-- Manage Package section -->
+        <div class="hbox" style="gap:6px;margin-bottom:6px;flex-wrap:wrap;">
+          <button class="cal-btn btn-g" data-tip="Open the current package.xml file in default editor">Display package</button>
+          <button class="cal-btn btn-g" data-tip="Open the retrieve folder in file explorer">Display retrieve folder</button>
+          <button class="cal-btn btn-d" data-tip="Check possible metadata dependencies from package.xml">check dependencies</button>
+        </div>
+
+        <!-- Retrieve button row -->
+        <div class="hbox" style="gap:8px;margin-bottom:4px;align-items:center;">
+          <button class="cal-btn btn-b" data-tip="Retrieve metadata from Salesforce using the current package.xml">Retrieve</button>
+        </div>
+
+        <!-- Prepare Deployment section -->
+        <div class="vbox" style="gap:4px;padding:8px 0 4px;border-top:1px solid #c8d4dc;margin-top:6px">
+          <span style="font-weight:700;font-size:12px;color:#1a2a35">Prepare Deployment</span>
+          <div class="hbox" style="gap:6px;align-items:center;flex-wrap:wrap;">
+            <button class="cal-btn btn-d" data-tip="Copy retrieve folder contents to the selected target org deploy folder" style="min-width:70px">Copy to &gt;</button>
+            <select class="cal-cb" style="width:150px" disabled data-tip="Select target environment to copy files to">
+              <option>PROD</option>
+              <option>UAT</option>
+              <option selected>Staging</option>
+            </select>
+            <label class="cal-chk" data-tip="Open the Control tab after copy"><input type="checkbox" checked disabled> open Control</label>
+          </div>
+          <div class="hbox" style="gap:12px;align-items:center;margin-top:2px">
+            <label class="cal-chk" data-tip="Clean the target deploy folder before copying"><input type="checkbox" checked disabled> Clean target folder</label>
+            <label class="cal-chk" data-tip="Open the Deploy tab after copy"><input type="checkbox" disabled> open deploy</label>
+          </div>
+        </div>
+
+      </div><!-- end left panel -->
+
+      <!-- Right panel: TabPane -->
+      <div style="flex:1;min-width:0;padding:8px;">
+        <div class="m-tabpane" id="tp1">
+          <div class="m-tabbar">
+            <div class="m-tab act" onclick="sw('tp1',0)">Packages(6)</div>
+            <div class="m-tab" onclick="sw('tp1',1)">Profiles (4)</div>
+            <div class="m-tab" onclick="sw('tp1',2)" style="color:#e67e22;font-weight:600">Api Version (5)</div>
+          </div>
+          <div class="m-body">
+
+            <!-- Tab 0: Package tree -->
+            <div class="m-panel act" id="tp1-0">
+              <div class="hbox" style="gap:6px;align-items:center;padding:4px 6px;flex-wrap:wrap">
+                <span class="cal-lbl">Members : 264</span>
+                <button class="cal-btn btn-d" data-tip="Expand all nodes in the package tree">See All</button>
+                <button class="cal-btn btn-d" data-tip="Collapse all nodes in the package tree">Hide All</button>
+                <button class="cal-btn btn-d" data-tip="Reload the package.xml from disk">Refresh</button>
+                <button class="cal-btn btn-r" data-tip="Remove selected metadata members from the package and local files">Remove</button>
+              </div>
+              <div class="pkg-path">Package : E:\Tool\Calumet\orgs\myorg\retrieve\package.xml</div>
+              <div class="tree-wrap">
+                <!-- ApexClass -->
+                <div class="tree-node cat-node"><span class="arrow">&#9660;</span><span class="node-name">ApexClass(47)</span></div>
+                <div class="tree-node leaf">AccountService</div>
+                <div class="tree-node leaf">ContactTriggerHandler</div>
+                <div class="tree-node leaf">LeadConversionHelper</div>
+                <div class="tree-node leaf bold-type" style="padding-left:28px;font-weight:700">OpportunityLineItemUtil</div>
+                <div class="tree-node leaf">ProjectController</div>
+                <!-- ApexPage -->
+                <div class="tree-node cat-node"><span class="arrow">&#9660;</span><span class="node-name">ApexPage(3)</span></div>
+                <div class="tree-node leaf">AP217_SFA2_DeploiementContratCadre</div>
+                <div class="tree-node leaf missing" data-tip="File missing on disk">AP218_Onboarding_Page</div>
+                <div class="tree-node leaf">AP219_AccountPortal</div>
+                <!-- ApexTrigger -->
+                <div class="tree-node cat-node"><span class="arrow">&#9654;</span><span class="node-name">ApexTrigger(183)</span></div>
+                <!-- CustomObject bold -->
+                <div class="tree-node cat-node bold-type"><span class="arrow">&#9660;</span><span class="node-name" style="font-weight:700">CustomObject(8)</span></div>
+                <div class="tree-node leaf bold-type" style="padding-left:28px;font-weight:700">Project__c</div>
+                <div class="tree-node leaf bold-type" style="padding-left:28px;font-weight:700">Contract_Line__c</div>
+                <div class="tree-node leaf bold-type" style="padding-left:28px;font-weight:700">SLA__c</div>
+                <!-- Flow -->
+                <div class="tree-node cat-node"><span class="arrow">&#9660;</span><span class="node-name">Flow(12)</span></div>
+                <div class="tree-node leaf">Account_Onboarding_Flow</div>
+                <div class="tree-node leaf">Lead_Assignment_Flow</div>
+                <div class="tree-node leaf">Opportunity_Stage_Validation</div>
+                <!-- PermissionSetGroup -->
+                <div class="tree-node cat-node"><span class="arrow">&#9660;</span><span class="node-name">PermissionSetGroup(1)</span></div>
+                <div class="tree-node leaf">force__SalesWorkspacePSG</div>
+                <!-- ValidationRule -->
+                <div class="tree-node cat-node"><span class="arrow">&#9654;</span><span class="node-name">ValidationRule(10)</span></div>
+              </div>
+            </div>
+
+            <!-- Tab 1: Profiles -->
+            <div class="m-panel" id="tp1-1">
+              <div class="tbl-wrap" style="max-height:420px;overflow-y:auto">
+                <table class="cal-tbl">
+                  <thead>
+                    <tr>
+                      <th style="width:130px">Profile</th>
+                      <th style="width:150px">Parent</th>
+                      <th style="width:120px">ObjectLabel</th>
+                      <th style="width:80px">Type</th>
+                      <th style="width:100px">Old Value</th>
+                      <th style="width:100px">New Value</th>
+                      <th style="width:110px">ModifiedBy</th>
+                      <th style="width:120px">LastModifiedDate</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>Sales_Profile</td>
+                      <td>Account</td>
+                      <td>Account</td>
+                      <td>ObjectPerm</td>
+                      <td style="color:#E74C3C">NoAccess</td>
+                      <td style="color:#27ae60">Read</td>
+                      <td>John Doe</td>
+                      <td>2026-04-22 09:14</td>
+                    </tr>
+                    <tr>
+                      <td>Sales_Profile</td>
+                      <td>Project__c.Status__c</td>
+                      <td>Status</td>
+                      <td>FLS</td>
+                      <td style="color:#888">Read</td>
+                      <td style="color:#27ae60">Edit</td>
+                      <td>John Doe</td>
+                      <td>2026-04-22 09:16</td>
+                    </tr>
+                    <tr>
+                      <td>Admin</td>
+                      <td>AccountService</td>
+                      <td>AccountService</td>
+                      <td>ApexPerm</td>
+                      <td style="color:#E74C3C">Disabled</td>
+                      <td style="color:#27ae60">Enabled</td>
+                      <td>Jane Smith</td>
+                      <td>2026-04-21 14:02</td>
+                    </tr>
+                    <tr>
+                      <td>Standard_User</td>
+                      <td>Opportunity</td>
+                      <td>Opportunity</td>
+                      <td>ObjectPerm</td>
+                      <td style="color:#27ae60">Read</td>
+                      <td style="color:#27ae60">Create</td>
+                      <td>Jane Smith</td>
+                      <td>2026-04-20 16:45</td>
+                    </tr>
+                    <tr>
+                      <td>Marketing_Profile</td>
+                      <td>Lead.LeadSource</td>
+                      <td>Lead Source</td>
+                      <td>FLS</td>
+                      <td style="color:#888">NoAccess</td>
+                      <td style="color:#27ae60">Read</td>
+                      <td>Admin User</td>
+                      <td>2026-04-19 11:30</td>
+                    </tr>
+                    <tr>
+                      <td>Support_Profile</td>
+                      <td>Case.Priority</td>
+                      <td>Priority</td>
+                      <td>FLS</td>
+                      <td style="color:#888">Read</td>
+                      <td style="color:#27ae60">Edit</td>
+                      <td>Admin User</td>
+                      <td>2026-04-18 10:55</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- Tab 2: Api Version -->
+            <div class="m-panel" id="tp1-2">
+              <div class="hbox" style="gap:8px;align-items:center;padding:6px;">
+                <button class="cal-btn btn-d" data-tip="Scan classes/ and triggers/ folders for API versions">Refresh</button>
+                <button class="cal-btn btn-b" data-tip="Update all selected files to the current API version" style="opacity:.65" disabled>Update selected to current</button>
+                <span class="cal-lbl" style="font-size:11px;color:#666">Scans retrieve/classes and retrieve/triggers folders</span>
+              </div>
+              <div class="tbl-wrap" style="max-height:400px;overflow-y:auto">
+                <table class="cal-tbl">
+                  <thead>
+                    <tr>
+                      <th style="width:90px">Type</th>
+                      <th style="width:260px">Name</th>
+                      <th style="width:100px">Api Version</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>Class</td>
+                      <td>ProjectController</td>
+                      <td style="color:#E74C3C;font-weight:600">50.0</td>
+                    </tr>
+                    <tr>
+                      <td>Class</td>
+                      <td>LeadConversionHelper</td>
+                      <td style="color:#E74C3C;font-weight:600">52.0</td>
+                    </tr>
+                    <tr>
+                      <td>Class</td>
+                      <td>AccountService</td>
+                      <td style="color:#E74C3C;font-weight:600">55.0</td>
+                    </tr>
+                    <tr>
+                      <td>Trigger</td>
+                      <td>AccountTrigger</td>
+                      <td style="color:#e67e22;font-weight:600">57.0</td>
+                    </tr>
+                    <tr>
+                      <td>Trigger</td>
+                      <td>OpportunityTrigger</td>
+                      <td style="color:#e67e22;font-weight:600">58.0</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+          </div><!-- m-body -->
+        </div><!-- m-tabpane -->
+      </div><!-- right panel -->
+
+    </div><!-- outer hbox -->
+
+  </div><!-- mockup -->
+</div><!-- mockup-wrap -->
+
+<script>
+function sw(id,idx){
+  var tp=document.getElementById(id);
+  tp.querySelectorAll('.m-tab').forEach(function(t,i){t.classList.toggle('act',i===idx)});
+  tp.querySelectorAll('.m-panel').forEach(function(p,i){p.classList.toggle('act',i===idx)});
+}
+</script>
+
+<!-- Key features modal -->
+<div id="modal-kf" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:999;align-items:center;justify-content:center" onclick="if(event.target===this)this.style.display='none'">
+  <div style="background:#fff;border-radius:8px;padding:28px 32px;max-width:540px;width:90%;color:#1a2a35;box-shadow:0 8px 32px rgba(0,0,0,.3)">
+    <h3 style="margin:0 0 14px;color:#2980b9">&#9733; Key features</h3>
+    <ul style="margin:0;padding-left:20px;line-height:1.8">
+      <li>Retrieve Salesforce metadata from any org using a <strong>package.xml</strong> manifest via the Metadata API</li>
+      <li>Interactive <strong>tree view</strong> of package contents — expand, collapse, remove individual members; missing files highlighted in red</li>
+      <li>Detect and retrieve <strong>Profile changes</strong> (field-level security, object permissions, Apex class access) since last retrieve</li>
+      <li>Detect and retrieve <strong>Layout Assignment</strong> changes automatically added to profiles during retrieve</li>
+      <li><strong>API Version scanner</strong> — lists Apex classes and triggers with an API version more than 5 releases behind the current org; supports batch update to current version</li>
+      <li><strong>Prepare Deployment</strong> — copy the retrieve folder to another org's deploy folder in one click, with optional folder clean and automatic tab navigation</li>
+      <li>Optional <strong>VS Code / SFDX workspace push</strong> after retrieve (converts metadata format)</li>
+      <li>Save retrieve packages as named ZIP files for later reuse; merge multiple zipped package.xml files</li>
+      <li><strong>Dependency check</strong> — detect cross-component dependencies before deploying</li>
+    </ul>
+    <div style="text-align:right;margin-top:18px">
+      <button class="cal-btn btn-d" onclick="document.getElementById('modal-kf').style.display='none'">Close</button>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

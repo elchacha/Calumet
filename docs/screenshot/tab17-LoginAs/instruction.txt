@@ -1,0 +1,1 @@
+Place screenshots for tab17-LoginAs in this directory.

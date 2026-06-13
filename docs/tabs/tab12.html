@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SOQL Executor — Calumet</title>
+<link rel="stylesheet" href="../shared.css">
+<style>
+/* ── Blinking red button ── */
+@keyframes blink-red {
+  0%,100%{background:#E74C3C;border-color:#c03a2b;box-shadow:none}
+  50%{background:#ff1a00;border-color:#cc1400;box-shadow:0 0 8px 2px rgba(231,76,60,.75)}
+}
+.btn-blink-red{
+  animation:blink-red 1.2s ease-in-out infinite;
+  color:#fff;padding:4px 11px;border-radius:3px;font-size:11px;font-weight:700;
+  cursor:pointer;border:1px solid #c03a2b;font-family:inherit;white-space:nowrap
+}
+
+/* ── Query editor (dark) ── */
+.query-editor{
+  background:#1e2432;color:#e2e8f0;font-family:"Consolas","Courier New",monospace;
+  font-size:12px;padding:8px 10px;border:1px solid #3a4460;border-radius:3px;
+  resize:vertical;width:100%;line-height:1.6;min-height:72px
+}
+
+/* ── Toolbar rows ── */
+.tb-row{
+  display:flex;flex-wrap:wrap;align-items:center;gap:6px;
+  padding:5px 8px;background:#EDF3F7;border-bottom:1px solid #9AABBF
+}
+
+/* ── Status row ── */
+.status-row{
+  display:flex;flex-wrap:wrap;align-items:center;gap:8px;
+  padding:4px 8px;background:#f5f8fa;border-bottom:1px solid #d0dce6;
+  font-size:11px
+}
+
+/* ── Query tab bar ── */
+.qtabbar{
+  display:flex;background:#c8dae6;border-bottom:1px solid #9AABBF;
+  font-size:11px;font-weight:700
+}
+.qtab{
+  padding:5px 14px;cursor:pointer;color:#2C3E50;border-right:1px solid #9AABBF;
+  user-select:none
+}
+.qtab:hover{background:#b8ccd8}
+.qtab.act{background:#1e2432;color:#e2e8f0;border-bottom:2px solid #1e2432;margin-bottom:-1px}
+.qtab-add{
+  padding:5px 10px;cursor:pointer;color:#5b7a8a;font-size:13px;font-weight:400
+}
+.qtab-add:hover{color:#1A5276}
+
+/* ── Result area ── */
+.result-area{padding:6px 8px;background:#F8F8F8}
+
+/* ── Priority star badge ── */
+.star-col{color:#c07b00;font-weight:700}
+.legend-star{
+  font-size:11px;color:#7a6000;background:#fffbe6;border:1px solid #e6d060;
+  border-radius:3px;padding:3px 10px;display:inline-block;margin:4px 0 2px
+}
+
+/* ── Modal overlay ── */
+.modal-overlay{
+  display:none;position:fixed;inset:0;background:rgba(0,0,0,.62);z-index:9000;
+  align-items:center;justify-content:center
+}
+.modal-overlay.open{display:flex}
+.modal-box{
+  background:#F8F8F8;border:1px solid #9AABBF;border-radius:5px;
+  min-width:660px;max-width:720px;width:94vw;color:#1a2a35;
+  box-shadow:0 8px 40px rgba(0,0,0,.5);display:flex;flex-direction:column;
+  max-height:88vh;overflow:hidden
+}
+.modal-header{
+  background:#D8E6EE;padding:9px 14px;display:flex;align-items:center;gap:10px;
+  border-bottom:1px solid #9AABBF;flex-shrink:0
+}
+.modal-header h3{font-size:13px;font-weight:700;color:#1A5276;flex:1}
+.modal-body{padding:12px 14px;overflow-y:auto;flex:1}
+.modal-footer{
+  background:#EDF3F7;padding:8px 14px;border-top:1px solid #9AABBF;
+  display:flex;align-items:center;gap:8px;flex-shrink:0;flex-wrap:wrap
+}
+.modal-footer-path{
+  font-size:10px;color:#888;font-style:italic;flex:1;min-width:0;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis
+}
+
+/* Config table inside modal */
+.cfg-tbl{border-collapse:collapse;width:100%;font-size:11px}
+.cfg-tbl th{
+  background:#b8d5e3;color:#1A5276;font-weight:700;padding:4px 8px;
+  text-align:left;border-right:1px solid #9AABBF;white-space:nowrap
+}
+.cfg-tbl td{
+  padding:3px 8px;border-top:1px solid #d8e8f0;cursor:pointer
+}
+.cfg-tbl tr.sel td{background:#cde8f5}
+
+/* Key features modal */
+.kf-list{list-style:disc;padding-left:20px;line-height:1.9;font-size:12px;color:#1a2a35}
+
+/* italic grey legend */
+.dbl-legend{font-size:10px;color:#888;font-style:italic;margin:2px 0 6px}
+</style>
+</head>
+<body class="tab-page">
+
+<!-- ── Summary card ── -->
+<div class="sum">
+  <div class="sum-title">
+    <h2>SOQL Executor</h2>
+    <span class="sum-badge">Tab 12</span>
+    <button class="cal-btn btn-d" onclick="document.getElementById('kf-modal').classList.add('open')" style="margin-left:8px;font-size:10px;padding:2px 9px">Key features</button>
+  </div>
+  <p class="sum-desc">
+    Multi-tab SOQL query editor with real-time execution, Tooling API support, SELECT&nbsp;* expansion
+    with configurable priority fields, bulk mode, fast record count, and saved query management.
+    Results can be filtered and exported to CSV.
+  </p>
+</div>
+
+<!-- ── Mockup ── -->
+<div class="mockup-wrap">
+  <div class="mockup">
+
+    <!-- Query tab bar -->
+    <div class="qtabbar">
+      <div class="qtab act" id="qtab-0" onclick="swQ(0)">account</div>
+      <div class="qtab" id="qtab-1" onclick="swQ(1)">opportunity</div>
+      <div class="qtab-add" title="New query tab">+</div>
+    </div>
+
+    <!-- ════ ACCOUNT PANEL ════ -->
+    <div id="qpanel-0">
+
+      <!-- Query editor -->
+      <div style="padding:6px 8px 0;background:#1e2432">
+        <textarea class="query-editor" rows="3" readonly>SELECT * FROM Account limit 10</textarea>
+      </div>
+
+      <!-- Toolbar row 1 -->
+      <div class="tb-row">
+        <span class="cal-lbl">Timeout:</span>
+        <input class="cal-tf" value="0" style="width:42px" readonly data-tip="Query timeout in seconds (0 = no limit)">
+        <span class="cal-lbl">Max rows:</span>
+        <input class="cal-tf" value="10000" style="width:58px" readonly data-tip="Maximum number of rows returned">
+        <button class="cal-btn btn-b" data-tip="Execute the SOQL query">Execute</button>
+        <div class="vsep" style="align-self:stretch"></div>
+        <label class="cal-chk"><input type="checkbox" disabled> Fast count</label>
+        <label class="cal-chk"><input type="checkbox" disabled> Bulk Mode</label>
+        <label class="cal-chk"><input type="checkbox" checked disabled> Default ordering</label>
+        <div class="vsep" style="align-self:stretch"></div>
+        <select class="cal-cb" style="width:160px" data-tip="Load a previously saved query">
+          <option>-- Saved queries --</option>
+          <option>Account all fields</option>
+          <option>Account active customers</option>
+          <option>Recent modified accounts</option>
+        </select>
+        <button class="cal-btn btn-d" data-tip="Save the current query">Save query</button>
+      </div>
+
+      <!-- Toolbar row 2 -->
+      <div class="tb-row">
+        <label class="cal-chk"><input type="checkbox" disabled> Tooling</label>
+        <label class="cal-chk"><input type="checkbox" checked disabled> Filter * query</label>
+        <label class="cal-chk"><input type="checkbox" disabled> monoQueries</label>
+        <span class="cal-lbl" style="margin-left:4px">Max *:</span>
+        <input class="cal-tf" value="100000" style="width:68px" readonly data-tip="Maximum field count for SELECT * expansion">
+        <span class="cal-lbl">Max:</span>
+        <input class="cal-tf" value="500000" style="width:68px" readonly data-tip="Absolute maximum rows">
+        <label class="cal-chk"><input type="checkbox" disabled> No Check</label>
+        <div class="spacer"></div>
+        <button class="cal-btn btn-d" data-tip="Show the expanded SOQL query (after SELECT * resolution)">Show query</button>
+        <button class="cal-btn btn-d" data-tip="Open the saved queries folder">Open query folder</button>
+        <button class="cal-btn btn-d" data-tip="Refresh the saved query list">Refresh list</button>
+        <button class="btn-blink-red" onclick="document.getElementById('cfg-modal').classList.add('open')"
+          data-tip="Configure priority fields for SELECT * expansion">Select * config</button>
+      </div>
+
+      <!-- Status row -->
+      <div class="status-row">
+        <span class="cal-lbl" style="color:#1A5276;font-weight:700">number of records: 3</span>
+        <div class="vsep" style="align-self:stretch"></div>
+        <label class="cal-chk"><input type="checkbox" disabled> Apply filter</label>
+        <input class="cal-tf" placeholder="Filter..." style="width:160px" readonly>
+        <div class="vsep" style="align-self:stretch"></div>
+        <span class="cal-lbl">Separator:</span>
+        <input class="cal-tf" value=";" style="width:28px" readonly>
+        <button class="cal-btn btn-o" data-tip="Export result to CSV">Extract</button>
+      </div>
+
+      <!-- Result table — Account -->
+      <div class="result-area">
+        <div class="legend-star">&#9733; Fields defined in Select * config are displayed first.</div>
+        <div class="tbl-wrap">
+          <table class="cal-tbl">
+            <thead>
+              <tr>
+                <th style="width:160px" class="star-col">&#9733; Name</th>
+                <th style="width:148px" class="star-col">&#9733; RecordType.Name</th>
+                <th style="width:120px" class="star-col">&#9733; Owner.Name</th>
+                <th style="width:148px" class="star-col">&#9733; LastModifiedBy.Name</th>
+                <th style="width:148px" class="star-col">&#9733; Account_Score__c</th>
+                <th style="width:120px" class="star-col">&#9733; Account_Region__c</th>
+                <th style="width:148px" class="star-col">&#9733; Account_ExternalId__c</th>
+                <th style="width:170px">Id</th>
+                <th style="width:140px">CreatedDate</th>
+                <th style="width:140px">LastModifiedDate</th>
+                <th style="width:120px">CreatedBy.Name</th>
+                <th style="width:120px">AccountSource</th>
+                <th style="width:148px">Account_UniqueKey__c</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Name0</td>
+                <td>Innovation Strategic Partner</td>
+                <td>user_01</td>
+                <td>Automated Process</td>
+                <td>18.2</td>
+                <td>France</td>
+                <td>EXT100001</td>
+                <td style="font-family:monospace;font-size:10px">001XXXXXXXXXXXXXXXXA</td>
+                <td>2025-12-25 09:00</td>
+                <td>2026-04-28 14:32</td>
+                <td>user_01</td>
+                <td style="color:#888">&mdash;</td>
+                <td style="font-family:monospace;font-size:10px">001XXXXXXXXXXXXXXXXA</td>
+              </tr>
+              <tr>
+                <td>Name1</td>
+                <td>Target Company</td>
+                <td>user_01</td>
+                <td>user_01</td>
+                <td>9.1</td>
+                <td style="color:#888">&mdash;</td>
+                <td>EXT100002</td>
+                <td style="font-family:monospace;font-size:10px">001XXXXXXXXXXXXXXXXB</td>
+                <td>2025-12-29 11:15</td>
+                <td>2026-01-11 08:22</td>
+                <td>user_01</td>
+                <td style="color:#888">&mdash;</td>
+                <td style="font-family:monospace;font-size:10px">001XXXXXXXXXXXXXXXXB</td>
+              </tr>
+              <tr>
+                <td>Name2</td>
+                <td>Target Company</td>
+                <td>user_02</td>
+                <td>user_01</td>
+                <td>18.2</td>
+                <td>Rest of the World</td>
+                <td>EXT100003</td>
+                <td style="font-family:monospace;font-size:10px">001XXXXXXXXXXXXXXXXC</td>
+                <td>2025-12-30 16:48</td>
+                <td>2026-01-11 09:05</td>
+                <td>user_01</td>
+                <td style="color:#888">&mdash;</td>
+                <td style="font-family:monospace;font-size:10px">001XXXXXXXXXXXXXXXXC</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div><!-- /qpanel-0 -->
+
+    <!-- ════ OPPORTUNITY PANEL ════ -->
+    <div id="qpanel-1" style="display:none">
+
+      <!-- Query editor -->
+      <div style="padding:6px 8px 0;background:#1e2432">
+        <textarea class="query-editor" rows="3" readonly>SELECT * FROM Opportunity WHERE StageName != 'Closed Lost' AND CloseDate >= THIS_YEAR ORDER BY CloseDate ASC LIMIT 500</textarea>
+      </div>
+
+      <!-- Toolbar row 1 -->
+      <div class="tb-row">
+        <span class="cal-lbl">Timeout:</span>
+        <input class="cal-tf" value="0" style="width:42px" readonly data-tip="Query timeout in seconds (0 = no limit)">
+        <span class="cal-lbl">Max rows:</span>
+        <input class="cal-tf" value="10000" style="width:58px" readonly data-tip="Maximum number of rows returned">
+        <button class="cal-btn btn-b" data-tip="Execute the SOQL query">Execute</button>
+        <div class="vsep" style="align-self:stretch"></div>
+        <label class="cal-chk"><input type="checkbox" disabled> Fast count</label>
+        <label class="cal-chk"><input type="checkbox" disabled> Bulk Mode</label>
+        <label class="cal-chk"><input type="checkbox" checked disabled> Default ordering</label>
+        <div class="vsep" style="align-self:stretch"></div>
+        <select class="cal-cb" style="width:160px">
+          <option>-- Saved queries --</option>
+          <option>Open opportunities</option>
+          <option>Opportunities this quarter</option>
+        </select>
+        <button class="cal-btn btn-d">Save query</button>
+      </div>
+
+      <!-- Toolbar row 2 -->
+      <div class="tb-row">
+        <label class="cal-chk"><input type="checkbox" disabled> Tooling</label>
+        <label class="cal-chk"><input type="checkbox" checked disabled> Filter * query</label>
+        <label class="cal-chk"><input type="checkbox" disabled> monoQueries</label>
+        <span class="cal-lbl" style="margin-left:4px">Max *:</span>
+        <input class="cal-tf" value="100000" style="width:68px" readonly>
+        <span class="cal-lbl">Max:</span>
+        <input class="cal-tf" value="500000" style="width:68px" readonly>
+        <label class="cal-chk"><input type="checkbox" disabled> No Check</label>
+        <div class="spacer"></div>
+        <button class="cal-btn btn-d">Show query</button>
+        <button class="cal-btn btn-d">Open query folder</button>
+        <button class="cal-btn btn-d">Refresh list</button>
+        <button class="btn-blink-red" onclick="document.getElementById('cfg-modal').classList.add('open')"
+          data-tip="Configure priority fields for SELECT * expansion">Select * config</button>
+      </div>
+
+      <!-- Status row -->
+      <div class="status-row">
+        <span class="cal-lbl" style="color:#1A5276;font-weight:700">number of records: 5</span>
+        <div class="vsep" style="align-self:stretch"></div>
+        <label class="cal-chk"><input type="checkbox" disabled> Apply filter</label>
+        <input class="cal-tf" placeholder="Filter..." style="width:160px" readonly>
+        <div class="vsep" style="align-self:stretch"></div>
+        <span class="cal-lbl">Separator:</span>
+        <input class="cal-tf" value=";" style="width:28px" readonly>
+        <button class="cal-btn btn-o" data-tip="Export result to CSV">Extract</button>
+      </div>
+
+      <!-- Result table — Opportunity -->
+      <div class="result-area">
+        <div class="legend-star">&#9733; Fields defined in Select * config are displayed first.</div>
+        <div class="tbl-wrap">
+          <table class="cal-tbl">
+            <thead>
+              <tr>
+                <th style="width:140px" class="star-col">&#9733; Name</th>
+                <th style="width:130px" class="star-col">&#9733; StageName</th>
+                <th style="width:100px" class="star-col">&#9733; CloseDate</th>
+                <th style="width:90px" class="star-col">&#9733; Amount</th>
+                <th style="width:170px" class="star-col">&#9733; AccountId</th>
+                <th style="width:110px" class="star-col">&#9733; Owner.Name</th>
+                <th style="width:170px">Id</th>
+                <th style="width:70px">Probability</th>
+                <th style="width:100px">ForecastCategory</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Deal Alpha</td>
+                <td>Proposal</td>
+                <td>2026-06-15</td>
+                <td style="text-align:right">45 000</td>
+                <td style="font-family:monospace;font-size:10px">001XXXXXXXXXXXXXXXXA</td>
+                <td>user_01</td>
+                <td style="font-family:monospace;font-size:10px">OppAAAAAAAAAAAAAAAAA</td>
+                <td style="text-align:right">40</td>
+                <td>Pipeline</td>
+              </tr>
+              <tr>
+                <td>Deal Beta</td>
+                <td>Negotiation</td>
+                <td>2026-05-30</td>
+                <td style="text-align:right">120 000</td>
+                <td style="font-family:monospace;font-size:10px">001XXXXXXXXXXXXXXXXB</td>
+                <td>user_02</td>
+                <td style="font-family:monospace;font-size:10px">OppBBBBBBBBBBBBBBBBB</td>
+                <td style="text-align:right">80</td>
+                <td>BestCase</td>
+              </tr>
+              <tr>
+                <td>Project Gamma</td>
+                <td>Value Proposition</td>
+                <td>2026-07-20</td>
+                <td style="text-align:right">78 500</td>
+                <td style="font-family:monospace;font-size:10px">001XXXXXXXXXXXXXXXXC</td>
+                <td>user_01</td>
+                <td style="font-family:monospace;font-size:10px">OppCCCCCCCCCCCCCCCCC</td>
+                <td style="text-align:right">30</td>
+                <td>Pipeline</td>
+              </tr>
+              <tr>
+                <td>Initiative Delta</td>
+                <td>Perception Analysis</td>
+                <td>2026-06-01</td>
+                <td style="text-align:right">33 000</td>
+                <td style="font-family:monospace;font-size:10px">001XXXXXXXXXXXXXXXXA</td>
+                <td>user_03</td>
+                <td style="font-family:monospace;font-size:10px">OppDDDDDDDDDDDDDDDDD</td>
+                <td style="text-align:right">20</td>
+                <td>Pipeline</td>
+              </tr>
+              <tr>
+                <td>Plan Epsilon</td>
+                <td>Id. Decision Makers</td>
+                <td>2026-08-10</td>
+                <td style="text-align:right">215 000</td>
+                <td style="font-family:monospace;font-size:10px">001XXXXXXXXXXXXXXXXB</td>
+                <td>user_02</td>
+                <td style="font-family:monospace;font-size:10px">OppEEEEEEEEEEEEEEEEE</td>
+                <td style="text-align:right">60</td>
+                <td>BestCase</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div><!-- /qpanel-1 -->
+
+  </div><!-- /mockup -->
+</div><!-- /mockup-wrap -->
+
+<!-- ════════════════════════════════════════
+     SELECT * CONFIG MODAL
+     ════════════════════════════════════════ -->
+<div class="modal-overlay" id="cfg-modal" onclick="closeCfgOnBg(event)">
+  <div class="modal-box" onclick="event.stopPropagation()">
+    <div class="modal-header">
+      <h3>SELECT * Priority Fields Configuration</h3>
+    </div>
+    <div class="modal-body">
+
+      <!-- Object selector -->
+      <div class="hbox" style="gap:8px;align-items:center;margin-bottom:10px">
+        <span class="cal-lbl" style="font-weight:700">Object:</span>
+        <select class="cal-cb" style="width:180px" id="cfg-obj-sel" onchange="cfgObjChange(this.value)">
+          <option value="Account" selected>Account</option>
+          <option value="Opportunity">Opportunity</option>
+          <option value="Contact">Contact</option>
+          <option value="Lead">Lead</option>
+        </select>
+      </div>
+
+      <!-- Toolbar above table -->
+      <div class="hbox" style="gap:6px;align-items:center;margin-bottom:2px">
+        <button class="cal-btn btn-g" onclick="cfgAddRow()" data-tip="Append a blank row">Add row</button>
+        <button class="cal-btn btn-r" onclick="cfgRemoveRow()" data-tip="Remove selected row">Remove</button>
+        <button class="cal-btn btn-d" onclick="cfgMoveUp()" data-tip="Move selected row up">&#9650;</button>
+        <button class="cal-btn btn-d" onclick="cfgMoveDown()" data-tip="Move selected row down">&#9660;</button>
+      </div>
+      <div class="dbl-legend">Double-click a cell to edit it</div>
+
+      <!-- Config table -->
+      <div class="tbl-wrap" style="max-height:240px;overflow-y:auto">
+        <table class="cfg-tbl" id="cfg-table">
+          <thead>
+            <tr>
+              <th style="width:210px">Field / Relation.Field</th>
+              <th style="width:170px">Trigger Field (for relations)</th>
+              <th style="width:160px">Object only (optional)</th>
+            </tr>
+          </thead>
+          <tbody id="cfg-tbody">
+            <!-- populated by JS -->
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+    <div class="modal-footer">
+      <span class="modal-footer-path" id="cfg-path-label">
+        Reading: cfg/selectAll.cfg &nbsp;&mdash;&nbsp; base &mdash; edits will create selectAllCustom.cfg
+      </span>
+      <button class="cal-btn btn-d" onclick="cfgReset()" data-tip="Restore factory defaults for this object">Reset to default</button>
+      <button class="cal-btn btn-d" data-tip="Open configuration help">? Help</button>
+      <button class="cal-btn btn-g" onclick="document.getElementById('cfg-modal').classList.remove('open')">Save</button>
+      <button class="cal-btn btn-d" onclick="document.getElementById('cfg-modal').classList.remove('open')">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════
+     KEY FEATURES MODAL
+     ════════════════════════════════════════ -->
+<div class="modal-overlay" id="kf-modal" onclick="document.getElementById('kf-modal').classList.remove('open')">
+  <div class="modal-box" style="max-width:500px" onclick="event.stopPropagation()">
+    <div class="modal-header">
+      <h3>SOQL Executor &mdash; Key Features</h3>
+    </div>
+    <div class="modal-body">
+      <ul class="kf-list">
+        <li>Multi-tab query editor with monospace dark theme</li>
+        <li>SELECT * expansion with configurable priority fields per object</li>
+        <li>Tooling API mode for metadata queries (ApexClass, CustomObject, etc.)</li>
+        <li>Fast count (COUNT_DISTINCT) without fetching all rows</li>
+        <li>Bulk API v2 mode for large datasets (&gt; 10 000 rows)</li>
+        <li>Relation field resolution (e.g. <code>RecordType.Name</code>, <code>Owner.Name</code>)</li>
+        <li>Row filter on result table (client-side search)</li>
+        <li>CSV export with configurable column separator</li>
+        <li>Saved query library with open-folder shortcut</li>
+        <li>Per-tab timeout and max-rows override</li>
+      </ul>
+    </div>
+    <div class="modal-footer" style="justify-content:flex-end">
+      <button class="cal-btn btn-d" onclick="document.getElementById('kf-modal').classList.remove('open')">Close</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ── Query tab switch ── */
+function swQ(idx){
+  [0,1].forEach(function(i){
+    document.getElementById('qtab-'+i).classList.toggle('act',i===idx);
+    document.getElementById('qpanel-'+i).style.display=(i===idx)?'':'none';
+  });
+}
+
+/* ── Generic sub-tab switch (used by shared.css pattern if needed) ── */
+function sw(id,idx){
+  var tp=document.getElementById(id);
+  tp.querySelectorAll('.m-tab').forEach(function(t,i){t.classList.toggle('act',i===idx)});
+  tp.querySelectorAll('.m-panel').forEach(function(p,i){p.classList.toggle('act',i===idx)});
+}
+
+/* ── Config modal close on backdrop ── */
+function closeCfgOnBg(e){
+  if(e.target===document.getElementById('cfg-modal')){
+    document.getElementById('cfg-modal').classList.remove('open');
+  }
+}
+
+/* ── Config data per object ── */
+var CFG_DATA = {
+  Account:[
+    {f:'Name',                   t:'',                  o:''},
+    {f:'RecordType.Name',        t:'RecordTypeId',      o:''},
+    {f:'Owner.Name',             t:'OwnerId',           o:''},
+    {f:'LastModifiedBy.Name',    t:'LastModifiedById',  o:''},
+    {f:'Account_Score__c',t:'',                  o:'Account'},
+    {f:'Account_Region__c',      t:'',                  o:'Account'},
+    {f:'Account_ExternalId__c',         t:'',                  o:'Account'}
+  ],
+  Opportunity:[
+    {f:'Name',       t:'',         o:''},
+    {f:'StageName',  t:'',         o:''},
+    {f:'CloseDate',  t:'',         o:''},
+    {f:'Amount',     t:'',         o:''},
+    {f:'AccountId',  t:'',         o:''},
+    {f:'Owner.Name', t:'OwnerId',  o:''}
+  ],
+  Contact:[
+    {f:'LastName',     t:'',          o:''},
+    {f:'FirstName',    t:'',          o:''},
+    {f:'Account.Name', t:'AccountId', o:''},
+    {f:'Owner.Name',   t:'OwnerId',   o:''},
+    {f:'Email',        t:'',          o:''}
+  ],
+  Lead:[
+    {f:'LastName',   t:'',         o:''},
+    {f:'Company',    t:'',         o:''},
+    {f:'Status',     t:'',         o:''},
+    {f:'Owner.Name', t:'OwnerId',  o:''}
+  ]
+};
+
+/* Default copy for reset */
+var CFG_DEFAULTS = JSON.parse(JSON.stringify(CFG_DATA));
+
+var cfgSelected = -1;
+
+function cfgRender(){
+  var obj=document.getElementById('cfg-obj-sel').value;
+  var rows=CFG_DATA[obj]||[];
+  var tb=document.getElementById('cfg-tbody');
+  tb.innerHTML='';
+  rows.forEach(function(r,i){
+    var tr=document.createElement('tr');
+    if(i===cfgSelected) tr.classList.add('sel');
+    tr.innerHTML=
+      '<td ondblclick="cfgEditCell(this)">'+(r.f||'&nbsp;')+'</td>'+
+      '<td ondblclick="cfgEditCell(this)">'+(r.t||'&nbsp;')+'</td>'+
+      '<td ondblclick="cfgEditCell(this)">'+(r.o||'&nbsp;')+'</td>';
+    (function(idx){
+      tr.addEventListener('click',function(){cfgSelectRow(idx);});
+    })(i);
+    tb.appendChild(tr);
+  });
+}
+
+function cfgSelectRow(i){
+  cfgSelected=i;
+  cfgRender();
+}
+
+function cfgObjChange(){
+  cfgSelected=-1;
+  cfgRender();
+}
+
+function cfgEditCell(td){
+  if(td.querySelector('input')) return;
+  var orig=td.textContent.trim();
+  var inp=document.createElement('input');
+  inp.value=(orig===' '||orig==='')?'':orig;
+  inp.style.cssText='width:100%;border:none;outline:none;background:transparent;font-size:11px;font-family:inherit';
+  td.textContent='';
+  td.appendChild(inp);
+  inp.focus();
+  inp.select();
+  function commit(){
+    var obj=document.getElementById('cfg-obj-sel').value;
+    var rows=CFG_DATA[obj];
+    var tr=td.parentElement;
+    var idx=Array.from(tr.parentElement.children).indexOf(tr);
+    var col=Array.from(tr.children).indexOf(td);
+    if(idx<0||idx>=rows.length) return;
+    if(col===0) rows[idx].f=inp.value;
+    else if(col===1) rows[idx].t=inp.value;
+    else rows[idx].o=inp.value;
+    cfgRender();
+  }
+  inp.addEventListener('blur',commit);
+  inp.addEventListener('keydown',function(e){
+    if(e.key==='Enter'){inp.blur();}
+    if(e.key==='Escape'){cfgRender();}
+  });
+}
+
+function cfgAddRow(){
+  var obj=document.getElementById('cfg-obj-sel').value;
+  CFG_DATA[obj].push({f:'',t:'',o:''});
+  cfgSelected=CFG_DATA[obj].length-1;
+  cfgRender();
+}
+
+function cfgRemoveRow(){
+  var obj=document.getElementById('cfg-obj-sel').value;
+  var rows=CFG_DATA[obj];
+  if(cfgSelected>=0&&cfgSelected<rows.length){
+    rows.splice(cfgSelected,1);
+    if(cfgSelected>=rows.length) cfgSelected=rows.length-1;
+    cfgRender();
+  }
+}
+
+function cfgMoveUp(){
+  var obj=document.getElementById('cfg-obj-sel').value;
+  var rows=CFG_DATA[obj];
+  if(cfgSelected>0){
+    var tmp=rows[cfgSelected-1];
+    rows[cfgSelected-1]=rows[cfgSelected];
+    rows[cfgSelected]=tmp;
+    cfgSelected--;
+    cfgRender();
+  }
+}
+
+function cfgMoveDown(){
+  var obj=document.getElementById('cfg-obj-sel').value;
+  var rows=CFG_DATA[obj];
+  if(cfgSelected>=0&&cfgSelected<rows.length-1){
+    var tmp=rows[cfgSelected+1];
+    rows[cfgSelected+1]=rows[cfgSelected];
+    rows[cfgSelected]=tmp;
+    cfgSelected++;
+    cfgRender();
+  }
+}
+
+function cfgReset(){
+  var obj=document.getElementById('cfg-obj-sel').value;
+  CFG_DATA[obj]=JSON.parse(JSON.stringify(CFG_DEFAULTS[obj]));
+  cfgSelected=-1;
+  cfgRender();
+}
+
+/* Initial render */
+cfgRender();
+</script>
+</body>
+</html>

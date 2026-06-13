@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Deploy — Calumet</title>
+<link rel="stylesheet" href="../shared.css">
+<style>
+.deploy-left{width:440px;min-width:320px;flex-shrink:0;display:flex;flex-direction:column;gap:6px;padding:10px;background:#f0f4f8;border-right:1px solid #9AABBF}
+.deploy-right{flex:1;min-width:0;display:flex;flex-direction:column}
+.deploy-wrap{display:flex;min-height:640px;background:#F8F8F8}
+.section-sep{border:none;border-top:1px solid #9AABBF;margin:4px 0}
+.no-project-lbl{color:#d01a4e;font-weight:700;font-size:15px;padding:4px 0 2px}
+.deploy-section{display:flex;flex-direction:column;gap:5px;padding:4px 0}
+.pkg-tree{background:#fff;border:1px solid #9AABBF;border-radius:3px;font-size:11px;overflow-y:auto}
+.pkg-tree ul{margin:0;padding:0;list-style:none}
+.pkg-tree li{padding:2px 0 2px 16px;border-bottom:1px solid #eef3f6;cursor:default}
+.pkg-tree li.type-node{padding-left:4px;font-weight:700;color:#1A5276;background:#e8f0f8;border-bottom:1px solid #c8dae6}
+.pkg-tree li.member-node{padding-left:20px;color:#2c3e50}
+.test-list{background:#fff;border:1px solid #9AABBF;border-radius:3px;font-size:11px;overflow-y:auto}
+.test-list li{padding:2px 8px;border-bottom:1px solid #eef3f6;cursor:default;list-style:none}
+.test-list li.selected{background:#c8dde8;color:#1a5276}
+.profile-status-aut{display:inline-block;width:12px;height:12px;background:#27ae60;border-radius:2px}
+.profile-status-nat{display:inline-block;width:12px;height:12px;background:#888;border-radius:2px}
+.profile-status-fbd{display:inline-block;width:12px;height:12px;background:#E74C3C;border-radius:2px}
+</style>
+</head>
+<body class="tab-page">
+
+<div class="sum">
+  <div class="sum-title">
+    <h2>Deploy</h2>
+    <span class="sum-badge">Tab 3</span>
+  </div>
+  <p class="sum-desc">
+    Deploy metadata packages to Salesforce. Supports validate, deploy, test-and-deploy and quick-check operations.
+    <button class="cal-btn btn-d" style="margin-left:10px" onclick="document.getElementById('modal-kf').style.display='flex'">&#9733; Key features</button>
+  </p>
+</div>
+
+<div class="mockup-wrap">
+  <div class="mockup">
+    <div class="deploy-wrap">
+
+      <!-- ══ LEFT PANEL ══ -->
+      <div class="deploy-left">
+
+        <!-- No project warning -->
+        <div class="deploy-section">
+          <span class="no-project-lbl">Please select a Project in order to deploy</span>
+        </div>
+
+        <!-- Quick check row -->
+        <div class="deploy-section">
+          <div class="hbox" style="gap:8px;align-items:center">
+            <button class="cal-btn btn-d">Quick check</button>
+            <label class="cal-chk"><input type="checkbox" checked disabled> Inject Backup</label>
+          </div>
+          <div class="hbox" style="gap:8px;align-items:center;margin-left:2px">
+            <label class="cal-chk"><input type="checkbox" disabled> Compile All Local Class</label>
+            <label class="cal-chk"><input type="checkbox" disabled> Run All Test</label>
+          </div>
+        </div>
+
+        <hr class="section-sep">
+
+        <!-- Deploy buttons block -->
+        <div class="deploy-section">
+          <div class="hbox" style="gap:8px;align-items:center">
+            <button class="cal-btn btn-d" style="opacity:.55" disabled>Deploy (No Test Run)</button>
+            <label class="cal-chk" style="margin-left:auto"><input type="checkbox" checked disabled> Open Deploy Status Page</label>
+          </div>
+          <div class="hbox" style="gap:8px;align-items:center">
+            <button class="cal-btn btn-d">Validate</button>
+            <label class="cal-chk"><input type="checkbox" disabled> inject backup&amp;package.xml</label>
+            <button class="cal-btn btn-d" style="margin-left:auto">Validate all tests</button>
+          </div>
+          <div class="hbox" style="gap:8px;align-items:center">
+            <button class="cal-btn btn-d" style="opacity:.55" disabled>Run test then deploy</button>
+            <div class="spacer"></div>
+            <button class="cal-btn btn-d">Run all tests then deploy</button>
+          </div>
+        </div>
+
+        <hr class="section-sep">
+
+        <!-- Manage package buttons -->
+        <div class="deploy-section">
+          <div class="hbox" style="gap:8px;align-items:center">
+            <button class="cal-btn btn-d">View Deploy Code</button>
+            <button class="cal-btn btn-d">View Package</button>
+            <button class="cal-btn btn-d">Open Deploy Folder</button>
+          </div>
+          <div class="hbox" style="gap:8px;align-items:center;margin-top:2px">
+            <button class="cal-btn btn-d" style="opacity:.55" disabled>View/Edit postDeploy information</button>
+          </div>
+        </div>
+
+        <hr class="section-sep">
+
+        <!-- Deployment reason + comment -->
+        <div class="deploy-section">
+          <div class="hbox" style="gap:8px;align-items:center">
+            <span class="cal-lbl" style="font-weight:700;white-space:nowrap">Deployment reason :</span>
+            <input class="cal-tf cal-grow" value="" readonly placeholder="Enter deployment reason...">
+          </div>
+          <hr class="section-sep">
+          <span class="cal-lbl" style="text-align:center;display:block">Comment (0/255)</span>
+          <textarea class="cal-ta" rows="5" readonly style="width:100%;resize:none"></textarea>
+        </div>
+
+        <hr class="section-sep">
+
+        <!-- Zip packages selector -->
+        <div class="deploy-section">
+          <span class="cal-lbl" style="font-size:11px;color:#555">zip packages for this project (could be created during retrieve operation)</span>
+          <div class="hbox" style="gap:8px;align-items:center;margin-top:4px">
+            <select class="cal-cb" style="width:200px" disabled>
+              <option></option>
+              <option>PROJ-2026-03-14_v2</option>
+              <option>PROJ-2026-02-28_hotfix</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ RIGHT PANEL — TabPane ══ -->
+      <div class="deploy-right">
+        <div class="m-tabpane" id="tp3" style="height:100%;display:flex;flex-direction:column">
+          <div class="m-tabbar">
+            <div class="m-tab act" onclick="sw('tp3',0)">packages(6/264)</div>
+            <div class="m-tab" onclick="sw('tp3',1)">profiles(8/10)</div>
+            <div class="m-tab" onclick="sw('tp3',2)">test(3)</div>
+            <div class="m-tab" onclick="sw('tp3',3)">Quick Check</div>
+            <div class="m-tab" onclick="sw('tp3',4)">Api Version (174)</div>
+          </div>
+
+          <div class="m-body" style="flex:1;overflow:hidden">
+
+            <!-- ── Tab 0 : Package ── -->
+            <div class="m-panel act" id="tp3-0" style="padding:6px">
+              <div class="hbox" style="gap:6px;align-items:center;margin-bottom:6px">
+                <button class="cal-btn btn-d">See All</button>
+                <button class="cal-btn btn-d">Hide All</button>
+                <button class="cal-btn btn-d">Refresh</button>
+                <button class="cal-btn btn-r">Remove</button>
+              </div>
+              <div class="pkg-tree" style="max-height:540px">
+                <ul>
+                  <li class="type-node">&#9660; ApexClass (1)</li>
+                  <li class="member-node">AP217_SFA2_DeploiementContratCadre</li>
+                  <li class="type-node">&#9660; ApexPage (1)</li>
+                  <li class="member-node">AP217_SFA2_DeploiementContratCadre</li>
+                  <li class="type-node">&#9658; ApexTrigger (183)</li>
+                  <li class="type-node">&#9660; Flow (77)</li>
+                  <li class="member-node">ACC_MAJ_Jalon_1</li>
+                  <li class="member-node">Account_MAJ_Date_derniere_modification_Qualification_macro</li>
+                  <li class="member-node">Account_Mise_a_jour_date_dernier_Appel</li>
+                  <li class="member-node">Account_Redescente_du_rating_Etablissements_sur_les_affaires_en_cours</li>
+                  <li class="member-node">Account_mise_a_jour_filiere</li>
+                  <li class="member-node">Acheminement_dl_ments_de_travail</li>
+                  <li class="member-node">Action_Action_Hors_Cible_et_Objectifs</li>
+                  <li class="member-node">Action_ReOpen_Action</li>
+                  <li class="member-node">Affaire_Field_Updates</li>
+                  <li class="member-node">Affaire_Mise_jour_Flag_Auto_close</li>
+                  <li class="member-node">Affaire_Mise_jour_Flag_Auto_close_3_mois</li>
+                  <li class="member-node">Affaire_Mise_jour_Flag_Auto_close_6_mois</li>
+                  <li class="member-node">Affaire_Mise_jour_Flag_Auto_close_6_mois_MAJ_Version</li>
+                  <li class="member-node">Affaire_Recopie_Specificite_Service_Client_du_contrat_precedent</li>
+                  <li class="member-node">Annulation_RIB_apres_Virement_Echoue</li>
+                  <li class="member-node">Case_Mise_jour_champs_Pick_list_Omni_Channel</li>
+                  <li class="member-node">Case_PP_Chronofresh_AR_formulaire_web</li>
+                  <li class="member-node">Case_PP_Chronopost_AR_formulaire_web</li>
+                  <li class="member-node">Case_Transfert_vers_file_d_attente_Omnichannel</li>
+                  <li class="member-node">Cloture_automatique_des_Affaires</li>
+                  <li class="member-node">Cloturer</li>
+                  <li class="member-node">CompteClient_SimpleAction_1</li>
+                  <li class="member-node">Compte_Client_EcheanceEngagementDomainPublic_IDUCF</li>
+                  <li class="type-node">&#9658; CustomField (2)</li>
+                </ul>
+              </div>
+            </div>
+
+            <!-- ── Tab 1 : Profiles ── -->
+            <div class="m-panel" id="tp3-1" style="padding:6px">
+              <div class="hbox" style="gap:8px;align-items:center;margin-bottom:6px">
+                <button class="cal-btn btn-d">Reload</button>
+                <button class="cal-btn btn-d">Remove unauthorised profile</button>
+              </div>
+              <span class="cal-lbl" style="display:block;margin-bottom:6px;color:#888">Only listed Profiles will be used during deployment.</span>
+              <div class="split-pane" style="gap:8px">
+                <div class="split-panel" style="max-width:320px">
+                  <div class="tbl-wrap" style="max-height:400px;overflow-y:auto">
+                    <table class="cal-tbl">
+                      <thead>
+                        <tr>
+                          <th style="width:230px">Profile</th>
+                          <th style="width:30px" data-tip="D = deployable status">D</th>
+                          <th style="width:30px" data-tip="S = source exists">S</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td>Admin.profile</td>
+                          <td><span class="profile-status-aut"></span></td>
+                          <td style="color:#27ae60">&#10003;</td>
+                        </tr>
+                        <tr>
+                          <td>Commercial.profile</td>
+                          <td><span class="profile-status-aut"></span></td>
+                          <td style="color:#27ae60">&#10003;</td>
+                        </tr>
+                        <tr>
+                          <td>CustomerPortal.profile</td>
+                          <td><span class="profile-status-aut"></span></td>
+                          <td style="color:#27ae60">&#10003;</td>
+                        </tr>
+                        <tr>
+                          <td>ReadOnly.profile</td>
+                          <td><span class="profile-status-nat"></span></td>
+                          <td style="color:#888">&#8212;</td>
+                        </tr>
+                        <tr>
+                          <td>SFA_Manager.profile</td>
+                          <td><span class="profile-status-aut"></span></td>
+                          <td style="color:#27ae60">&#10003;</td>
+                        </tr>
+                        <tr>
+                          <td>Support_Agent.profile</td>
+                          <td><span class="profile-status-aut"></span></td>
+                          <td style="color:#27ae60">&#10003;</td>
+                        </tr>
+                        <tr>
+                          <td>Integration_User.profile</td>
+                          <td><span class="profile-status-nat"></span></td>
+                          <td style="color:#888">&#8212;</td>
+                        </tr>
+                        <tr>
+                          <td>Finance.profile</td>
+                          <td><span class="profile-status-fbd"></span></td>
+                          <td style="color:#E74C3C">&#10007;</td>
+                        </tr>
+                        <tr>
+                          <td>Chargeback_Agent.profile</td>
+                          <td><span class="profile-status-aut"></span></td>
+                          <td style="color:#27ae60">&#10003;</td>
+                        </tr>
+                        <tr>
+                          <td>Partner_Community.profile</td>
+                          <td><span class="profile-status-nat"></span></td>
+                          <td style="color:#888">&#8212;</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  <div class="vbox" style="gap:4px;margin-top:8px;font-size:11px;color:#444;background:#f8f8f8;border:1px solid #d0dae4;padding:6px;border-radius:3px">
+                    <span><strong>*</strong> &nbsp;: will use all profiles retrieved</span>
+                    <span><strong>All</strong> : will filter according to the list of profiles displayed</span>
+                    <span><strong>None</strong> : no profiles will be deployed</span>
+                    <div class="vbox" style="gap:4px;margin-top:6px">
+                      <label class="cal-chk"><input type="checkbox" checked disabled> *</label>
+                      <label class="cal-chk"><input type="checkbox" disabled> All</label>
+                      <label class="cal-chk"><input type="checkbox" disabled> None</label>
+                    </div>
+                  </div>
+                </div>
+                <div class="split-panel">
+                  <textarea class="cal-ta" rows="28" readonly style="width:100%;resize:none;font-size:10px;font-family:monospace">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;Profile xmlns="urn:metadata.tooling.soap.sforce.com"&gt;
+  &lt;applicationVisibilities&gt;
+    &lt;application&gt;standard__Sales&lt;/application&gt;
+    &lt;default&gt;true&lt;/default&gt;
+    &lt;visible&gt;true&lt;/visible&gt;
+  &lt;/applicationVisibilities&gt;
+  &lt;classAccesses&gt;
+    &lt;apexClass&gt;AP217_SFA2_DeploiementContratCadre&lt;/apexClass&gt;
+    &lt;enabled&gt;true&lt;/enabled&gt;
+  &lt;/classAccesses&gt;
+  &lt;fieldPermissions&gt;
+    &lt;editable&gt;true&lt;/editable&gt;
+    &lt;field&gt;Account.Category__c&lt;/field&gt;
+    &lt;readable&gt;true&lt;/readable&gt;
+  &lt;/fieldPermissions&gt;
+  &lt;objectPermissions&gt;
+    &lt;allowCreate&gt;true&lt;/allowCreate&gt;
+    &lt;allowDelete&gt;false&lt;/allowDelete&gt;
+    &lt;allowEdit&gt;true&lt;/allowEdit&gt;
+    &lt;allowRead&gt;true&lt;/allowRead&gt;
+    &lt;object&gt;Account&lt;/object&gt;
+  &lt;/objectPermissions&gt;
+  &lt;userLicense&gt;Salesforce&lt;/userLicense&gt;
+&lt;/Profile&gt;</textarea>
+                </div>
+              </div>
+            </div>
+
+            <!-- ── Tab 2 : Test ── -->
+            <div class="m-panel" id="tp3-2" style="padding:6px">
+              <div class="hbox" style="gap:8px;align-items:center;margin-bottom:6px">
+                <span class="cal-lbl" style="color:#E74C3C;font-weight:600">Add here all the class you need to run in order to fulfill test requirement</span>
+              </div>
+              <ul class="test-list" style="height:200px">
+                <li class="selected">AccountServiceTest</li>
+                <li class="selected">AP217_SFA2_DeploiementContratCadreTest</li>
+                <li class="selected">TriggerHandlerTest</li>
+              </ul>
+              <div class="hbox" style="gap:6px;margin-top:6px">
+                <button class="cal-btn btn-d">Keep Selected</button>
+                <button class="cal-btn btn-d">Clear Tests</button>
+                <button class="cal-btn btn-d">Add Test</button>
+                <button class="cal-btn btn-d">Refresh</button>
+              </div>
+              <div class="hbox" style="gap:6px;margin-top:6px">
+                <button class="cal-btn btn-d" data-tip="Copy deploycode.xml from Project">Load TestClass From Project</button>
+                <button class="cal-btn btn-d">Save TestClass to Project</button>
+              </div>
+            </div>
+
+            <!-- ── Tab 3 : Quick Check ── -->
+            <div class="m-panel" id="tp3-3" style="padding:6px">
+              <div class="hbox" style="gap:8px;align-items:center;margin-bottom:6px">
+                <span class="cal-lbl" style="color:#555">The last modification Date and the user is displayed here for information</span>
+              </div>
+              <div class="tbl-wrap">
+                <table class="cal-tbl">
+                  <thead>
+                    <tr>
+                      <th style="width:100px">Type</th>
+                      <th style="width:220px">Name</th>
+                      <th style="width:160px">User</th>
+                      <th style="width:155px">Date</th>
+                      <th style="width:180px">Project</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>ApexClass</td>
+                      <td>AP217_SFA2_DeploiementContratCadre</td>
+                      <td>John Doe</td>
+                      <td>2026-04-28T14:32:00Z</td>
+                      <td>PROJ-2026-04-SFA2</td>
+                    </tr>
+                    <tr>
+                      <td>ApexTrigger</td>
+                      <td>AccountTrigger</td>
+                      <td>Alice Martin</td>
+                      <td>2026-04-25T09:15:00Z</td>
+                      <td>PROJ-2026-04-SFA2</td>
+                    </tr>
+                    <tr>
+                      <td>Flow</td>
+                      <td>Account_MAJ_Date_derniere_modification</td>
+                      <td>Bob Johnson</td>
+                      <td>2026-04-22T16:45:00Z</td>
+                      <td>PROJ-2026-04-Flow</td>
+                    </tr>
+                    <tr>
+                      <td>Flow</td>
+                      <td>ACC_MAJ_Jalon_1</td>
+                      <td>John Doe</td>
+                      <td>2026-04-20T11:00:00Z</td>
+                      <td>PROJ-2026-04-SFA2</td>
+                    </tr>
+                    <tr>
+                      <td>ApexPage</td>
+                      <td>AP217_SFA2_DeploiementContratCadre</td>
+                      <td>John Doe</td>
+                      <td>2026-04-18T08:30:00Z</td>
+                      <td>PROJ-2026-04-SFA2</td>
+                    </tr>
+                    <tr>
+                      <td>CustomField</td>
+                      <td>Account.Category__c</td>
+                      <td>Admin</td>
+                      <td>2026-04-10T13:20:00Z</td>
+                      <td>PROJ-2026-03-Fields</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- ── Tab 4 : Api Version ── -->
+            <div class="m-panel" id="tp3-4" style="padding:6px">
+              <div class="hbox" style="gap:8px;align-items:center;margin-bottom:6px">
+                <button class="cal-btn btn-d">Refresh</button>
+                <span class="cal-lbl" style="color:#555">Scans deploy/classes and deploy/triggers folders</span>
+              </div>
+              <div class="tbl-wrap">
+                <table class="cal-tbl">
+                  <thead>
+                    <tr>
+                      <th style="width:90px">Type</th>
+                      <th style="width:280px">Name</th>
+                      <th style="width:100px">Api Version</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>Class</td>
+                      <td>AP217_SFA2_DeploiementContratCadre</td>
+                      <td style="color:#E74C3C;font-weight:700">48.0</td>
+                    </tr>
+                    <tr>
+                      <td>Class</td>
+                      <td>AccountServiceController</td>
+                      <td style="color:#E74C3C;font-weight:700">50.0</td>
+                    </tr>
+                    <tr>
+                      <td>Class</td>
+                      <td>CaseTriggerHandler</td>
+                      <td style="color:#e67e22;font-weight:700">55.0</td>
+                    </tr>
+                    <tr>
+                      <td>Trigger</td>
+                      <td>AccountTrigger</td>
+                      <td style="color:#E74C3C;font-weight:700">46.0</td>
+                    </tr>
+                    <tr>
+                      <td>Trigger</td>
+                      <td>OpportunityTrigger</td>
+                      <td style="color:#e67e22;font-weight:700">54.0</td>
+                    </tr>
+                    <tr>
+                      <td>Trigger</td>
+                      <td>ContactTrigger</td>
+                      <td style="color:#E74C3C;font-weight:700">49.0</td>
+                    </tr>
+                    <tr>
+                      <td>Class</td>
+                      <td>IntegrationHelper</td>
+                      <td style="color:#E74C3C;font-weight:700">47.0</td>
+                    </tr>
+                    <tr>
+                      <td>Class</td>
+                      <td>LeadConversionService</td>
+                      <td style="color:#e67e22;font-weight:700">56.0</td>
+                    </tr>
+                    <tr>
+                      <td>Trigger</td>
+                      <td>CaseTrigger</td>
+                      <td style="color:#E74C3C;font-weight:700">48.0</td>
+                    </tr>
+                    <tr>
+                      <td>Class</td>
+                      <td>BulkImportController</td>
+                      <td style="color:#E74C3C;font-weight:700">51.0</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div style="margin-top:8px;font-size:11px;color:#e67e22;padding:4px 6px;background:#fff8f0;border:1px solid #f0c080;border-radius:3px">
+                <strong>Warning:</strong> 174 components have an API version more than 5 versions below current (64.0). Consider updating.
+              </div>
+            </div>
+
+          </div><!-- end m-body -->
+        </div><!-- end m-tabpane -->
+      </div><!-- end deploy-right -->
+
+    </div><!-- end deploy-wrap -->
+  </div><!-- end mockup -->
+</div><!-- end mockup-wrap -->
+
+<script>
+function sw(id,idx){
+  var tp=document.getElementById(id);
+  tp.querySelectorAll('.m-tab').forEach(function(t,i){t.classList.toggle('act',i===idx)});
+  tp.querySelectorAll('.m-panel').forEach(function(p,i){p.classList.toggle('act',i===idx)});
+}
+</script>
+
+<!-- Key features modal -->
+<div id="modal-kf" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:999;align-items:center;justify-content:center" onclick="if(event.target===this)this.style.display='none'">
+  <div style="background:#fff;border-radius:8px;padding:28px 32px;max-width:540px;width:90%;color:#1a2a35;box-shadow:0 8px 32px rgba(0,0,0,.3)">
+    <h3 style="margin:0 0 14px;color:#2980b9">&#9733; Key features</h3>
+    <ul style="margin:0;padding-left:20px;line-height:1.8">
+      <li>Deploy, validate, and test-and-deploy metadata packages to Salesforce via the Metadata API</li>
+      <li>Run specific test classes before deployment, or run all local tests for production orgs</li>
+      <li>Quick Check scans package members and shows who last modified each item and when</li>
+      <li>Package tab displays a full tree of all metadata types and members to be deployed</li>
+      <li>Automatic backup injection before deployment and post-deploy information display</li>
+      <li>Profile management: filter deployable profiles per environment with AUT / NAT / FBD status</li>
+      <li>Api Version scanner flags classes and triggers whose API version is more than 5 versions below current</li>
+      <li>Zip package selector lets you load a previously-retrieved deployment package from a project folder</li>
+      <li>Environment-specific overrides (Specif tab) automatically applied at deployment time</li>
+      <li>Missing files detection: identifies package.xml members that have no corresponding file on disk</li>
+    </ul>
+    <div style="text-align:right;margin-top:18px">
+      <button class="cal-btn btn-d" onclick="document.getElementById('modal-kf').style.display='none'">Close</button>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

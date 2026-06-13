@@ -1,0 +1,1 @@
+Place screenshots for tab8-Vscode in this directory.

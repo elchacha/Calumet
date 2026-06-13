@@ -1,0 +1,2 @@
+Sandboxes
+Lists all sandboxes of the production org (via SandboxInfo Tooling API) with license type, last modified date, and a shortcut to create the matching org config.

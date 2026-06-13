@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Scheduled Jobs — Calumet</title>
+<link rel="stylesheet" href="../shared.css">
+</head>
+<body class="tab-page">
+<div class="sum">
+  <div class="sum-title">
+    <h2>Scheduled Jobs</h2>
+    <span class="sum-badge">Tab 39</span>
+  </div>
+  <p class="sum-desc">View and manage scheduled Apex jobs and flows. Monitor execution history and next fire time.</p>
+</div>
+<div class="mockup-wrap">
+  <div class="mockup"><div class="vbox" style="gap:0px"><div class="anchor"><button class="cal-btn btn-d">extract values</button><div class="tbl-wrap"><table class="cal-tbl"><thead><tr><th>Object Name</th><th>Object Label</th><th>Rule Name</th><th>Active</th><th>Formula</th><th>ErrorMsg</th><th>LastModifyDate</th><th>lastModifyBy</th></tr></thead><tbody><tr><td colspan="20" class="tbl-empty"></td></tr></tbody></table></div><button class="cal-btn btn-d">save to excel</button><input class="cal-tf" placeholder="" style="" readonly><label class="cal-chk"><input type="checkbox" disabled> open File</label></div></div></div>
+</div>
+<script>
+function sw(id,idx){
+  var tp=document.getElementById(id);
+  tp.querySelectorAll('.m-tab').forEach(function(t,i){t.classList.toggle('act',i===idx)});
+  tp.querySelectorAll('.m-panel').forEach(function(p,i){p.classList.toggle('act',i===idx)});
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,1 @@
+Place screenshots for tab50-HistoryStorage in this directory.

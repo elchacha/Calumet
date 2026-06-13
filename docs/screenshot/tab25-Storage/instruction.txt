@@ -1,0 +1,1 @@
+Place screenshots for tab25-Storage in this directory.

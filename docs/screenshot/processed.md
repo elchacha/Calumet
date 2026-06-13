@@ -1,0 +1,18 @@
+tab_num,tab_name,last_screenshot,last_html_gen
+2,Retrieve,2026-05-01,2026-05-01
+3,Deploy,2026-05-01,2026-05-01
+4,ChangeTracker,2026-05-01,2026-05-01
+9,LastRecords,2026-04-29,2026-04-29
+10,History,2026-05-01,2026-05-01
+12,Soql,2026-04-29,2026-04-29
+16,Relations,2026-04-29,2026-04-29
+22,Apex,2026-04-29,2026-04-29
+26,Control,2026-05-01,2026-05-01
+27,Picklists,2026-04-29,2026-04-29
+29,Profiles,2026-05-01,2026-05-01
+34,Flow informations,2026-05-01,2026-05-01
+42,FlexiPages,2026-04-29,2026-04-29
+53,CustomMetadataUpdater,2026-04-29,2026-04-29
+54,PermissionSet,2026-04-29,2026-04-29
+59,AllRelations,2026-04-29,2026-04-29
+74,ObjectActivity,2026-04-29,2026-04-29

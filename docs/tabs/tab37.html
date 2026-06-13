@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Profile Comparison — Calumet</title>
+<link rel="stylesheet" href="../shared.css">
+<style>
+.pill-type { display:inline-block; padding:1px 7px; border-radius:10px; font-size:11px; font-weight:600; min-width:90px; text-align:center; }
+.pt-field   { background:#d6eaf8; color:#1a5276; }
+.pt-apex    { background:#d5f5e3; color:#1e8449; }
+.pt-obj     { background:#fdebd0; color:#935116; }
+.pt-tab     { background:#e8daef; color:#6c3483; }
+.pt-rec     { background:#f9ebea; color:#922b21; }
+.pt-layout  { background:#d5f5e3; color:#1e8449; }
+.val-enabled  { color:#27ae60; font-weight:600; }
+.val-disabled { color:#E74C3C; }
+.val-read     { color:#2980b9; }
+.val-edit     { color:#e67e22; font-weight:600; }
+.val-none     { color:#888; }
+.val-hidden   { color:#888; font-style:italic; }
+.profile-input-locked { background:#d5f5e3; border:1.5px solid #27ae60; border-radius:3px; padding:3px 8px; font-size:13px; color:#1a2a35; position:relative; display:inline-flex; align-items:center; gap:6px; }
+.clear-x { color:#E74C3C; font-size:14px; cursor:pointer; font-weight:700; }
+.filter-input { border:1px solid #c0cdd8; border-radius:4px; padding:4px 8px; font-size:12px; background:#fff; color:#1a2a35; }
+</style>
+</head>
+<body class="tab-page">
+
+<div class="sum">
+  <div class="sum-title">
+    <h2>Profile Comparison</h2>
+    <span class="sum-badge">Tab 37</span>
+  </div>
+  <p class="sum-desc">
+    Compare two Salesforce profiles field-by-field — across orgs if needed — to find every difference in field security, object access, Apex class access, record types, tab settings, and layout assignments.
+    <button class="cal-btn btn-d" style="margin-left:10px" onclick="document.getElementById('modal-kf').style.display='flex'">&#9733; Key features</button>
+  </p>
+</div>
+
+<div class="mockup-wrap">
+  <div class="mockup">
+
+    <!-- Profile selector row -->
+    <div style="padding:8px 10px 4px;">
+      <div style="display:grid; grid-template-columns:auto auto auto auto auto auto auto; gap:8px; align-items:end; margin-bottom:6px;">
+        <div style="font-size:11px;color:#888;text-align:center">first profile</div>
+        <div></div>
+        <div></div>
+        <div style="font-size:11px;color:#888;text-align:center">second profile</div>
+        <div></div>
+        <div style="font-size:11px;color:#888;text-align:center">org for second profile</div>
+        <div></div>
+      </div>
+      <div class="hbox" style="gap:8px;align-items:center;margin-bottom:6px;">
+        <div class="profile-input-locked">
+          P1 - Field Sales Rep - Org1
+          <span class="clear-x" title="Clear selection">&#10005;</span>
+        </div>
+        <button class="cal-btn btn-b">Export</button>
+        <div class="profile-input-locked" style="margin-left:16px;">
+          P1 - Assistant - Org1
+          <span class="clear-x" title="Clear selection">&#10005;</span>
+        </div>
+        <select class="cal-cb" style="width:130px;margin-left:16px" disabled>
+          <option>ORG_PROD</option>
+          <option>ORG_PROD2</option>
+          <option>ORG_QUAL</option>
+        </select>
+      </div>
+      <div class="hbox" style="gap:10px;align-items:center;">
+        <button class="cal-btn btn-b">Compare</button>
+        <label class="cal-chk"><input type="checkbox" checked disabled> reuse cached files</label>
+        <label class="cal-chk"><input type="checkbox" disabled> Hide AppExchange info</label>
+      </div>
+    </div>
+
+    <!-- Tabs: Diff / Profile 1 / Profile 2 -->
+    <div class="m-tabpane" id="tp37" style="margin-top:8px;">
+      <div class="m-tabbar">
+        <div class="m-tab act" onclick="sw('tp37',0)">Diff</div>
+        <div class="m-tab" onclick="sw('tp37',1)">( ORG_PROD ) | P1 - Field Sales Rep - Org1 : 0</div>
+        <div class="m-tab" onclick="sw('tp37',2)">( ORG_PROD ) | P1 - Assistant - Org1 : 18</div>
+      </div>
+      <div class="m-body">
+
+        <!-- Diff panel -->
+        <div class="m-panel act" id="tp37-0">
+          <div style="padding:6px 8px 4px;">
+            <input class="filter-input" style="width:220px;margin-bottom:6px" placeholder="Filter diff results..." readonly data-tip="Filter diff results (supports ; for multi-criteria)">
+          </div>
+          <div class="tbl-wrap" style="max-height:400px;overflow-y:auto;">
+            <table class="cal-tbl">
+              <thead>
+                <tr>
+                  <th style="width:120px">Type</th>
+                  <th style="width:280px">Name</th>
+                  <th style="width:190px">P1 - Field Sales Rep - Org1 (ORG_PROD)</th>
+                  <th>P1 - Assistant - Org1 (ORG_PROD)</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><span class="pill-type pt-field">Field Security</span></td>
+                  <td>App_Account__c.Weight_Coefficient__c</td>
+                  <td class="val-read">Read</td>
+                  <td class="val-edit">Edit</td>
+                </tr>
+                <tr>
+                  <td><span class="pill-type pt-field">Field Security</span></td>
+                  <td>Opportunity.Rating_Color__c</td>
+                  <td class="val-read">Read</td>
+                  <td class="val-none">None</td>
+                </tr>
+                <tr>
+                  <td><span class="pill-type pt-field">Field Security</span></td>
+                  <td>App_Site__c.External_ID__c</td>
+                  <td class="val-read">Read</td>
+                  <td class="val-none">None</td>
+                </tr>
+                <tr>
+                  <td><span class="pill-type pt-tab">TabSet</span></td>
+                  <td>Signea__Step__c</td>
+                  <td class="val-hidden">Hidden</td>
+                  <td class="val-enabled">DefaultOn</td>
+                </tr>
+                <tr>
+                  <td><span class="pill-type pt-field">Field Security</span></td>
+                  <td>Opportunity.Banking_Details__c</td>
+                  <td class="val-read">Read</td>
+                  <td class="val-edit">Edit</td>
+                </tr>
+                <tr>
+                  <td><span class="pill-type pt-field">Field Security</span></td>
+                  <td>App_Account__c.Option_text_1__c</td>
+                  <td class="val-read">Read</td>
+                  <td class="val-edit">Edit</td>
+                </tr>
+                <tr>
+                  <td><span class="pill-type pt-obj">Object Security</span></td>
+                  <td>App_Detail__c</td>
+                  <td>C,R,U</td>
+                  <td>C,R,U,View All</td>
+                </tr>
+                <tr>
+                  <td><span class="pill-type pt-field">Field Security</span></td>
+                  <td>Opportunity.Signature_Date__c</td>
+                  <td class="val-read">Read</td>
+                  <td class="val-edit">Edit</td>
+                </tr>
+                <tr>
+                  <td><span class="pill-type pt-field">Field Security</span></td>
+                  <td>Invoice__c.BU__c</td>
+                  <td class="val-edit">Edit</td>
+                  <td class="val-none">None</td>
+                </tr>
+                <tr>
+                  <td><span class="pill-type pt-rec">RecordType</span></td>
+                  <td>Order__c.Sales_Opportunities</td>
+                  <td class="val-hidden">hidden</td>
+                  <td class="val-enabled">visible (default)</td>
+                </tr>
+                <tr>
+                  <td><span class="pill-type pt-obj">Object Security</span></td>
+                  <td>Task__c</td>
+                  <td>R,U</td>
+                  <td>R</td>
+                </tr>
+                <tr>
+                  <td><span class="pill-type pt-obj">Object Security</span></td>
+                  <td>Document</td>
+                  <td>C,R,U</td>
+                  <td>C,R,U,D,View All</td>
+                </tr>
+                <tr>
+                  <td><span class="pill-type pt-apex">ApexClass</span></td>
+                  <td>AP247BackupRestore_Test</td>
+                  <td class="val-disabled">disabled</td>
+                  <td class="val-enabled">enabled</td>
+                </tr>
+                <tr>
+                  <td><span class="pill-type pt-field">Field Security</span></td>
+                  <td>Invoice__c.Status__c</td>
+                  <td class="val-edit">Edit</td>
+                  <td class="val-none">None</td>
+                </tr>
+                <tr>
+                  <td><span class="pill-type pt-tab">TabSet</span></td>
+                  <td>Signea__Circuit_Template__c</td>
+                  <td class="val-hidden">Hidden</td>
+                  <td class="val-enabled">DefaultOn</td>
+                </tr>
+                <tr>
+                  <td><span class="pill-type pt-layout">LayoutAssign</span></td>
+                  <td>Opportunity.Standard_Layout</td>
+                  <td>Opportunity-Standard_Layout</td>
+                  <td>Opportunity-Standard_Layout_Extended</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Profile 1 panel (items only in Profile 1) -->
+        <div class="m-panel" id="tp37-1">
+          <div class="tbl-wrap" style="max-height:400px;overflow-y:auto;">
+            <table class="cal-tbl">
+              <thead>
+                <tr>
+                  <th style="width:120px">Type</th>
+                  <th style="width:300px">Name</th>
+                  <th>Value</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><span class="pill-type pt-apex">ApexClass</span></td>
+                  <td>CtrlAP202_PricingGrid_TEST</td>
+                  <td class="val-enabled">enabled</td>
+                </tr>
+                <tr>
+                  <td><span class="pill-type pt-apex">ApexClass</span></td>
+                  <td>Ap382ObjectOP_MaskElement</td>
+                  <td class="val-enabled">enabled</td>
+                </tr>
+                <tr>
+                  <td><span class="pill-type pt-apex">ApexClass</span></td>
+                  <td>Ap382ObjectOP_MinicubeElement</td>
+                  <td class="val-enabled">enabled</td>
+                </tr>
+                <tr>
+                  <td><span class="pill-type pt-field">Field Security</span></td>
+                  <td>Account.Detected_Levers__c</td>
+                  <td class="val-none">None</td>
+                </tr>
+                <tr>
+                  <td><span class="pill-type pt-tab">TabSet</span></td>
+                  <td>Project__c</td>
+                  <td>DefaultOff</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Profile 2 panel (items only in Profile 2) -->
+        <div class="m-panel" id="tp37-2">
+          <div class="tbl-wrap" style="max-height:400px;overflow-y:auto;">
+            <table class="cal-tbl">
+              <thead>
+                <tr>
+                  <th style="width:120px">Type</th>
+                  <th style="width:300px">Name</th>
+                  <th>Value</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><span class="pill-type pt-tab">TabSet</span></td>
+                  <td>standard-BusinessObjectivesRecommendations</td>
+                  <td class="val-enabled">DefaultOn</td>
+                </tr>
+                <tr>
+                  <td><span class="pill-type pt-tab">TabSet</span></td>
+                  <td>standard-ChannelProgram</td>
+                  <td>DefaultOff</td>
+                </tr>
+                <tr>
+                  <td><span class="pill-type pt-tab">TabSet</span></td>
+                  <td>standard-ContentNote</td>
+                  <td class="val-enabled">DefaultOn</td>
+                </tr>
+                <tr>
+                  <td><span class="pill-type pt-tab">TabSet</span></td>
+                  <td>standard-PartnerFundAllocation</td>
+                  <td>DefaultOff</td>
+                </tr>
+                <tr>
+                  <td><span class="pill-type pt-tab">TabSet</span></td>
+                  <td>standard-SalesCoachHome</td>
+                  <td class="val-enabled">DefaultOn</td>
+                </tr>
+                <tr>
+                  <td><span class="pill-type pt-tab">TabSet</span></td>
+                  <td>standard-SalesforceContract</td>
+                  <td class="val-enabled">DefaultOn</td>
+                </tr>
+                <tr>
+                  <td><span class="pill-type pt-tab">TabSet</span></td>
+                  <td>standard-SalesforceQuote</td>
+                  <td class="val-hidden">Hidden</td>
+                </tr>
+                <tr>
+                  <td><span class="pill-type pt-tab">TabSet</span></td>
+                  <td>standard-ServiceAppointmentGroup</td>
+                  <td class="val-enabled">DefaultOn</td>
+                </tr>
+                <tr>
+                  <td><span class="pill-type pt-tab">TabSet</span></td>
+                  <td>standard-WorkProcedure</td>
+                  <td class="val-enabled">DefaultOn</td>
+                </tr>
+                <tr>
+                  <td><span class="pill-type pt-apex">ApexClass</span></td>
+                  <td>AP367DocumentRequest</td>
+                  <td class="val-enabled">enabled</td>
+                </tr>
+                <tr>
+                  <td><span class="pill-type pt-layout">LayoutAssign</span></td>
+                  <td>Account.Prospect</td>
+                  <td>Account-Standard_Presentation_Prospect</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Key features modal -->
+<div id="modal-kf" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:999;align-items:center;justify-content:center" onclick="if(event.target===this)this.style.display='none'">
+  <div style="background:#fff;border-radius:8px;padding:28px 32px;max-width:540px;width:90%;color:#1a2a35;box-shadow:0 8px 32px rgba(0,0,0,.3)">
+    <h3 style="margin:0 0 14px;color:#2980b9">&#9733; Key features</h3>
+    <ul style="margin:0;padding-left:20px;line-height:1.8">
+      <li>Compare two profiles from the same org or across two different orgs</li>
+      <li>Autocomplete profile name fields with live suggestions from the org</li>
+      <li>Locked profile name fields with one-click X button to clear</li>
+      <li>Three result tabs: Diff (differences), Profile 1 (items missing in Profile 2), Profile 2 (items missing in Profile 1)</li>
+      <li>Tab counters show the number of exclusive items per profile</li>
+      <li>Filter diff results with multi-criteria text search (semicolon-separated)</li>
+      <li>Hide AppExchange namespaced items to focus on org-specific differences</li>
+      <li>Right-click context menu to export selected differences as a deployable profile XML</li>
+      <li>Cached profile XML files for faster re-comparison without re-fetching</li>
+    </ul>
+    <div style="text-align:right;margin-top:18px">
+      <button class="cal-btn btn-d" onclick="document.getElementById('modal-kf').style.display='none'">Close</button>
+    </div>
+  </div>
+</div>
+
+<script>
+function sw(id,idx){
+  var tp=document.getElementById(id);
+  tp.querySelectorAll('.m-tab').forEach(function(t,i){t.classList.toggle('act',i===idx)});
+  tp.querySelectorAll('.m-panel').forEach(function(p,i){p.classList.toggle('act',i===idx)});
+}
+</script>
+</body>
+</html>

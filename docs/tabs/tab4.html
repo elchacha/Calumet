@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ChangeTracker — Calumet</title>
+<link rel="stylesheet" href="../shared.css">
+<style>
+/* Pulsing "Choose Metadatas" button */
+@keyframes pulse-border {
+  0%   { box-shadow: 0 0 0 0 rgba(41,128,185,0.7); }
+  60%  { box-shadow: 0 0 0 6px rgba(41,128,185,0); }
+  100% { box-shadow: 0 0 0 0 rgba(41,128,185,0); }
+}
+.btn-pulse {
+  animation: pulse-border 1.6s ease-in-out infinite;
+  cursor: pointer !important;
+}
+
+/* Left panel */
+.left-panel {
+  width: 430px;
+  min-width: 430px;
+  background: #F0F4F7;
+  border-right: 1px solid #9AABBF;
+  padding: 8px 10px 8px 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+/* Date grid */
+.date-grid {
+  display: grid;
+  grid-template-columns: 88px 130px 38px 38px 38px;
+  grid-template-rows: 28px 28px;
+  gap: 4px;
+  align-items: center;
+}
+.date-grid .cal-lbl { font-size: 12px; }
+
+/* Right panel fills space */
+.right-panel {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Inner tabpane for results */
+.right-panel .m-tabpane {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+.right-panel .m-body {
+  flex: 1;
+  overflow: hidden;
+}
+.right-panel .m-panel.act {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+/* Result table scroll */
+.result-scroll {
+  overflow-y: auto;
+  max-height: 560px;
+  border: 1px solid #9AABBF;
+  border-radius: 3px;
+  margin: 4px 8px 8px 8px;
+}
+
+/* Conflict warning label */
+.conflict-warn {
+  color: #c0392b;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 8px 8px 4px 8px;
+}
+
+/* Popup overlay */
+#popup-metadata {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.55);
+  z-index: 900;
+  align-items: center;
+  justify-content: center;
+}
+#popup-metadata.open {
+  display: flex;
+}
+.popup-win {
+  background: #F8F8F8;
+  border: 1px solid #9AABBF;
+  border-radius: 4px;
+  width: 760px;
+  max-width: 95vw;
+  color: #1a2a35;
+  box-shadow: 0 8px 32px rgba(0,0,0,.4);
+  display: flex;
+  flex-direction: column;
+  max-height: 90vh;
+}
+.popup-title {
+  background: #D8E6EE;
+  border-bottom: 1px solid #9AABBF;
+  padding: 6px 12px;
+  font-weight: 700;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.popup-title .win-btns { display: flex; gap: 5px; }
+.win-btn { width: 14px; height: 14px; border-radius: 50%; border: none; cursor: pointer; }
+.win-close { background: #e74c3c; }
+.win-min   { background: #f0ad4e; }
+.win-max   { background: #27ae60; }
+.popup-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  border-bottom: 1px solid #d0dae4;
+  background: #eef2f5;
+}
+.popup-body {
+  flex: 1;
+  overflow-y: auto;
+  max-height: 420px;
+}
+.popup-footer {
+  border-top: 1px solid #9AABBF;
+  padding: 8px 10px;
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+  background: #eef2f5;
+}
+</style>
+</head>
+<body class="tab-page">
+
+<div class="sum">
+  <div class="sum-title">
+    <h2>ChangeTracker</h2>
+    <span class="sum-badge">Tab 4</span>
+  </div>
+  <p class="sum-desc">
+    Track metadata changes in the org. Compare the current state with a saved snapshot to detect modifications.
+    <button class="cal-btn btn-d" style="margin-left:10px" onclick="document.getElementById('modal-kf').style.display='flex'">&#9733; Key features</button>
+  </p>
+</div>
+
+<div class="mockup-wrap">
+  <div class="mockup">
+
+    <!-- Main two-column layout -->
+    <div style="display:flex;height:640px;">
+
+      <!-- ── Left panel ── -->
+      <div class="left-panel">
+
+        <!-- Date / time filter -->
+        <div class="date-grid">
+          <span class="cal-lbl">Start Date</span>
+          <input class="cal-tf" value="21/04/2026" style="width:117px" readonly>
+          <input class="cal-tf" value="00" style="width:34px;text-align:center" readonly data-tip="Hour (HH)">
+          <input class="cal-tf" value="00" style="width:34px;text-align:center" readonly data-tip="Minute (MM)">
+          <input class="cal-tf" value="00" style="width:34px;text-align:center" readonly data-tip="Second (ss)">
+
+          <span class="cal-lbl">End Date</span>
+          <input class="cal-tf" value="" style="width:117px" readonly placeholder="end date">
+          <input class="cal-tf" value="00" style="width:34px;text-align:center" readonly>
+          <input class="cal-tf" value="00" style="width:34px;text-align:center" readonly>
+          <input class="cal-tf" value="00" style="width:34px;text-align:center" readonly>
+        </div>
+
+        <hr class="hsep" style="margin:6px 0;">
+
+        <!-- Complex UI -->
+        <div style="display:flex;flex-direction:column;gap:6px;">
+
+          <!-- User row -->
+          <div class="hbox" style="gap:6px;align-items:center;">
+            <span class="cal-lbl" style="width:40px">User</span>
+            <input class="cal-tf" value="" style="width:215px" readonly data-tip="Filter results by a specific user name" placeholder="user name">
+          </div>
+
+          <!-- Checkboxes -->
+          <label class="cal-chk"><input type="checkbox" checked disabled> Retrieve your only modification</label>
+          <label class="cal-chk"><input type="checkbox" checked disabled> Exclude metaData from managed package</label>
+          <label class="cal-chk"><input type="checkbox" disabled> Extract EmailTemplate/Report modifications</label>
+
+          <!-- Extract row -->
+          <div class="hbox" style="gap:6px;align-items:center;margin-top:6px;">
+            <button class="cal-btn btn-b" data-tip="Extract metadata modifications from Salesforce for the selected date range">Extract</button>
+            <button class="cal-btn btn-d" data-tip="Open the CSV file generated by the last extraction">Open csv file</button>
+            <label class="cal-chk" style="margin-left:4px"><input type="checkbox" disabled> useCache</label>
+          </div>
+
+          <!-- Choose Metadatas row -->
+          <div class="hbox" style="gap:8px;align-items:center;margin-top:6px;">
+            <button class="cal-btn btn-d btn-pulse"
+                    data-tip="Open the metadata chooser to select which types to include in the extraction"
+                    onclick="document.getElementById('popup-metadata').classList.add('open')">Choose Metadatas</button>
+            <label class="cal-chk"><input type="checkbox" disabled> retrieve CustomMetadata</label>
+            <label class="cal-chk"><input type="checkbox" checked disabled> useCache</label>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ── Right panel: result tabs ── -->
+      <div class="right-panel">
+        <div class="m-tabpane" id="tp4">
+          <div class="m-tabbar">
+            <div class="m-tab act" onclick="sw('tp4',0)">Results(263)</div>
+            <div class="m-tab" onclick="sw('tp4',1)">Conflicts(3)</div>
+            <div class="m-tab" onclick="sw('tp4',2)">Profiles (7)</div>
+            <div class="m-tab" onclick="sw('tp4',3)">Layout Assignments (2)</div>
+          </div>
+          <div class="m-body" style="padding:0">
+
+            <!-- Results panel -->
+            <div class="m-panel act" id="tp4-0" style="padding:0">
+              <div class="result-scroll">
+                <table class="cal-tbl">
+                  <thead>
+                    <tr>
+                      <th style="width:130px">Type</th>
+                      <th style="width:250px">Name</th>
+                      <th style="width:120px">Parent</th>
+                      <th style="width:150px">LastModifiedDate</th>
+                      <th style="width:150px">ModifiedBy</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr><td>ApexPage</td><td>AP217_SFA2_DeploiementContratCadre</td><td></td><td>2026-04-22 16:36:27</td><td>John Doe</td></tr>
+                    <tr><td>ApexClass</td><td>AP217_SFA2_DeploiementContratCadre</td><td></td><td>2026-04-28 15:55:34</td><td>John Doe</td></tr>
+                    <tr><td>PermissionSetGroup</td><td>force__SalesWorkspacePSG</td><td></td><td>2026-05-01 00:07:45</td><td style="color:#888">Automated Process</td></tr>
+                    <tr><td>ApexTrigger</td><td>InteractionClientAfterInsert</td><td></td><td>2026-04-21 11:43:46</td><td>John Doe</td></tr>
+                    <tr><td>ApexTrigger</td><td>Referentiel_PerimetreTrigger</td><td></td><td>2026-04-21 11:43:47</td><td>John Doe</td></tr>
+                    <tr><td>ApexTrigger</td><td>ContactBeforeInsert</td><td></td><td>2026-04-21 11:43:45</td><td>John Doe</td></tr>
+                    <tr><td>ApexTrigger</td><td>ContactBeforeUpdate</td><td></td><td>2026-04-21 11:43:45</td><td>John Doe</td></tr>
+                    <tr><td>ApexTrigger</td><td>EmailMessageBeforeInsert</td><td></td><td>2026-04-21 11:43:45</td><td>John Doe</td></tr>
+                    <tr><td>ApexTrigger</td><td>Forfaits_SFA2_AfterUpdate</td><td></td><td>2026-04-21 11:43:46</td><td>John Doe</td></tr>
+                    <tr><td>ApexTrigger</td><td>MappingFilesAttachmentTrigger</td><td></td><td>2026-04-21 11:43:46</td><td>John Doe</td></tr>
+                    <tr><td>ApexTrigger</td><td>EnqueteBeforeInsert</td><td></td><td>2026-04-21 11:43:45</td><td>John Doe</td></tr>
+                    <tr><td>ApexTrigger</td><td>Enlevement_SFA2_BeforeUpdate</td><td></td><td>2026-04-21 11:43:45</td><td>John Doe</td></tr>
+                    <tr><td>ApexTrigger</td><td>LeadBeforeInsert</td><td></td><td>2026-04-21 11:43:46</td><td>John Doe</td></tr>
+                    <tr><td>ApexTrigger</td><td>EnqueteAfterInsert</td><td></td><td>2026-04-21 11:43:45</td><td>John Doe</td></tr>
+                    <tr><td>ApexTrigger</td><td>CircuitCustomBeforeUpdate</td><td></td><td>2026-04-21 11:43:44</td><td>John Doe</td></tr>
+                    <tr><td>ApexTrigger</td><td>Contrat_SFA2_BeforeInsert</td><td></td><td>2026-04-21 11:43:45</td><td>John Doe</td></tr>
+                    <tr><td>ApexTrigger</td><td>CaseCommentAfterInsert</td><td></td><td>2026-04-21 11:43:44</td><td>John Doe</td></tr>
+                    <tr><td>ApexTrigger</td><td>Liaisons_SFA2_BeforeDelete</td><td></td><td>2026-04-21 11:43:46</td><td>John Doe</td></tr>
+                    <tr><td>ApexTrigger</td><td>CaseAfterInsert</td><td></td><td>2026-04-21 11:43:44</td><td>John Doe</td></tr>
+                    <tr><td>ApexTrigger</td><td>CompteClient_SFA2_BeforeInsert</td><td></td><td>2026-04-21 11:43:44</td><td>John Doe</td></tr>
+                    <tr><td>ApexTrigger</td><td>CompteClient_SFA2_AfterInsert</td><td></td><td>2026-04-21 11:43:44</td><td>John Doe</td></tr>
+                    <tr><td>ApexTrigger</td><td>BonCommandeBeforeInsert</td><td></td><td>2026-04-21 11:43:44</td><td>John Doe</td></tr>
+                    <tr><td>ApexTrigger</td><td>DemandeSupportAfterInsert</td><td></td><td>2026-04-21 11:43:45</td><td>John Doe</td></tr>
+                    <tr><td>ValidationRule</td><td>Etablissement_Prospect_non_affecte</td><td>Lead</td><td>2026-04-28 11:00:13</td><td>John Doe</td></tr>
+                    <tr><td>Flow</td><td>RoutageMIAW</td><td></td><td>2026-04-21 11:44:26</td><td>John Doe</td></tr>
+                    <tr><td>Flow</td><td>SetDateCloture_DRC</td><td></td><td>2026-04-21 11:44:27</td><td>John Doe</td></tr>
+                    <tr><td>Flow</td><td>Cloture_automatique_des_Affaires</td><td></td><td>2026-04-21 11:44:07</td><td>John Doe</td></tr>
+                    <tr><td>Flow</td><td>Passage_du_lead_a_Refuse</td><td></td><td>2026-04-21 11:44:24</td><td>John Doe</td></tr>
+                    <tr><td>Flow</td><td>SetDatePriseEnCompte_Inter</td><td></td><td>2026-04-21 11:44:28</td><td>John Doe</td></tr>
+                    <tr><td>Flow</td><td>Recopie_date_d_archivage_de_l_affaire</td><td></td><td>2026-04-21 11:44:25</td><td>John Doe</td></tr>
+                    <tr><td>Flow</td><td>Cloture_auto_Affaires_sans_Devis</td><td></td><td>2026-04-21 11:44:08</td><td>John Doe</td></tr>
+                    <tr><td>CustomField</td><td>Signed_Date__c</td><td>Opportunity</td><td>2026-04-19 09:14:52</td><td>John Doe</td></tr>
+                    <tr><td>CustomField</td><td>Category__c</td><td>Account</td><td>2026-04-18 14:30:11</td><td>John Doe</td></tr>
+                    <tr><td>ApexClass</td><td>AccountService</td><td></td><td>2026-04-15 10:22:03</td><td>John Doe</td></tr>
+                    <tr><td>ApexClass</td><td>ContactTriggerHandler</td><td></td><td>2026-04-15 10:22:05</td><td>John Doe</td></tr>
+                    <tr><td>LightningComponentBundle</td><td>accountDashboard</td><td></td><td>2026-04-20 16:45:00</td><td>John Doe</td></tr>
+                    <tr><td>LightningComponentBundle</td><td>caseTimeline</td><td></td><td>2026-04-20 16:47:12</td><td>John Doe</td></tr>
+                    <tr><td>CustomObject</td><td>Project__c</td><td></td><td>2026-04-17 08:55:30</td><td>John Doe</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- Conflicts panel -->
+            <div class="m-panel" id="tp4-1" style="padding:0">
+              <div class="conflict-warn">Warning: the following classes have also been modified by someone else.</div>
+              <div class="result-scroll" style="margin-top:0">
+                <table class="cal-tbl">
+                  <thead>
+                    <tr>
+                      <th style="width:111px">Type</th>
+                      <th style="width:250px">Object</th>
+                      <th style="width:160px">Modified By</th>
+                      <th style="width:180px">Last Date</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>ApexClass</td>
+                      <td>AccountService</td>
+                      <td style="color:#c0392b">Alice Martin</td>
+                      <td>2026-04-28 09:14:22</td>
+                    </tr>
+                    <tr>
+                      <td>ApexTrigger</td>
+                      <td>ContactBeforeInsert</td>
+                      <td style="color:#c0392b">Marc Dupont</td>
+                      <td>2026-04-27 17:33:10</td>
+                    </tr>
+                    <tr>
+                      <td>Flow</td>
+                      <td>RoutageMIAW</td>
+                      <td style="color:#e67e22">Admin User</td>
+                      <td>2026-04-29 11:05:44</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- Profiles panel -->
+            <div class="m-panel" id="tp4-2" style="padding:0">
+              <div class="result-scroll" style="margin:8px">
+                <table class="cal-tbl">
+                  <thead>
+                    <tr>
+                      <th style="width:140px">Profile</th>
+                      <th style="width:140px">Parent</th>
+                      <th style="width:140px">ObjectLabel</th>
+                      <th style="width:100px">Type</th>
+                      <th style="width:140px">ModifiedBy</th>
+                      <th style="width:150px">LastModifiedDate</th>
+                      <th style="width:110px">Old Value</th>
+                      <th style="width:110px">New Value</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr><td>Admin</td><td>Account</td><td>Account</td><td>fieldPerm</td><td>John Doe</td><td>2026-04-21 11:50:02</td><td>Read</td><td>Edit</td></tr>
+                    <tr><td>Admin</td><td>Opportunity</td><td>Opportunity</td><td>fieldPerm</td><td>John Doe</td><td>2026-04-21 11:50:02</td><td>none</td><td>Read</td></tr>
+                    <tr><td>Sales User</td><td>Lead</td><td>Lead</td><td>objectPerm</td><td>John Doe</td><td>2026-04-21 11:50:03</td><td>false</td><td>true</td></tr>
+                    <tr><td>Sales User</td><td>Contact</td><td>Contact</td><td>fieldPerm</td><td>John Doe</td><td>2026-04-21 11:50:03</td><td>Read</td><td>Edit</td></tr>
+                    <tr><td>Read Only</td><td>Case</td><td>Case</td><td>objectPerm</td><td>John Doe</td><td>2026-04-21 11:50:04</td><td>true</td><td>false</td></tr>
+                    <tr><td>Standard User</td><td>Project__c</td><td>Projet</td><td>objectPerm</td><td>John Doe</td><td>2026-04-21 11:50:04</td><td>none</td><td>Read</td></tr>
+                    <tr><td>Standard User</td><td>Contract__c</td><td>Contrat</td><td>fieldPerm</td><td>John Doe</td><td>2026-04-21 11:50:05</td><td>Read</td><td>Edit</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- Layout Assignments panel -->
+            <div class="m-panel" id="tp4-3" style="padding:0">
+              <div style="padding:8px 8px 4px 8px;font-size:11px;color:#555">
+                Layout assignments changed — they will be added to the profile during retrieve if selected.
+              </div>
+              <div style="padding:0 8px 4px 8px;">
+                <button class="cal-btn btn-d" style="font-size:11px" data-tip="Remove the selected layout assignment rows">Remove selected</button>
+              </div>
+              <div class="result-scroll" style="margin:4px 8px 8px 8px">
+                <table class="cal-tbl">
+                  <thead>
+                    <tr>
+                      <th style="width:130px">Profile</th>
+                      <th style="width:130px">Object</th>
+                      <th style="width:130px">RecordType</th>
+                      <th style="width:150px">Old Layout</th>
+                      <th style="width:150px">New Layout</th>
+                      <th style="width:130px">LastModifyBy</th>
+                      <th style="width:150px">LastModifyDate</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>Sales User</td>
+                      <td>Account</td>
+                      <td>Client</td>
+                      <td>Account-Account Layout</td>
+                      <td>Account-Sales Layout v2</td>
+                      <td>John Doe</td>
+                      <td>2026-04-21 11:52:10</td>
+                    </tr>
+                    <tr>
+                      <td>Standard User</td>
+                      <td>Opportunity</td>
+                      <td>New Business</td>
+                      <td>Opportunity-Standard Layout</td>
+                      <td>Opportunity-New Business Layout</td>
+                      <td>John Doe</td>
+                      <td>2026-04-21 11:52:14</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+          </div><!-- .m-body -->
+        </div><!-- .m-tabpane -->
+      </div><!-- .right-panel -->
+    </div><!-- main layout -->
+
+  </div><!-- .mockup -->
+</div><!-- .mockup-wrap -->
+
+<!-- ══════════════════════════════════════════════
+     Choose Metadatas popup
+     ══════════════════════════════════════════════ -->
+<div id="popup-metadata">
+  <div class="popup-win">
+    <div class="popup-title">
+      <span>Extracting metadata from myorg</span>
+      <div class="win-btns">
+        <button class="win-btn win-min"></button>
+        <button class="win-btn win-max"></button>
+        <button class="win-btn win-close" onclick="document.getElementById('popup-metadata').classList.remove('open')"></button>
+      </div>
+    </div>
+    <div class="popup-toolbar">
+      <span class="cal-lbl">type :</span>
+      <select class="cal-cb" style="width:140px" disabled>
+        <option>display All</option>
+        <option>ApexClass</option>
+        <option>ApexTrigger</option>
+        <option>Flow</option>
+        <option>CustomField</option>
+      </select>
+      <label class="cal-chk"><input type="checkbox" disabled> Current User</label>
+      <label class="cal-chk"><input type="checkbox" checked disabled> hide managedPkg</label>
+      <div class="spacer"></div>
+      <span class="cal-lbl">filter</span>
+      <input class="cal-tf" style="width:180px;border-color:#2980b9" readonly placeholder="">
+    </div>
+    <div class="popup-body">
+      <table class="cal-tbl">
+        <thead>
+          <tr>
+            <th style="width:160px">Type</th>
+            <th style="width:300px">Name</th>
+            <th style="width:160px">modified</th>
+            <th style="width:160px">modify by</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td style="color:#2980b9">PermissionSetGroup</td><td>force__SalesWorkspacePSG</td><td>2026-05-01 00:07:45</td><td style="color:#888">Automated Process</td></tr>
+          <tr><td>ApexClass</td><td>AP217_SFA2_DeploiementContratCadre</td><td>2026-04-28 15:55:34</td><td>John Doe</td></tr>
+          <tr><td>ValidationRule</td><td>Lead:Etablissement_Prospect_non_affecte</td><td>2026-04-28 11:00:13</td><td>John Doe</td></tr>
+          <tr><td>ApexPage</td><td>AP217_SFA2_DeploiementContratCadre</td><td>2026-04-22 16:36:27</td><td>John Doe</td></tr>
+          <tr><td style="color:#e67e22">WorkflowFlowAutomation</td><td>rejeter_demande_it</td><td>2026-04-21 11:44:34</td><td>John Doe</td></tr>
+          <tr><td>Flow</td><td>rejeter_demande_it</td><td>2026-04-21 11:44:34</td><td>John Doe</td></tr>
+          <tr><td>FlowDefinition</td><td>rejeter_demande_it</td><td>2026-04-21 11:44:34</td><td>John Doe</td></tr>
+          <tr><td style="color:#e67e22">WorkflowFlowAutomation</td><td>prise_en_charge</td><td>2026-04-21 11:44:33</td><td>John Doe</td></tr>
+          <tr><td style="color:#e67e22">WorkflowFlowAutomation</td><td>demande_client</td><td>2026-04-21 11:44:33</td><td>John Doe</td></tr>
+          <tr><td>Flow</td><td>demande_client</td><td>2026-04-21 11:44:33</td><td>John Doe</td></tr>
+          <tr><td>Flow</td><td>prise_en_charge</td><td>2026-04-21 11:44:33</td><td>John Doe</td></tr>
+          <tr><td>FlowDefinition</td><td>demande_client</td><td>2026-04-21 11:44:33</td><td>John Doe</td></tr>
+          <tr><td>FlowDefinition</td><td>prise_en_charge</td><td>2026-04-21 11:44:33</td><td>John Doe</td></tr>
+          <tr><td style="color:#e67e22">WorkflowFlowAutomation</td><td>Validation_D_mat_fiscale_Mise_jour_compte_client</td><td>2026-04-21 11:44:32</td><td>John Doe</td></tr>
+          <tr><td style="color:#e67e22">WorkflowFlowAutomation</td><td>Update_SegmentChronofresh</td><td>2026-04-21 11:44:32</td><td>John Doe</td></tr>
+          <tr><td>Flow</td><td>Validation_D_mat_fiscale_Mise_jour_compte_client</td><td>2026-04-21 11:44:32</td><td>John Doe</td></tr>
+          <tr><td>Flow</td><td>Update_SegmentChronofresh</td><td>2026-04-21 11:44:32</td><td>John Doe</td></tr>
+          <tr><td>FlowDefinition</td><td>Update_SegmentChronofresh</td><td>2026-04-21 11:44:32</td><td>John Doe</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="popup-footer">
+      <button class="cal-btn btn-b" data-tip="Add selected metadata items to the current package.xml">add to package.xml</button>
+      <button class="cal-btn btn-b" data-tip="Create a brand-new package.xml from the selected metadata">create new package.xml</button>
+      <button class="cal-btn btn-d" data-tip="Export the displayed list to a CSV file">Export Result</button>
+    </div>
+  </div>
+</div>
+
+<!-- Key features modal -->
+<div id="modal-kf" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:999;align-items:center;justify-content:center" onclick="if(event.target===this)this.style.display='none'">
+  <div style="background:#fff;border-radius:8px;padding:28px 32px;max-width:520px;width:90%;color:#1a2a35;box-shadow:0 8px 32px rgba(0,0,0,.3)">
+    <h3 style="margin:0 0 14px;color:#2980b9">&#9733; Key features</h3>
+    <ul style="margin:0;padding-left:20px;line-height:1.8">
+      <li>Extract all metadata modified in the org between two dates with optional time precision</li>
+      <li>Filter by user — restrict results to your own modifications or a specific named user</li>
+      <li>Exclude managed-package metadata to focus on custom development only</li>
+      <li>Conflict detection — highlights items also modified by other users in the same period</li>
+      <li>Profile change tracking — records old/new values for profile field and object permissions</li>
+      <li>Layout assignment tracking — detects page layout reassignments per profile and record type</li>
+      <li>Export results to a CSV file; re-open the file at any time with "Open csv file"</li>
+      <li>Interactive metadata chooser popup to include/exclude specific metadata types</li>
+      <li>Cache support — skip API calls and reuse a previously fetched metadata snapshot</li>
+      <li>Detected modifications feed directly into the Retrieve tab package.xml</li>
+    </ul>
+    <div style="text-align:right;margin-top:18px">
+      <button class="cal-btn btn-d" onclick="document.getElementById('modal-kf').style.display='none'">Close</button>
+    </div>
+  </div>
+</div>
+
+<script>
+function sw(id,idx){
+  var tp=document.getElementById(id);
+  tp.querySelectorAll('.m-tab').forEach(function(t,i){t.classList.toggle('act',i===idx)});
+  tp.querySelectorAll('.m-panel').forEach(function(p,i){p.classList.toggle('act',i===idx)});
+}
+</script>
+</body>
+</html>
