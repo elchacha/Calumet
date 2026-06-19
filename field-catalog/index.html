@@ -41,6 +41,7 @@
   table{width:100%;border-collapse:collapse;background:var(--panel)}
   th,td{padding:5px 8px;border-bottom:1px solid var(--border);text-align:left;vertical-align:top}
   th{position:sticky;top:0;background:#f8fafc;cursor:pointer;font-size:11px;text-transform:uppercase;letter-spacing:.03em;color:var(--muted);white-space:nowrap}
+  th.num{text-align:right}
   th:hover{color:var(--ink)}
   tr.frow:hover{background:#f8fafc}
   td.num{text-align:right;font-variant-numeric:tabular-nums}
@@ -100,6 +101,19 @@ document.getElementById("folder").addEventListener("change", async e=>{
 
 document.getElementById("objsearch").addEventListener("input", renderSidebar);
 
+// Standalone mode : a generated catalog.html injects window.__CATALOG__ = {index, objects:[...]}.
+function loadPayload(payload){
+  for(const k in DATA) delete DATA[k];
+  INDEX = payload.index || null;
+  (payload.objects||[]).forEach(o=>{ if(o&&o.object&&o.object.apiName) DATA[o.object.apiName]=o; });
+  const names=Object.keys(DATA);
+  document.getElementById("hmeta").textContent=
+    (INDEX?INDEX.org+" - ":"")+names.length+" objects"+(INDEX&&INDEX.generatedAt?" - "+INDEX.generatedAt.slice(0,10):"");
+  renderSidebar();
+  if(names.length) select(names.sort()[0]);
+}
+window.addEventListener("DOMContentLoaded",()=>{ if(window.__CATALOG__) loadPayload(window.__CATALOG__); });
+
 function renderSidebar(){
   const q=document.getElementById("objsearch").value.toLowerCase();
   const list=document.getElementById("objlist");
@@ -142,8 +156,8 @@ function renderObject(o){
       ${["unused","lowFill","managed","formula","required","externalId"].map(f=>`<span class="ftog" data-f="${f}">${f}</span>`).join("")}
     </div>
     <table id="ftab"><thead><tr>
-      ${th("apiName","Field")}${th("type","Type")}${th("_fill","Fill %")}${th("_refs","Refs")}
-      ${th("createdDate","Created")}${th("_fls","FLS r/e")}${th("cleanupScore","Score")}<th>Flags</th>
+      ${th("apiName","Field")}${th("type","Type")}${th("_fill","Fill %","num")}${th("_refs","Refs","num")}
+      ${th("createdDate","Created")}${th("_fls","FLS r/e","num")}${th("cleanupScore","Score","num")}<th>Flags</th>
     </tr></thead><tbody id="fbody"></tbody></table>`;
   document.getElementById("fsearch").addEventListener("input",()=>renderRows(o));
   c.querySelectorAll(".ftog").forEach(t=>t.onclick=()=>{
@@ -180,7 +194,9 @@ function renderRows(o){
       <td>${(f.flags||[]).map(x=>`<span class="flag ${x}">${x}</span>`).join("")}</td>`;
     const det=document.createElement("tr"); det.style.display="none";
     det.innerHTML=`<td colspan="8" class="detail">${detail(f)}</td>`;
-    tr.querySelector(".expand").onclick=()=>{const sh=det.style.display==="none";det.style.display=sh?"":"none";tr.querySelector(".expand").textContent=sh?"-":"+";};
+    const toggle=()=>{const sh=det.style.display==="none";det.style.display=sh?"":"none";tr.querySelector(".expand").textContent=sh?"-":"+";};
+    tr.querySelector(".expand").onclick=toggle;
+    const rc=tr.querySelector(".refclick"); if(rc) rc.onclick=toggle;
     body.appendChild(tr); body.appendChild(det);
   });
 }
@@ -193,7 +209,12 @@ function detail(f){
   if(f.referenceTo&&f.referenceTo.length) h+=`<div><b>Lookup to:</b> ${f.referenceTo.map(r=>chip(r)).join("")}</div>`;
   if(f.references&&f.references.total){
     const bt=Object.entries(f.references.byType||{}).map(([k,v])=>`<span class="reftype">${esc(k)}: ${v}</span>`).join("");
-    h+=`<div><b>Referenced ${f.references.total}x:</b> ${bt}${f.references.top&&f.references.top.length?" - e.g. "+f.references.top.map(esc).join(", "):""}</div>`;
+    h+=`<div><b>Referenced ${f.references.total}x:</b> ${bt}</div>`;
+    const comps=f.references.components||[];
+    if(comps.length){
+      h+=`<div style="margin-top:3px">`+comps.map(c=>`<span class="pv"><span class="reftype">${esc(c.type||'?')}</span> ${esc(c.name||'')}</span>`).join("")
+        +(f.references.total>comps.length?` <span style="color:#94a3b8">(+${f.references.total-comps.length} more)</span>`:"")+`</div>`;
+    }
   }
   if(f.picklistValues&&f.picklistValues.length){
     h+=`<div><b>Picklist:</b> ${f.picklistValues.map(p=>{
@@ -215,8 +236,8 @@ function val(f,k){
   return f[k];
 }
 function cmp(a,b){ if(a==null)a=""; if(b==null)b=""; if(typeof a==="number"&&typeof b==="number")return a-b; return (""+a).localeCompare(""+b); }
-function th(k,label){return `<th data-k="${k}">${label}</th>`;}
-function refsCell(r){ if(!r||!r.total) return '<span style="color:#cbd5e1">0</span>'; return `<b>${r.total}</b>`; }
+function th(k,label,cls){return `<th data-k="${k}" class="${cls||''}">${label}</th>`;}
+function refsCell(r){ if(!r||!r.total) return '<span style="color:#cbd5e1">0</span>'; return `<b class="refclick" style="color:#2563eb;cursor:pointer;text-decoration:underline">${r.total}</b>`; }
 function fillBar(p){const col=p<5?"#dc2626":p<25?"#f59e0b":p<60?"#2563eb":"#16a34a";return `<span class="bar" style="width:${Math.max(3,p*0.5)}px;background:${col}"></span> ${p.toFixed(1)}`;}
 function scoreCell(s){const col=s>=75?"#dc2626":s>=50?"#f59e0b":"#94a3b8";return `<span style="color:${col};font-weight:600">${s}</span>`;}
 function chip(api,via){const known=!!DATA[api];return `<span class="chip${known?'':' ro'}" ${known?`onclick="select('${api}')"`:""}>${esc(api)}${via?` <span style="opacity:.6">(${esc(via)})</span>`:""}</span>`;}
