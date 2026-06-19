@@ -3,7 +3,7 @@
 JSON into the viewer template.
 
 This is the quick test bench for the HTML/JS template; the production equivalent is
-com.calumet.mcp.fieldcatalog.FieldCatalogHtml (kept in sync with this logic).
+com.calumet.sftool.metadata.fieldcatalog.FieldCatalogHtml (kept in sync with this logic).
 
 Usage:
     python docs/field-catalog/embed.py <fieldCatalogDir> [viewerHtml]
