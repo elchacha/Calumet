@@ -20,6 +20,10 @@
   #sidebar{width:300px;background:var(--panel);border-right:1px solid var(--border);display:flex;flex-direction:column}
   #sidebar .search{padding:8px}
   #sidebar input{width:100%;padding:6px 8px;border:1px solid var(--border);border-radius:6px}
+  .objsort{display:flex;gap:4px;margin-top:6px}
+  .sbtn{flex:1;text-align:center;padding:3px 0;border:1px solid var(--border);border-radius:6px;cursor:pointer;font-size:11px;color:#475569;background:#fff}
+  .sbtn.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+  .reccount{font-weight:700;color:var(--red)}
   #objlist{overflow:auto;flex:1}
   .objitem{padding:7px 12px;border-bottom:1px solid #f1f5f9;cursor:pointer}
   .objitem:hover{background:#f8fafc}
@@ -58,6 +62,16 @@
   .pv .o{color:var(--red);font-weight:600}
   .expand{cursor:pointer;color:var(--blue);user-select:none}
   .reftype{font-size:10px;background:#eef2ff;color:#3730a3;padding:0 5px;border-radius:6px;margin-right:3px}
+  #refpop{position:fixed;display:none;z-index:50;background:#fff;border:1px solid var(--border);border-radius:8px;box-shadow:0 8px 24px rgba(0,0,0,.18);padding:8px 10px;max-width:460px;max-height:360px;overflow:auto;font-size:12px}
+  #refpop .rhead{margin-bottom:5px;color:#334155}
+  #refpop .rpin{color:#94a3b8;font-weight:normal;font-size:10px;margin-left:6px}
+  #refpop .rbt{margin-bottom:6px}
+  #refpop .rcomp{padding:1px 0;white-space:nowrap}
+  #refpop .rmore{color:#94a3b8;margin-top:4px}
+  .help{display:inline-block;width:14px;height:14px;line-height:14px;text-align:center;border-radius:50%;background:#cbd5e1;color:#334155;font-size:10px;cursor:help;margin-left:5px;vertical-align:middle}
+  #helppop{position:fixed;display:none;z-index:60;background:#0f172a;color:#e2e8f0;border-radius:8px;padding:10px 12px;max-width:360px;font-size:11px;line-height:1.55;box-shadow:0 8px 24px rgba(0,0,0,.28)}
+  #helppop b{color:#fff}
+  #helppop code{background:#1e293b;padding:0 4px;border-radius:3px}
 </style>
 </head>
 <body>
@@ -68,18 +82,29 @@
 </header>
 <div id="main">
   <aside id="sidebar">
-    <div class="search"><input id="objsearch" type="text" placeholder="Filter objects..."/></div>
+    <div class="search">
+      <input id="objsearch" type="text" placeholder="Filter objects..."/>
+      <div class="objsort">
+        <span class="sbtn on" data-s="name">A-Z</span>
+        <span class="sbtn" data-s="records">Records</span>
+      </div>
+    </div>
     <div id="objlist"></div>
   </aside>
   <section id="content"><div class="empty">Pick the <code>fieldCatalog</code> folder<br/>(orgs/&lt;org&gt;/fieldCatalog)</div></section>
 </div>
+<div id="refpop"></div>
+<div id="helppop"></div>
 
 <script>
 const DATA = {};          // apiName -> object json
 let INDEX = null;
 let current = null;       // selected object apiName
 let sortKey = "apiName", sortDir = 1;
-const activeFlags = new Set();
+let objSort = "name";   // sidebar sort: "name" | "records"
+const CATS = ["standard","managed","formula","required","externalId","unused","lowFill"];
+const hiddenCats = new Set();   // unchecked categories -> their fields are hidden
+function matchesCat(f,cat){ return cat==="standard" ? !f.custom : (f.flags||[]).includes(cat); }
 
 document.getElementById("folder").addEventListener("change", async e=>{
   const files = [...e.target.files].filter(f=>f.name.endsWith(".json"));
@@ -100,6 +125,11 @@ document.getElementById("folder").addEventListener("change", async e=>{
 });
 
 document.getElementById("objsearch").addEventListener("input", renderSidebar);
+document.querySelectorAll(".sbtn").forEach(b=>b.onclick=()=>{
+  objSort=b.dataset.s;
+  document.querySelectorAll(".sbtn").forEach(x=>x.classList.toggle("on",x.dataset.s===objSort));
+  renderSidebar();
+});
 
 // Standalone mode : a generated catalog.html injects window.__CATALOG__ = {index, objects:[...]}.
 function loadPayload(payload){
@@ -120,13 +150,15 @@ function renderSidebar(){
   list.innerHTML="";
   Object.values(DATA)
     .filter(o=>!q || (o.object.apiName+" "+(o.object.label||"")).toLowerCase().includes(q))
-    .sort((a,b)=>a.object.apiName.localeCompare(b.object.apiName))
+    .sort((a,b)=> objSort==="records"
+        ? ((b.object.recordCount||0)-(a.object.recordCount||0))
+        : a.object.apiName.localeCompare(b.object.apiName))
     .forEach(o=>{
       const m=o.object;
       const d=document.createElement("div");
       d.className="objitem"+(current===m.apiName?" sel":"");
       d.innerHTML=`<div class="nm">${esc(m.label||m.apiName)}</div>
-        <div class="sub">${esc(m.apiName)} - ${m.fieldCount} fields${m.recordCount!=null?" - "+fmt(m.recordCount)+" rec":""}</div>`;
+        <div class="sub">${esc(m.apiName)} - ${m.fieldCount} fields${m.recordCount!=null?' - <span class="reccount">'+fmt(m.recordCount)+'</span> rec':''}</div>`;
       d.onclick=()=>select(m.apiName);
       list.appendChild(d);
     });
@@ -153,20 +185,25 @@ function renderObject(o){
     ${children?`<div class="rel">Referenced by: ${children}</div>`:""}
     <div class="filters">
       <input id="fsearch" type="text" placeholder="Filter fields..."/>
-      ${["unused","lowFill","managed","formula","required","externalId"].map(f=>`<span class="ftog" data-f="${f}">${f}</span>`).join("")}
+      <span style="color:#94a3b8;font-size:11px">show:</span>
+      ${CATS.map(c=>`<span class="ftog ${hiddenCats.has(c)?'':'on'}" data-f="${c}">${c}</span>`).join("")}
     </div>
     <table id="ftab"><thead><tr>
       ${th("apiName","Field")}${th("type","Type")}${th("_fill","Fill %","num")}${th("_refs","Refs","num")}
-      ${th("createdDate","Created")}${th("_fls","FLS r/e","num")}${th("cleanupScore","Score","num")}<th>Flags</th>
+      ${th("keepScore","Score <span class='help'>?</span>","num")}<th>Flags</th>${th("createdDate","Created")}${th("_fls","FLS r/e","num")}
     </tr></thead><tbody id="fbody"></tbody></table>`;
   document.getElementById("fsearch").addEventListener("input",()=>renderRows(o));
   c.querySelectorAll(".ftog").forEach(t=>t.onclick=()=>{
-    const f=t.dataset.f; if(activeFlags.has(f)){activeFlags.delete(f);t.classList.remove("on");}else{activeFlags.add(f);t.classList.add("on");}
+    const f=t.dataset.f;
+    if(hiddenCats.has(f)){hiddenCats.delete(f);t.classList.add("on");}     // re-checked -> show again
+    else{hiddenCats.add(f);t.classList.remove("on");}                       // unchecked -> hide
     renderRows(o);
   });
   c.querySelectorAll("th[data-k]").forEach(h=>h.onclick=()=>{
     const k=h.dataset.k; if(sortKey===k)sortDir=-sortDir; else{sortKey=k;sortDir=1;} renderRows(o);
   });
+  const hp=c.querySelector(".help");
+  if(hp){ hp.onmouseenter=()=>showHelp(hp); hp.onmouseleave=hideHelp; hp.onclick=e=>e.stopPropagation(); }
   renderRows(o);
 }
 
@@ -175,7 +212,7 @@ function renderRows(o){
   const body=document.getElementById("fbody");
   let rows=o.fields.filter(f=>{
     if(q && !((f.apiName+" "+(f.label||"")+" "+(f.description||"")).toLowerCase().includes(q))) return false;
-    for(const fl of activeFlags) if(!(f.flags||[]).includes(fl)) return false;
+    for(const cat of hiddenCats) if(matchesCat(f,cat)) return false;   // hidden if it matches an unchecked category
     return true;
   });
   rows.sort((a,b)=>cmp(val(a,sortKey),val(b,sortKey))*sortDir);
@@ -188,15 +225,20 @@ function renderRows(o){
       <td><span class="pill ttype">${esc(f.type||"?")}</span>${f.managed?`<span class="pill tmanaged">${esc(f.namespace||"mgd")}</span>`:""}</td>
       <td class="num">${fillPct==null?'<span style="color:#cbd5e1">-</span>':fillBar(fillPct)}</td>
       <td class="num">${refsCell(f.references)}</td>
+      <td class="num">${f.keepScore==null?"-":scoreCell(f.keepScore)}</td>
+      <td>${(f.flags||[]).map(x=>`<span class="flag ${x}">${x}</span>`).join("")}</td>
       <td>${f.createdDate?esc(f.createdDate.slice(0,10)):'<span style="color:#cbd5e1">-</span>'}</td>
-      <td class="num">${f.fls?f.fls.read+"/"+f.fls.edit:'<span style="color:#cbd5e1">-</span>'}</td>
-      <td class="num">${f.cleanupScore==null?"-":scoreCell(f.cleanupScore)}</td>
-      <td>${(f.flags||[]).map(x=>`<span class="flag ${x}">${x}</span>`).join("")}</td>`;
+      <td class="num">${f.fls?f.fls.read+"/"+f.fls.edit:'<span style="color:#cbd5e1">-</span>'}</td>`;
     const det=document.createElement("tr"); det.style.display="none";
     det.innerHTML=`<td colspan="8" class="detail">${detail(f)}</td>`;
     const toggle=()=>{const sh=det.style.display==="none";det.style.display=sh?"":"none";tr.querySelector(".expand").textContent=sh?"-":"+";};
     tr.querySelector(".expand").onclick=toggle;
-    const rc=tr.querySelector(".refclick"); if(rc) rc.onclick=toggle;
+    const rc=tr.querySelector(".refclick");
+    if(rc){
+      rc.onmouseenter=()=>showRefPop(f,rc,false);
+      rc.onmouseleave=scheduleHideRefPop;
+      rc.onclick=e=>{e.stopPropagation();showRefPop(f,rc,true);};
+    }
     body.appendChild(tr); body.appendChild(det);
   });
 }
@@ -239,10 +281,55 @@ function cmp(a,b){ if(a==null)a=""; if(b==null)b=""; if(typeof a==="number"&&typ
 function th(k,label,cls){return `<th data-k="${k}" class="${cls||''}">${label}</th>`;}
 function refsCell(r){ if(!r||!r.total) return '<span style="color:#cbd5e1">0</span>'; return `<b class="refclick" style="color:#2563eb;cursor:pointer;text-decoration:underline">${r.total}</b>`; }
 function fillBar(p){const col=p<5?"#dc2626":p<25?"#f59e0b":p<60?"#2563eb":"#16a34a";return `<span class="bar" style="width:${Math.max(3,p*0.5)}px;background:${col}"></span> ${p.toFixed(1)}`;}
-function scoreCell(s){const col=s>=75?"#dc2626":s>=50?"#f59e0b":"#94a3b8";return `<span style="color:${col};font-weight:600">${s}</span>`;}
+function scoreCell(s){const col=s>=75?"#16a34a":s>=40?"#94a3b8":"#dc2626";return `<span style="color:${col};font-weight:600">${s}</span>`;}
 function chip(api,via){const known=!!DATA[api];return `<span class="chip${known?'':' ro'}" ${known?`onclick="select('${api}')"`:""}>${esc(api)}${via?` <span style="opacity:.6">(${esc(via)})</span>`:""}</span>`;}
 function fmt(n){return (n==null)?"":n.toLocaleString();}
 function esc(s){return (s==null?"":""+s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));}
+
+// ---- references popup (hover to peek, click to pin) ----
+let refPopTimer=null, refPopPinned=false;
+function showRefPop(f, anchor, pin){
+  const r=f.references||{}; if(!r.total) return;
+  clearTimeout(refPopTimer);
+  const pop=document.getElementById("refpop");
+  const bt=Object.entries(r.byType||{}).map(([k,v])=>`<span class="reftype">${esc(k)}: ${v}</span>`).join(" ");
+  const comps=(r.components||[]).map(c=>`<div class="rcomp"><span class="reftype">${esc(c.type||'?')}</span> ${esc(c.name||'')}</div>`).join("");
+  const more=r.total>(r.components||[]).length?`<div class="rmore">+${r.total-(r.components||[]).length} more</div>`:"";
+  pop.innerHTML=`<div class="rhead"><b>${esc(f.apiName)}</b> - referenced ${r.total}x`+(pin?'<span class="rpin">click outside to close</span>':'')+`</div><div class="rbt">${bt}</div>${comps}${more}`;
+  pop.style.display="block";
+  const rect=anchor.getBoundingClientRect();
+  let left=Math.min(rect.left, window.innerWidth-pop.offsetWidth-12);
+  let top=rect.bottom+4;
+  if(top+pop.offsetHeight>window.innerHeight) top=Math.max(8, rect.top-pop.offsetHeight-4);
+  pop.style.left=Math.max(8,left)+"px"; pop.style.top=top+"px";
+  refPopPinned=pin;
+}
+function scheduleHideRefPop(){ if(refPopPinned) return; refPopTimer=setTimeout(()=>{document.getElementById("refpop").style.display="none";},250); }
+
+// ---- score help tooltip ----
+const SCORE_HELP=`<b>Keep score (0-100)</b> - higher = keep, lower = cleanup candidate.<br>`
+ +`<code>100 - (0.6 x emptiness + 0.4 x noRefs)</code><br>`
+ +`emptiness = 100 - fill% &nbsp; | &nbsp; noRefs = 100 if 0 references else 0<br><br>`
+ +`So a field well filled <b>and</b> referenced scores ~100 (keep). An empty, never-referenced field scores ~0 (candidate). `
+ +`Colours: <b style="color:#16a34a">&ge;75 keep</b>, 40-74 review, <b style="color:#dc2626">&lt;40 candidate</b>. Managed fields have no score.`;
+function showHelp(anchor){
+  const p=document.getElementById("helppop"); p.innerHTML=SCORE_HELP; p.style.display="block";
+  const r=anchor.getBoundingClientRect();
+  let left=Math.min(r.left, window.innerWidth-p.offsetWidth-12);
+  let top=r.bottom+6; if(top+p.offsetHeight>window.innerHeight) top=Math.max(8,r.top-p.offsetHeight-6);
+  p.style.left=Math.max(8,left)+"px"; p.style.top=top+"px";
+}
+function hideHelp(){ document.getElementById("helppop").style.display="none"; }
+(function(){
+  const pop=document.getElementById("refpop");
+  pop.addEventListener("mouseenter",()=>clearTimeout(refPopTimer));
+  pop.addEventListener("mouseleave",scheduleHideRefPop);
+  document.addEventListener("click",e=>{
+    if(refPopPinned && !pop.contains(e.target) && !e.target.classList.contains("refclick")){
+      refPopPinned=false; pop.style.display="none";
+    }
+  });
+})();
 </script>
 </body>
 </html>
