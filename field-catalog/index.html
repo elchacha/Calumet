@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Calumet Field Catalog</title>
+<style>
+  :root{
+    --bg:#f1f5f9; --panel:#ffffff; --border:#e2e8f0; --ink:#1e293b; --muted:#64748b;
+    --blue:#2563eb; --green:#16a34a; --amber:#f59e0b; --red:#dc2626; --purple:#7c3aed; --grey:#94a3b8;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font:13px/1.4 "Segoe UI",Arial,sans-serif;color:var(--ink);background:var(--bg);height:100vh;display:flex;flex-direction:column}
+  header{background:#0f172a;color:#fff;padding:10px 16px;display:flex;align-items:center;gap:16px}
+  header h1{font-size:16px;margin:0;font-weight:600}
+  header .meta{color:#94a3b8;font-size:12px}
+  header label.load{margin-left:auto;background:var(--blue);color:#fff;padding:6px 12px;border-radius:6px;cursor:pointer;font-size:12px}
+  header input[type=file]{display:none}
+  #main{flex:1;display:flex;min-height:0}
+  #sidebar{width:300px;background:var(--panel);border-right:1px solid var(--border);display:flex;flex-direction:column}
+  #sidebar .search{padding:8px}
+  #sidebar input{width:100%;padding:6px 8px;border:1px solid var(--border);border-radius:6px}
+  #objlist{overflow:auto;flex:1}
+  .objitem{padding:7px 12px;border-bottom:1px solid #f1f5f9;cursor:pointer}
+  .objitem:hover{background:#f8fafc}
+  .objitem.sel{background:#eff6ff;border-left:3px solid var(--blue)}
+  .objitem .nm{font-weight:600}
+  .objitem .sub{color:var(--muted);font-size:11px}
+  #content{flex:1;overflow:auto;padding:14px 18px}
+  .empty{color:var(--muted);text-align:center;margin-top:80px}
+  .ohead{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:6px}
+  .ohead h2{margin:0;font-size:18px}
+  .ohead .api{color:var(--muted);font-family:monospace}
+  .rel{margin:6px 0 10px;font-size:12px;color:var(--muted)}
+  .chip{display:inline-block;padding:1px 7px;border-radius:10px;background:#eef2ff;color:#3730a3;margin:2px;cursor:pointer;font-size:11px}
+  .chip.ro{cursor:default;background:#f1f5f9;color:#475569}
+  .filters{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:8px 0}
+  .filters input[type=text]{padding:6px 8px;border:1px solid var(--border);border-radius:6px;min-width:220px}
+  .ftog{padding:3px 9px;border-radius:12px;border:1px solid var(--border);background:#fff;cursor:pointer;font-size:11px;color:#475569}
+  .ftog.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+  table{width:100%;border-collapse:collapse;background:var(--panel)}
+  th,td{padding:5px 8px;border-bottom:1px solid var(--border);text-align:left;vertical-align:top}
+  th{position:sticky;top:0;background:#f8fafc;cursor:pointer;font-size:11px;text-transform:uppercase;letter-spacing:.03em;color:var(--muted);white-space:nowrap}
+  th:hover{color:var(--ink)}
+  tr.frow:hover{background:#f8fafc}
+  td.num{text-align:right;font-variant-numeric:tabular-nums}
+  .pill{display:inline-block;padding:1px 7px;border-radius:4px;color:#fff;font-size:10px;font-weight:600;margin-right:3px}
+  .ttype{background:var(--blue)} .tmanaged{background:var(--grey)}
+  .bar{display:inline-block;height:10px;border-radius:3px;vertical-align:middle}
+  .flag{display:inline-block;padding:0 6px;border-radius:8px;font-size:10px;margin:1px;background:#f1f5f9;color:#475569}
+  .flag.unused{background:#fee2e2;color:#991b1b}.flag.lowFill{background:#ffedd5;color:#9a3412}
+  .flag.managed{background:#e5e7eb;color:#374151}.flag.formula{background:#ede9fe;color:#5b21b6}
+  .flag.required{background:#dcfce7;color:#166534}.flag.externalId{background:#dbeafe;color:#1e40af}
+  .detail{background:#f8fafc;font-size:12px;padding:8px 12px}
+  .detail b{color:#334155}
+  .pv{display:inline-block;margin:2px 6px 2px 0}
+  .pv .o{color:var(--red);font-weight:600}
+  .expand{cursor:pointer;color:var(--blue);user-select:none}
+  .reftype{font-size:10px;background:#eef2ff;color:#3730a3;padding:0 5px;border-radius:6px;margin-right:3px}
+</style>
+</head>
+<body>
+<header>
+  <h1>Calumet Field Catalog</h1>
+  <span class="meta" id="hmeta">load a fieldCatalog folder to start</span>
+  <label class="load">Load folder<input type="file" id="folder" webkitdirectory directory multiple/></label>
+</header>
+<div id="main">
+  <aside id="sidebar">
+    <div class="search"><input id="objsearch" type="text" placeholder="Filter objects..."/></div>
+    <div id="objlist"></div>
+  </aside>
+  <section id="content"><div class="empty">Pick the <code>fieldCatalog</code> folder<br/>(orgs/&lt;org&gt;/fieldCatalog)</div></section>
+</div>
+
+<script>
+const DATA = {};          // apiName -> object json
+let INDEX = null;
+let current = null;       // selected object apiName
+let sortKey = "apiName", sortDir = 1;
+const activeFlags = new Set();
+
+document.getElementById("folder").addEventListener("change", async e=>{
+  const files = [...e.target.files].filter(f=>f.name.endsWith(".json"));
+  for(const k in DATA) delete DATA[k];
+  INDEX=null;
+  await Promise.all(files.map(f=>f.text().then(t=>{
+    try{
+      const j=JSON.parse(t);
+      if(f.name==="index.json"){ INDEX=j; }
+      else if(j && j.object && j.object.apiName){ DATA[j.object.apiName]=j; }
+    }catch(err){ console.warn("skip",f.name,err); }
+  })));
+  const names=Object.keys(DATA);
+  document.getElementById("hmeta").textContent =
+    (INDEX?INDEX.org+" - ":"")+names.length+" objects"+(INDEX&&INDEX.generatedAt?" - "+INDEX.generatedAt.slice(0,10):"");
+  renderSidebar();
+  if(names.length){ select(names.sort()[0]); }
+});
+
+document.getElementById("objsearch").addEventListener("input", renderSidebar);
+
+function renderSidebar(){
+  const q=document.getElementById("objsearch").value.toLowerCase();
+  const list=document.getElementById("objlist");
+  list.innerHTML="";
+  Object.values(DATA)
+    .filter(o=>!q || (o.object.apiName+" "+(o.object.label||"")).toLowerCase().includes(q))
+    .sort((a,b)=>a.object.apiName.localeCompare(b.object.apiName))
+    .forEach(o=>{
+      const m=o.object;
+      const d=document.createElement("div");
+      d.className="objitem"+(current===m.apiName?" sel":"");
+      d.innerHTML=`<div class="nm">${esc(m.label||m.apiName)}</div>
+        <div class="sub">${esc(m.apiName)} - ${m.fieldCount} fields${m.recordCount!=null?" - "+fmt(m.recordCount)+" rec":""}</div>`;
+      d.onclick=()=>select(m.apiName);
+      list.appendChild(d);
+    });
+}
+
+function select(api){
+  if(!DATA[api]) return;
+  current=api; renderSidebar(); renderObject(DATA[api]);
+}
+
+function renderObject(o){
+  const m=o.object, c=document.getElementById("content");
+  const rels = (m.relationships||{});
+  const parents=(rels.parents||[]).map(p=>chip(p)).join("");
+  const children=(rels.children||[]).map(ch=>chip(ch.object,ch.viaField)).join("");
+  c.innerHTML=`
+    <div class="ohead"><h2>${esc(m.label||m.apiName)}</h2>
+      <span class="api">${esc(m.apiName)}</span>
+      <span class="chip ro">${m.custom?"custom":"standard"}</span>
+      ${m.recordCount!=null?`<span class="chip ro">${fmt(m.recordCount)} records</span>`:""}
+      <span class="chip ro">${m.fieldCount} fields</span></div>
+    ${(m.recordTypes&&m.recordTypes.length)?`<div class="rel">Record types: ${m.recordTypes.map(r=>`<span class="chip ro">${esc(r)}</span>`).join("")}</div>`:""}
+    ${parents?`<div class="rel">Lookups to: ${parents}</div>`:""}
+    ${children?`<div class="rel">Referenced by: ${children}</div>`:""}
+    <div class="filters">
+      <input id="fsearch" type="text" placeholder="Filter fields..."/>
+      ${["unused","lowFill","managed","formula","required","externalId"].map(f=>`<span class="ftog" data-f="${f}">${f}</span>`).join("")}
+    </div>
+    <table id="ftab"><thead><tr>
+      ${th("apiName","Field")}${th("type","Type")}${th("_fill","Fill %")}${th("_refs","Refs")}
+      ${th("createdDate","Created")}${th("_fls","FLS r/e")}${th("cleanupScore","Score")}<th>Flags</th>
+    </tr></thead><tbody id="fbody"></tbody></table>`;
+  document.getElementById("fsearch").addEventListener("input",()=>renderRows(o));
+  c.querySelectorAll(".ftog").forEach(t=>t.onclick=()=>{
+    const f=t.dataset.f; if(activeFlags.has(f)){activeFlags.delete(f);t.classList.remove("on");}else{activeFlags.add(f);t.classList.add("on");}
+    renderRows(o);
+  });
+  c.querySelectorAll("th[data-k]").forEach(h=>h.onclick=()=>{
+    const k=h.dataset.k; if(sortKey===k)sortDir=-sortDir; else{sortKey=k;sortDir=1;} renderRows(o);
+  });
+  renderRows(o);
+}
+
+function renderRows(o){
+  const q=(document.getElementById("fsearch").value||"").toLowerCase();
+  const body=document.getElementById("fbody");
+  let rows=o.fields.filter(f=>{
+    if(q && !((f.apiName+" "+(f.label||"")+" "+(f.description||"")).toLowerCase().includes(q))) return false;
+    for(const fl of activeFlags) if(!(f.flags||[]).includes(fl)) return false;
+    return true;
+  });
+  rows.sort((a,b)=>cmp(val(a,sortKey),val(b,sortKey))*sortDir);
+  body.innerHTML="";
+  rows.forEach(f=>{
+    const tr=document.createElement("tr"); tr.className="frow";
+    const fillPct = f.fill? f.fill.percent : null;
+    tr.innerHTML=`
+      <td><span class="expand">+</span> <b>${esc(f.apiName)}</b><div style="color:#64748b">${esc(f.label||"")}</div></td>
+      <td><span class="pill ttype">${esc(f.type||"?")}</span>${f.managed?`<span class="pill tmanaged">${esc(f.namespace||"mgd")}</span>`:""}</td>
+      <td class="num">${fillPct==null?'<span style="color:#cbd5e1">-</span>':fillBar(fillPct)}</td>
+      <td class="num">${refsCell(f.references)}</td>
+      <td>${f.createdDate?esc(f.createdDate.slice(0,10)):'<span style="color:#cbd5e1">-</span>'}</td>
+      <td class="num">${f.fls?f.fls.read+"/"+f.fls.edit:'<span style="color:#cbd5e1">-</span>'}</td>
+      <td class="num">${f.cleanupScore==null?"-":scoreCell(f.cleanupScore)}</td>
+      <td>${(f.flags||[]).map(x=>`<span class="flag ${x}">${x}</span>`).join("")}</td>`;
+    const det=document.createElement("tr"); det.style.display="none";
+    det.innerHTML=`<td colspan="8" class="detail">${detail(f)}</td>`;
+    tr.querySelector(".expand").onclick=()=>{const sh=det.style.display==="none";det.style.display=sh?"":"none";tr.querySelector(".expand").textContent=sh?"-":"+";};
+    body.appendChild(tr); body.appendChild(det);
+  });
+}
+
+function detail(f){
+  let h="";
+  if(f.description) h+=`<div><b>Description:</b> ${esc(f.description)}</div>`;
+  if(f.helpText) h+=`<div><b>Help:</b> ${esc(f.helpText)}</div>`;
+  if(f.formula) h+=`<div><b>Formula:</b> <code>${esc(f.formula)}</code></div>`;
+  if(f.referenceTo&&f.referenceTo.length) h+=`<div><b>Lookup to:</b> ${f.referenceTo.map(r=>chip(r)).join("")}</div>`;
+  if(f.references&&f.references.total){
+    const bt=Object.entries(f.references.byType||{}).map(([k,v])=>`<span class="reftype">${esc(k)}: ${v}</span>`).join("");
+    h+=`<div><b>Referenced ${f.references.total}x:</b> ${bt}${f.references.top&&f.references.top.length?" - e.g. "+f.references.top.map(esc).join(", "):""}</div>`;
+  }
+  if(f.picklistValues&&f.picklistValues.length){
+    h+=`<div><b>Picklist:</b> ${f.picklistValues.map(p=>{
+      const orphan=(f.orphanPicklistValues||[]).includes(p.value);
+      return `<span class="pv ${orphan?'o':''}">${esc(p.value)}${p.usedCount!=null?" ("+p.usedCount+")":""}${p.defaultValue?" *":""}${!p.active?" [inactive]":""}</span>`;
+    }).join("")}</div>`;
+    if(f.orphanPicklistValues&&f.orphanPicklistValues.length) h+=`<div style="color:#b45309">Orphan values (active, never used): ${f.orphanPicklistValues.map(esc).join(", ")}</div>`;
+  }
+  if(f.fill&&f.fill.perRecordType&&Object.keys(f.fill.perRecordType).length){
+    h+=`<div><b>Fill by RecordType:</b> ${Object.entries(f.fill.perRecordType).map(([k,v])=>`${esc(k)}: ${v}`).join(" - ")}</div>`;
+  }
+  return h||"<i>no extra detail</i>";
+}
+
+function val(f,k){
+  if(k==="_fill") return f.fill?f.fill.percent:-1;
+  if(k==="_refs") return f.references?f.references.total:0;
+  if(k==="_fls") return f.fls?f.fls.read:-1;
+  return f[k];
+}
+function cmp(a,b){ if(a==null)a=""; if(b==null)b=""; if(typeof a==="number"&&typeof b==="number")return a-b; return (""+a).localeCompare(""+b); }
+function th(k,label){return `<th data-k="${k}">${label}</th>`;}
+function refsCell(r){ if(!r||!r.total) return '<span style="color:#cbd5e1">0</span>'; return `<b>${r.total}</b>`; }
+function fillBar(p){const col=p<5?"#dc2626":p<25?"#f59e0b":p<60?"#2563eb":"#16a34a";return `<span class="bar" style="width:${Math.max(3,p*0.5)}px;background:${col}"></span> ${p.toFixed(1)}`;}
+function scoreCell(s){const col=s>=75?"#dc2626":s>=50?"#f59e0b":"#94a3b8";return `<span style="color:${col};font-weight:600">${s}</span>`;}
+function chip(api,via){const known=!!DATA[api];return `<span class="chip${known?'':' ro'}" ${known?`onclick="select('${api}')"`:""}>${esc(api)}${via?` <span style="opacity:.6">(${esc(via)})</span>`:""}</span>`;}
+function fmt(n){return (n==null)?"":n.toLocaleString();}
+function esc(s){return (s==null?"":""+s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));}
+</script>
+</body>
+</html>
