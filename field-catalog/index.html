@@ -38,10 +38,24 @@
   .rel{margin:6px 0 10px;font-size:12px;color:var(--muted)}
   .chip{display:inline-block;padding:1px 7px;border-radius:10px;background:#eef2ff;color:#3730a3;margin:2px;cursor:pointer;font-size:11px}
   .chip.ro{cursor:default;background:#f1f5f9;color:#475569}
+  .objcard{background:linear-gradient(135deg,#ffffff,#eef2f7);border:1px solid var(--border);border-left:4px solid var(--blue);border-radius:10px;padding:10px 14px 9px;margin-bottom:10px;box-shadow:0 1px 4px rgba(15,23,42,.08)}
+  .objcard .ohead{margin-bottom:6px}
+  .objcard h2{font-size:20px;color:#0f172a;font-weight:700}
+  .stat{display:inline-block;padding:2px 10px;border-radius:8px;background:#fff;border:1px solid var(--border);font-size:12px;color:#475569}
+  .stat b{color:#0f172a;font-variant-numeric:tabular-nums}
+  .stat.rec b{color:var(--red)}
+  .rtchip{display:inline-block;padding:2px 9px;border-radius:8px;background:#fff;border:1px solid #cbd5e1;color:#334155;font-size:11px;margin:2px 2px 0 0;box-shadow:0 1px 1px rgba(15,23,42,.05)}
+  .rtlabel{font-weight:600;color:#475569;font-size:11px;text-transform:uppercase;letter-spacing:.03em;margin-right:4px}
   .filters{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:8px 0}
   .filters input[type=text]{padding:6px 8px;border:1px solid var(--border);border-radius:6px;min-width:220px}
   .ftog{padding:3px 9px;border-radius:12px;border:1px solid var(--border);background:#fff;cursor:pointer;font-size:11px;color:#475569}
   .ftog.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+  .toggle{display:inline-block;width:34px;height:18px;background:#cbd5e1;border-radius:9px;position:relative;cursor:pointer;vertical-align:middle;transition:background .15s}
+  .toggle.on{background:var(--blue)}
+  .toggle .knob{position:absolute;top:2px;left:2px;width:14px;height:14px;background:#fff;border-radius:50%;transition:left .15s;box-shadow:0 1px 2px rgba(0,0,0,.3)}
+  .toggle.on .knob{left:18px}
+  .tg-label{font-size:11px;color:#94a3b8;cursor:pointer;vertical-align:middle}
+  .tg-label.act{color:var(--ink);font-weight:600}
   table{width:100%;border-collapse:collapse;background:var(--panel)}
   th,td{padding:5px 8px;border-bottom:1px solid var(--border);text-align:left;vertical-align:top}
   th{position:sticky;top:0;background:#f8fafc;cursor:pointer;font-size:11px;text-transform:uppercase;letter-spacing:.03em;color:var(--muted);white-space:nowrap}
@@ -103,7 +117,8 @@ let current = null;       // selected object apiName
 let sortKey = "apiName", sortDir = 1;
 let objSort = "name";   // sidebar sort: "name" | "records"
 const CATS = ["standard","managed","formula","required","externalId","unused","lowFill"];
-const hiddenCats = new Set();   // unchecked categories -> their fields are hidden
+const hiddenCats = new Set();   // unchecked categories
+let filterMode = "hide";        // "hide" = uncheck hides that category ; "only" = show only checked categories
 function matchesCat(f,cat){ return cat==="standard" ? !f.custom : (f.flags||[]).includes(cat); }
 
 document.getElementById("folder").addEventListener("change", async e=>{
@@ -171,21 +186,20 @@ function select(api){
 
 function renderObject(o){
   const m=o.object, c=document.getElementById("content");
-  const rels = (m.relationships||{});
-  const parents=(rels.parents||[]).map(p=>chip(p)).join("");
-  const children=(rels.children||[]).map(ch=>chip(ch.object,ch.viaField)).join("");
   c.innerHTML=`
-    <div class="ohead"><h2>${esc(m.label||m.apiName)}</h2>
-      <span class="api">${esc(m.apiName)}</span>
-      <span class="chip ro">${m.custom?"custom":"standard"}</span>
-      ${m.recordCount!=null?`<span class="chip ro">${fmt(m.recordCount)} records</span>`:""}
-      <span class="chip ro">${m.fieldCount} fields</span></div>
-    ${(m.recordTypes&&m.recordTypes.length)?`<div class="rel">Record types: ${m.recordTypes.map(r=>`<span class="chip ro">${esc(r)}</span>`).join("")}</div>`:""}
-    ${parents?`<div class="rel">Lookups to: ${parents}</div>`:""}
-    ${children?`<div class="rel">Referenced by: ${children}</div>`:""}
+    <div class="objcard">
+      <div class="ohead"><h2>${esc(m.label||m.apiName)}</h2>
+        <span class="api">${esc(m.apiName)}</span>
+        <span class="chip ro">${m.custom?"custom":"standard"}</span>
+        ${m.recordCount!=null?`<span class="stat rec"><b>${fmt(m.recordCount)}</b> records</span>`:""}
+        <span class="stat"><b>${m.fieldCount}</b> fields</span></div>
+      ${(m.recordTypes&&m.recordTypes.length)?`<div class="rel" style="margin:0"><span class="rtlabel">Record types</span>${m.recordTypes.map(r=>`<span class="rtchip">${esc(r)}</span>`).join("")}</div>`:""}
+    </div>
     <div class="filters">
       <input id="fsearch" type="text" placeholder="Filter fields..."/>
-      <span style="color:#94a3b8;font-size:11px">show:</span>
+      <span class="tg-label ${filterMode==='hide'?'act':''}" data-m="hide">Hide</span>
+      <span id="modeToggle" class="toggle ${filterMode==='only'?'on':''}"><span class="knob"></span></span>
+      <span class="tg-label ${filterMode==='only'?'act':''}" data-m="only">Only</span>
       ${CATS.map(c=>`<span class="ftog ${hiddenCats.has(c)?'':'on'}" data-f="${c}">${c}</span>`).join("")}
     </div>
     <table id="ftab"><thead><tr>
@@ -195,10 +209,18 @@ function renderObject(o){
   document.getElementById("fsearch").addEventListener("input",()=>renderRows(o));
   c.querySelectorAll(".ftog").forEach(t=>t.onclick=()=>{
     const f=t.dataset.f;
-    if(hiddenCats.has(f)){hiddenCats.delete(f);t.classList.add("on");}     // re-checked -> show again
-    else{hiddenCats.add(f);t.classList.remove("on");}                       // unchecked -> hide
+    if(hiddenCats.has(f)){hiddenCats.delete(f);t.classList.add("on");}     // re-checked
+    else{hiddenCats.add(f);t.classList.remove("on");}                       // unchecked
     renderRows(o);
   });
+  const setMode=m=>{
+    filterMode=m;
+    c.querySelector("#modeToggle").classList.toggle("on", m==='only');
+    c.querySelectorAll(".tg-label").forEach(x=>x.classList.toggle("act", x.dataset.m===m));
+    renderRows(o);
+  };
+  c.querySelector("#modeToggle").onclick=()=>setMode(filterMode==='only'?'hide':'only');
+  c.querySelectorAll(".tg-label").forEach(l=>l.onclick=()=>setMode(l.dataset.m));
   c.querySelectorAll("th[data-k]").forEach(h=>h.onclick=()=>{
     const k=h.dataset.k; if(sortKey===k)sortDir=-sortDir; else{sortKey=k;sortDir=1;} renderRows(o);
   });
@@ -212,7 +234,15 @@ function renderRows(o){
   const body=document.getElementById("fbody");
   let rows=o.fields.filter(f=>{
     if(q && !((f.apiName+" "+(f.label||"")+" "+(f.description||"")).toLowerCase().includes(q))) return false;
-    for(const cat of hiddenCats) if(matchesCat(f,cat)) return false;   // hidden if it matches an unchecked category
+    if(filterMode==="only"){
+      // show only fields matching at least one CHECKED category (uncategorized fields hidden)
+      let ok=false;
+      for(const c of CATS){ if(!hiddenCats.has(c) && matchesCat(f,c)){ ok=true; break; } }
+      if(!ok) return false;
+    } else {
+      // hide : drop fields matching any UNCHECKED category (uncategorized always shown)
+      for(const cat of hiddenCats) if(matchesCat(f,cat)) return false;
+    }
     return true;
   });
   rows.sort((a,b)=>cmp(val(a,sortKey),val(b,sortKey))*sortDir);
@@ -221,7 +251,7 @@ function renderRows(o){
     const tr=document.createElement("tr"); tr.className="frow";
     const fillPct = f.fill? f.fill.percent : null;
     tr.innerHTML=`
-      <td><span class="expand">+</span> <b>${esc(f.apiName)}</b><div style="color:#64748b">${esc(f.label||"")}</div></td>
+      <td><b class="fieldname" style="cursor:pointer">${esc(f.apiName)}</b><div style="color:#64748b">${esc(f.label||"")}</div></td>
       <td><span class="pill ttype">${esc(f.type||"?")}</span>${f.managed?`<span class="pill tmanaged">${esc(f.namespace||"mgd")}</span>`:""}</td>
       <td class="num">${fillPct==null?'<span style="color:#cbd5e1">-</span>':fillBar(fillPct)}</td>
       <td class="num">${refsCell(f.references)}</td>
@@ -229,17 +259,17 @@ function renderRows(o){
       <td>${(f.flags||[]).map(x=>`<span class="flag ${x}">${x}</span>`).join("")}</td>
       <td>${f.createdDate?esc(f.createdDate.slice(0,10)):'<span style="color:#cbd5e1">-</span>'}</td>
       <td class="num">${f.fls?f.fls.read+"/"+f.fls.edit:'<span style="color:#cbd5e1">-</span>'}</td>`;
-    const det=document.createElement("tr"); det.style.display="none";
-    det.innerHTML=`<td colspan="8" class="detail">${detail(f)}</td>`;
-    const toggle=()=>{const sh=det.style.display==="none";det.style.display=sh?"":"none";tr.querySelector(".expand").textContent=sh?"-":"+";};
-    tr.querySelector(".expand").onclick=toggle;
+    const fn=tr.querySelector(".fieldname");
+    fn.onmouseenter=()=>showFieldPop(f,fn,false);
+    fn.onmouseleave=scheduleHideRefPop;
+    fn.onclick=e=>{e.stopPropagation();showFieldPop(f,fn,true);};
     const rc=tr.querySelector(".refclick");
     if(rc){
       rc.onmouseenter=()=>showRefPop(f,rc,false);
       rc.onmouseleave=scheduleHideRefPop;
       rc.onclick=e=>{e.stopPropagation();showRefPop(f,rc,true);};
     }
-    body.appendChild(tr); body.appendChild(det);
+    body.appendChild(tr);
   });
 }
 
@@ -249,15 +279,6 @@ function detail(f){
   if(f.helpText) h+=`<div><b>Help:</b> ${esc(f.helpText)}</div>`;
   if(f.formula) h+=`<div><b>Formula:</b> <code>${esc(f.formula)}</code></div>`;
   if(f.referenceTo&&f.referenceTo.length) h+=`<div><b>Lookup to:</b> ${f.referenceTo.map(r=>chip(r)).join("")}</div>`;
-  if(f.references&&f.references.total){
-    const bt=Object.entries(f.references.byType||{}).map(([k,v])=>`<span class="reftype">${esc(k)}: ${v}</span>`).join("");
-    h+=`<div><b>Referenced ${f.references.total}x:</b> ${bt}</div>`;
-    const comps=f.references.components||[];
-    if(comps.length){
-      h+=`<div style="margin-top:3px">`+comps.map(c=>`<span class="pv"><span class="reftype">${esc(c.type||'?')}</span> ${esc(c.name||'')}</span>`).join("")
-        +(f.references.total>comps.length?` <span style="color:#94a3b8">(+${f.references.total-comps.length} more)</span>`:"")+`</div>`;
-    }
-  }
   if(f.picklistValues&&f.picklistValues.length){
     h+=`<div><b>Picklist:</b> ${f.picklistValues.map(p=>{
       const orphan=(f.orphanPicklistValues||[]).includes(p.value);
@@ -288,14 +309,10 @@ function esc(s){return (s==null?"":""+s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":
 
 // ---- references popup (hover to peek, click to pin) ----
 let refPopTimer=null, refPopPinned=false;
-function showRefPop(f, anchor, pin){
-  const r=f.references||{}; if(!r.total) return;
+function showPopHtml(html, anchor, pin){
   clearTimeout(refPopTimer);
   const pop=document.getElementById("refpop");
-  const bt=Object.entries(r.byType||{}).map(([k,v])=>`<span class="reftype">${esc(k)}: ${v}</span>`).join(" ");
-  const comps=(r.components||[]).map(c=>`<div class="rcomp"><span class="reftype">${esc(c.type||'?')}</span> ${esc(c.name||'')}</div>`).join("");
-  const more=r.total>(r.components||[]).length?`<div class="rmore">+${r.total-(r.components||[]).length} more</div>`:"";
-  pop.innerHTML=`<div class="rhead"><b>${esc(f.apiName)}</b> - referenced ${r.total}x`+(pin?'<span class="rpin">click outside to close</span>':'')+`</div><div class="rbt">${bt}</div>${comps}${more}`;
+  pop.innerHTML=html;
   pop.style.display="block";
   const rect=anchor.getBoundingClientRect();
   let left=Math.min(rect.left, window.innerWidth-pop.offsetWidth-12);
@@ -303,6 +320,19 @@ function showRefPop(f, anchor, pin){
   if(top+pop.offsetHeight>window.innerHeight) top=Math.max(8, rect.top-pop.offsetHeight-4);
   pop.style.left=Math.max(8,left)+"px"; pop.style.top=top+"px";
   refPopPinned=pin;
+}
+function showRefPop(f, anchor, pin){
+  const r=f.references||{}; if(!r.total) return;
+  const bt=Object.entries(r.byType||{}).map(([k,v])=>`<span class="reftype">${esc(k)}: ${v}</span>`).join(" ");
+  const comps=(r.components||[]).map(c=>`<div class="rcomp"><span class="reftype">${esc(c.type||'?')}</span> ${esc(c.name||'')}</div>`).join("");
+  const more=r.total>(r.components||[]).length?`<div class="rmore">+${r.total-(r.components||[]).length} more</div>`:"";
+  showPopHtml(`<div class="rhead"><b>${esc(f.apiName)}</b> - referenced ${r.total}x`+(pin?'<span class="rpin">click outside to close</span>':'')+`</div><div class="rbt">${bt}</div>${comps}${more}`, anchor, pin);
+}
+function showFieldPop(f, anchor, pin){
+  const head=`<div class="rhead"><b>${esc(f.apiName)}</b> <span class="reftype">${esc(f.type||'')}</span>`
+    +(f.fill?` <span style="color:#64748b">fill ${f.fill.percent}%</span>`:"")
+    +(pin?'<span class="rpin">click outside to close</span>':'')+`</div>`;
+  showPopHtml(head+detail(f), anchor, pin);
 }
 function scheduleHideRefPop(){ if(refPopPinned) return; refPopTimer=setTimeout(()=>{document.getElementById("refpop").style.display="none";},250); }
 
