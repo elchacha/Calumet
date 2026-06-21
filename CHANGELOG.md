@@ -1,5 +1,17 @@
 # Calumet — Changelog
 
+## v11.1 — 2026-06-21
+
+### DataSeeding
+- Disabling automations now also covers Validation Rules and Workflow Rules via a unified metadata deploy pipeline — the backup ZIP is the single source of truth for the pre-disable state.
+- Check Status now shows how many flows, triggers, validation rules and workflow rules are pending restore when the org is disabled.
+- The import progress table now shows how many records were actually inserted when errors occurred (e.g. 7030/7381), making partial imports easier to assess.
+
+### General
+- Fixed the org selector losing its displayed name after a config reload (e.g. after a deploy or org edit).
+
+---
+
 ## v11 — 2026-06-13
 
 ### New screens
