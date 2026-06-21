@@ -121,6 +121,6 @@ v10.0 — 2026-04-01
 General
 - New OAuth 2.0 authentication flow available alongside the classic SOAP login.
 [/history]
-[update]dist/CalumetGui-11.jar[/update]
+[update]dist/Calumet.jar[/update]
 [exe]dist/Calumet-11.exe[/exe]
 [updaterVersion]3.5[/updaterVersion]
