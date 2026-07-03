@@ -1,5 +1,27 @@
 # Calumet — Changelog
 
+## v11.2 — 2026-07-03
+
+### New screens
+No new screens in this release.
+
+### Improvements
+
+**Tab chooser**
+- The tab picker popup now has a category filter bar to quickly narrow the list of screens by category.
+
+**SOQL**
+- Multiline queries are now handled correctly in query backup, autocomplete and syntax highlighting.
+
+**DataSeeding**
+- Exporting now requires a configuration directory: a clear guard with a red message prevents runs that would otherwise fail.
+- The export guard dialog was redesigned for readability.
+
+### General
+- Metadata retrieve polling now uses a capped exponential backoff (about a 34-minute ceiling), reducing load during long retrieves.
+
+---
+
 ## v11.1 — 2026-06-21
 
 ### DataSeeding
