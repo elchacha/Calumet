@@ -77,6 +77,11 @@
   .expand{cursor:pointer;color:var(--blue);user-select:none}
   .reftype{font-size:10px;background:#eef2ff;color:#3730a3;padding:0 5px;border-radius:6px;margin-right:3px}
   #refpop{position:fixed;display:none;z-index:50;background:#fff;border:1px solid var(--border);border-radius:8px;box-shadow:0 8px 24px rgba(0,0,0,.18);padding:8px 10px;max-width:460px;max-height:360px;overflow:auto;font-size:12px}
+  #refpop.pinned{max-width:min(720px,92vw);max-height:78vh;padding:12px 14px}
+  #refpop table.reftbl{border-collapse:collapse;width:100%;font-size:12px}
+  #refpop table.reftbl th{text-align:left;color:#94a3b8;font-weight:600;border-bottom:1px solid var(--border);padding:3px 12px 3px 0;position:sticky;top:0;background:#fff}
+  #refpop table.reftbl td{padding:2px 0;white-space:nowrap;border-bottom:1px solid #f1f5f9}
+  #refpop .rfbtn.on{background:#0f172a;color:#fff}
   #refpop .rhead{margin-bottom:5px;color:#334155}
   #refpop .rpin{color:#94a3b8;font-weight:normal;font-size:10px;margin-left:6px}
   #refpop .rbt{margin-bottom:6px}
@@ -94,6 +99,9 @@
   <span class="meta" id="hmeta">load a fieldCatalog folder to start</span>
   <label class="load">Load folder<input type="file" id="folder" webkitdirectory directory multiple/></label>
 </header>
+<div id="nograph" style="display:none;background:#fef3c7;color:#92400e;border-bottom:1px solid #f59e0b;padding:6px 16px;font-size:12px">
+  &#9888; Aucun graphe de dependances (Dep Graph / Tab82) pour cette org : le detail par kind (read/write/displayed) et la detection des dependances ratees par le Tooling sont indisponibles. Lance "Recalculer depuis l'org" (niveau Champ) dans l'onglet Dep Graph, puis regenere le catalogue.
+</div>
 <div id="main">
   <aside id="sidebar">
     <div class="search">
@@ -116,10 +124,19 @@ let INDEX = null;
 let current = null;       // selected object apiName
 let sortKey = "apiName", sortDir = 1;
 let objSort = "name";   // sidebar sort: "name" | "records"
-const CATS = ["standard","managed","formula","required","externalId","unused","lowFill"];
+const CATS = ["standard","managed","formula","required","externalId","unused","lowFill","writeOnly"];
 const hiddenCats = new Set();   // unchecked categories
 let filterMode = "hide";        // "hide" = uncheck hides that category ; "only" = show only checked categories
 function matchesCat(f,cat){ return cat==="standard" ? !f.custom : (f.flags||[]).includes(cat); }
+function hasFieldGraph(){
+  if(INDEX && typeof INDEX.fieldGraph==="boolean") return INDEX.fieldGraph;
+  return Object.values(DATA).some(o=>(o.fields||[]).some(f=>f.references
+      && ((f.references.graphTotal||0)>0 || Object.keys(f.references.byKind||{}).length>0)));
+}
+function updateGraphWarning(){
+  const el=document.getElementById("nograph");
+  if(el) el.style.display = (Object.keys(DATA).length && !hasFieldGraph()) ? "block" : "none";
+}
 
 document.getElementById("folder").addEventListener("change", async e=>{
   const files = [...e.target.files].filter(f=>f.name.endsWith(".json"));
@@ -135,6 +152,7 @@ document.getElementById("folder").addEventListener("change", async e=>{
   const names=Object.keys(DATA);
   document.getElementById("hmeta").textContent =
     (INDEX?INDEX.org+" - ":"")+names.length+" objects"+(INDEX&&INDEX.generatedAt?" - "+INDEX.generatedAt.slice(0,10):"");
+  updateGraphWarning();
   renderSidebar();
   if(names.length){ select(names.sort()[0]); }
 });
@@ -154,6 +172,7 @@ function loadPayload(payload){
   const names=Object.keys(DATA);
   document.getElementById("hmeta").textContent=
     (INDEX?INDEX.org+" - ":"")+names.length+" objects"+(INDEX&&INDEX.generatedAt?" - "+INDEX.generatedAt.slice(0,10):"");
+  updateGraphWarning();
   renderSidebar();
   if(names.length) select(names.sort()[0]);
 }
@@ -294,13 +313,14 @@ function detail(f){
 
 function val(f,k){
   if(k==="_fill") return f.fill?f.fill.percent:-1;
-  if(k==="_refs") return f.references?f.references.total:0;
+  if(k==="_refs") return refsTotal(f.references);
   if(k==="_fls") return f.fls?f.fls.read:-1;
   return f[k];
 }
 function cmp(a,b){ if(a==null)a=""; if(b==null)b=""; if(typeof a==="number"&&typeof b==="number")return a-b; return (""+a).localeCompare(""+b); }
 function th(k,label,cls){return `<th data-k="${k}" class="${cls||''}">${label}</th>`;}
-function refsCell(r){ if(!r||!r.total) return '<span style="color:#cbd5e1">0</span>'; return `<b class="refclick" style="color:#2563eb;cursor:pointer;text-decoration:underline">${r.total}</b>`; }
+function refsTotal(r){ return r?((r.total||0)+(r.toolingMissed||0)):0; } // union : Tooling + graph-only
+function refsCell(r){ const n=refsTotal(r); if(!n) return '<span style="color:#cbd5e1">0</span>'; return `<b class="refclick" style="color:#2563eb;cursor:pointer;text-decoration:underline">${n}</b>`; }
 function fillBar(p){const col=p<5?"#dc2626":p<25?"#f59e0b":p<60?"#2563eb":"#16a34a";return `<span class="bar" style="width:${Math.max(3,p*0.5)}px;background:${col}"></span> ${p.toFixed(1)}`;}
 function scoreCell(s){const col=s>=75?"#16a34a":s>=40?"#94a3b8":"#dc2626";return `<span style="color:${col};font-weight:600">${s}</span>`;}
 function chip(api,via){const known=!!DATA[api];return `<span class="chip${known?'':' ro'}" ${known?`onclick="select('${api}')"`:""}>${esc(api)}${via?` <span style="opacity:.6">(${esc(via)})</span>`:""}</span>`;}
@@ -313,20 +333,66 @@ function showPopHtml(html, anchor, pin){
   clearTimeout(refPopTimer);
   const pop=document.getElementById("refpop");
   pop.innerHTML=html;
+  pop.classList.toggle("pinned", !!pin);
   pop.style.display="block";
-  const rect=anchor.getBoundingClientRect();
-  let left=Math.min(rect.left, window.innerWidth-pop.offsetWidth-12);
-  let top=rect.bottom+4;
-  if(top+pop.offsetHeight>window.innerHeight) top=Math.max(8, rect.top-pop.offsetHeight-4);
-  pop.style.left=Math.max(8,left)+"px"; pop.style.top=top+"px";
+  if(pin){
+    // Clean pinned panel : wider, taller, centered (scrolls internally when long).
+    pop.style.left=Math.max(8,(window.innerWidth-pop.offsetWidth)/2)+"px";
+    pop.style.top="8vh";
+  } else {
+    const rect=anchor.getBoundingClientRect();
+    let left=Math.min(rect.left, window.innerWidth-pop.offsetWidth-12);
+    let top=rect.bottom+4;
+    if(top+pop.offsetHeight>window.innerHeight) top=Math.max(8, rect.top-pop.offsetHeight-4);
+    pop.style.left=Math.max(8,left)+"px"; pop.style.top=top+"px";
+  }
   refPopPinned=pin;
 }
+// usage kind -> colour : write-ish stands apart from read/display-ish.
+function usageColor(k){
+  if(k==='writes') return '#c2410c';                     // write  (orange)
+  if(k==='displays') return '#2563eb';                   // display (blue)
+  if(k==='reads') return '#16a34a';                      // read   (green)
+  if(k==='validates'||k==='criteria') return '#7c3aed';  // rule   (purple)
+  if(k==='formula_depends_on') return '#0891b2';         // formula (cyan)
+  return '#64748b';
+}
+function srcBadge(s){const col=s==='graph'?'#dc2626':s==='both'?'#16a34a':'#94a3b8';return `<span style="font-size:10px;color:#fff;background:${col};border-radius:3px;padding:0 5px">${esc(s)}</span>`;}
+let refPopField=null, refFilterKinds=new Set();
+function refTableRows(){
+  const comps=(refPopField&&refPopField.references&&refPopField.references.components)||[];
+  const rows=comps.filter(c=>refFilterKinds.size===0||refFilterKinds.has(c.kind)).map(c=>{
+    const k=c.kind||"";
+    const usage=k?`<span style="color:${usageColor(k)};font-weight:600">${esc(k)}</span>`:'<span style="color:#cbd5e1">-</span>';
+    return `<tr><td style="color:#64748b;padding-right:12px">${esc(c.type||'?')}</td><td style="padding-right:12px">${usage}</td><td style="padding-right:12px">${srcBadge(c.source||'tooling')}</td><td>${esc(c.name||'')}</td></tr>`;
+  }).join("");
+  return rows||`<tr><td colspan="4" style="color:#94a3b8;padding:4px 0">aucun composant pour ce filtre</td></tr>`;
+}
+function toggleRefKind(k){
+  if(refFilterKinds.has(k)) refFilterKinds.delete(k); else refFilterKinds.add(k);
+  const body=document.getElementById("reftbody"); if(body) body.innerHTML=refTableRows();
+  document.querySelectorAll("#reffilters .rfbtn").forEach(b=>{
+    const on=refFilterKinds.has(b.dataset.k);
+    b.style.background=on?usageColor(b.dataset.k):"transparent";
+    b.style.color=on?"#fff":usageColor(b.dataset.k);
+  });
+}
 function showRefPop(f, anchor, pin){
-  const r=f.references||{}; if(!r.total) return;
-  const bt=Object.entries(r.byType||{}).map(([k,v])=>`<span class="reftype">${esc(k)}: ${v}</span>`).join(" ");
-  const comps=(r.components||[]).map(c=>`<div class="rcomp"><span class="reftype">${esc(c.type||'?')}</span> ${esc(c.name||'')}</div>`).join("");
-  const more=r.total>(r.components||[]).length?`<div class="rmore">+${r.total-(r.components||[]).length} more</div>`:"";
-  showPopHtml(`<div class="rhead"><b>${esc(f.apiName)}</b> - referenced ${r.total}x`+(pin?'<span class="rpin">click outside to close</span>':'')+`</div><div class="rbt">${bt}</div>${comps}${more}`, anchor, pin);
+  const r=f.references||{}; if(!r.total && !r.graphTotal) return;
+  refPopField=f; if(pin) refFilterKinds=new Set();
+  const total=refsTotal(r);
+  const kchip=(k,v)=>`<span style="display:inline-block;padding:1px 8px;border-radius:10px;background:#f1f5f9;color:${usageColor(k)};font-weight:600;font-size:11px;margin:1px 4px 1px 0">${esc(k)} ${v}</span>`;
+  const bk=Object.entries(r.byKind||{}).map(([k,v])=>kchip(k,v)).join("");
+  const recap=`<div style="font-size:11px;color:#64748b;margin:2px 0 6px"><b style="color:#334155;font-size:14px">${total}</b> references`
+    +` &middot; Tooling ${r.total||0} &middot; Graphe ${r.graphTotal||0}`
+    +((r.toolingMissed||0)>0?` &middot; <span style="color:#dc2626;font-weight:600">${r.toolingMissed} rate(s) par Tooling</span>`:"")+`</div>`;
+  const head=`<div class="rhead"><b>${esc(f.apiName)}</b>`+(pin?'<span class="rpin">click outside to close</span>':'')+`</div>`;
+  if(!pin){ showPopHtml(head+recap+(bk?`<div>${bk}</div>`:""), anchor, false); return; }
+  const filters=['displays','reads','writes'].map(k=>
+    `<span class="rfbtn" data-k="${k}" onclick="toggleRefKind('${k}')" style="cursor:pointer;border:1px solid ${usageColor(k)};color:${usageColor(k)};background:transparent;border-radius:10px;padding:1px 10px;font-size:11px;margin-right:6px">${k}</span>`).join("");
+  const table=`<table class="reftbl"><thead><tr><th>Type</th><th>Usage</th><th>Source</th><th>Name</th></tr></thead><tbody id="reftbody">${refTableRows()}</tbody></table>`;
+  showPopHtml(head+recap+(bk?`<div style="margin-bottom:6px">${bk}</div>`:"")
+    +`<div id="reffilters" style="margin-bottom:8px">${filters}</div>`+table, anchor, true);
 }
 function showFieldPop(f, anchor, pin){
   const head=`<div class="rhead"><b>${esc(f.apiName)}</b> <span class="reftype">${esc(f.type||'')}</span>`
