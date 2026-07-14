@@ -39,7 +39,7 @@
     Analyse SObject record activity across the org. For each object, shows total record count, last creation
     and last modification dates, days of inactivity, and a colour-coded status (Active, Stale 6m, Stale 1y,
     Stale 2y+, Empty). Results are cached per org on disk and reloaded automatically on the next session —
-    click Analyse a second time to force a full refresh.
+    click Analyse a second time to force a full refresh. <br><br>A second sub-tab, <b>Delete Helper</b>, turns obsolete objects into deletion candidates: it shows a deletion-safety verdict (SAFE / DATA_ONLY / REVIEW / REFERENCED) and, per referencing component, whether it is to delete or to modify - read from the dep graph (Tab82) when available, otherwise from the Tooling API - you can then <b>Promote</b> the deletable referents and run <b>Find orphans</b> (recursive graph closure) to pull cascading dead components in, and generate a multi-type destructiveChanges.xml package.
   </p>
 </div>
 
