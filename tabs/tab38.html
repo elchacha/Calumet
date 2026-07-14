@@ -310,6 +310,8 @@
       <li>Move items between the Delete table and the Found table to refine the scope before generating the package</li>
       <li>Generate a ready-to-deploy destructive change ZIP (destructiveChanges.xml + empty package.xml) saved to the active project folder</li>
       <li>Double-click any item to open the raw Apex/VFP source in a text editor for inspection</li>
+      <li>Show an offline dep-graph deletion-safety verdict (Tab82) on each finding when the graph is built - SAFE / REVIEW / REFERENCED; click the badge to list what references the component. Blank when no graph exists (Tooling stays the source of truth).</li>
+{LI}
     </ul>
     <div style="text-align:right;margin-top:18px">
       <button class="cal-btn btn-d" onclick="document.getElementById('modal-kf').style.display='none'">Close</button>
