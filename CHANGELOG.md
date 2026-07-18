@@ -1,5 +1,27 @@
 # Calumet — Changelog
 
+## v11.4 — 2026-07-18
+
+### New screens
+No new screens in this release.
+
+### Improvements
+
+**Dep Graph**
+- Link confidence is now shown as colored badges with a star rating, and every reference carries a colored dot indicating how it was detected — proven, heuristic or dynamic.
+- The dependants counter now counts each component once, instead of being inflated when the same component is detected through several methods.
+- Groups you expand by hand now stay open when you toggle a filter.
+- Dependency detection is more accurate: custom buttons and links, New-action Lightning component overrides, SOQL sort clauses and Flow record-lookup field mappings are now traced.
+
+**Calumet Config**
+- A new "Anonymize metadata names (Demo mode)" option masks object, field and class names during live demos.
+
+**General**
+- A macOS build is now available, alongside Windows and Linux.
+
+---
+
+
 ## v11.3 — 2026-07-18
 
 ### New screens
