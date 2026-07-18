@@ -1,5 +1,24 @@
 # Calumet — Changelog
 
+## v11.3 — 2026-07-18
+
+### New screens
+No new screens in this release.
+
+### Improvements
+
+**CustomFields Usage**
+- Sort the analysed-objects list by name, record count or date, with a one-click direction toggle.
+- The progress bar reappears when you return to the screen while a mass analysis is still running.
+- A "delete ids after analysis" option frees disk by removing the record-id files once a run finishes.
+- Publish the computed analysis to the org and load it back on another machine to share results without re-running.
+- The API-usage confirmation popup no longer cuts off its last line.
+
+### General
+- Fixed an intermittent freeze where switching screen categories could stop screen switching until a restart.
+
+---
+
 ## v11.2 — 2026-07-03
 
 ### New screens
