@@ -7,6 +7,11 @@ CustomFields Usage
 - A "delete ids after analysis" option frees disk by removing the record-id files once a run finishes.
 - Publish the computed field analysis to the org and load it back on another machine to share results without re-running.
 - The API-usage confirmation popup no longer cuts off its last line.
+- The Publish to org confirmation now shows its full text.
+Dep Graph
+- Fixed a crash that could close the application when opening the Dep Graph screen (also Storage Evolution).
+Field Catalog
+- The Standard, Managed and Formula filters now start unchecked by default.
 General
 - Fixed an intermittent freeze where switching screen categories could stop screen switching until a restart.
 

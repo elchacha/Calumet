@@ -14,6 +14,12 @@ No new screens in this release.
 - Publish the computed analysis to the org and load it back on another machine to share results without re-running.
 - The API-usage confirmation popup no longer cuts off its last line.
 
+**Dep Graph & Storage Evolution**
+- Fixed a crash that could close the application when opening these screens.
+
+**Field Catalog**
+- The Standard, Managed and Formula filters now start unchecked by default.
+
 ### General
 - Fixed an intermittent freeze where switching screen categories could stop screen switching until a restart.
 
