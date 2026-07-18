@@ -125,7 +125,7 @@ let current = null;       // selected object apiName
 let sortKey = "apiName", sortDir = 1;
 let objSort = "name";   // sidebar sort: "name" | "records"
 const CATS = ["standard","managed","formula","required","externalId","unused","lowFill","writeOnly"];
-const hiddenCats = new Set();   // unchecked categories
+const hiddenCats = new Set(["standard","managed","formula"]);   // unchecked categories (hidden by default: least useful at startup)
 let filterMode = "hide";        // "hide" = uncheck hides that category ; "only" = show only checked categories
 function matchesCat(f,cat){ return cat==="standard" ? !f.custom : (f.flags||[]).includes(cat); }
 function hasFieldGraph(){
