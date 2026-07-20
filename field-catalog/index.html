@@ -30,8 +30,11 @@
   .objitem.sel{background:#eff6ff;border-left:3px solid var(--blue)}
   .objitem .nm{font-weight:600}
   .objitem .sub{color:var(--muted);font-size:11px}
-  #content{flex:1;overflow:auto;padding:14px 18px}
+  #content{flex:1;overflow:auto;padding:0 18px 14px}
   .empty{color:var(--muted);text-align:center;margin-top:80px}
+  /* Sticky top block : object card + filter bar stay visible while the field list scrolls.
+     Its measured height feeds --panelH so the column headers stick right below it. */
+  .toppanel{position:sticky;top:0;z-index:30;background:var(--bg);padding-top:14px;box-shadow:0 6px 10px -8px rgba(15,23,42,.25)}
   .ohead{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:6px}
   .ohead h2{margin:0;font-size:18px}
   .ohead .api{color:var(--muted);font-family:monospace}
@@ -58,7 +61,7 @@
   .tg-label.act{color:var(--ink);font-weight:600}
   table{width:100%;border-collapse:collapse;background:var(--panel)}
   th,td{padding:5px 8px;border-bottom:1px solid var(--border);text-align:left;vertical-align:top}
-  th{position:sticky;top:0;background:#f8fafc;cursor:pointer;font-size:11px;text-transform:uppercase;letter-spacing:.03em;color:var(--muted);white-space:nowrap}
+  th{position:sticky;top:var(--panelH,0px);z-index:20;background:#f8fafc;cursor:pointer;font-size:11px;text-transform:uppercase;letter-spacing:.03em;color:var(--muted);white-space:nowrap;box-shadow:inset 0 -1px 0 var(--border)}
   th.num{text-align:right}
   th:hover{color:var(--ink)}
   tr.frow:hover{background:#f8fafc}
@@ -206,6 +209,7 @@ function select(api){
 function renderObject(o){
   const m=o.object, c=document.getElementById("content");
   c.innerHTML=`
+    <div class="toppanel">
     <div class="objcard">
       <div class="ohead"><h2>${esc(m.label||m.apiName)}</h2>
         <span class="api">${esc(m.apiName)}</span>
@@ -220,6 +224,7 @@ function renderObject(o){
       <span id="modeToggle" class="toggle ${filterMode==='only'?'on':''}"><span class="knob"></span></span>
       <span class="tg-label ${filterMode==='only'?'act':''}" data-m="only">Only</span>
       ${CATS.map(c=>`<span class="ftog ${hiddenCats.has(c)?'':'on'}" data-f="${c}">${c}</span>`).join("")}
+    </div>
     </div>
     <table id="ftab"><thead><tr>
       ${th("apiName","Field")}${th("type","Type")}${th("_fill","Fill %","num")}${th("_refs","Refs","num")}
@@ -246,7 +251,18 @@ function renderObject(o){
   const hp=c.querySelector(".help");
   if(hp){ hp.onmouseenter=()=>showHelp(hp); hp.onmouseleave=hideHelp; hp.onclick=e=>e.stopPropagation(); }
   renderRows(o);
+  syncPanelH();
 }
+
+// Publish the sticky top block's height as --panelH so the sticky column headers (th) park
+// directly beneath it instead of at top:0 (where the panel would hide them). offsetHeight forces
+// a synchronous reflow, so the value is correct the moment the object is rendered.
+function syncPanelH(){
+  const c=document.getElementById("content");
+  const tp=c&&c.querySelector(".toppanel");
+  if(tp) c.style.setProperty("--panelH", tp.offsetHeight+"px");
+}
+window.addEventListener("resize",syncPanelH);
 
 function renderRows(o){
   const q=(document.getElementById("fsearch").value||"").toLowerCase();
