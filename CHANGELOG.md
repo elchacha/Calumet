@@ -1,5 +1,38 @@
 # Calumet — Changelog
 
+## v11.5 — 2026-07-22
+
+### New screens
+No new screens in this release.
+
+### Improvements
+
+**PermissionSet**
+- The last-modified date is now taken from the org audit trail, and a per-permission-set History popup shows who changed what over the past six months (built in the background so it opens instantly).
+
+**Logs**
+- The debug-log analyser was reworked: a non-blocking popup, a statistics bar summarising log entry types, and a smoother tree view.
+- The Status column no longer stretches when a failure message is long.
+
+**FlexiPage Diff**
+- Modified cards now show a visible expand chevron and highlight the exact inline differences, with a force-refresh option.
+- Fixed encoding glitches (dashes/ellipses) in the diff output.
+
+**Control**
+- You can open a component-level FlexiPage diff popup directly from the Control table.
+
+**Fields Not Used**
+- Field references are now read from the Dep Graph instead of re-querying the org, making the screen faster and consistent with the other analysis screens.
+
+**Field Catalog**
+- The top panel and column headers now stay pinned while you scroll the catalog.
+
+### General
+- An Intel (x86-64) macOS build is now available in addition to Apple Silicon — both Mac types are now covered. Windows and Linux are unchanged.
+
+---
+
+
 ## v11.4 — 2026-07-18
 
 ### New screens
