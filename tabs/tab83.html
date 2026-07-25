@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Org Discovery — Calumet</title>
+<link rel="stylesheet" href="../shared.css">
+<style>
+  .sev-card    { border-radius:6px; padding:8px 14px; min-width:96px; color:#fff; display:flex; flex-direction:column; gap:2px; }
+  .sev-crit    { background:#C0392B; }
+  .sev-imp     { background:#e67e22; }
+  .sev-watch   { background:#2980b9; }
+  .sev-info    { background:#7f8c8d; }
+  .sev-num     { font-size:20px; font-weight:700; line-height:1; }
+  .sev-lbl     { font-size:11px; opacity:.92; }
+  .pill        { border-radius:8px; padding:2px 8px; font-size:10px; font-weight:600; color:#fff; display:inline-block; }
+  .pill-crit   { background:#C0392B; }
+  .pill-imp    { background:#e67e22; }
+  .pill-watch  { background:#2980b9; }
+  .pill-info   { background:#7f8c8d; }
+  .cat-tag     { border-radius:6px; padding:2px 8px; font-size:10px; font-weight:600; display:inline-block; background:#e6eef4; color:#1A5276; }
+  .kpi         { background:#dce9f0; border:1px solid #9AABBF; border-radius:4px; padding:8px 14px; display:flex; flex-direction:column; gap:2px; min-width:120px; }
+  .kpi-num     { font-size:20px; font-weight:700; color:#1A5276; line-height:1; }
+  .kpi-lbl     { font-size:11px; color:#3d7a8a; }
+  .domain-h    { font-weight:bold; font-size:13px; color:#1A5276; border-bottom:1px solid #c8dae6; padding-bottom:3px; }
+  .cache-info  { font-size:11px; color:#2980b9; font-style:italic; }
+</style>
+</head>
+<body class="tab-page">
+
+<div class="sum">
+  <div class="sum-title">
+    <h2>Org Discovery</h2>
+    <span class="sum-badge">Tab 83</span>
+  </div>
+  <p class="sum-desc">
+    When you land on an unfamiliar Salesforce org, Org Discovery produces a deterministic <em>state of play</em> and a scored
+    <em>technical-debt register</em> from the dependency-graph cache that Tab&nbsp;82 already built. It never queries the org &mdash; it
+    <strong>consumes the graph</strong>, so the org must have a graph built in Tab&nbsp;82 first.
+    <button class="cal-btn btn-d" style="margin-left:10px" onclick="document.getElementById('modal-kf').style.display='flex'">&#9733; Key features</button>
+  </p>
+</div>
+
+<div class="mockup-wrap">
+  <div class="mockup">
+
+    <!-- Toolbar -->
+    <div class="hbox" style="gap:8px;align-items:center;padding:6px 12px;background:#dce9f0;border-bottom:1px solid #9AABBF;flex-wrap:wrap">
+      <button class="cal-btn btn-b" data-tip="Scan the Tab 82 dependency-graph cache and (re)build the discovery documents">&#8635; Generate / Refresh</button>
+      <div class="vsep"></div>
+      <span class="cal-lbl" style="color:#888">View:</span>
+      <button class="cal-btn btn-o" data-tip="Show the scored technical-debt register" onclick="dv(0)" id="tgl-0" style="font-weight:bold;outline:2px solid #1A5276">Debt register</button>
+      <button class="cal-btn btn-d" data-tip="Show the four-domain org state of play" onclick="dv(1)" id="tgl-1">State of play</button>
+      <div class="vsep"></div>
+      <button class="cal-btn btn-d" data-tip="Open the current document in your default browser">Open in browser</button>
+      <button class="cal-btn btn-g" data-tip="Write brief.txt and open the discovery folder so you can point a CLI/agentic LLM at the JSON">&#9733; AI brief</button>
+      <div class="spacer"></div>
+      <span class="cache-info">Graph cache: 2026-07-24 18:32 &middot; 4,182 nodes &middot; 11,907 edges</span>
+    </div>
+
+    <!-- ═══════════════ DEBT REGISTER (WebView doc) ═══════════════ -->
+    <div id="doc-0">
+      <div class="vbox" style="gap:12px;padding:12px 14px">
+
+        <div class="hbox" style="gap:6px;align-items:baseline">
+          <span style="font-weight:bold;font-size:15px;color:#1A5276">Technical-Debt Register</span>
+          <span class="cal-lbl" style="color:#888">&middot; debt-register.html &middot; generated 2026-07-24 18:33 from graph cache (read-only)</span>
+        </div>
+
+        <!-- Severity cards -->
+        <div class="hbox" style="gap:10px;flex-wrap:wrap">
+          <div class="sev-card sev-crit"><span class="sev-num">7</span><span class="sev-lbl">Critical &middot; &times;8</span></div>
+          <div class="sev-card sev-imp"><span class="sev-num">19</span><span class="sev-lbl">Important &middot; &times;4</span></div>
+          <div class="sev-card sev-watch"><span class="sev-num">34</span><span class="sev-lbl">Watch &middot; &times;2</span></div>
+          <div class="sev-card sev-info"><span class="sev-num">58</span><span class="sev-lbl">Info &middot; &times;1</span></div>
+          <div class="kpi" style="justify-content:center"><span class="kpi-num">254</span><span class="kpi-lbl">Weighted debt score</span></div>
+          <div class="kpi" style="justify-content:center"><span class="kpi-num">118</span><span class="kpi-lbl">Findings total</span></div>
+        </div>
+
+        <!-- Two-column: top objects at risk + breakdown by category -->
+        <div class="split-pane" style="gap:10px">
+          <div class="split-panel" style="flex:0.55">
+            <div class="vbox" style="gap:4px">
+              <span class="domain-h">Top objects at risk</span>
+              <div class="tbl-wrap">
+                <table class="cal-tbl">
+                  <thead><tr><th style="width:200px">Object</th><th style="width:80px;text-align:right">Findings</th><th style="width:90px;text-align:right">Score</th></tr></thead>
+                  <tbody>
+                    <tr><td>Account</td><td style="text-align:right">14</td><td style="text-align:right;color:#C0392B;font-weight:bold">48</td></tr>
+                    <tr><td>Case</td><td style="text-align:right">11</td><td style="text-align:right;color:#C0392B;font-weight:bold">37</td></tr>
+                    <tr><td>Contract__c</td><td style="text-align:right">9</td><td style="text-align:right;color:#e67e22;font-weight:bold">26</td></tr>
+                    <tr><td>Opportunity</td><td style="text-align:right">7</td><td style="text-align:right;color:#e67e22;font-weight:bold">21</td></tr>
+                    <tr><td>Invoice__c</td><td style="text-align:right">6</td><td style="text-align:right;color:#e67e22;font-weight:bold">18</td></tr>
+                    <tr><td>ServiceContract__c</td><td style="text-align:right">4</td><td style="text-align:right;color:#2980b9;font-weight:bold">11</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+          <div class="split-panel" style="flex:0.45">
+            <div class="vbox" style="gap:4px">
+              <span class="domain-h">Breakdown by category</span>
+              <div class="tbl-wrap">
+                <table class="cal-tbl">
+                  <thead><tr><th style="width:180px">Category</th><th style="width:70px;text-align:right">Count</th><th style="width:80px;text-align:right">Score</th></tr></thead>
+                  <tbody>
+                    <tr><td>Dead code</td><td style="text-align:right">41</td><td style="text-align:right;font-weight:bold">92</td></tr>
+                    <tr><td>Field overloading</td><td style="text-align:right">23</td><td style="text-align:right;font-weight:bold">68</td></tr>
+                    <tr><td>Dormant model</td><td style="text-align:right">18</td><td style="text-align:right;font-weight:bold">44</td></tr>
+                    <tr><td>Permission set sprawl</td><td style="text-align:right">21</td><td style="text-align:right;font-weight:bold">31</td></tr>
+                    <tr><td>Security / access</td><td style="text-align:right">15</td><td style="text-align:right;font-weight:bold">19</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Findings toolbar -->
+        <div class="hbox" style="gap:8px;align-items:center;flex-wrap:wrap">
+          <span class="cal-lbl">Filter:</span>
+          <input class="cal-tf" readonly style="width:220px" placeholder="Search finding, object, category...">
+          <span class="cal-lbl" style="color:#888">Severity</span>
+          <select class="cal-cb" style="width:120px" disabled><option>All</option></select>
+          <span class="cal-lbl" style="color:#888">Category</span>
+          <select class="cal-cb" style="width:150px" disabled><option>All</option></select>
+          <span class="cal-lbl" style="color:#888">Status</span>
+          <select class="cal-cb" style="width:130px" disabled><option>All</option></select>
+          <div class="spacer"></div>
+          <button class="cal-btn btn-o" data-tip="Export findings.json for AI prioritisation">Export JSON</button>
+        </div>
+
+        <!-- Findings table -->
+        <div class="tbl-wrap">
+          <table class="cal-tbl">
+            <thead>
+              <tr>
+                <th style="width:90px">Severity</th>
+                <th style="width:150px">Category</th>
+                <th>Finding</th>
+                <th style="width:150px">Object</th>
+                <th style="width:70px;text-align:right">Score</th>
+                <th style="width:120px">Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><span class="pill pill-crit">Critical</span></td>
+                <td><span class="cat-tag">Dead code</span></td>
+                <td>Dead Apex class: <strong>AP04BatchJob</strong> &mdash; 0 inbound references, not scheduled, not invoked by any flow or trigger</td>
+                <td>&mdash;</td>
+                <td style="text-align:right;font-weight:bold">8</td>
+                <td><select class="cal-cb" style="width:110px" disabled><option>Open</option></select></td>
+              </tr>
+              <tr>
+                <td><span class="pill pill-crit">Critical</span></td>
+                <td><span class="cat-tag">Field overloading</span></td>
+                <td>Overloaded field: <strong>Account.Status__c</strong> written by 6 automations (3 flows, 2 process builders, 1 trigger) &mdash; contention risk</td>
+                <td>Account</td>
+                <td style="text-align:right;font-weight:bold">8</td>
+                <td><select class="cal-cb" style="width:110px" disabled><option>Investigating</option></select></td>
+              </tr>
+              <tr>
+                <td><span class="pill pill-crit">Critical</span></td>
+                <td><span class="cat-tag">Dead code</span></td>
+                <td>Dead method cluster: <strong>InvoiceService.recalcLegacy()</strong> + 4 private helpers, unreachable since caller AP12InvoiceTrigger was deactivated</td>
+                <td>Invoice__c</td>
+                <td style="text-align:right;font-weight:bold">8</td>
+                <td><select class="cal-cb" style="width:110px" disabled><option>Open</option></select></td>
+              </tr>
+              <tr>
+                <td><span class="pill pill-imp">Important</span></td>
+                <td><span class="cat-tag">Field overloading</span></td>
+                <td>Overloaded field: <strong>Case.Priority</strong> written by 4 automations &mdash; last-writer-wins ordering undefined</td>
+                <td>Case</td>
+                <td style="text-align:right;font-weight:bold">4</td>
+                <td><select class="cal-cb" style="width:110px" disabled><option>Open</option></select></td>
+              </tr>
+              <tr>
+                <td><span class="pill pill-imp">Important</span></td>
+                <td><span class="cat-tag">Dormant model</span></td>
+                <td>Dormant object: <strong>MarketingPref__c</strong> &mdash; 22 fields modelled, referenced by no code, no flow, no report, 0 records</td>
+                <td>MarketingPref__c</td>
+                <td style="text-align:right;font-weight:bold">4</td>
+                <td><select class="cal-cb" style="width:110px" disabled><option>Confirmed</option></select></td>
+              </tr>
+              <tr>
+                <td><span class="pill pill-imp">Important</span></td>
+                <td><span class="cat-tag">Permission set sprawl</span></td>
+                <td>Permission set sprawl: <strong>12</strong> permission sets grant identical FLS on <strong>Contract__c</strong> &mdash; candidates for a single permission-set group</td>
+                <td>Contract__c</td>
+                <td style="text-align:right;font-weight:bold">4</td>
+                <td><select class="cal-cb" style="width:110px" disabled><option>Open</option></select></td>
+              </tr>
+              <tr>
+                <td><span class="pill pill-watch">Watch</span></td>
+                <td><span class="cat-tag">Security / access</span></td>
+                <td>Broad access: <strong>Opportunity.Amount</strong> editable via 9 profiles + 5 permission sets &mdash; review whether all grantors are still required</td>
+                <td>Opportunity</td>
+                <td style="text-align:right;font-weight:bold">2</td>
+                <td><select class="cal-cb" style="width:110px" disabled><option>Open</option></select></td>
+              </tr>
+              <tr>
+                <td><span class="pill pill-watch">Watch</span></td>
+                <td><span class="cat-tag">Dead code</span></td>
+                <td>Orphan Visualforce page: <strong>ContractPrintLegacy</strong> &mdash; not referenced by any button, tab or Lightning component</td>
+                <td>Contract__c</td>
+                <td style="text-align:right;font-weight:bold">2</td>
+                <td><select class="cal-cb" style="width:110px" disabled><option>Deferred</option></select></td>
+              </tr>
+              <tr>
+                <td><span class="pill pill-info">Info</span></td>
+                <td><span class="cat-tag">Dormant model</span></td>
+                <td>Low-usage object: <strong>SurveyResponse__c</strong> &mdash; modelled and referenced by 1 flow, but only 3 records over the last 24 months</td>
+                <td>SurveyResponse__c</td>
+                <td style="text-align:right;font-weight:bold">1</td>
+                <td><select class="cal-cb" style="width:110px" disabled><option>Open</option></select></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <span class="cal-lbl" style="color:#888;font-size:11px">Per-finding <strong>status</strong> (Open / Investigating / Confirmed / Deferred / Resolved) is saved locally and preserved across regenerations. Export JSON writes <code>findings.json</code> for AI prioritisation.</span>
+      </div>
+    </div>
+
+    <!-- ═══════════════ STATE OF PLAY (WebView doc) ═══════════════ -->
+    <div id="doc-1" style="display:none">
+      <div class="vbox" style="gap:14px;padding:12px 14px">
+
+        <div class="hbox" style="gap:6px;align-items:baseline">
+          <span style="font-weight:bold;font-size:15px;color:#1A5276">Org State of Play</span>
+          <span class="cal-lbl" style="color:#888">&middot; state-of-play.html &middot; four discovery domains &middot; map before you build</span>
+        </div>
+
+        <!-- top KPIs -->
+        <div class="hbox" style="gap:10px;flex-wrap:wrap">
+          <div class="kpi"><span class="kpi-num">147</span><span class="kpi-lbl">Custom objects</span></div>
+          <div class="kpi"><span class="kpi-num">312</span><span class="kpi-lbl">Apex classes</span></div>
+          <div class="kpi"><span class="kpi-num">89</span><span class="kpi-lbl">Active flows</span></div>
+          <div class="kpi"><span class="kpi-num">41</span><span class="kpi-lbl">Triggers</span></div>
+          <div class="kpi"><span class="kpi-num">6</span><span class="kpi-lbl">Named credentials</span></div>
+          <div class="kpi"><span class="kpi-num">23</span><span class="kpi-lbl">Dead / dormant</span></div>
+        </div>
+
+        <!-- Domain 1: Custom objects -->
+        <div class="vbox" style="gap:6px">
+          <span class="domain-h">1 &middot; Custom objects &mdash; inventory &amp; centrality</span>
+          <div class="split-pane" style="gap:10px">
+            <div class="split-panel" style="flex:0.4">
+              <div class="vbox" style="gap:4px">
+                <span class="cal-lbl" style="font-weight:bold">Top objects by centrality</span>
+                <div class="tbl-wrap">
+                  <table class="cal-tbl">
+                    <thead><tr><th style="width:170px">Object</th><th style="width:90px;text-align:right">Centrality</th></tr></thead>
+                    <tbody>
+                      <tr><td>Account</td><td style="text-align:right;font-weight:bold">0.94</td></tr>
+                      <tr><td>Contact</td><td style="text-align:right;font-weight:bold">0.81</td></tr>
+                      <tr><td>Case</td><td style="text-align:right;font-weight:bold">0.77</td></tr>
+                      <tr><td>Contract__c</td><td style="text-align:right;font-weight:bold">0.63</td></tr>
+                      <tr><td>Opportunity</td><td style="text-align:right;font-weight:bold">0.58</td></tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+            <div class="split-panel" style="flex:0.6">
+              <div class="vbox" style="gap:4px">
+                <span class="cal-lbl" style="font-weight:bold">Object Health</span>
+                <div class="tbl-wrap">
+                  <table class="cal-tbl">
+                    <thead>
+                      <tr>
+                        <th style="width:150px">Object</th>
+                        <th style="width:55px;text-align:right">Fields</th>
+                        <th style="width:70px;text-align:right">Apex refs</th>
+                        <th style="width:60px;text-align:right">Triggers</th>
+                        <th style="width:55px;text-align:right">Flows</th>
+                        <th style="width:80px;text-align:right">CRUD grantors</th>
+                        <th style="width:80px;text-align:right">Centrality</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr><td>Account</td><td style="text-align:right">184</td><td style="text-align:right">57</td><td style="text-align:right">3</td><td style="text-align:right">12</td><td style="text-align:right">18</td><td style="text-align:right">0.94</td></tr>
+                      <tr><td>Case</td><td style="text-align:right">96</td><td style="text-align:right">41</td><td style="text-align:right">2</td><td style="text-align:right">9</td><td style="text-align:right">14</td><td style="text-align:right">0.77</td></tr>
+                      <tr><td>Contract__c</td><td style="text-align:right">63</td><td style="text-align:right">22</td><td style="text-align:right">1</td><td style="text-align:right">5</td><td style="text-align:right">12</td><td style="text-align:right">0.63</td></tr>
+                      <tr><td>Opportunity</td><td style="text-align:right">121</td><td style="text-align:right">33</td><td style="text-align:right">2</td><td style="text-align:right">7</td><td style="text-align:right">10</td><td style="text-align:right">0.58</td></tr>
+                      <tr><td>Invoice__c</td><td style="text-align:right">48</td><td style="text-align:right">14</td><td style="text-align:right">1</td><td style="text-align:right">3</td><td style="text-align:right">6</td><td style="text-align:right">0.41</td></tr>
+                      <tr><td>MarketingPref__c</td><td style="text-align:right">22</td><td style="text-align:right;color:#C0392B;font-weight:bold">0</td><td style="text-align:right;color:#C0392B">0</td><td style="text-align:right;color:#C0392B">0</td><td style="text-align:right">2</td><td style="text-align:right;color:#888">0.02</td></tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Domain 2 + 3 side by side -->
+        <div class="split-pane" style="gap:10px">
+          <div class="split-panel" style="flex:0.55">
+            <div class="vbox" style="gap:6px">
+              <span class="domain-h">2 &middot; Automation dependencies</span>
+              <div class="tbl-wrap">
+                <table class="cal-tbl">
+                  <thead><tr><th style="width:200px">Automation</th><th style="width:70px">Type</th><th style="width:150px">Writes to</th></tr></thead>
+                  <tbody>
+                    <tr><td>Account_Onboarding</td><td>Flow</td><td>Account.Status__c</td></tr>
+                    <tr><td>Case_Escalation_v3</td><td>Flow</td><td>Case.Priority</td></tr>
+                    <tr><td>AP07AccountTrigger</td><td>Trigger</td><td>Account.Status__c</td></tr>
+                    <tr><td>Contract_Renewal</td><td>Flow</td><td>Contract__c.Stage__c</td></tr>
+                    <tr><td>PB_Opportunity_Sync</td><td>Process</td><td>Opportunity.Amount</td></tr>
+                    <tr><td>AP12InvoiceTrigger</td><td style="color:#888">Trigger &middot; inactive</td><td style="color:#888">Invoice__c.Total__c</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+          <div class="split-panel" style="flex:0.45">
+            <div class="vbox" style="gap:6px">
+              <span class="domain-h">3 &middot; Integration touchpoints</span>
+              <div class="tbl-wrap">
+                <table class="cal-tbl">
+                  <thead><tr><th style="width:200px">Named credential</th><th style="width:90px">Auth</th><th style="width:70px;text-align:right">Callers</th></tr></thead>
+                  <tbody>
+                    <tr><td>ERP_Gateway</td><td>OAuth 2.0</td><td style="text-align:right">14</td></tr>
+                    <tr><td>Billing_API</td><td>Named Principal</td><td style="text-align:right">8</td></tr>
+                    <tr><td>Shipping_Track</td><td>OAuth 2.0</td><td style="text-align:right">5</td></tr>
+                    <tr><td>DocuSign_Prod</td><td>JWT</td><td style="text-align:right">3</td></tr>
+                    <tr><td>Legacy_SOAP</td><td>Password</td><td style="text-align:right;color:#e67e22">1</td></tr>
+                    <tr><td>Sandbox_Mock</td><td>Anonymous</td><td style="text-align:right;color:#888">0</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Domain 4 -->
+        <div class="vbox" style="gap:6px">
+          <span class="domain-h">4 &middot; Dead &amp; dormant summary</span>
+          <div class="hbox" style="gap:10px;flex-wrap:wrap">
+            <div class="kpi"><span class="kpi-num" style="color:#C0392B">14</span><span class="kpi-lbl">Dead Apex classes</span></div>
+            <div class="kpi"><span class="kpi-num" style="color:#C0392B">31</span><span class="kpi-lbl">Dead methods</span></div>
+            <div class="kpi"><span class="kpi-num" style="color:#e67e22">6</span><span class="kpi-lbl">Dormant objects</span></div>
+            <div class="kpi"><span class="kpi-num" style="color:#e67e22">4</span><span class="kpi-lbl">Orphan VF pages</span></div>
+            <div class="kpi"><span class="kpi-num" style="color:#888">2</span><span class="kpi-lbl">Unused named creds</span></div>
+          </div>
+        </div>
+
+        <!-- AI enrichment prompt -->
+        <div class="vbox" style="gap:4px">
+          <div class="hbox" style="gap:8px;align-items:center">
+            <span class="domain-h" style="border:none;padding:0">AI enrichment prompt</span>
+            <button class="cal-btn btn-d" data-tip="Copy the generated prompt to the clipboard">Copy</button>
+          </div>
+          <textarea class="cal-ta" readonly rows="6" style="font-family:Consolas,monospace;font-size:11px">You are reviewing a Salesforce org state-of-play generated from a dependency graph.
+Inventory: 147 custom objects, 312 Apex classes, 89 active flows, 41 triggers, 6 named credentials.
+Most central objects: Account (0.94), Contact (0.81), Case (0.77), Contract__c (0.63).
+Risk signals: 14 dead Apex classes, 6 dormant objects, Account.Status__c written by 6 automations.
+Read inventory.json + findings.json in this folder. Propose: (1) a 3-phase remediation roadmap,
+(2) the highest-leverage refactors, (3) any objects safe to retire. Cite node ids from the graph.</textarea>
+        </div>
+
+        <span class="cal-lbl" style="color:#888;font-size:11px">Outputs written to <code>orgs/&lt;env&gt;/cache/discovery/</code> &mdash; findings.json, inventory.json, debt-register.html, state-of-play.html, brief.txt</span>
+      </div>
+    </div>
+
+  </div><!-- .mockup -->
+</div><!-- .mockup-wrap -->
+
+<script>
+function dv(idx){
+  document.getElementById('doc-0').style.display = idx===0 ? '' : 'none';
+  document.getElementById('doc-1').style.display = idx===1 ? '' : 'none';
+  var a=document.getElementById('tgl-0'), b=document.getElementById('tgl-1');
+  a.className = idx===0 ? 'cal-btn btn-o' : 'cal-btn btn-d';
+  b.className = idx===1 ? 'cal-btn btn-o' : 'cal-btn btn-d';
+  a.style.cssText = idx===0 ? 'font-weight:bold;outline:2px solid #1A5276' : '';
+  b.style.cssText = idx===1 ? 'font-weight:bold;outline:2px solid #1A5276' : '';
+}
+function sw(id,idx){
+  var tp=document.getElementById(id);
+  tp.querySelectorAll('.m-tab').forEach(function(t,i){t.classList.toggle('act',i===idx)});
+  tp.querySelectorAll('.m-panel').forEach(function(p,i){p.classList.toggle('act',i===idx)});
+}
+</script>
+
+<!-- Key features modal -->
+<div id="modal-kf" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:999;align-items:center;justify-content:center" onclick="if(event.target===this)this.style.display='none'">
+  <div style="background:#fff;border-radius:8px;padding:28px 32px;max-width:560px;width:90%;color:#1a2a35;box-shadow:0 8px 32px rgba(0,0,0,.3)">
+    <h3 style="margin:0 0 14px;color:#2980b9">&#9733; Key features</h3>
+    <ul style="margin:0;padding-left:20px;line-height:1.8">
+      <li><strong>Consumes the graph, never the org</strong> &mdash; reads the Tab&nbsp;82 dependency-graph cache to produce a deterministic, offline result; no SOQL, no Tooling calls.</li>
+      <li><strong>Scored debt register</strong> &mdash; findings weighted Critical&nbsp;(&times;8) / Important&nbsp;(&times;4) / Watch&nbsp;(&times;2) / Info&nbsp;(&times;1) into a single org debt score, with severity cards, top objects at risk and a category breakdown.</li>
+      <li><strong>Five finding categories</strong> &mdash; dead code (dead Apex classes/methods), field overloading (multiple automations writing one field), dormant model (objects modelled but never used), permission-set sprawl, and security/access.</li>
+      <li><strong>Per-finding status tracking</strong> &mdash; Open / Investigating / Confirmed / Deferred / Resolved saved locally and preserved across regenerations.</li>
+      <li><strong>Four-domain state of play</strong> &mdash; custom-object inventory + centrality + an Object Health table, automation dependencies, integration touchpoints (named credentials), and a dead &amp; dormant summary.</li>
+      <li><strong>AI hand-off</strong> &mdash; JSON export for prioritisation, a generated enrichment prompt with a Copy button, and an <em>AI brief</em> that writes brief.txt and opens the folder for a CLI/agentic LLM.</li>
+      <li><strong>Embedded viewer + browser</strong> &mdash; toggle Debt register / State of play inside the app, or open either document in your default browser.</li>
+    </ul>
+    <div style="text-align:right;margin-top:18px">
+      <button class="cal-btn btn-d" onclick="document.getElementById('modal-kf').style.display='none'">Close</button>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
