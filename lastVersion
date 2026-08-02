@@ -1,5 +1,35 @@
-[version]v11.5[/version]
+[version]v11.6[/version]
 [history]
+v11.6 — 2026-08-02
+New screens
+- Org Discovery: a 6-view analysis hub reading the dependency graph (state of play, architecture, security, performance, migration, technical-debt register) with an A-F Org Health Score.
+- Automation Radar: per object and event, where Flows, triggers, workflow rules and processes overlap or conflict, in five focused views.
+- Flow Migration: a risk-ranked migration plan for the workflow rules and processes reaching end of life.
+- Permission Blast: who actually loses or gains access before you change a profile or permission set.
+- License Right-Sizing: which seat each user actually needs, based on real usage.
+Dep Graph
+- A sandbox can display its linked production graph live and links itself automatically; the viewer opens on the Explorer, is 73% lighter and no longer re-renders on every restart.
+- Open the exact source file and line of a reference in your IDE straight from the viewer.
+- New "alive only through tests" signal, Orphan tests view and test-only clusters, also surfaced in Fields Not Used, CustomFields Usage and Object Activity.
+- Security analysis now covers field-level security and per-operation CRUD; Apex references to platform events are no longer missed.
+SOQL
+- Edit records directly in the result table, including mass-setting a value on several rows, with picklist-aware editing and validation before saving.
+- New "All fields" toggle for SELECT *, plus a cleaner toolbar and autocomplete.
+PermissionSet
+- The screen no longer freezes when opened; the audit-history popup gained a Name column and more width.
+User Access Comparison / User Access Score
+- New permission-set actions, a merge assistant, scoped facts (tabs, apps, record types), and clicking a row adds the user to the comparison instead of replacing the selection.
+All Relations
+- The Reference column is no longer truncated: a popup lists every reference, enriched with graph data.
+Logs
+- A filter-list popup, toggleable type badges with soft highlighting, and a rebuilt filter popup.
+Deployment
+- The post-deploy security check is now a readable table with an AI prompt and an alert on new permission sets, without INVALID_TYPE/INVALID_FIELD noise.
+Picklists / Search / CustomFields Usage / HistoryStorage
+- Graduated usage badges and working copy-paste, Usage split into Direction and Relation with a pivot search, standard picklist fields analysed, graded evolution badges.
+General
+- Every text field now has a clear "x" button, switching orgs is much faster, tabs were renamed and re-described from a single source with multi-category filtering, and aggregate queries are safe on Large Data Volume orgs.
+
 v11.5 — 2026-07-22
 PermissionSet
 - The last-modified date is now taken from the org audit trail, and a per-permission-set History popup shows who changed what over the past six months (built in the background so it opens instantly).
@@ -183,5 +213,5 @@ General
 - New OAuth 2.0 authentication flow available alongside the classic SOAP login.
 [/history]
 [update]dist/Calumet.jar[/update]
-[exe]dist/Calumet-11.5.exe[/exe]
+[exe]dist/Calumet-11.6.exe[/exe]
 [updaterVersion]3.6[/updaterVersion]

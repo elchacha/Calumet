@@ -1,5 +1,69 @@
 # Calumet — Changelog
 
+## v11.6 — 2026-08-02
+
+### New screens
+- **Org Discovery** — a 6-view analysis hub that reads the dependency graph to give an overall picture of the org: state of play, architecture, security posture, performance, migration and a unified technical-debt register, with an A–F Org Health Score.
+- **Automation Radar** — an execution map per object and event showing where Flows, triggers, workflow rules and processes overlap or conflict, split into five focused views instead of one dense page.
+- **Flow Migration** — a prioritized, risk-ranked migration plan for workflow rules and processes that reach end of life.
+- **Permission Blast** — shows who actually loses (or gains) access before you change a profile or permission set.
+- **License Right-Sizing** — tells you which seat each user actually needs, based on what they really use.
+
+### Improvements
+
+**Dep Graph**
+- A sandbox can now display its linked production graph live, and sandboxes link themselves automatically; the interface is fully in English.
+- The viewer opens on the Explorer, hides empty sections, and its payload is 73% lighter, so it renders far faster and no longer re-renders on every restart.
+- You can open the exact source file and line of a reference directly in your IDE from the viewer.
+- New "alive only through tests" signal, an Orphan tests view, test-only clusters and the option to hide test classes; the signal is also surfaced in Fields Not Used, CustomFields Usage and Object Activity.
+- Security analysis now covers field-level security and per-operation CRUD, and Apex references to platform events are no longer missed.
+- A stale graph cache now announces itself instead of silently returning outdated results.
+
+**SOQL**
+- Records can now be edited directly in the result table, including mass-setting a value on several rows, with picklist-aware editing and validation before saving.
+- A new "All fields" toggle for SELECT *, and a cleaner toolbar, autocomplete and editing experience.
+
+**Picklists**
+- Usage is now shown with graduated badges and a centered value matrix; copy-paste from the tables works again.
+
+**Search**
+- The Usage column is split into Direction and Relation, with a pivot-search button, usage badges and a proper loading state.
+
+**PermissionSet**
+- The screen no longer freezes when you open it, the history is easier to read, and the audit-history popup gained a Name column and more width.
+
+**User Access Comparison / User Access Score**
+- New actions on permission sets, a merge assistant, scoped facts (tabs, apps, record types), and clicking a row now adds the user to the comparison instead of replacing the selection.
+
+**All Relations**
+- The Reference column is no longer truncated: a popup lists the full set of references, enriched with graph data.
+
+**Logs**
+- A filter-list popup, toggleable type badges with soft highlighting, and a rebuilt filter popup in the analysis window.
+
+**Deployment**
+- The post-deploy security check is now a readable table with an AI prompt and an alert on newly created permission sets, and it no longer floods the output with INVALID_TYPE/INVALID_FIELD messages.
+
+**Comparison**
+- Lines that only differ by indentation are no longer reported as changed.
+
+**CustomFields Usage**
+- Standard picklist fields are now analysed too, so unused values are detected on them as well.
+
+**HistoryStorage**
+- Evolution badges are now graded and keep their colors outside the IDE.
+
+**Control**
+- "Use Cache" is unchecked automatically when the window is opened after the cache was built.
+
+### General
+- Every text field in every screen now has a clear "x" button.
+- Switching orgs is much faster: the screens that did synchronous work now load in the background instead of freezing the interface.
+- Tabs were renamed and re-described from a single source, with multi-category filtering and no more Dev/Admin segmentation.
+- Aggregate queries are safe on Large Data Volume orgs, and data skew / relation power analysis was added.
+
+---
+
 ## v11.5 — 2026-07-22
 
 ### New screens
