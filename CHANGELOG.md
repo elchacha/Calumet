@@ -1,5 +1,15 @@
 # Calumet — Changelog
 
+## v11.7 — 2026-08-03
+
+### Improvements
+
+**General**
+- Self-healing library repair — the updater now checks every library the application declares and re-downloads any that is missing, so a partially updated install repairs itself on the next launch instead of failing to start.
+
+**SOQL**
+- The query editor recovers its syntax colouring on existing installations.
+
 ## v11.6 — 2026-08-02
 
 ### New screens
