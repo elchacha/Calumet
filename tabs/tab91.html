@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Dead Metadata &mdash; Calumet</title>
+<link rel="stylesheet" href="../shared.css">
+</head>
+<body class="tab-page">
+<div class="sum">
+  <div class="sum-title">
+    <h2>Dead Metadata</h2>
+    <span class="sum-badge">Tab 91</span>
+  </div>
+  <p class="sum-desc">Lists the metadata nothing reaches &mdash; components, and custom objects that are empty or dormant &mdash; ordered by what each removal would cost, up to a deployable removal package.
+    <button class="cal-btn btn-d" style="margin-left:10px" onclick="document.getElementById('modal-kf').style.display='flex'">&#9733; Key features</button>
+  </p>
+</div>
+<div class="mockup-wrap">
+  <div class="mockup">
+    <div class="vbox" style="gap:10px">
+<div class="hbox" style="gap:8px;align-items:center"><button class="cal-btn btn-b" data-tip="Recompute offline from the dependency graph cache">Analyse</button><button class="cal-btn btn-b">Guided AI session</button><button class="cal-btn btn-g">Load AI answer</button><button class="cal-btn btn-r" data-tip="Produce a destructiveChanges package for a sandbox">Build the removal package</button><button class="cal-btn btn-o" data-tip="Open the standalone HTML report">Open in browser</button><span class="spacer"></span><span class="cal-lbl" style="color:#888">Analysed 2026-08-12 &mdash; 312 unreachable, 40 object candidates</span></div>
+<div class="vbox" style="gap:10px"><div class="hbox" style="gap:8px;align-items:stretch"><div style="flex:1;min-width:120px;background:#22313f;border-radius:6px;padding:12px 14px;border-left:3px solid #2980b9"><div style="font-size:22px;font-weight:600;color:#2980b9">1 284</div><div style="font-size:11px;color:#9fb3c8;margin-top:2px">components analysed</div></div><div style="flex:1;min-width:120px;background:#22313f;border-radius:6px;padding:12px 14px;border-left:3px solid #E74C3C"><div style="font-size:22px;font-weight:600;color:#E74C3C">312</div><div style="font-size:11px;color:#9fb3c8;margin-top:2px">unreachable</div></div><div style="flex:1;min-width:120px;background:#22313f;border-radius:6px;padding:12px 14px;border-left:3px solid #e67e22"><div style="font-size:22px;font-weight:600;color:#e67e22">40</div><div style="font-size:11px;color:#9fb3c8;margin-top:2px">object candidates</div></div><div style="flex:1;min-width:120px;background:#22313f;border-radius:6px;padding:12px 14px;border-left:3px solid #27ae60"><div style="font-size:22px;font-weight:600;color:#27ae60">8</div><div style="font-size:11px;color:#9fb3c8;margin-top:2px">free to remove</div></div></div><div style="background:#1d3b53;border:1px solid #2980b9;border-radius:6px;padding:14px 16px"><div style="font-size:13px;font-weight:600;color:#5dade2;margin-bottom:8px">Start here &mdash; 8 removals cost nothing, 15 would break something</div><div style="font-size:12px;color:#c8d6e5;line-height:1.6">The list is ordered by <b>cost</b>, not by priority: what nothing points at comes first, then by number of dependencies. Zero dependencies is free; a hundred and twenty-six is a project.</div></div><div style="background:#22313f;border-left:3px solid #e67e22;border-radius:4px;padding:10px 12px;font-size:12px;color:#c8d6e5;line-height:1.5"><b>A reference table looks exactly like an abandoned object</b> &mdash; it is read and never written. Calumet counts how many <i>other</i> objects hold a lookup to it, and warns instead of deciding: an object can be pointed at and dead anyway.</div><div class="tbl-wrap"><table class="cal-tbl"><thead><tr><th style="width:230px">Metadata</th><th style="width:130px">Type</th><th style="width:90px">Records</th><th style="width:110px">Last write</th><th style="width:120px">Pointed at by</th><th style="width:70px">Deps</th></tr></thead><tbody><tr><td>Country_Ref__c</td><td>Custom object</td><td>252</td><td>6 years</td><td><span style="color:#E74C3C">10 objects</span></td><td><span style="color:#E74C3C">126</span></td></tr><tr><td>Legacy_Address_Ref__c</td><td>Custom object</td><td>237 738</td><td>5 years</td><td><span style="color:#e67e22">3 objects</span></td><td><span style="color:#e67e22">41</span></td></tr><tr><td>Old_Campaign_Link__c</td><td>Custom object</td><td><span style="color:#888">0</span></td><td><span style="color:#888">never</span></td><td><span style="color:#27ae60">nothing</span></td><td><span style="color:#27ae60">0</span></td></tr><tr><td>TempImport2019__c</td><td>Custom object</td><td><span style="color:#888">0</span></td><td>7 years</td><td><span style="color:#27ae60">nothing</span></td><td><span style="color:#27ae60">0</span></td></tr><tr><td>ClaimLegacyHelper</td><td>Apex class</td><td><span style="color:#888">&mdash;</span></td><td>4 years</td><td><span style="color:#27ae60">nothing</span></td><td><span style="color:#27ae60">0</span></td></tr></tbody></table></div><div style="background:#22313f;border-left:3px solid #2980b9;border-radius:4px;padding:10px 12px;font-size:12px;color:#c8d6e5;line-height:1.5">Standard and managed objects are excluded and the screen says so: 216 standard and 75 managed were set aside. A list whose first ten rows cannot be deleted is a list nobody reads to row eleven.</div><div class="tbl-wrap"><table class="cal-tbl"><thead><tr><th style="width:230px">Scope</th><th style="width:100px">Kept</th><th>Set aside</th></tr></thead><tbody><tr><td>Custom objects</td><td>158</td><td>216 standard, 75 managed</td></tr><tr><td>Dormant for 4+ years</td><td>40</td><td>118 still written to</td></tr><tr><td>Free of dependencies</td><td>8</td><td>15 pointed at, 17 with dependants</td></tr></tbody></table></div><div class="hbox" style="gap:8px"><button class="cal-btn btn-b">Guided AI session</button><button class="cal-btn btn-g">Load AI answer</button><button class="cal-btn btn-r">Build the removal package</button></div><div style="background:#22313f;border-left:3px solid #2980b9;border-radius:4px;padding:10px 12px;font-size:12px;color:#c8d6e5;line-height:1.5">The dormancy threshold is four years because that is where the curve flattens: candidates at 2/3/4/5 years are 48/43/40/39. Past four, the criterion stops discriminating and becomes an argument. Adjustable per org.</div></div>
+    </div>
+  </div>
+</div>
+<div id="modal-kf" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:999;align-items:center;justify-content:center" onclick="if(event.target===this)this.style.display='none'">
+  <div style="background:#fff;border-radius:8px;padding:28px 32px;max-width:560px;width:90%;color:#1a2a35;box-shadow:0 8px 32px rgba(0,0,0,.3)">
+    <h3 style="margin:0 0 14px;color:#2980b9">&#9733; Key features</h3>
+    <ul style="margin:0;padding-left:20px;line-height:1.8">
+      <li>Reads the dependency graph offline &mdash; no query, and the same verdict as the deletion badges elsewhere.</li>
+      <li>Ranks by <b>removal cost</b>: what nothing points at first, then by dependency count.</li>
+      <li>Warns when a candidate looks like a <b>reference table</b> (read, never written, pointed at by others).</li>
+      <li>Excludes standard and managed metadata, and states how many were set aside.</li>
+      <li>Dormancy threshold taken from the distribution, adjustable per org.</li>
+      <li>Produces a removal package, and records the rulings so a rejected candidate stays rejected.</li>
+
+    </ul>
+    <div style="text-align:right;margin-top:18px">
+      <button class="cal-btn btn-d" onclick="document.getElementById('modal-kf').style.display='none'">Close</button>
+    </div>
+  </div>
+</div>
+<script>
+function sw(id,idx){
+  var tp=document.getElementById(id);
+  tp.querySelectorAll('.m-tab').forEach(function(t,i){t.classList.toggle('act',i===idx)});
+  tp.querySelectorAll('.m-panel').forEach(function(p,i){p.classList.toggle('act',i===idx)});
+}
+</script>
+</body>
+</html>

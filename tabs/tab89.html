@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Value Sets &amp; Record Types &mdash; Calumet</title>
+<link rel="stylesheet" href="../shared.css">
+</head>
+<body class="tab-page">
+<div class="sum">
+  <div class="sum-title">
+    <h2>Value Sets &amp; Record Types</h2>
+    <span class="sum-badge">Tab 89</span>
+  </div>
+  <p class="sum-desc">Shows which picklists are shared, which ones are the same list duplicated across fields, and what the record types really cost to maintain.
+    <button class="cal-btn btn-d" style="margin-left:10px" onclick="document.getElementById('modal-kf').style.display='flex'">&#9733; Key features</button>
+  </p>
+</div>
+<div class="mockup-wrap">
+  <div class="mockup">
+    <div class="vbox" style="gap:10px">
+<div class="hbox" style="gap:8px;align-items:center"><button class="cal-btn btn-b" data-tip="Recompute offline from the dependency graph cache">Analyse</button><button class="cal-btn btn-d">Refresh value sets</button><button class="cal-btn btn-o" data-tip="Open the standalone HTML report">Open in browser</button><span class="spacer"></span><span class="cal-lbl" style="color:#888">Analysed 2026-08-12 &mdash; 640 value sets, 215 duplicate groups</span></div><div class="m-tabbar" style="margin-top:8px"><div class="m-tab act" onclick="sw('tp89',0)">Global value sets</div><div class="m-tab" onclick="sw('tp89',1)">Duplicate value sets</div><div class="m-tab" onclick="sw('tp89',2)">Record type effort</div></div>
+<div class="m-tabpane" id="tp89"><div class="m-body"><div class="m-panel act" id="tp89-0"><div class="vbox" style="gap:10px"><div style="background:#22313f;border-left:3px solid #2980b9;border-radius:4px;padding:10px 12px;font-size:12px;color:#c8d6e5;line-height:1.5">Global value sets and the picklists that use them. A value set used by one field is not shared &mdash; it is a picklist with extra indirection.</div><div class="hbox" style="gap:8px;align-items:center"><input class="cal-tf cal-grow" readonly value="status"><button class="cal-btn btn-d">Refresh value sets</button></div><div class="tbl-wrap"><table class="cal-tbl"><thead><tr><th style="width:220px">Value set</th><th style="width:70px">Used</th><th style="width:70px">Fields</th><th style="width:70px">Values</th><th style="width:80px">Inactive</th><th>Consumers</th></tr></thead><tbody><tr><td>Claim_Status</td><td><span style="color:#27ae60">yes</span></td><td>6</td><td>12</td><td><span style="color:#e67e22">3</span></td><td>Claim__c.Status__c, Claim__c.Sub_Status__c</td></tr><tr><td>Country_Code</td><td><span style="color:#27ae60">yes</span></td><td>9</td><td>241</td><td><span style="color:#888">0</span></td><td>Account.Country__c, Contact.Country__c</td></tr><tr><td>Priority_Level</td><td><span style="color:#27ae60">yes</span></td><td>4</td><td>4</td><td><span style="color:#888">0</span></td><td>Claim__c.Priority__c, Project__c.Priority__c</td></tr><tr><td>Legacy_Type</td><td><span style="color:#E74C3C">no</span></td><td>0</td><td>17</td><td><span style="color:#e67e22">17</span></td><td><span style="color:#888">no consumer</span></td></tr><tr><td>Invoice_Stage</td><td><span style="color:#27ae60">yes</span></td><td>2</td><td>8</td><td><span style="color:#888">1</span></td><td>Invoice__c.Stage__c</td></tr></tbody></table></div></div></div><div class="m-panel" id="tp89-1"><div class="vbox" style="gap:10px"><div style="background:#22313f;border-left:3px solid #2980b9;border-radius:4px;padding:10px 12px;font-size:12px;color:#c8d6e5;line-height:1.5">Fields whose inline picklists hold <b>exactly</b> the same values. Near-duplicates were measured and dropped: they barely exist (under 4%), while exact duplicates cover a third to two thirds of inline picklists. The object is a column here, never a filter &mdash; the densest groups are inside a single object.</div><div class="tbl-wrap"><table class="cal-tbl"><thead><tr><th style="width:150px">Action</th><th style="width:70px">Fields</th><th style="width:150px">Objects</th><th style="width:70px">Values</th><th>Value list</th></tr></thead><tbody><tr><td><span style="color:#e67e22">&rarr; global value set</span></td><td>6</td><td>Claim__c</td><td>4</td><td>Open, In review, Closed, Cancelled</td></tr><tr><td><span style="color:#e67e22">&rarr; global value set</span></td><td>5</td><td>Invoice__c, Project__c</td><td>3</td><td>Low, Medium, High</td></tr><tr><td><span style="color:#888">&rarr; checkbox?</span></td><td>4</td><td>Account, Contact</td><td>2</td><td>Yes, No</td></tr><tr><td><span style="color:#888">review</span></td><td>3</td><td>Claim__c, Invoice__c</td><td>2</td><td>Active, Inactive</td></tr><tr><td><span style="color:#e67e22">&rarr; global value set</span></td><td>3</td><td>Project__c</td><td>5</td><td>Draft, Planned, Running, Done, Cancelled</td></tr></tbody></table></div><div style="background:#22313f;border-left:3px solid #e67e22;border-radius:4px;padding:10px 12px;font-size:12px;color:#c8d6e5;line-height:1.5">Two values does <b>not</b> mean &laquo; make it a checkbox &raquo;. The criterion is the <i>pair</i> of values: Yes/No converts, Active/Inactive usually does not &mdash; measured on four orgs, the naive rule held on one and collapsed on another.</div></div></div><div class="m-panel" id="tp89-2"><div class="vbox" style="gap:10px"><div style="background:#22313f;border-left:3px solid #2980b9;border-radius:4px;padding:10px 12px;font-size:12px;color:#c8d6e5;line-height:1.5">What a record type actually costs to maintain: every picklist field multiplied by every record type is a cell someone has to keep aligned.</div><div class="tbl-wrap"><table class="cal-tbl"><thead><tr><th style="width:170px">Object</th><th style="width:120px">Picklist fields</th><th style="width:110px">Record types</th><th style="width:140px">Cells to maintain</th><th>Record types</th></tr></thead><tbody><tr><td>Claim__c</td><td>34</td><td>6</td><td><span style="color:#E74C3C">204</span></td><td>Standard, Retail, Corporate, Partner, Internal, Legacy</td></tr><tr><td>Invoice__c</td><td>21</td><td>3</td><td><span style="color:#e67e22">63</span></td><td>Standard, Credit note, Pro forma</td></tr><tr><td>Account</td><td>17</td><td>3</td><td><span style="color:#e67e22">51</span></td><td>Customer, Prospect, Partner</td></tr><tr><td>Project__c</td><td>12</td><td>2</td><td><span style="color:#888">24</span></td><td>Internal, Customer</td></tr><tr><td>Contact</td><td>8</td><td>1</td><td><span style="color:#888">8</span></td><td>Standard</td></tr></tbody></table></div><div style="background:#22313f;border-left:3px solid #2980b9;border-radius:4px;padding:10px 12px;font-size:12px;color:#c8d6e5;line-height:1.5">Double-click a row to open the object in the SObject explorer.</div></div></div></div></div>
+    </div>
+  </div>
+</div>
+<div id="modal-kf" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:999;align-items:center;justify-content:center" onclick="if(event.target===this)this.style.display='none'">
+  <div style="background:#fff;border-radius:8px;padding:28px 32px;max-width:560px;width:90%;color:#1a2a35;box-shadow:0 8px 32px rgba(0,0,0,.3)">
+    <h3 style="margin:0 0 14px;color:#2980b9">&#9733; Key features</h3>
+    <ul style="margin:0;padding-left:20px;line-height:1.8">
+      <li>Global value sets with their real consumers, and the ones nothing uses.</li>
+      <li><b>Exact</b> duplicate value sets &mdash; the near-duplicate view was measured and cancelled.</li>
+      <li>Record type effort as a number of cells to maintain, not a vague warning.</li>
+      <li>Double-click opens the object in the SObject explorer.</li>
+
+    </ul>
+    <div style="text-align:right;margin-top:18px">
+      <button class="cal-btn btn-d" onclick="document.getElementById('modal-kf').style.display='none'">Close</button>
+    </div>
+  </div>
+</div>
+<script>
+function sw(id,idx){
+  var tp=document.getElementById(id);
+  tp.querySelectorAll('.m-tab').forEach(function(t,i){t.classList.toggle('act',i===idx)});
+  tp.querySelectorAll('.m-panel').forEach(function(p,i){p.classList.toggle('act',i===idx)});
+}
+</script>
+</body>
+</html>

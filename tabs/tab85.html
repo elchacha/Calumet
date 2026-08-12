@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Flow Migration &mdash; Calumet</title>
+<link rel="stylesheet" href="../shared.css">
+</head>
+<body class="tab-page">
+<div class="sum">
+  <div class="sum-title">
+    <h2>Flow Migration</h2>
+    <span class="sum-badge">Tab 85</span>
+  </div>
+  <p class="sum-desc">Plans the retirement of workflow rules and process builders: what to migrate first, what merges into a single flow, and what Flow simply cannot reproduce.
+    <button class="cal-btn btn-d" style="margin-left:10px" onclick="document.getElementById('modal-kf').style.display='flex'">&#9733; Key features</button>
+  </p>
+</div>
+<div class="mockup-wrap">
+  <div class="mockup">
+    <div class="vbox" style="gap:10px">
+<div class="hbox" style="gap:8px;align-items:center"><button class="cal-btn btn-b" data-tip="Rebuild the report from the org">Refresh</button><label class="cal-chk"><input type="checkbox" disabled> Include workflow rule detail (slow first run)</label><button class="cal-btn btn-o" data-tip="Open the standalone HTML report">Open in browser</button><span class="spacer"></span><span class="cal-lbl" style="color:#888">Report built 2026-08-12 &mdash; 312 rules on 47 objects</span></div><div class="m-tabbar" style="margin-top:8px"><div class="m-tab act" onclick="sw('tp85',0)">Concentration</div><div class="m-tab" onclick="sw('tp85',1)">Plan</div><div class="m-tab" onclick="sw('tp85',2)">Rules</div><div class="m-tab" onclick="sw('tp85',3)">Blockers</div><div class="m-tab" onclick="sw('tp85',4)">AI spec</div></div>
+<div class="m-tabpane" id="tp85"><div class="m-body"><div class="m-panel act" id="tp85-0"><div class="vbox" style="gap:10px"><div class="hbox" style="gap:8px;align-items:stretch"><div style="flex:1;min-width:120px;background:#22313f;border-radius:6px;padding:12px 14px;border-left:3px solid #2980b9"><div style="font-size:22px;font-weight:600;color:#2980b9">312</div><div style="font-size:11px;color:#9fb3c8;margin-top:2px">workflow rules</div></div><div style="flex:1;min-width:120px;background:#22313f;border-radius:6px;padding:12px 14px;border-left:3px solid #2980b9"><div style="font-size:22px;font-weight:600;color:#2980b9">47</div><div style="font-size:11px;color:#9fb3c8;margin-top:2px">objects touched</div></div><div style="flex:1;min-width:120px;background:#22313f;border-radius:6px;padding:12px 14px;border-left:3px solid #e67e22"><div style="font-size:22px;font-weight:600;color:#e67e22">68%</div><div style="font-size:11px;color:#9fb3c8;margin-top:2px">on 5 objects</div></div><div style="flex:1;min-width:120px;background:#22313f;border-radius:6px;padding:12px 14px;border-left:3px solid #E74C3C"><div style="font-size:22px;font-weight:600;color:#E74C3C">9</div><div style="font-size:11px;color:#9fb3c8;margin-top:2px">blockers</div></div></div><div style="background:#1d3b53;border:1px solid #2980b9;border-radius:6px;padding:14px 16px"><div style="font-size:13px;font-weight:600;color:#5dade2;margin-bottom:8px">Start here &mdash; migrate by object, not by rule</div><div style="font-size:12px;color:#c8d6e5;line-height:1.6">Two thirds of the rules sit on five objects. Migrating an object converts its rules into one flow and lets you retest once; migrating rule by rule means retesting the same object nine times.</div></div><div class="tbl-wrap"><table class="cal-tbl"><thead><tr><th style="width:200px">Object</th><th style="width:70px">Rules</th><th style="width:110px">Field updates</th><th style="width:80px">Share</th><th>Suggested order</th></tr></thead><tbody><tr><td>Claim__c</td><td>84</td><td>119</td><td>27%</td><td>1 &mdash; largest, and blockers are known</td></tr><tr><td>Invoice__c</td><td>61</td><td>77</td><td>20%</td><td>2</td></tr><tr><td>Account</td><td>38</td><td>44</td><td>12%</td><td>3</td></tr><tr><td>Project__c</td><td>17</td><td>21</td><td>5%</td><td>4</td></tr><tr><td>Contact</td><td>12</td><td>14</td><td>4%</td><td>5</td></tr></tbody></table></div></div></div><div class="m-panel" id="tp85-1"><div class="vbox" style="gap:10px"><div style="background:#22313f;border-left:3px solid #2980b9;border-radius:4px;padding:10px 12px;font-size:12px;color:#c8d6e5;line-height:1.5">One flow per object and per trigger moment. The plan is a proposal: it states what it would merge, and what it refuses to merge because the behaviour would change.</div><div class="tbl-wrap"><table class="cal-tbl"><thead><tr><th style="width:240px">Target flow</th><th style="width:90px">Replaces</th><th style="width:150px">Trigger</th><th>Status</th></tr></thead><tbody><tr><td>Claim_Before_Save</td><td>31 rules</td><td>Before save</td><td><span style="color:#27ae60">mergeable</span></td></tr><tr><td>Claim_After_Save</td><td>42 rules</td><td>After save</td><td><span style="color:#27ae60">mergeable</span></td></tr><tr><td>Claim_Time_Based</td><td>11 rules</td><td>Time-based</td><td><span style="color:#e67e22">needs scheduled paths</span></td></tr><tr><td>Invoice_Before_Save</td><td>39 rules</td><td>Before save</td><td><span style="color:#27ae60">mergeable</span></td></tr><tr><td>Invoice_Outbound</td><td>6 rules</td><td>After save</td><td><span style="color:#E74C3C">blocked &mdash; outbound message</span></td></tr></tbody></table></div></div></div><div class="m-panel" id="tp85-2"><div class="vbox" style="gap:10px"><div class="tbl-wrap"><table class="cal-tbl"><thead><tr><th style="width:260px">Rule</th><th style="width:140px">Object</th><th>Actions</th><th style="width:80px">Active</th></tr></thead><tbody><tr><td>Claim escalation level 2</td><td>Claim__c</td><td>1 field update, 1 email alert</td><td><span style="color:#27ae60">yes</span></td></tr><tr><td>Claim reopen</td><td>Claim__c</td><td>1 field update</td><td><span style="color:#27ae60">yes</span></td></tr><tr><td>Invoice total refresh</td><td>Invoice__c</td><td>2 field updates</td><td><span style="color:#27ae60">yes</span></td></tr><tr><td>Account tier recalculation</td><td>Account</td><td>1 field update, 1 task</td><td><span style="color:#888">no</span></td></tr><tr><td>Project owner alert</td><td>Project__c</td><td>1 email alert</td><td><span style="color:#27ae60">yes</span></td></tr></tbody></table></div></div></div><div class="m-panel" id="tp85-3"><div class="vbox" style="gap:10px"><div style="background:#22313f;border-left:3px solid #E74C3C;border-radius:4px;padding:10px 12px;font-size:12px;color:#c8d6e5;line-height:1.5">A blocker is a rule that Flow cannot reproduce as-is. It is listed with what it would take &mdash; a blocker without a remedy is just a refusal.</div><div class="tbl-wrap"><table class="cal-tbl"><thead><tr><th style="width:220px">Blocker</th><th style="width:70px">Rules</th><th>Why</th></tr></thead><tbody><tr><td>Outbound message</td><td>6</td><td>Flow has no equivalent action; needs Apex or an external call</td></tr><tr><td>Time-based on a formula</td><td>2</td><td>Scheduled paths cannot key off a formula field</td></tr><tr><td>Cross-object field update</td><td>1</td><td>Target field is on the parent, needs a lookup path</td></tr></tbody></table></div></div></div><div class="m-panel" id="tp85-4"><div class="vbox" style="gap:10px"><div style="background:#22313f;border-left:3px solid #8e44ad;border-radius:4px;padding:10px 12px;font-size:12px;color:#c8d6e5;line-height:1.5">The model turns one object's rules into a <b>migration spec</b> a human can read line by line: entry criteria, the branches it found, and what it could not reconcile.</div><div class="tbl-wrap"><table class="cal-tbl"><thead><tr><th style="width:40px">#</th><th>Step of the spec</th><th style="width:200px">From</th><th style="width:100px">Review</th></tr></thead><tbody><tr><td>1</td><td>Entry: Status__c changes to 'Escalated'</td><td>3 rules share this criterion</td><td><span style="color:#27ae60">accepted</span></td></tr><tr><td>2</td><td>Branch A: priority high &rarr; set Level__c = 2</td><td>Rule: Claim escalation level 2</td><td><span style="color:#27ae60">accepted</span></td></tr><tr><td>3</td><td>Branch B: priority low &rarr; no action</td><td>inferred, no rule</td><td><span style="color:#e67e22">to verify</span></td></tr><tr><td>4</td><td>Send alert to the queue owner</td><td>Rule: Claim escalation level 2</td><td><span style="color:#27ae60">accepted</span></td></tr><tr><td>5</td><td>Conflict: two rules set Level__c differently</td><td>Rules 2 and 7</td><td><span style="color:#E74C3C">unresolved</span></td></tr></tbody></table></div><div class="hbox" style="gap:8px"><button class="cal-btn btn-b">Ask AI</button><button class="cal-btn btn-g">Load AI answer</button></div></div></div></div></div>
+    </div>
+  </div>
+</div>
+<div id="modal-kf" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:999;align-items:center;justify-content:center" onclick="if(event.target===this)this.style.display='none'">
+  <div style="background:#fff;border-radius:8px;padding:28px 32px;max-width:560px;width:90%;color:#1a2a35;box-shadow:0 8px 32px rgba(0,0,0,.3)">
+    <h3 style="margin:0 0 14px;color:#2980b9">&#9733; Key features</h3>
+    <ul style="margin:0;padding-left:20px;line-height:1.8">
+      <li>Orders the migration by <b>object</b>, the unit that is actually retested.</li>
+      <li>Proposes one flow per object and trigger moment, and says what it refuses to merge.</li>
+      <li>Lists the blockers Flow cannot reproduce, each with what it would take.</li>
+      <li>AI migration spec, readable step by step, every step citing the rule it came from.</li>
+
+    </ul>
+    <div style="text-align:right;margin-top:18px">
+      <button class="cal-btn btn-d" onclick="document.getElementById('modal-kf').style.display='none'">Close</button>
+    </div>
+  </div>
+</div>
+<script>
+function sw(id,idx){
+  var tp=document.getElementById(id);
+  tp.querySelectorAll('.m-tab').forEach(function(t,i){t.classList.toggle('act',i===idx)});
+  tp.querySelectorAll('.m-panel').forEach(function(p,i){p.classList.toggle('act',i===idx)});
+}
+</script>
+</body>
+</html>
