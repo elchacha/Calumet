@@ -106,6 +106,77 @@
 
 /* italic grey legend */
 .dbl-legend{font-size:10px;color:#888;font-style:italic;margin:2px 0 6px}
+
+/* ══════════ EDIT MODE ══════════ */
+/* toggle switch (ToggleSwitch in the filter row) */
+.tgl{display:inline-flex;align-items:center;gap:6px;font-size:11px;color:#2C3E50;
+     cursor:pointer;user-select:none}
+.tgl .knobwrap{width:30px;height:15px;border-radius:8px;background:#b6c4cf;position:relative;
+     transition:background .15s;flex:none}
+.tgl .knob{position:absolute;top:2px;left:2px;width:11px;height:11px;border-radius:50%;
+     background:#fff;transition:left .15s;box-shadow:0 1px 2px rgba(0,0,0,.3)}
+.tgl.on .knobwrap{background:#1A5276}
+.tgl.on .knob{left:17px}
+.tgl.dis{opacity:.45;cursor:not-allowed}
+
+/* mass-set / save / discard bar, shown only when Edit mode is ON */
+.edit-bar{display:none;flex-wrap:wrap;align-items:center;gap:8px;padding:5px 8px;
+  background:#FDF6E3;border-bottom:1px solid #E0C98A}
+.edit-bar.on{display:flex}
+.pending-lbl{font-size:11px;color:#2C3E50;white-space:nowrap}
+.pending-lbl.err{color:#c0392b;font-weight:700;white-space:normal}
+
+/* cell states inside an editable grid */
+.cal-tbl td.ed-on{background:#fff;outline:1px dashed #7fb3d5;outline-offset:-2px;cursor:text}
+.cal-tbl td.ro-dim{background:#f2f3f5;color:#9aa0a6}
+.cal-tbl td.stag{background:#c8e6c9;color:#1b5e20}
+.cal-tbl td.bad{background:#f5b7b1;color:#7b241c;font-weight:700}
+.cal-tbl tr.sel-row td.roc{background:#dCEcF6;color:#1A5276}
+.cal-tbl tr.sel-row td:first-child{box-shadow:inset 3px 0 0 #1A5276}
+.upd-ok{color:#1b7a3d;font-weight:700;white-space:nowrap}
+.upd-ko{color:#c0392b;font-weight:700}
+
+/* update preview grid inside the dialog */
+.prev-tbl{border-collapse:collapse;width:100%;font-size:11.5px}
+.prev-tbl th{text-align:left;color:#5f6b7a;font-size:10px;letter-spacing:.6px;
+  text-transform:uppercase;padding:2px 8px;border-bottom:1px solid #d0d7e2}
+.prev-tbl td{padding:3px 8px;vertical-align:top}
+.prev-id{font-family:Consolas,'Courier New',monospace;color:#5f6b7a;font-size:11px}
+.prev-field{background:#e7effa;color:#2c5aa0;border-radius:8px;padding:1px 8px;
+  font-size:11px;font-weight:700;display:inline-block}
+.prev-from{color:#8a94a6}
+.prev-from.empty{color:#aab2bd;font-style:italic}
+.prev-arrow{color:#2c5aa0;font-weight:700;text-align:center}
+.prev-to{color:#1b7a3d;font-weight:700}
+.prev-to.cleared{color:#c0392b;font-style:italic;font-weight:700}
+.dlg-head{font-size:12px;font-weight:700;color:#1A5276;margin:0 0 8px}
+.dlg-msg{font-size:12.5px;color:#1a2a35;line-height:1.6}
+
+/* ══════════ DOC CARD (below the mockup) ══════════ */
+.doc-card{background:#F8F8F8;border:1px solid #9AABBF;border-radius:5px;color:#1a2a35;
+  padding:14px 18px 16px;margin:18px auto 0;max-width:1180px;font-size:12.5px;line-height:1.62}
+.doc-card h3{color:#1A5276;font-size:12px;font-weight:700;margin:0 0 8px;
+  text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid #dbe6ee;padding-bottom:4px}
+.doc-card h3:not(:first-child){margin-top:16px}
+.doc-card p{margin:0 0 8px}
+.doc-card ul{margin:0 0 8px;padding-left:20px}
+.doc-card li{margin-bottom:3px}
+.doc-card table{border-collapse:collapse;width:100%;font-size:12px;margin:4px 0 10px}
+.doc-card th{background:#D8E6EE;color:#1A5276;text-align:left;padding:5px 9px;
+  border:1px solid #c3d4de;font-weight:700}
+.doc-card td{padding:5px 9px;border:1px solid #dbe6ee;vertical-align:top}
+.doc-card code{background:#eef3f7;border:1px solid #d5e2ea;border-radius:3px;padding:0 4px;
+  font-family:Consolas,'Courier New',monospace;font-size:11.5px;color:#1a2a35}
+.doc-note{background:#fff8e1;border-left:3px solid #ffc107;padding:8px 12px;
+  border-radius:0 4px 4px 0;margin:8px 0}
+.doc-pill{display:inline-block;border-radius:9px;padding:1px 8px;font-size:11px;font-weight:700}
+.doc-pill.green{background:#c8e6c9;color:#1b5e20}
+.doc-pill.red{background:#f5b7b1;color:#7b241c}
+.doc-pill.grey{background:#f2f3f5;color:#7a828c;border:1px solid #dfe3e8}
+
+/* legend line inside the mockup */
+.legend-edit{font-size:11px;color:#6d5a00;background:#FDF6E3;border:1px solid #E0C98A;
+  border-radius:3px;padding:3px 10px;display:inline-block;margin:2px 0 4px}
 </style>
 </head>
 <body class="tab-page">
@@ -120,7 +191,8 @@
   <p class="sum-desc">
     Multi-tab SOQL query editor with real-time execution, Tooling API support, SELECT&nbsp;* expansion
     with configurable priority fields, bulk mode, fast record count, and saved query management.
-    Results can be filtered and exported to CSV.
+    Results can be filtered, exported to CSV &mdash; and, with <strong>Edit mode</strong>, corrected
+    in place and written back to the org, one cell at a time or with a mass-set.
   </p>
 </div>
 
@@ -192,6 +264,9 @@
         <span class="cal-lbl">Separator:</span>
         <input class="cal-tf" value=";" style="width:28px" readonly>
         <button class="cal-btn btn-o" data-tip="Export result to CSV">Extract</button>
+        <div class="vsep" style="align-self:stretch"></div>
+        <span class="tgl" data-tip="Toggle inline editing of the results (live on the opportunity tab)">
+          <span class="knobwrap"><span class="knob"></span></span>Edit mode</span>
       </div>
 
       <!-- Result table — Account -->
@@ -225,12 +300,12 @@
                 <td>18.2</td>
                 <td>France</td>
                 <td>EXT100001</td>
-                <td style="font-family:monospace;font-size:10px">001XXXXXXXXXXXXXXXXA</td>
+                <td style="font-family:monospace;font-size:10px">0018E00001aBcDeQAY</td>
                 <td>2025-12-25 09:00</td>
                 <td>2026-04-28 14:32</td>
                 <td>user_01</td>
                 <td style="color:#888">&mdash;</td>
-                <td style="font-family:monospace;font-size:10px">001XXXXXXXXXXXXXXXXA</td>
+                <td style="font-family:monospace;font-size:10px">0018E00001aBcDeQAY</td>
               </tr>
               <tr>
                 <td>Name1</td>
@@ -240,12 +315,12 @@
                 <td>9.1</td>
                 <td style="color:#888">&mdash;</td>
                 <td>EXT100002</td>
-                <td style="font-family:monospace;font-size:10px">001XXXXXXXXXXXXXXXXB</td>
+                <td style="font-family:monospace;font-size:10px">0018E00001aBcDfQAY</td>
                 <td>2025-12-29 11:15</td>
                 <td>2026-01-11 08:22</td>
                 <td>user_01</td>
                 <td style="color:#888">&mdash;</td>
-                <td style="font-family:monospace;font-size:10px">001XXXXXXXXXXXXXXXXB</td>
+                <td style="font-family:monospace;font-size:10px">0018E00001aBcDfQAY</td>
               </tr>
               <tr>
                 <td>Name2</td>
@@ -255,12 +330,12 @@
                 <td>18.2</td>
                 <td>Rest of the World</td>
                 <td>EXT100003</td>
-                <td style="font-family:monospace;font-size:10px">001XXXXXXXXXXXXXXXXC</td>
+                <td style="font-family:monospace;font-size:10px">0018E00001aBcDgQAY</td>
                 <td>2025-12-30 16:48</td>
                 <td>2026-01-11 09:05</td>
                 <td>user_01</td>
                 <td style="color:#888">&mdash;</td>
-                <td style="font-family:monospace;font-size:10px">001XXXXXXXXXXXXXXXXC</td>
+                <td style="font-family:monospace;font-size:10px">0018E00001aBcDgQAY</td>
               </tr>
             </tbody>
           </table>
@@ -282,7 +357,7 @@
         <span class="cal-lbl">Timeout:</span>
         <input class="cal-tf" value="0" style="width:42px" readonly data-tip="Query timeout in seconds (0 = no limit)">
         <span class="cal-lbl">Max rows:</span>
-        <input class="cal-tf" value="10000" style="width:58px" readonly data-tip="Maximum number of rows returned">
+        <input class="cal-tf" value="5" style="width:58px" readonly data-tip="Maximum number of rows displayed in the grid">
         <button class="cal-btn btn-b" data-tip="Execute the SOQL query">Execute</button>
         <div class="vsep" style="align-self:stretch"></div>
         <label class="cal-chk"><input type="checkbox" disabled> Fast count</label>
@@ -317,7 +392,8 @@
 
       <!-- Status row -->
       <div class="status-row">
-        <span class="cal-lbl" style="color:#1A5276;font-weight:700">number of records: 5</span>
+        <span class="cal-lbl" style="color:#1A5276;font-weight:700">number of records: 500</span>
+        <span class="cal-lbl" style="color:#f5493a;font-weight:700">displayed 5</span>
         <div class="vsep" style="align-self:stretch"></div>
         <label class="cal-chk"><input type="checkbox" disabled> Apply filter</label>
         <input class="cal-tf" placeholder="Filter..." style="width:160px" readonly>
@@ -325,81 +401,116 @@
         <span class="cal-lbl">Separator:</span>
         <input class="cal-tf" value=";" style="width:28px" readonly>
         <button class="cal-btn btn-o" data-tip="Export result to CSV">Extract</button>
+        <div class="vsep" style="align-self:stretch"></div>
+        <span class="tgl" id="tgl-edit" onclick="toggleEdit()"
+              data-tip="Toggle inline editing of the results">
+          <span class="knobwrap"><span class="knob"></span></span>Edit mode</span>
+      </div>
+
+      <!-- Edit bar : only visible when Edit mode is ON -->
+      <div class="edit-bar" id="edit-bar">
+        <span class="cal-lbl" style="font-weight:700">Mass set:</span>
+        <select class="cal-cb" id="mass-field" style="width:150px" onchange="massFieldChanged()"
+                data-tip="Only direct, updateable, non-formula fields are offered">
+          <option value="">field</option>
+          <option value="StageName">StageName</option>
+          <option value="CloseDate">CloseDate</option>
+          <option value="Amount">Amount</option>
+          <option value="Name">Name</option>
+          <option value="AccountId">AccountId</option>
+        </select>
+        <input class="cal-tf" id="mass-value-tf" placeholder="value" style="width:150px;display:none">
+        <select class="cal-cb" id="mass-value-cb" style="width:150px;display:none"></select>
+        <label class="cal-chk" id="mass-scope" style="display:none"
+               data-tip="Restrict the mass-set to the rows you selected">
+          <input type="checkbox" id="mass-sel-only"> selection only</label>
+        <button class="cal-btn btn-o" id="mass-apply" style="display:none" onclick="applyMass()"
+                data-tip="Stage the value on the target rows - nothing is sent yet">Apply</button>
+        <div class="vsep" style="align-self:stretch"></div>
+        <button class="cal-btn btn-g" onclick="saveEdits()"
+                data-tip="Preview, confirm, then write back through the Partner API">Save changes</button>
+        <button class="cal-btn btn-r" onclick="discardEdits()"
+                data-tip="Roll every pending cell back to its original value">Discard</button>
+        <span class="pending-lbl" id="pending-lbl">0 pending change(s)</span>
       </div>
 
       <!-- Result table — Opportunity -->
       <div class="result-area">
         <div class="legend-star">&#9733; Fields defined in Select * config are displayed first.</div>
+        <div class="legend-edit">
+          Live on this page: switch <strong>Edit mode</strong> on, type in a white cell or mass-set a
+          field, then press <strong>Save changes</strong>. Click a grey <code>Id</code> cell to select a row.
+        </div>
         <div class="tbl-wrap">
-          <table class="cal-tbl">
+          <table class="cal-tbl" id="opp-tbl">
             <thead>
-              <tr>
+              <tr id="opp-head">
                 <th style="width:140px" class="star-col">&#9733; Name</th>
                 <th style="width:130px" class="star-col">&#9733; StageName</th>
                 <th style="width:100px" class="star-col">&#9733; CloseDate</th>
                 <th style="width:90px" class="star-col">&#9733; Amount</th>
                 <th style="width:170px" class="star-col">&#9733; AccountId</th>
-                <th style="width:110px" class="star-col">&#9733; Owner.Name</th>
-                <th style="width:170px">Id</th>
-                <th style="width:70px">Probability</th>
-                <th style="width:100px">ForecastCategory</th>
+                <th style="width:110px" class="star-col" data-tip="Relationship path - never editable">&#9733; Owner.Name</th>
+                <th style="width:170px" data-tip="The Id is what the update addresses - never editable">Id</th>
+                <th style="width:70px" data-tip="Read-only: not updateable on this org">Probability</th>
+                <th style="width:100px" data-tip="Read-only: not updateable (ForecastCategoryName is)">ForecastCategory</th>
               </tr>
             </thead>
-            <tbody>
-              <tr>
-                <td>Deal Alpha</td>
-                <td>Proposal</td>
-                <td>2026-06-15</td>
-                <td style="text-align:right">45 000</td>
-                <td style="font-family:monospace;font-size:10px">001XXXXXXXXXXXXXXXXA</td>
-                <td>user_01</td>
-                <td style="font-family:monospace;font-size:10px">OppAAAAAAAAAAAAAAAAA</td>
-                <td style="text-align:right">40</td>
-                <td>Pipeline</td>
+            <tbody id="opp-tbody">
+              <tr data-id="0068E00001pQrStQAM">
+                <td class="edc" data-f="Name">Deal Alpha</td>
+                <td class="edc" data-f="StageName">Proposal</td>
+                <td class="edc" data-f="CloseDate">2026-06-15</td>
+                <td class="edc" data-f="Amount" style="text-align:right">45000</td>
+                <td class="edc" data-f="AccountId" style="font-family:monospace;font-size:10px">0018E00001aBcDeQAY</td>
+                <td class="roc">user_01</td>
+                <td class="roc idc" style="font-family:monospace;font-size:10px" onclick="selectRow(this)">0068E00001pQrStQAM</td>
+                <td class="roc" style="text-align:right">40</td>
+                <td class="roc">Pipeline</td>
               </tr>
-              <tr>
-                <td>Deal Beta</td>
-                <td>Negotiation</td>
-                <td>2026-05-30</td>
-                <td style="text-align:right">120 000</td>
-                <td style="font-family:monospace;font-size:10px">001XXXXXXXXXXXXXXXXB</td>
-                <td>user_02</td>
-                <td style="font-family:monospace;font-size:10px">OppBBBBBBBBBBBBBBBBB</td>
-                <td style="text-align:right">80</td>
-                <td>BestCase</td>
+              <tr data-id="0068E00001pQrSuQAM">
+                <td class="edc" data-f="Name">Deal Beta</td>
+                <td class="edc" data-f="StageName">Negotiation</td>
+                <td class="edc" data-f="CloseDate">2026-05-30</td>
+                <td class="edc" data-f="Amount" style="text-align:right">120000</td>
+                <td class="edc" data-f="AccountId" style="font-family:monospace;font-size:10px">0018E00001aBcDfQAY</td>
+                <td class="roc">user_02</td>
+                <td class="roc idc" style="font-family:monospace;font-size:10px" onclick="selectRow(this)">0068E00001pQrSuQAM</td>
+                <td class="roc" style="text-align:right">80</td>
+                <td class="roc">BestCase</td>
               </tr>
-              <tr>
-                <td>Project Gamma</td>
-                <td>Value Proposition</td>
-                <td>2026-07-20</td>
-                <td style="text-align:right">78 500</td>
-                <td style="font-family:monospace;font-size:10px">001XXXXXXXXXXXXXXXXC</td>
-                <td>user_01</td>
-                <td style="font-family:monospace;font-size:10px">OppCCCCCCCCCCCCCCCCC</td>
-                <td style="text-align:right">30</td>
-                <td>Pipeline</td>
+              <tr data-id="0068E00001pQrSvQAM">
+                <td class="edc" data-f="Name">Project Gamma</td>
+                <td class="edc" data-f="StageName">Value Proposition</td>
+                <td class="edc" data-f="CloseDate">2026-07-20</td>
+                <td class="edc" data-f="Amount" style="text-align:right">78500</td>
+                <td class="edc" data-f="AccountId" style="font-family:monospace;font-size:10px">0018E00001aBcDgQAY</td>
+                <td class="roc">user_01</td>
+                <td class="roc idc" style="font-family:monospace;font-size:10px" onclick="selectRow(this)">0068E00001pQrSvQAM</td>
+                <td class="roc" style="text-align:right">30</td>
+                <td class="roc">Pipeline</td>
               </tr>
-              <tr>
-                <td>Initiative Delta</td>
-                <td>Perception Analysis</td>
-                <td>2026-06-01</td>
-                <td style="text-align:right">33 000</td>
-                <td style="font-family:monospace;font-size:10px">001XXXXXXXXXXXXXXXXA</td>
-                <td>user_03</td>
-                <td style="font-family:monospace;font-size:10px">OppDDDDDDDDDDDDDDDDD</td>
-                <td style="text-align:right">20</td>
-                <td>Pipeline</td>
+              <tr data-id="0068E00001pQrSwQAM">
+                <td class="edc" data-f="Name">Initiative Delta</td>
+                <td class="edc" data-f="StageName">Perception Analysis</td>
+                <td class="edc" data-f="CloseDate">2026-06-01</td>
+                <td class="edc" data-f="Amount" style="text-align:right">33000</td>
+                <td class="edc" data-f="AccountId" style="font-family:monospace;font-size:10px">0018E00001aBcDeQAY</td>
+                <td class="roc">user_03</td>
+                <td class="roc idc" style="font-family:monospace;font-size:10px" onclick="selectRow(this)">0068E00001pQrSwQAM</td>
+                <td class="roc" style="text-align:right">20</td>
+                <td class="roc">Pipeline</td>
               </tr>
-              <tr>
-                <td>Plan Epsilon</td>
-                <td>Id. Decision Makers</td>
-                <td>2026-08-10</td>
-                <td style="text-align:right">215 000</td>
-                <td style="font-family:monospace;font-size:10px">001XXXXXXXXXXXXXXXXB</td>
-                <td>user_02</td>
-                <td style="font-family:monospace;font-size:10px">OppEEEEEEEEEEEEEEEEE</td>
-                <td style="text-align:right">60</td>
-                <td>BestCase</td>
+              <tr data-id="0068E00001pQrSxQAM">
+                <td class="edc" data-f="Name">Plan Epsilon</td>
+                <td class="edc" data-f="StageName">Id. Decision Makers</td>
+                <td class="edc" data-f="CloseDate">2026-08-10</td>
+                <td class="edc" data-f="Amount" style="text-align:right">215000</td>
+                <td class="edc" data-f="AccountId" style="font-family:monospace;font-size:10px">0018E00001aBcDfQAY</td>
+                <td class="roc">user_02</td>
+                <td class="roc idc" style="font-family:monospace;font-size:10px" onclick="selectRow(this)">0068E00001pQrSxQAM</td>
+                <td class="roc" style="text-align:right">60</td>
+                <td class="roc">BestCase</td>
               </tr>
             </tbody>
           </table>
@@ -410,6 +521,87 @@
 
   </div><!-- /mockup -->
 </div><!-- /mockup-wrap -->
+
+<!-- ── Editing documentation card ── -->
+<div class="doc-card">
+
+  <h3>Editing a result in place</h3>
+  <div class="doc-note">
+    The <strong>opportunity</strong> tab of the mockup above is live: switch to it, turn
+    <strong>Edit mode</strong> on, change a cell or mass-set a field, then press
+    <strong>Save changes</strong> to walk the whole preview / production-confirmation /
+    <em>Update result</em> sequence.
+  </div>
+  <p>
+    A result grid can be corrected and written back to the org without leaving the tab. Turn on the
+    <strong>Edit mode</strong> toggle in the filter row: the editable columns become writable, every
+    other column is dimmed, and a bar appears with the mass-set controls,
+    <strong>Save changes</strong> and <strong>Discard</strong>.
+  </p>
+  <p>
+    Editing is only offered when the result can be written back safely. When the toggle is greyed out,
+    hover it &mdash; its tooltip names the reason:
+  </p>
+  <table>
+    <thead><tr><th style="width:44%">Tooltip on the disabled toggle</th><th>Why</th></tr></thead>
+    <tbody>
+      <tr><td><code>Add Id to your SELECT to enable editing</code></td>
+          <td>an update addresses records by <code>Id</code>; without it there is nothing to write to</td></tr>
+      <tr><td><code>Editing is Partner-only (uncheck Tooling API)</code></td>
+          <td>Tooling results are not writable this way &mdash; uncheck <em>Tooling</em> and run again</td></tr>
+      <tr><td><code>Editing is not available for Bulk results</code></td>
+          <td>the Bulk path returns rows without the describe the editor needs</td></tr>
+      <tr><td><code>FROM object unknown</code></td>
+          <td>the column types come from the describe of the <code>FROM</code> object</td></tr>
+    </tbody>
+  </table>
+  <p>
+    Only <strong>direct, updateable, non-formula</strong> fields become editable &mdash; a relationship
+    path such as <code>Owner.Name</code>, the <code>Id</code> itself and any formula or read-only field
+    stay <span class="doc-pill grey">dimmed</span>. A cell you change is highlighted
+    <span class="doc-pill green">pending</span>; a value the describe rejects turns
+    <span class="doc-pill red">invalid</span> with a tooltip and <strong>blocks the Save</strong>.
+    The check is <strong>local, before any call to the org</strong>: type, restricted picklist, length,
+    required field emptied. A counter next to the buttons shows how many changes are pending and
+    surfaces the first error in full.
+  </p>
+  <div class="doc-note">
+    Emptying a cell <strong>clears the field</strong> in Salesforce: it is sent as a null
+    (<code>fieldsToNull</code>), not as an empty string.
+  </div>
+
+  <h3>Mass-set &mdash; many rows at once</h3>
+  <p>
+    In the edit bar: <strong>Set</strong> [field] <strong>=</strong> [value], then
+    <strong>Apply</strong>. The value control adapts to the field &mdash; a picklist offers its own
+    values instead of a free-text box. Tick <strong>selection only</strong> to restrict the change to
+    the rows you selected; otherwise it applies to every <em>displayed</em> row.
+  </p>
+  <div class="doc-note">
+    <strong>Displayed</strong> is the operative word. When the result holds more rows than the grid
+    shows, Apply warns first &mdash;
+    <em>&laquo;&nbsp;N row(s) of the result are not displayed and will NOT be modified. Continue&nbsp;?&nbsp;&raquo;</em>
+    &mdash; so a mass-set never touches what you cannot see. And Apply only <strong>stages</strong> the
+    change: nothing reaches the org until <strong>Save changes</strong>.
+  </div>
+
+  <h3>Saving</h3>
+  <ul>
+    <li>A preview lists every pending change, Id by Id, as <em>field: old &rarr; new</em>, with the
+        record and field counts, the object and the org.</li>
+    <li>On a <strong>production</strong> org a second, explicit confirmation is required &mdash; it
+        names the org. It does not appear on a sandbox.</li>
+    <li>The write runs off the UI thread; Save, Discard, Apply and the toggle stay disabled while it
+        runs.</li>
+    <li>An <strong>Update result</strong> column then reports row by row: rows that succeeded leave the
+        pending set and their new value becomes the baseline, rows that failed stay red with the org's
+        own error message &mdash; a partial failure is never silent.</li>
+    <li>Under the hood the write is a Partner API <code>update(List&lt;SObject&gt;)</code>, chunked by
+        200 records.</li>
+  </ul>
+
+</div>
+
 
 <!-- ════════════════════════════════════════
      SELECT * CONFIG MODAL
@@ -490,13 +682,31 @@
         <li>CSV export with configurable column separator</li>
         <li>Saved query library with open-folder shortcut</li>
         <li>Per-tab timeout and max-rows override</li>
-        <li>Inline edit of a result grid, written back via the Partner API (requires <code>Id</code> in the SELECT; Partner only, non-Bulk)</li>
-        <li>Mass-set a field across the displayed rows, with a warning when the result holds rows the grid does not show</li>
-        <li>Client-side validation before Save (type, restricted picklist, length, required), plus a second confirmation on production</li>
+        <li><strong>Edit mode</strong> &mdash; correct a result grid in place and write it back through
+            the Partner API (needs <code>Id</code> in the SELECT; Partner only, non-Bulk)</li>
+        <li><strong>Mass-set</strong> one field across the displayed rows, warned when the result holds
+            rows the grid does not show</li>
+        <li>Local validation before Save (type, restricted picklist, length, required), Id-by-Id
+            preview, an extra confirmation on production, and a per-row <em>Update result</em> column</li>
       </ul>
     </div>
     <div class="modal-footer" style="justify-content:flex-end">
       <button class="cal-btn btn-d" onclick="document.getElementById('kf-modal').classList.remove('open')">Close</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- ════════════════════════════════════════
+     GENERIC DIALOG (edit-mode demo)
+     ════════════════════════════════════════ -->
+<div class="modal-overlay" id="dlg-modal" onclick="if(event.target===this)dlgClose()">
+  <div class="modal-box" style="max-width:640px" onclick="event.stopPropagation()">
+    <div class="modal-header"><h3 id="dlg-title">Confirm update</h3></div>
+    <div class="modal-body" id="dlg-body"></div>
+    <div class="modal-footer" style="justify-content:flex-end">
+      <button class="cal-btn btn-g" id="dlg-ok" onclick="dlgOk()">OK</button>
+      <button class="cal-btn btn-d" id="dlg-cancel" onclick="dlgClose()">Cancel</button>
     </div>
   </div>
 </div>
@@ -671,6 +881,316 @@ function cfgReset(){
 
 /* Initial render */
 cfgRender();
+
+
+/* ════════════════════════════════════════════════════════════════════
+   EDIT MODE demo (opportunity tab) - mirrors SoqlExecutorController
+   ════════════════════════════════════════════════════════════════════ */
+var EDIT_ON = false;
+var PENDING = {};                 /* recordId -> { field : {orig,cur,err} } */
+var UPD     = {};                 /* recordId -> {ok,msg}                   */
+var TOTAL_ROWS = 500, DISPLAYED_ROWS = 5;
+
+var STAGES = ['Prospecting','Qualification','Needs Analysis','Value Proposition',
+              'Id. Decision Makers','Perception Analysis','Proposal','Negotiation',
+              'Closed Won','Closed Lost'];
+
+/* the describe the editor works from */
+var DESCRIBE = {
+  Name      : {type:'string',   len:120, required:true},
+  StageName : {type:'picklist', restricted:true, values:STAGES, required:true},
+  CloseDate : {type:'date',     required:true},
+  Amount    : {type:'currency'},
+  AccountId : {type:'reference'}
+};
+
+function esc(t){
+  return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+/* Same messages as RecordEditValidator - checked locally, before any call to the org. */
+function validateValue(field,value){
+  var d = DESCRIBE[field];
+  if(!d) return null;
+  if(value===''){ return d.required ? 'This field is required (cannot be empty)' : null; }
+  if(d.type==='picklist' && d.restricted && d.values.indexOf(value)<0)
+    return 'Picklist value not allowed : '+value;
+  if(d.type==='currency' && !/^-?[0-9]+([.][0-9]+)?$/.test(value))
+    return 'Number expected';
+  if(d.type==='date' && !/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/.test(value))
+    return 'Date expected (ISO format, e.g. 2026-01-31)';
+  if(d.type==='reference' && value.length!==15 && value.length!==18)
+    return 'Salesforce Id expected (15 or 18 characters)';
+  if(d.len && value.length>d.len) return 'Too long (max '+d.len+' characters)';
+  return null;
+}
+
+function editableCells(){ return [].slice.call(document.querySelectorAll('#opp-tbody td.edc')); }
+function resultRows(){    return [].slice.call(document.querySelectorAll('#opp-tbody tr')); }
+
+function paintCell(td){
+  var id = td.parentElement.getAttribute('data-id'), f = td.getAttribute('data-f');
+  var ce = PENDING[id] && PENDING[id][f];
+  td.classList.remove('stag','bad','ed-on');
+  td.removeAttribute('title');
+  if(ce && ce.err){ td.classList.add('bad'); td.setAttribute('title',ce.err); }
+  else if(ce){ td.classList.add('stag'); }
+  else if(EDIT_ON){ td.classList.add('ed-on'); }
+}
+function paintAll(){ editableCells().forEach(paintCell); paintUpdateColumn(); }
+
+function updatePending(){
+  var count=0, invalid=0, first=null, id, f;
+  for(id in PENDING) for(f in PENDING[id]){
+    count++;
+    if(PENDING[id][f].err){ invalid++; if(!first) first = f+' : '+PENDING[id][f].err; }
+  }
+  var lb = document.getElementById('pending-lbl');
+  if(!lb) return;
+  if(invalid>0){
+    lb.textContent = count+' pending change(s) - '+first+(invalid>1?' (+'+(invalid-1)+' more)':'');
+    lb.className   = 'pending-lbl err';
+  }else{
+    lb.textContent = count+' pending change(s)';
+    lb.className   = 'pending-lbl';
+  }
+}
+
+function commitCell(td){
+  var tr   = td.parentElement;
+  var id   = tr.getAttribute('data-id');
+  var f    = td.getAttribute('data-f');
+  var val  = (td.textContent||'').replace(/^\s+|\s+$/g,'');
+  var orig = td.getAttribute('data-orig');
+  td.textContent = val;
+  if(val===orig){
+    if(PENDING[id]){
+      delete PENDING[id][f];
+      if(!Object.keys(PENDING[id]).length) delete PENDING[id];
+    }
+  }else{
+    if(!PENDING[id]) PENDING[id]={};
+    PENDING[id][f] = {orig:orig, cur:val, err:validateValue(f,val)};
+  }
+  paintCell(td);
+  updatePending();
+}
+
+function toggleEdit(){
+  EDIT_ON = !EDIT_ON;
+  document.getElementById('tgl-edit').classList.toggle('on',EDIT_ON);
+  document.getElementById('edit-bar').classList.toggle('on',EDIT_ON);
+  editableCells().forEach(function(td){
+    td.setAttribute('contenteditable', EDIT_ON?'true':'false');
+    paintCell(td);
+  });
+  [].slice.call(document.querySelectorAll('#opp-tbody td.roc')).forEach(function(td){
+    td.classList.toggle('ro-dim',EDIT_ON);
+  });
+}
+
+/* click an Id cell to select / unselect the row (scope of "selection only") */
+function selectRow(td){
+  td.parentElement.classList.toggle('sel-row');
+}
+
+/* ── Mass set ────────────────────────────────────────────────────────── */
+function massFieldChanged(){
+  var f  = document.getElementById('mass-field').value;
+  var tf = document.getElementById('mass-value-tf');
+  var cb = document.getElementById('mass-value-cb');
+  var sc = document.getElementById('mass-scope');
+  var ap = document.getElementById('mass-apply');
+  var d  = DESCRIBE[f];
+  var picklist = !!(d && d.type==='picklist');
+  if(picklist){
+    cb.innerHTML='';
+    d.values.forEach(function(v){
+      var o=document.createElement('option'); o.textContent=v; cb.appendChild(o);
+    });
+  }
+  tf.style.display = (f && !picklist) ? '' : 'none';
+  cb.style.display = (f &&  picklist) ? '' : 'none';
+  sc.style.display = f ? '' : 'none';
+  ap.style.display = f ? '' : 'none';
+}
+
+function applyMass(){
+  if(!EDIT_ON) return;
+  var f = document.getElementById('mass-field').value;
+  if(!f){ dlgInfo('Mass set','Please choose a field to mass-set.'); return; }
+  var cb = document.getElementById('mass-value-cb');
+  var tf = document.getElementById('mass-value-tf');
+  var value   = (cb.style.display!=='none') ? cb.value : tf.value;
+  var selOnly = document.getElementById('mass-sel-only').checked;
+  var targets = resultRows();
+  if(selOnly){
+    targets = targets.filter(function(tr){ return tr.classList.contains('sel-row'); });
+    if(!targets.length){
+      dlgInfo('Mass set','Select at least one cell first (selection only is checked).');
+      return;
+    }
+  }
+  var hidden = TOTAL_ROWS - DISPLAYED_ROWS;
+  if(!selOnly && hidden>0){
+    dlgConfirm('Rows not displayed',
+      hidden+' row(s) of the result are not displayed and will NOT be modified. Continue ?',
+      function(){ doMassSet(f,value,targets); });
+    return;
+  }
+  doMassSet(f,value,targets);
+}
+
+function doMassSet(field,value,rows){
+  rows.forEach(function(tr){
+    var td = tr.querySelector('td[data-f="'+field+'"]');
+    if(!td) return;
+    td.textContent = value;
+    commitCell(td);
+  });
+}
+
+/* ── Discard ─────────────────────────────────────────────────────────── */
+function discardEdits(){
+  editableCells().forEach(function(td){ td.textContent = td.getAttribute('data-orig'); });
+  PENDING = {};
+  UPD     = {};
+  paintAll();
+  updatePending();
+}
+
+/* ── Save ────────────────────────────────────────────────────────────── */
+function saveEdits(){
+  var count=0, invalid=0, id, f;
+  for(id in PENDING) for(f in PENDING[id]){ count++; if(PENDING[id][f].err) invalid++; }
+  if(!count){ dlgInfo('Save changes','No change to save.'); return; }
+  if(invalid){ dlgInfo('Save changes','Some cells are invalid (in red). Fix them before saving.'); return; }
+
+  var records = Object.keys(PENDING).length;
+  var html = '<div class="dlg-head">'+records+' record(s) &middot; '+count+' field(s)'
+           + ' &nbsp;&nbsp;&nbsp; Opportunity &middot; org PROD_FR</div>'
+           + '<table class="prev-tbl"><thead><tr><th>Record</th><th>Field</th><th>From</th>'
+           + '<th></th><th>To</th></tr></thead><tbody>';
+  for(id in PENDING){
+    for(f in PENDING[id]){
+      var ce   = PENDING[id][f];
+      var from = ce.orig==='' ? '<span class="prev-from empty">(empty)</span>'
+                              : '<span class="prev-from">'+esc(ce.orig)+'</span>';
+      var to   = ce.cur==='' ? '<span class="prev-to cleared">(cleared)</span>'
+                             : '<span class="prev-to">'+esc(ce.cur)+'</span>';
+      html += '<tr><td class="prev-id">'+esc(id)+'</td>'
+            + '<td><span class="prev-field">'+esc(f)+'</span></td>'
+            + '<td>'+from+'</td><td class="prev-arrow">&rarr;</td><td>'+to+'</td></tr>';
+    }
+  }
+  html += '</tbody></table>';
+
+  dlgHtml('Confirm update', html, function(){
+    /* PROD_FR is a production org : a second, explicit confirmation */
+    dlgConfirm('PRODUCTION update',
+      'You are about to UPDATE '+records+" records on the PRODUCTION org 'PROD_FR'.",
+      commitSave);
+  });
+}
+
+function commitSave(){
+  var ids = Object.keys(PENDING);
+  var failId = ids.length>1 ? ids[ids.length-1] : null;   /* one row rejected by the org */
+  var ok=0, ko=0;
+  ensureUpdateColumn();
+  ids.forEach(function(id){
+    if(id===failId){
+      ko++;
+      var msg = 'FIELD_CUSTOM_VALIDATION_EXCEPTION : this opportunity is locked by an approval process';
+      UPD[id] = {ok:false, msg:msg};
+      for(var f in PENDING[id]) PENDING[id][f].err = msg;   /* stays red */
+    }else{
+      ok++;
+      UPD[id] = {ok:true, msg:'OK'};
+      /* committed : the new value becomes the baseline */
+      var tr = document.querySelector('#opp-tbody tr[data-id="'+id+'"]');
+      if(tr){
+        for(var g in PENDING[id]){
+          var td = tr.querySelector('td[data-f="'+g+'"]');
+          if(td) td.setAttribute('data-orig',PENDING[id][g].cur);
+        }
+      }
+      delete PENDING[id];
+    }
+  });
+  paintAll();
+  updatePending();
+  dlgInfo('Update done','Update done : '+ok+' OK, '+ko+' KO.');
+}
+
+function ensureUpdateColumn(){
+  if(document.getElementById('upd-col')) return;
+  var th = document.createElement('th');
+  th.id = 'upd-col';
+  th.style.width = '230px';
+  th.textContent = 'Update result';
+  document.getElementById('opp-head').appendChild(th);
+  resultRows().forEach(function(tr){
+    var td = document.createElement('td');
+    td.className = 'updc';
+    tr.appendChild(td);
+  });
+}
+
+function paintUpdateColumn(){
+  resultRows().forEach(function(tr){
+    var td = tr.querySelector('td.updc');
+    if(!td) return;
+    var res = UPD[tr.getAttribute('data-id')];
+    if(!res){ td.innerHTML=''; td.removeAttribute('title'); return; }
+    if(res.ok){
+      td.innerHTML = '<span class="upd-ok">\u2714 OK</span>';
+      td.setAttribute('title','\u2714 OK');
+    }else{
+      td.innerHTML = '<span class="upd-ko">\u274C '+esc(res.msg)+'</span>';
+      td.setAttribute('title','\u274C '+res.msg);
+    }
+  });
+}
+
+/* ── Generic dialog ──────────────────────────────────────────────────── */
+var DLG_CB = null;
+function dlgHtml(title,html,onOk){
+  document.getElementById('dlg-title').textContent = title;
+  document.getElementById('dlg-body').innerHTML    = html;
+  DLG_CB = onOk || null;
+  document.getElementById('dlg-ok').textContent      = onOk ? 'OK' : 'Close';
+  document.getElementById('dlg-cancel').style.display = onOk ? '' : 'none';
+  document.getElementById('dlg-modal').classList.add('open');
+}
+function dlgInfo(title,msg){    dlgHtml(title,'<div class="dlg-msg">'+esc(msg)+'</div>',null); }
+function dlgConfirm(title,msg,cb){ dlgHtml(title,'<div class="dlg-msg">'+esc(msg)+'</div>',cb); }
+function dlgClose(){
+  document.getElementById('dlg-modal').classList.remove('open');
+  DLG_CB = null;
+}
+function dlgOk(){
+  var cb = DLG_CB;
+  dlgClose();
+  if(cb) setTimeout(cb,80);
+}
+
+/* ── Init the editable grid ──────────────────────────────────────────── */
+(function initEditDemo(){
+  var cells = editableCells();
+  if(!cells.length) return;
+  cells.forEach(function(td){
+    td.setAttribute('data-orig',(td.textContent||'').replace(/^\s+|\s+$/g,''));
+    td.setAttribute('contenteditable','false');
+    td.addEventListener('blur',function(){ commitCell(td); });
+    td.addEventListener('keydown',function(e){
+      if(e.key==='Enter'){ e.preventDefault(); td.blur(); }
+      if(e.key==='Escape'){ td.textContent = td.getAttribute('data-orig'); td.blur(); }
+    });
+  });
+  massFieldChanged();
+  updatePending();
+})();
 </script>
 </body>
 </html>
