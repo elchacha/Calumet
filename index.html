@@ -43,6 +43,16 @@ body{font-family:"Segoe UI",system-ui,sans-serif;background:var(--bg);color:var(
 .dl-info strong{display:block;font-size:14px;font-weight:700;color:#fff;margin-bottom:2px}
 .dl-info span{font-size:11px;color:var(--muted)}
 .dl-arrow{margin-left:auto;font-size:20px;color:var(--muted);font-weight:300}
+.notice{width:100%;max-width:700px;margin-bottom:16px;padding:16px 20px;border-radius:10px;
+  background:#3a2a1a;border:1px solid #7a5a2a;font-size:13px;line-height:1.6}
+.notice strong{color:#f0c674;display:block;margin-bottom:6px;font-size:14px}
+.notice p{margin:0 0 10px}
+.notice code{display:block;background:#0f1c30;border:1px solid var(--border);border-radius:6px;
+  padding:10px 12px;margin:8px 0;font-family:Consolas,monospace;font-size:12px;
+  white-space:pre;overflow-x:auto;color:#cfe3f5}
+.notice a{color:var(--acc)}
+.notice .fallback{color:var(--muted);font-size:12px;margin-bottom:0}
+
 .releases-link{margin-top:10px;font-size:12px;color:var(--muted)}
 .releases-link a{color:var(--acc);text-decoration:none}
 .releases-link a:hover{text-decoration:underline}
@@ -92,12 +102,31 @@ footer a:hover{text-decoration:underline}
   <h1>Calumet</h1>
   <p class="hero-by">by Little Chaman</p>
   <p class="hero-tag">A unified desktop workbench for Salesforce administrators, developers, and architects.</p>
-  <span class="version-pill">v11.7 &mdash; Latest</span>
+  <span class="version-pill">v11.7.1 &mdash; Latest</span>
 </div>
 
 <!-- Download -->
 <div class="section">
   <div class="sec-title">Download</div>
+
+  <div class="notice">
+    <strong>&#9888; macOS &amp; Linux &mdash; if Calumet no longer starts after an in-app update</strong>
+    <p>Updates installed from inside the application before 24 August 2026 delivered the Windows
+       build to every platform. The application then fails to start, silently &mdash; no window,
+       no error. <strong style="display:inline">Do not reinstall</strong>: that would replace your
+       configured orgs and your key file. Repair it in place instead, from the Terminal:</p>
+    <code>cd /Applications/CalumetTool.app/Contents/Resources
+curl -L -o CalumetUpdater.jar https://github.com/elchacha/Calumet/releases/latest/download/CalumetUpdater.jar
+./jre/bin/java -jar CalumetUpdater.jar</code>
+    <p>This downloads the build that matches your machine and restarts the application. Your orgs,
+       credentials and settings are left untouched.</p>
+    <p class="fallback">If that is not enough, run
+       <a href="https://github.com/elchacha/Calumet/releases/latest/download/repair-mac-install.sh">repair-mac-install.sh</a>
+       (macOS): it backs your data up to the Desktop first, then restores the application from the
+       official package. Already fixed, or never affected? Nothing to do &mdash; in-app updates are
+       correct again on every platform.</p>
+  </div>
+
   <div class="dl-row">
     <a class="dl-btn win"
        href="https://github.com/elchacha/Calumet/releases/latest/download/Calumet-windows.zip">
