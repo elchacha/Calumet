@@ -1,5 +1,10 @@
-[version]v11.8[/version]
+[version]v12[/version]
 [history]
+v12 — 2026-09-14
+General
+- Linux downloads are back: the previous release shipped without any Linux package, and the Linux button on the download page works again.
+- Help panels read properly again — the built-in help of 74 screens showed garbled characters instead of bullet points, and is refreshed on first launch.
+
 v11.8 — 2026-09-14
 New screens
 - Description Debt — find what nobody documented, get descriptions drafted for you, review them in Calumet and push them back to the org.
@@ -246,5 +251,5 @@ General
 - New OAuth 2.0 authentication flow available alongside the classic SOAP login.
 [/history]
 [update]dist/Calumet.jar[/update]
-[exe]dist/Calumet-11.8.exe[/exe]
+[exe]dist/Calumet-12.exe[/exe]
 [updaterVersion]3.8[/updaterVersion]

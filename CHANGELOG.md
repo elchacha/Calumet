@@ -1,5 +1,19 @@
 # Calumet — Changelog
 
+## v12 — 2026-09-14
+
+### New screens
+
+No new screens in this release.
+
+### Improvements
+
+**General**
+- **Linux downloads are back.** The previous release was published without any Linux package at all, so the Linux button on the download page led nowhere. Linux is built and published again.
+- **Help panels read properly again.** On installs set up before March, the built-in help of 74 screens displayed garbled characters where bullet points belong. The corrected help text is delivered on first launch.
+
+---
+
 ## v11.8 — 2026-09-14
 
 ### New screens
