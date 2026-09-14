@@ -1,5 +1,91 @@
 # Calumet — Changelog
 
+## v11.8 — 2026-09-14
+
+### New screens
+
+- **Description Debt** — see which objects and fields nobody ever documented, have descriptions drafted for you, review them inside Calumet, and push the accepted ones back to the org. It also keeps a glossary of your acronyms, so every proposal speaks your own business vocabulary.
+- **Value Sets & Record Types** — an org-wide view of your picklist vocabularies: which value sets are exact duplicates of each other, which values a record type actually offers, and which fields consume each list.
+- **Access & Provenance** — who really reaches your data, through which connected app or integration, how Calumet knows it, and what it cannot see. A daily collection builds a history that outlives your org's own log retention.
+- **Dead Metadata** — the metadata nothing points at any more, from the verdict down to a ready-to-use deletion package, with a guided route and a record of what you decided.
+
+"Compare 2 Profiles" is no longer a screen of its own: it is now the **Profile** sub-tab of **Compare 2 Profiles/PermSets**.
+
+### Improvements
+
+**Dep Graph**
+- The build now tells you where it is: a progress bar with a readable step detail, per org, instead of a bar that stayed empty and looked frozen.
+- The three optional retrieves run in parallel, so a full rebuild finishes sooner.
+- The impact popup opens as a real window.
+- The screen shows how far the documentation campaign has got, and what still needs a human.
+- A new setting turns the dependency graph off, so you can see exactly what each screen loses without it.
+
+**Org Discovery**
+- The landing page is a grid of selectable tiles instead of a list.
+- A banner says where the org stands, and a complete audit can be launched from the screen.
+- The sequence of steps is visible, including the one that has no button.
+- Decisions you already recorded in Dead Metadata no longer count as open debt.
+
+**Automation Radar**
+- "Busiest saves" shows the top 5 with an inline diagram instead of a long list.
+- The Objects view is a grid of clickable tiles, with the detail in a popup.
+- A handler called from a trigger counts as a writer again, and the async view reads the radar's writers instead of guessing them.
+- The nature of each side of a conflict is a column you can filter on.
+- Two accuracy problems fixed: a guard was hiding 36 real cross-writes, and the test-class filter matched nothing — 45 undecidable rows removed.
+- Verbose blocks moved behind a "Details" button, and timelines fill the available width.
+
+**Flow Migration, Permission Blast, License Right-Sizing**
+- Two-row toolbars, so labels stop being truncated.
+- Permission Blast: field permissions left behind without their field are now detected, and two different problems are reported as two different findings instead of one.
+
+**Fields Not Used, CustomFields Usage, Dead Metadata**
+- Deletion proposals are far more careful: silence is no longer taken as consent (on a real org, 1 027 proposed deletions became 189), an entry point is never proposed just because nothing points at it, a layout is only removed with its object when that is certain, and a chain containing something undeletable is no longer treated as safe.
+
+**Object Activity**
+- The Delete Helper lets you tick exactly what you delete and see the relations instead of just a count.
+- The reference table no longer truncates, and the toolbar offers one button at a time.
+
+**Field Catalog**
+- The keep score no longer grades fields nobody has ever looked at.
+- The two different meanings of "required" no longer mix.
+
+**Logs**
+- Compare two logs side by side, auto-refresh, and purge the cache.
+- The Apex call tree highlights exceptions in red and shows self-time, with a governor-limits panel.
+- SOQL 101 reports real total rows and sorts by worst volume.
+- A deletion refused by the org is now visible on screen.
+
+**SOQL**
+- An "Edit mode" toggle on the editor.
+- Exporting a large result set is faster and uses far less memory.
+
+**DataSeeding**
+- The seeding path reads as a sequence of steps rather than a form.
+- Upsert by External Id, a "Retry Failed" button, a replayable failed-record CSV, and an inline progress log.
+- An exhausted API quota is reported as such instead of being retried as a temporary error.
+
+**Unused Apex Methods**
+- In production, every private method used to be reported as dead — fixed. When the analysis is incomplete, the tool now says so instead of answering anyway.
+
+**Permission Set**
+- Assignment date and real change date are separate columns, with a filter in days.
+
+**Orgs and connections**
+- Local folders for sandboxes that no longer exist on Salesforce can be deleted, and the orphan list opens straight from the result that found them.
+- OAuth applications live in one global vault instead of being re-declared in every org.
+
+### General
+
+- The org health grade never travels without the base it was computed on ("B (8/12)", never a bare "B"), unknown data counts as neutral instead of perfect, and every dimension tile says which audits feed it.
+- Connection robustness: connection setup and socket timeouts are bounded, any 2xx response counts as a success, a write is never silently replayed, and a single HTTP client is reused.
+- Speed and memory: permission scans, access-log reading (800 MB of heap down to 16), metadata corpora and SOQL exports are now streamed instead of accumulated in memory.
+- One visual convention across audit reports and popups: numeric columns centred, long columns wrap instead of truncating, two-row toolbars, and a calculation in progress is no longer announced as "nothing found".
+- Org folders are migrated to a new layout automatically on first launch, one org at a time, so a failure costs one org and never the whole set.
+- The conversational audit assistant now covers the whole route — what to do next, the deletion plan for dead metadata, the glossary, and the description campaign — so most of an audit can be run without opening a screen.
+- A demo mode can serve a fully anonymised org, so Calumet can be shown without exposing any client data.
+
+---
+
 ## v11.7 — 2026-08-03
 
 ### Improvements

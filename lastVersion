@@ -1,5 +1,32 @@
-[version]v11.7[/version]
+[version]v11.8[/version]
 [history]
+v11.8 — 2026-09-14
+New screens
+- Description Debt — find what nobody documented, get descriptions drafted for you, review them in Calumet and push them back to the org.
+- Value Sets & Record Types — an org-wide view of your picklist vocabularies, duplicates included.
+- Access & Provenance — who really reaches your data, through which app, and how we know it.
+- Dead Metadata — what nothing points at any more, from the verdict to a ready-to-use deletion package.
+- "Compare 2 Profiles" is now the Profile sub-tab of "Compare 2 Profiles/PermSets".
+Dep Graph
+- The build says where it is, the optional retrieves run in parallel, and the impact popup opens as a real window.
+Org Discovery
+- Tile-based landing page, a banner telling you where the org stands, and a full audit launchable from the screen.
+Automation Radar
+- Top-5 saves with an inline diagram, clickable object tiles, and two accuracy fixes (36 hidden cross-writes, 45 undecidable rows).
+Dead Metadata / Fields Not Used / CustomFields Usage
+- Deletion proposals are far more careful — on a real org, 1027 proposed deletions became 189.
+Logs
+- Compare two logs, auto-refresh, exceptions in red with self-time and governor limits in the Apex tree.
+SOQL
+- An Edit mode toggle, and large exports are faster and much lighter on memory.
+DataSeeding
+- Step-by-step seeding path, upsert by External Id, Retry Failed, and a replayable failed-record CSV.
+General
+- The org grade always carries the base it was computed on, and unknown data counts as neutral.
+- Bounded connection timeouts, no silently replayed write, and much lower memory use on the heavy scans.
+- Numeric columns centred, long columns wrap, two-row toolbars across the audit screens.
+- Org folders migrate to their new layout automatically on first launch.
+
 v11.7 — 2026-08-03
 General
 - Self-healing library repair: the updater now checks every library the application declares and re-downloads any that is missing, so a partially updated install repairs itself on the next launch instead of failing to start.
@@ -219,5 +246,5 @@ General
 - New OAuth 2.0 authentication flow available alongside the classic SOAP login.
 [/history]
 [update]dist/Calumet.jar[/update]
-[exe]dist/Calumet-11.7.exe[/exe]
-[updaterVersion]3.7[/updaterVersion]
+[exe]dist/Calumet-11.8.exe[/exe]
+[updaterVersion]3.8[/updaterVersion]
