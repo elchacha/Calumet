@@ -1,5 +1,17 @@
-[version]v12[/version]
+[version]v12.1[/version]
 [history]
+v12.1 — 2026-09-16
+SOQL
+- The autocomplete list now opens right under the line you are typing on, instead of at the top of the query panel — and no longer jumps to another screen on multi-monitor setups.
+Compare 2 Profiles/PermSets
+- A new "Profile vs Permission Set" sub-tab compares a profile against a permission set directly.
+Object Activity
+- "Ask AI" hands a deletion package to a model, "Build work package" produces a package again, and an apparently empty source folder no longer hides what there is to edit.
+Dead Metadata
+- The referents popup no longer lists the same component several times under its different names.
+General
+- Screen descriptions are refreshed on first launch — they had not been delivered since v11.8.
+
 v12 — 2026-09-14
 General
 - Linux downloads are back: the previous release shipped without any Linux package, and the Linux button on the download page works again.
@@ -251,5 +263,5 @@ General
 - New OAuth 2.0 authentication flow available alongside the classic SOAP login.
 [/history]
 [update]dist/Calumet.jar[/update]
-[exe]dist/Calumet-12.exe[/exe]
+[exe]dist/Calumet-12.1.exe[/exe]
 [updaterVersion]3.8[/updaterVersion]

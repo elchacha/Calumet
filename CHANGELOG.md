@@ -1,5 +1,39 @@
 # Calumet — Changelog
 
+## v12.1 — 2026-09-16
+
+### New screens
+
+No new screens in this release.
+
+### Improvements
+
+**SOQL**
+- The autocomplete suggestion list now opens right under the line you are typing on. It used to
+  anchor to the top-left corner of the query panel, so on anything longer than one line it appeared
+  far from the caret — and on a multi-monitor setup with different scaling it could open on another
+  screen entirely.
+
+**Compare 2 Profiles/PermSets**
+- A third sub-tab, "Profile vs Permission Set", compares a profile against a permission set
+  directly, alongside the existing Profile and Permission Set comparisons.
+
+**Object Activity**
+- "Ask AI" hands a deletion package to a model and brings its proposal back into the screen.
+- "Build work package" produces a package again, and a source folder that looks empty no longer
+  stops the screen from offering what there is to edit.
+
+**Dead Metadata**
+- The referents popup no longer repeats the same component several times when the graph knows it
+  under more than one name (trigger, class and page aliases).
+
+### Notes
+
+- Screen descriptions are refreshed on first launch. The file had not been delivered since v11.8,
+  so its newer entries were missing from installed copies.
+
+---
+
 ## v12 — 2026-09-14
 
 ### New screens
