@@ -45,6 +45,10 @@ and reports can be downloaded in a resumable background run.
 - Tab chooser: tabs sorted alphabetically, a new Seeding filter, and licensed screens are hidden without a license.
 - Calumet now only contacts Salesforce and GitHub: charts are bundled in the app, and the connection test probes github.com instead of google.com.
 - One field no longer shows two overlapping suggestion lists; button labels no longer end with "…".
+- SOQL autocomplete suggests standard objects again on installed versions, the "Default queryable objects" window is no longer empty, and rebuilding an Apex debug log works again.
+- Settings: the "Use restrictive connected App" option is gone; new installs always use the restrictive connected app (an install that had unticked it keeps its setting, so existing connections keep working).
+- Security hardening: audit pages can no longer run code coming from org data; the OAuth sign-in checks the server certificate name; archives can no longer write outside their folder; on Linux the browser is opened without going through a shell.
+- The in-app help pages no longer contain real customer data.
 
 ---
 
