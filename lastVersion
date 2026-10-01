@@ -1,0 +1,332 @@
+[version]v12.3[/version]
+[history]
+v12.3 — 2026-10-01
+New screen: Analytics
+- Reports, dashboards, folders and report types of a production org, in a step-by-step path: see what nobody runs, archive abandoned dashboards first, then reports, then hide unused report types — each step with a ready-to-copy instruction for your AI assistant, and a resumable report download.
+CustomFields Usage
+- The API usage estimate opens in a clear window: a gauge of your 24-hour API limit, the detail per object, and objects already analysed left out of the total.
+- A floating monitor follows the analysis: org, one progress bar per object (listing ids, then analysing), record counts, why an object was skipped, and a Stop button; you are warned when the machine is busy.
+- The monitor now shows the download of record ids for each object; objects already analysed are skipped before their ids are downloaded, and pages of ids no longer wait 5 seconds each.
+- File contents (ContentVersion and other file fields) are never read.
+- You are warned when selected objects have few custom fields; the Progress and Records columns of the monitor now sort correctly.
+DataSeeding
+- The free version now seeds up to 10,000 records per run (was 1,000), and a free license is available on request; the export warns you when the volume exceeds the limit.
+- A plan that no longer matches the Start query is flagged in red; changing the Start query asks first, then clears the plan and the exports derived from it.
+- Redesigned Config step (numbered cards, Save & Next) and a Legends window explaining the columns, limits and buttons.
+Orgs Configuration
+- A red PROD badge and a Production / Sandbox / Unknown filter; an org linked to a production is now recognised as a sandbox.
+SFDX
+- The org list fills itself at startup when the sf CLI is installed.
+Access & Provenance
+- A Details button on account cards lists every login of the period; login times get filters and a reading guide; server-side OAuth hops no longer count as a country.
+Automation Radar / Flow Migration / Object Activity
+- "Start AI session" works in a folder of your own and reads the dependency graph in place; an Open folder button sits beside every AI prompt.
+Dep Graph
+- More accurate links to profiles (lookup filters, formulas, page visibility rules); the Dashboards view moved to the new Analytics screen.
+General
+- Tab chooser: tabs sorted alphabetically, a new Seeding filter, and licensed screens are hidden without a license.
+- Calumet now only contacts Salesforce and GitHub: charts are bundled in the app, and the connection test probes github.com instead of google.com.
+- One field no longer shows two overlapping suggestion lists; button labels no longer end with "…".
+
+v12.2 — 2026-09-29
+New screen: Metadata Bundle
+- Build a deployable package from a few seed components: Calumet proposes their neighbours from the dependency graph, you include or exclude each one, preview the package.xml live, then generate and retrieve it.
+Access & Provenance
+- Daily connection monitoring per org, without opening it — "Collect now" is gone, and "Refresh API callers" is hidden for monitored orgs.
+- Countries: full name and login history on hover, unapproved ones in red, an approved-countries list, a country filter and a new "Two countries, one day" signal.
+- Same-day details on hover, "Show login times" for the exact login timeline, a period slider, pinnable actor cards and one colour per signal badge.
+Deploy
+- Pre and Post destructive changes each get their own tab; the deployment reason is saved per project; "Preview changes" opens the diff against the target org; the failure report separates components, tests and coverage.
+Description Debt
+- Glossary: new "Ask AI" and "Review" steps hand unjudged acronyms to your AI CLI and load its answer — worked in blocks of 40 and saved after every block, so a stopped session loses nothing.
+- Glossary Review: "Impact" beside Confidence, a Cancel button, controls that step aside once every packet is done; Hypothesis rows arrive ticked and a blanket accept asks first.
+- The glossary can be shared through the org; an acronym's Apex/Flow occurrences open as text, and developer-tag noise is flagged.
+Dep Graph
+- New "Apex Clones" and "Dashboards" views.
+Object Activity
+- AI deletion review shows the exact proposal, warns about orphaned entries, applies safe source cleanups itself and survives a restart; batches are pre-checked against the dependency graph.
+History
+- Two backups can be compared with each other; the search filter matches what the table shows.
+SOQL
+- Narrow screens: "Saved queries / Export" behind a toggle; records deleted from the Id column only; a cancelled query no longer shows "Fetching x / y" over the next one.
+Validation Rules / Relations / Logs / Org Discovery
+- Validation rule extraction runs in the background; relation type badges filter exclusively and junction parents are flagged; Logs "Create / Update" waits for a complete form; Discovery ranks objects and classes separately.
+AI assistant connection
+- The connect popup has Quick start and Help tabs with one ready-to-copy sentence per use case.
+General
+- Tabs renamed: "Profiles Editor" is now "Profile Changes"; the seed-to-package screen is "Metadata Bundle" (it was wrongly titled "Compare 2 Profiles").
+- Windows, multi-screen: Calumet is now Per-Monitor DPI aware — moving it to a screen with another display scale no longer misplaces the toolbar or the Org selector (brief flicker while the window is re-created).
+Fixes
+- The "Compare 2 Profiles" sub-tab description is back, and the startup stack trace is gone.
+- Per-record Tooling queries no longer open one connection per record (timeouts and incomplete lists on large sandboxes); validation rules are no longer listed twice.
+- Soql tab blank on 150 % screens, config window cut off, "Stage already visible", FlexiPages filter crash, Change Tracker freeze, PermissionSet popup crash — all fixed.
+- Profile Changes label translation works again; the org language no longer stays stuck in English.
+- More accurate dependency graph: fewer false "dead" flags and safer deletion batches.
+- DataSeeding config can no longer be switched mid-run; screens show an honest partial result after a failed extraction; popups are centred; blank-tab errors are logged.
+- Screen descriptions are refreshed on first launch.
+
+v12.1 — 2026-09-16
+SOQL
+- The autocomplete list now opens right under the line you are typing on, instead of at the top of the query panel — and no longer jumps to another screen on multi-monitor setups.
+Compare 2 Profiles/PermSets
+- A new "Profile vs Permission Set" sub-tab compares a profile against a permission set directly.
+Object Activity
+- "Ask AI" hands a deletion package to a model, "Build work package" produces a package again, and an apparently empty source folder no longer hides what there is to edit.
+Dead Metadata
+- The referents popup no longer lists the same component several times under its different names.
+General
+- Screen descriptions are refreshed on first launch — they had not been delivered since v11.8.
+
+v12 — 2026-09-14
+General
+- Linux downloads are back: the previous release shipped without any Linux package, and the Linux button on the download page works again.
+- Help panels read properly again — the built-in help of 74 screens showed garbled characters instead of bullet points, and is refreshed on first launch.
+
+v11.8 — 2026-09-14
+New screens
+- Description Debt — find what nobody documented, get descriptions drafted for you, review them in Calumet and push them back to the org.
+- Value Sets & Record Types — an org-wide view of your picklist vocabularies, duplicates included.
+- Access & Provenance — who really reaches your data, through which app, and how we know it.
+- Dead Metadata — what nothing points at any more, from the verdict to a ready-to-use deletion package.
+- "Compare 2 Profiles" is now the Profile sub-tab of "Compare 2 Profiles/PermSets".
+Dep Graph
+- The build says where it is, the optional retrieves run in parallel, and the impact popup opens as a real window.
+Org Discovery
+- Tile-based landing page, a banner telling you where the org stands, and a full audit launchable from the screen.
+Automation Radar
+- Top-5 saves with an inline diagram, clickable object tiles, and two accuracy fixes (36 hidden cross-writes, 45 undecidable rows).
+Dead Metadata / Fields Not Used / CustomFields Usage
+- Deletion proposals are far more careful — on a real org, 1027 proposed deletions became 189.
+Logs
+- Compare two logs, auto-refresh, exceptions in red with self-time and governor limits in the Apex tree.
+SOQL
+- An Edit mode toggle, and large exports are faster and much lighter on memory.
+DataSeeding
+- Step-by-step seeding path, upsert by External Id, Retry Failed, and a replayable failed-record CSV.
+General
+- The org grade always carries the base it was computed on, and unknown data counts as neutral.
+- Bounded connection timeouts, no silently replayed write, and much lower memory use on the heavy scans.
+- Numeric columns centred, long columns wrap, two-row toolbars across the audit screens.
+- Org folders migrate to their new layout automatically on first launch.
+
+v11.7 — 2026-08-03
+General
+- Self-healing library repair: the updater now checks every library the application declares and re-downloads any that is missing, so a partially updated install repairs itself on the next launch instead of failing to start.
+SOQL
+- The query editor recovers its syntax colouring on existing installations.
+
+v11.6 — 2026-08-02
+New screens
+- Org Discovery: a 6-view analysis hub reading the dependency graph (state of play, architecture, security, performance, migration, technical-debt register) with an A-F Org Health Score.
+- Automation Radar: per object and event, where Flows, triggers, workflow rules and processes overlap or conflict, in five focused views.
+- Flow Migration: a risk-ranked migration plan for the workflow rules and processes reaching end of life.
+- Permission Blast: who actually loses or gains access before you change a profile or permission set.
+- License Right-Sizing: which seat each user actually needs, based on real usage.
+Dep Graph
+- A sandbox can display its linked production graph live and links itself automatically; the viewer opens on the Explorer, is 73% lighter and no longer re-renders on every restart.
+- Open the exact source file and line of a reference in your IDE straight from the viewer.
+- New "alive only through tests" signal, Orphan tests view and test-only clusters, also surfaced in Fields Not Used, CustomFields Usage and Object Activity.
+- Security analysis now covers field-level security and per-operation CRUD; Apex references to platform events are no longer missed.
+SOQL
+- Edit records directly in the result table, including mass-setting a value on several rows, with picklist-aware editing and validation before saving.
+- New "All fields" toggle for SELECT *, plus a cleaner toolbar and autocomplete.
+PermissionSet
+- The screen no longer freezes when opened; the audit-history popup gained a Name column and more width.
+User Access Comparison / User Access Score
+- New permission-set actions, a merge assistant, scoped facts (tabs, apps, record types), and clicking a row adds the user to the comparison instead of replacing the selection.
+All Relations
+- The Reference column is no longer truncated: a popup lists every reference, enriched with graph data.
+Logs
+- A filter-list popup, toggleable type badges with soft highlighting, and a rebuilt filter popup.
+Deployment
+- The post-deploy security check is now a readable table with an AI prompt and an alert on new permission sets, without INVALID_TYPE/INVALID_FIELD noise.
+Picklists / Search / CustomFields Usage / HistoryStorage
+- Graduated usage badges and working copy-paste, Usage split into Direction and Relation with a pivot search, standard picklist fields analysed, graded evolution badges.
+General
+- Every text field now has a clear "x" button, switching orgs is much faster, tabs were renamed and re-described from a single source with multi-category filtering, and aggregate queries are safe on Large Data Volume orgs.
+
+v11.5 — 2026-07-22
+PermissionSet
+- The last-modified date is now taken from the org audit trail, and a per-permission-set History popup shows who changed what over the past six months (built in the background so it opens instantly).
+Logs
+- The debug-log analyser was reworked: a non-blocking popup, a statistics bar summarising log entry types, and a smoother tree view. The Status column no longer stretches when a failure message is long.
+FlexiPage Diff
+- Modified cards now show a visible expand chevron and highlight the exact inline differences, with a force-refresh option. Encoding glitches (dashes/ellipses) in the diff were fixed.
+Control
+- You can open a component-level FlexiPage diff popup directly from the Control table.
+Fields Not Used
+- Field references are now read from the Dep Graph instead of re-querying the org, making the screen faster and consistent with the other analysis screens.
+Field Catalog
+- The top panel and column headers now stay pinned while you scroll the catalog.
+General
+- An Intel (x86-64) macOS build is now available in addition to Apple Silicon — both Mac types are now covered. Windows and Linux are unchanged.
+
+v11.4 — 2026-07-18
+Dep Graph
+- Link confidence is now shown as colored badges with a star rating, and every reference carries a colored dot indicating how it was detected — proven, heuristic or dynamic.
+- The dependants counter now counts each component once, instead of being inflated when the same component is detected through several methods.
+- Groups you expand by hand now stay open when you toggle a filter.
+- Dependency detection is more accurate: custom buttons and links, New-action Lightning component overrides, SOQL sort clauses and Flow record-lookup field mappings are now traced.
+Calumet Config
+- A new "Anonymize metadata names (Demo mode)" option masks object, field and class names during live demos.
+General
+- A macOS build is now available, alongside Windows and Linux.
+
+v11.3 — 2026-07-18
+CustomFields Usage
+- Sort the analysed-objects list by name, record count or date, with a one-click direction toggle.
+- The progress bar reappears when you return to the screen while a mass analysis is still running.
+- A "delete ids after analysis" option frees disk by removing the record-id files once a run finishes.
+- Publish the computed field analysis to the org and load it back on another machine to share results without re-running.
+- The API-usage confirmation popup no longer cuts off its last line.
+- The Publish to org confirmation now shows its full text.
+Dep Graph
+- Fixed a crash that could close the application when opening the Dep Graph screen (also Storage Evolution).
+Field Catalog
+- The Standard, Managed and Formula filters now start unchecked by default.
+General
+- Fixed an intermittent freeze where switching screen categories could stop screen switching until a restart.
+
+v11.2 — 2026-07-03
+Tab chooser
+- The tab picker popup now has a category filter bar to quickly narrow the list of screens by category.
+SOQL
+- Multiline queries are now handled correctly in query backup, autocomplete and syntax highlighting.
+DataSeeding
+- Exporting now requires a configuration directory: a clear guard with a red message prevents runs that would otherwise fail.
+- The export guard dialog was redesigned for readability.
+General
+- Metadata retrieve polling now uses a capped exponential backoff (about a 34-minute ceiling), reducing load during long retrieves.
+
+v11.1 — 2026-06-21
+DataSeeding
+- Disabling automations now covers Validation Rules and Workflow Rules via a unified metadata deploy pipeline — the backup ZIP is the single source of truth for the pre-disable state.
+- Check Status now shows how many flows, triggers, validation rules and workflow rules are pending restore when the org is disabled.
+- The import progress table now shows how many records were actually inserted when errors occurred (e.g. 7030/7381), making partial imports easier to assess.
+General
+- Fixed the org selector losing its displayed name after a config reload (e.g. after a deploy or org edit).
+
+v11 — 2026-06-13
+New screens:
+- PermSet Overlap: compare two or more permission sets and identify redundant or conflicting permissions across your org.
+
+Object Activity
+- Objects with dependencies now show a Dependencies column — click any row to load its Tooling API dependency list on demand.
+- Status badge filter buttons (Active / Stale / Empty) appear above the list for instant narrowing. Last Modified column is sorted by default. Object name is shown in bold.
+
+User Access Score
+- Six-component score breakdown (Field, Setup, Custom and more) is now shown directly in the detail panel.
+- Configurable weight profiles let you re-score users instantly without re-extracting data.
+- Effective (deduplicated) scores now drive ranking and color coding.
+- Permission-set names in the detail table are clickable links that open the record in Salesforce.
+
+ComparePermissionSet
+- Permission-set XML files are now reused from the toolingCache populated by the Permission Set Dump screen, skipping a redundant Metadata API download when data is already available.
+
+Permission Set Dump / Popup
+- Duplicate and missing permission set components that were previously silent are now extracted correctly.
+- Checkboxes in the popup replaced with visual emoji indicators.
+- The permission-set description is now shown in the popup header.
+- Underlined, single-click column names open the corresponding Salesforce record directly.
+- Double-click on field/object rows opens the correct section in Salesforce setup.
+- The Settings URL in the popup is now clickable.
+
+Object History
+- The rename popup now pre-fills the current name for faster edits, with a Clear button to start fresh.
+
+TestClass
+- Hide checkboxes are now mutually exclusive (hiding one set un-hides the other).
+- A Package.xml button lets you export passing classes as a deployment package.
+- Delete Selected is disabled when nothing is selected.
+
+ChangeTracker
+- A single "Use Cache" checkbox replaces the previous options; the cache date is now color-coded by age.
+
+DataSeeding
+- A Related Objects button lets you select objects related to the seed object for inclusion in a seeding run.
+- A Main column scopes relation traversal from the seed object.
+- An interactive Tutorial button opens a step-by-step guided tour.
+
+General
+- The application now adapts its minimum size to the screen, preventing content clipping on small screens. The top bar is scrollable when the window is very narrow.
+- Auto-update now uses GitHub Releases as the primary channel, ensuring reliable delivery of future updates.
+- GitHub Actions workflow added for cross-platform packaging — produces self-contained Windows/Linux ZIPs with bundled Java for users without a local Java install.
+- Local Maven repository committed to source control — enables CI builds without requiring manual dependency setup.
+- SQLite JDBC library (sqlite-jdbc 3.49.1.0) added.
+- Fixed a crash on first launch when setting up the keystore: the popup now opens and saves correctly.
+
+v10.10 — 2026-05-20
+General
+- Fixed a regression where the tab description panel (title, "?" button, description text) stopped displaying after upgrading from v10.x. Root cause: the migration runner was re-applying v9.x migrations on every v10.x upgrade due to a lexicographic version comparison bug, which overwrote cfg/TabsDescription.xlsx with an outdated version.
+- Fixed the migration runner to use file-position-based ordering instead of string comparison, preventing any future re-application of already-applied migrations.
+
+v10.9 — 2026-05-20
+General
+- Updating the application no longer fails with a file-lock error on Windows: the new JAR is downloaded to a temporary file and then atomically replaces the running one.
+- All update steps are now written to updater.log for easier diagnostics when something goes wrong.
+- Fixed a data-corruption bug in the updater byte reader that could silently truncate downloaded files.
+
+v10.8 — 2026-05-20
+General
+- Update check now always fetches the latest version, bypassing CDN cache. Updates to future releases will be detected immediately after release.
+
+v10.7 — 2026-05-20
+DataSeeding
+- DataSeeding module is now embedded in the main application, ensuring all users run the latest version automatically on update.
+
+v10.6 — 2026-05-20
+General
+- Tab descriptions now display correctly for all users after upgrading from a previous version.
+
+v10.5 — 2026-05-20
+General
+- Tab descriptions now display correctly when running from a fresh installation.
+
+v10.4 — 2026-05-20
+Control
+- New PermissionSet merge popup: compare two permission sets side by side, selectively apply changes with color-coded status (Added / Removed / Changed) and a Take All button.
+- Saving a modified permission set now produces clean XML without blank lines.
+- Diff counts for .permissionset files now reflect semantic changes only, ignoring whitespace.
+PermissionSet
+- Double-clicking a row now correctly opens the corresponding record in Salesforce.
+Relations
+- First extract no longer shows empty columns when no cache file exists yet.
+Logs
+- Duration filter buttons no longer get their text cut off on smaller windows.
+
+v10.3 — 2026-05-08
+Control
+- Diff columns now display color-coded badges (green for inserts, orange for updates, red for deletes).
+- Inline diff view now highlights changed words within a line for faster review.
+- Long diff lines no longer expand the row height — text stays contained.
+Deploy
+- Interface cleaned up: Quick Check button and Inject Backup checkbox removed.
+- Current project name is now displayed persistently at the top.
+Retrieve
+- Interface cleaned up with consistent button styles.
+Storage
+- Columns are now read by name, handling files with varying column order.
+- New Files tab to browse stored file snapshots.
+- Restore from snapshot button added.
+Sandboxes
+- Display button replaces Search; production org restriction removed.
+ChangeTracker
+- Metadata cache is now persisted to disk and reused across sessions.
+
+v10.2 — 2026-04-28
+General
+- OAuth authentication overhauled: replaced httpserver with ServerSocket for broader OS compatibility.
+
+v10.1 — 2026-04-14
+General
+- OAuth flow stability fixes: button reset, error handling on retry, and browser connection improved.
+LastRecords
+- Search progress now displays correctly during queries.
+
+v10.0 — 2026-04-01
+General
+- New OAuth 2.0 authentication flow available alongside the classic SOAP login.
+[/history]
+[update]dist/Calumet.jar[/update]
+[exe]dist/Calumet-12.3.exe[/exe]
+[updaterVersion]3.9[/updaterVersion]
