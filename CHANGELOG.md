@@ -1,5 +1,76 @@
 # Calumet — Changelog
 
+## v13.1 — 2026-10-03
+
+### New screens
+
+No new screens in this release.
+
+### Improvements
+
+**Orgs Configuration**
+- The window no longer opens flattened when only a few orgs are configured.
+
+**Dep Graph**
+- The build button reads "Compute from org" when the org has no graph yet.
+- A sandbox that displays its linked production graph no longer offers to build its own.
+- A custom metadata type that points to another one (Metadata Relationship field) now appears as a relationship in the data model.
+
+**General**
+- Menu entries no longer end with "...", which read as cut-off labels (Dep Graph Tools and sharing menus, Description Debt, License).
+- The record deletion confirmation (SOQL screens) is now in English, and its Cancel button is no longer green.
+
+---
+
+## v13 — 2026-10-03
+
+### New screens
+
+No new screens in this release.
+
+### Signed updates
+
+- Every update is now checked against a digital signature before anything is installed: a file that does not match exactly is refused, and an interrupted update rolls back to your current version.
+
+### Security
+
+- Excel files are now read and written with Apache POI 5.5.1, which fixes known vulnerabilities in Excel file reading.
+- The Salesforce sign-in only listens on your own machine and rejects forged sign-in replies; XML files are read without external entities; a refreshed token is never written in clear text when no master key is set; shared dependency-graph packages can no longer write outside their folder.
+
+### Improvements
+
+**Empty Roles** (formerly UserRoles)
+- See when each role was emptied and created and what still references it, run a free check without the dependency graph, and get warnings before deleting.
+
+**User Access Score**
+- Assign / UnAssign asks for confirmation on a production org before writing.
+
+**Object Limits**
+- Sorted by usage % by default, with red / orange / yellow / green badges.
+
+**RecordTypeUsage**
+- The number of queries is announced before extraction, with a choice to read or extract, a progress bar, automatic reading per org, failed objects listed, and an Export to json that includes the definitions.
+
+**Fields Not Used**
+- Exclusive Graph refs filters, a counter that says what it hides, and an Export to json.
+
+**UnusedApexMethod / Object Relations**
+- Results now open in an interactive page; unused methods are grouped by class, with exclusive filters, and a double-click opens the class.
+
+**All Relations**
+- The Legacy SOQL option is gone (the fast extraction does the same); one reference is shown, then "+N more".
+
+**Dep Graph**
+- Roles are now linked to the sharing rules, queues, groups, approval processes and alerts that use them; field links on Event/Task fields declared on Activity are no longer lost.
+- References window: all columns visible and centred, full names, and the Active column only appears when a row is inactive.
+
+**General**
+- Calumet uses about 10% less memory on large orgs.
+- Three rarely used screens were retired: SoqlCounter, RemoverHelper and FlexiPagesConditionalRules.
+- Org Discovery: a shorter confirmation dialog.
+
+---
+
 ## v12.3 — 2026-10-01
 
 ### New screens
