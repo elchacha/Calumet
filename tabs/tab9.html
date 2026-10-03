@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Last Records — Calumet</title>
+<link rel="stylesheet" href="../shared.css">
+<style>
+  .scr-card img{width:100%;display:block;border-bottom:1px solid #cdd8e0}
+  /* SOQL pane mockup */
+  .soql-pane{flex:1;border:1px solid #a0b4c0;border-radius:4px;background:#fff;padding:0;overflow:hidden;display:flex;flex-direction:column;min-height:220px}
+  .soql-editor{background:#1e2430;padding:10px 12px;font-family:Consolas,monospace;font-size:11px;color:#d4e0f0;flex:1;min-height:80px}
+  .soql-kw{color:#5b9be8}
+  .soql-obj{color:#f0a040}
+  .soql-val{color:#80c8a0}
+  .soql-toolbar{background:#f0f4f7;border-top:1px solid #c0d0dc;padding:6px 10px;display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:11px}
+  .soql-results{background:#f8fbfc;border-top:1px solid #dde8ee;padding:6px 10px;font-size:11px;color:#556;min-height:30px}
+  .soql-filter-row{background:#f4f8fb;border-top:1px solid #dde8ee;padding:5px 10px;display:flex;align-items:center;gap:8px;font-size:11px}
+
+  /* Total table selected row */
+  .tbl-selected td{background:#0066aa;color:#fff !important}
+</style>
+</head>
+<body class="tab-page">
+
+<div class="sum">
+  <div class="sum-title">
+    <h2>Last Records</h2>
+    <span class="sum-badge">Tab 9</span>
+  </div>
+  <p class="sum-desc">
+    Retrieve and audit the most recently created or modified Salesforce records across all standard and
+    custom objects. Filter by date, user, and record count, then drill into any object's data via the
+    integrated SOQL executor. Supports bulk deletion of selected records (with production-org safeguards).
+  </p>
+</div>
+
+</div>
+  <div class="scr-card">
+    <div class="scr-caption">View Total tab: per-object breakdown with an inline SOQL executor that fires automatically on row click.</div>
+  </div>
+</div>
+
+<!-- Mockup -->
+<div class="mockup-wrap">
+  <div class="mockup">
+
+    <div class="m-tabpane" id="tp9">
+      <div class="m-tabbar">
+        <div class="m-tab act" onclick="sw('tp9',0)">Results</div>
+        <div class="m-tab" onclick="sw('tp9',1)">View Total for 30 objects</div>
+      </div>
+
+      <div class="m-body">
+
+        <!-- ══ Tab 0 – Results ══ -->
+        <div class="m-panel act" id="tp9-0">
+          <div class="anchor" style="padding:10px 12px 6px">
+
+            <!-- Description line -->
+            <div style="margin-bottom:8px">
+              <span class="cal-lbl" style="font-style:italic;font-weight:600">
+                This screen is retrieving the latest records modified according to below criteria (date or userId can be empty)
+              </span>
+            </div>
+
+            <!-- Filter row -->
+            <div class="hbox" style="gap:14px;align-items:center;margin-bottom:6px">
+              <span class="cal-lbl">nb records max</span>
+              <input class="cal-tf" style="width:44px" value="20" readonly>
+              <span class="cal-lbl">after (yyyy-mm-dd)</span>
+              <input class="cal-tf" style="width:108px" value="2026-04-24" readonly>
+              <span class="cal-lbl">userId</span>
+              <input class="cal-tf cal-grow" style="max-width:260px" value="" placeholder="(optional — autocomplete user name)" readonly>
+              <span class="spacer"></span>
+              <button class="cal-btn btn-d" data-tip="Open a popup to manage objects excluded from the search">Manage excluded objects</button>
+            </div>
+
+            <!-- Action row -->
+            <div class="hbox" style="gap:14px;align-items:center;margin-bottom:10px">
+              <button class="cal-btn btn-b">Search</button>
+              <label class="cal-chk" data-tip="Ignore objects belonging to a managed package (NamespacePrefix not null)">
+                <input type="checkbox" checked disabled> Hide Managed Objects
+              </label>
+              <span class="cal-lbl" style="color:#27ae60;font-weight:600">created : 2591 &nbsp;/&nbsp; Modified : 2591</span>
+            </div>
+
+            <!-- Records table -->
+            <div class="tbl-wrap">
+              <table class="cal-tbl">
+                <thead>
+                  <tr>
+                    <th style="width:160px">Id</th>
+                    <th style="width:180px">Object</th>
+                    <th style="width:150px">ModifyBy</th>
+                    <th style="width:150px">Modified</th>
+                    <th style="width:150px">CreatedBy</th>
+                    <th style="width:150px">Created</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td style="font-family:Consolas,monospace;font-size:11px">006G500000Uo8AnIAJ</td>
+                    <td>Opportunity</td>
+                    <td>John Doe</td>
+                    <td>2026-04-25 12:59:52</td>
+                    <td>John Doe</td>
+                    <td>2026-04-25 12:59:52</td>
+                  </tr>
+                  <tr>
+                    <td style="font-family:Consolas,monospace;font-size:11px">006G500000Uo8AoIAJ</td>
+                    <td>Opportunity</td>
+                    <td>John Doe</td>
+                    <td>2026-04-25 12:59:52</td>
+                    <td>John Doe</td>
+                    <td>2026-04-25 12:59:52</td>
+                  </tr>
+                  <tr>
+                    <td style="font-family:Consolas,monospace;font-size:11px">006G500000Uo8ApIAJ</td>
+                    <td>Opportunity</td>
+                    <td>John Doe</td>
+                    <td>2026-04-25 12:59:52</td>
+                    <td>John Doe</td>
+                    <td>2026-04-25 12:59:52</td>
+                  </tr>
+                  <tr>
+                    <td style="font-family:Consolas,monospace;font-size:11px">001G400000Mk7RaIAJ</td>
+                    <td>Account</td>
+                    <td>Jane Smith</td>
+                    <td>2026-04-25 11:34:07</td>
+                    <td>Jane Smith</td>
+                    <td>2026-03-10 09:12:44</td>
+                  </tr>
+                  <tr>
+                    <td style="font-family:Consolas,monospace;font-size:11px">a0XG300000BzD1cEAF</td>
+                    <td>Order__c</td>
+                    <td>Bob Johnson</td>
+                    <td>2026-04-25 10:58:31</td>
+                    <td>Jane Smith</td>
+                    <td>2026-04-24 15:20:00</td>
+                  </tr>
+                  <tr>
+                    <td style="font-family:Consolas,monospace;font-size:11px">a3LG200000C1NxKEAV</td>
+                    <td>Report__c</td>
+                    <td>Admin</td>
+                    <td>2026-04-25 10:02:19</td>
+                    <td>Admin</td>
+                    <td>2026-04-25 10:02:19</td>
+                  </tr>
+                  <tr>
+                    <td style="font-family:Consolas,monospace;font-size:11px">a3LG200000C1NxLEAV</td>
+                    <td>Report__c</td>
+                    <td>Admin</td>
+                    <td>2026-04-25 10:02:19</td>
+                    <td>Admin</td>
+                    <td>2026-04-25 10:02:19</td>
+                  </tr>
+                  <tr>
+                    <td style="font-family:Consolas,monospace;font-size:11px">a2TG100000F4PqWEAV</td>
+                    <td>Project__c</td>
+                    <td>John Doe</td>
+                    <td>2026-04-24 17:44:55</td>
+                    <td>John Doe</td>
+                    <td>2026-01-15 08:30:22</td>
+                  </tr>
+                  <tr>
+                    <td style="font-family:Consolas,monospace;font-size:11px">003G700000Xz9TpIAJ</td>
+                    <td>Contact</td>
+                    <td>Jane Smith</td>
+                    <td>2026-04-24 16:55:10</td>
+                    <td>Jane Smith</td>
+                    <td>2025-11-02 14:08:33</td>
+                  </tr>
+                  <tr>
+                    <td style="font-family:Consolas,monospace;font-size:11px">a4FG200000H8QrNEAV</td>
+                    <td>Asset__c</td>
+                    <td>Bob Johnson</td>
+                    <td>2026-04-24 16:30:44</td>
+                    <td>Bob Johnson</td>
+                    <td>2026-04-24 16:30:44</td>
+                  </tr>
+                  <tr>
+                    <td style="font-family:Consolas,monospace;font-size:11px">a4FG200000H8QrOEAV</td>
+                    <td>Asset__c</td>
+                    <td>Bob Johnson</td>
+                    <td>2026-04-24 16:30:44</td>
+                    <td>Bob Johnson</td>
+                    <td>2026-04-24 16:30:44</td>
+                  </tr>
+                  <tr>
+                    <td style="font-family:Consolas,monospace;font-size:11px">a1DG100000J2LmPEAV</td>
+                    <td>Invoice__c</td>
+                    <td>John Doe</td>
+                    <td>2026-04-24 14:12:08</td>
+                    <td>John Doe</td>
+                    <td>2026-04-24 14:12:08</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div style="margin-top:6px">
+              <span class="cal-lbl" style="color:#888;font-size:11px">
+                Double-click (left): open record dump &nbsp;|&nbsp; Double-click (right): open in browser &nbsp;|&nbsp; Delete key: delete selected record(s)
+              </span>
+            </div>
+
+          </div>
+        </div><!-- /tab 0 -->
+
+        <!-- ══ Tab 1 – View Total per object ══ -->
+        <div class="m-panel" id="tp9-1">
+          <div class="anchor" style="padding:10px 12px 6px">
+            <div class="hbox" style="gap:16px;align-items:flex-start">
+
+              <!-- Left: TotalRecords table -->
+              <div style="flex:0 0 260px">
+                <div class="tbl-wrap" style="max-height:480px;overflow-y:auto">
+                  <table class="cal-tbl">
+                    <thead>
+                      <tr>
+                        <th style="width:160px">ObjectName</th>
+                        <th style="width:50px;text-align:center">Modified</th>
+                        <th style="width:50px;text-align:center">Created</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>Account</td>
+                        <td style="text-align:center">96</td>
+                        <td style="text-align:center">96</td>
+                      </tr>
+                      <tr class="tbl-selected">
+                        <td>Asset__c</td>
+                        <td style="text-align:center;color:#fff">387</td>
+                        <td style="text-align:center;color:#fff">387</td>
+                      </tr>
+                      <tr>
+                        <td>Task__c</td>
+                        <td style="text-align:center">25</td>
+                        <td style="text-align:center">25</td>
+                      </tr>
+                      <tr>
+                        <td>Ticket__c</td>
+                        <td style="text-align:center">1</td>
+                        <td style="text-align:center">1</td>
+                      </tr>
+                      <tr>
+                        <td>Project__c</td>
+                        <td style="text-align:center">11</td>
+                        <td style="text-align:center">11</td>
+                      </tr>
+                      <tr>
+                        <td>Asset_Member__c</td>
+                        <td style="text-align:center">12</td>
+                        <td style="text-align:center">12</td>
+                      </tr>
+                      <tr>
+                        <td>Weekly_Entry__c</td>
+                        <td style="text-align:center">44</td>
+                        <td style="text-align:center">44</td>
+                      </tr>
+                      <tr>
+                        <td>Segment__c</td>
+                        <td style="text-align:center">1</td>
+                        <td style="text-align:center">1</td>
+                      </tr>
+                      <tr>
+                        <td>Budget__c</td>
+                        <td style="text-align:center">4</td>
+                        <td style="text-align:center">4</td>
+                      </tr>
+                      <tr>
+                        <td>Report_Card__c</td>
+                        <td style="text-align:center">2</td>
+                        <td style="text-align:center">2</td>
+                      </tr>
+                      <tr>
+                        <td>Invoice__c</td>
+                        <td style="text-align:center">133</td>
+                        <td style="text-align:center">133</td>
+                      </tr>
+                      <tr>
+                        <td>Report__c</td>
+                        <td style="text-align:center">343</td>
+                        <td style="text-align:center">343</td>
+                      </tr>
+                      <tr>
+                        <td>Commitment__c</td>
+                        <td style="text-align:center">2</td>
+                        <td style="text-align:center">2</td>
+                      </tr>
+                      <tr>
+                        <td>Opportunity</td>
+                        <td style="text-align:center">40</td>
+                        <td style="text-align:center">40</td>
+                      </tr>
+                      <tr>
+                        <td>Activity_Log__c</td>
+                        <td style="text-align:center">55</td>
+                        <td style="text-align:center">55</td>
+                      </tr>
+                      <tr>
+                        <td>Project_Team__c</td>
+                        <td style="text-align:center">61</td>
+                        <td style="text-align:center">61</td>
+                      </tr>
+                      <tr>
+                        <td>App_Config__c</td>
+                        <td style="text-align:center">1</td>
+                        <td style="text-align:center">1</td>
+                      </tr>
+                      <tr>
+                        <td>Status_Update__c</td>
+                        <td style="text-align:center">16</td>
+                        <td style="text-align:center">16</td>
+                      </tr>
+                      <tr>
+                        <td>Order__c</td>
+                        <td style="text-align:center">89</td>
+                        <td style="text-align:center">89</td>
+                      </tr>
+                      <tr>
+                        <td>Partner_Account__c</td>
+                        <td style="text-align:center">21</td>
+                        <td style="text-align:center">21</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <div style="margin-top:5px;font-size:11px;color:#556">
+                  Click a row to auto-execute a SOQL query for that object.
+                  <br>Delete / Backspace: delete all records for selected object(s).
+                </div>
+              </div>
+
+              <!-- Right: inline SOQL executor -->
+              <div class="soql-pane">
+                <div class="soql-editor">
+                  <span class="soql-kw">SELECT</span> * <span class="soql-kw">FROM</span>
+                  <span class="soql-obj">Asset__c</span>
+                  &nbsp;<span class="soql-kw">WHERE</span>
+                  <span class="soql-obj">LastModifiedDate</span>&gt;<span class="soql-val">2026-04-24T00:00:00.000Z</span>
+                </div>
+                <div class="soql-toolbar">
+                  <input class="cal-tf" style="width:46px" value="0" readonly>
+                  <input class="cal-tf" style="width:60px" value="10000" readonly>
+                  <button class="cal-btn btn-b" style="padding:2px 10px">Execute</button>
+                  <label class="cal-chk"><input type="checkbox" disabled> Fast count</label>
+                  <label class="cal-chk"><input type="checkbox" disabled> Bulk Mode</label>
+                  <label class="cal-chk"><input type="checkbox" checked disabled> Default ordering</label>
+                  <span class="spacer"></span>
+                  <select class="cal-cb" style="width:150px" disabled><option>— saved query —</option></select>
+                  <button class="cal-btn btn-d" style="padding:2px 8px">Save query</button>
+                </div>
+                <div class="soql-toolbar" style="border-top:1px solid #c0d0dc">
+                  <label class="cal-chk"><input type="checkbox" disabled> Tooling</label>
+                  <label class="cal-chk"><input type="checkbox" checked disabled> Filter * query</label>
+                  <span style="margin-left:8px">Max *</span>
+                  <input class="cal-tf" style="width:60px" value="100000" readonly>
+                  <span>Max</span>
+                  <input class="cal-tf" style="width:60px" value="500000" readonly>
+                  <label class="cal-chk"><input type="checkbox" disabled> No Check</label>
+                  <span class="spacer"></span>
+                  <button class="cal-btn btn-d" style="padding:2px 8px">Open query folder</button>
+                  <button class="cal-btn btn-d" style="padding:2px 8px">Refresh list</button>
+                  <button class="cal-btn btn-g" style="padding:2px 8px">Select * config</button>
+                </div>
+                <div class="soql-filter-row">
+                  <span>Records : 387</span>
+                  <label class="cal-chk"><input type="checkbox" disabled> Apply filter</label>
+                  <input class="cal-tf" style="width:120px" placeholder="filter" readonly>
+                  <span class="spacer"></span>
+                  <span>Separator</span>
+                  <select class="cal-cb" style="width:50px" disabled><option>,</option></select>
+                  <button class="cal-btn btn-o" style="padding:2px 8px">Extract</button>
+                  <label class="cal-chk"><input type="checkbox" disabled> Add &quot; &quot; to value</label>
+                </div>
+                <div class="soql-results" style="flex:1;min-height:80px;color:#888;font-style:italic;padding:10px 12px">
+                  387 records loaded — click Execute to display results in grid
+                </div>
+              </div><!-- /soql-pane -->
+
+            </div>
+          </div>
+        </div><!-- /tab 1 -->
+
+      </div><!-- /m-body -->
+    </div><!-- /m-tabpane -->
+
+  </div><!-- /mockup -->
+</div><!-- /mockup-wrap -->
+
+<script>
+function sw(id,idx){
+  var tp=document.getElementById(id);
+  tp.querySelectorAll('.m-tab').forEach(function(t,i){t.classList.toggle('act',i===idx)});
+  tp.querySelectorAll('.m-panel').forEach(function(p,i){p.classList.toggle('act',i===idx)});
+}
+</script>
+</body>
+</html>

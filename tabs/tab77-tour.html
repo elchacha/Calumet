@@ -1,0 +1,1497 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>DataSeeding — Interactive Tour — Calumet</title>
+<style>
+/* ════════════════════════════════════════════════════════════
+   DataSeeding Interactive Tour — fully self-contained
+   Palette adapted from shared.css (Calumet doc pages)
+   ════════════════════════════════════════════════════════════ */
+*{box-sizing:border-box;margin:0;padding:0}
+
+:root{
+  --sbg:#142540;--sbg2:#1a3050;--sborder:#244568;
+  --stxt:#e2e8f0;--smut:#8892a4;--sacc:#2ea4c9;
+  --blue:#2980b9;--green:#27ae60;--orange:#e67e22;--red:#E74C3C;
+  --hdr:#1A5276;
+}
+
+body{
+  font-family:system-ui,-apple-system,"Segoe UI",sans-serif;
+  background:#0f1d33;color:var(--stxt);
+  min-height:100vh;display:flex;flex-direction:column;
+}
+
+/* ── Top bar ── */
+#topbar{
+  background:var(--sbg);border-bottom:1px solid var(--sborder);
+  padding:14px 28px 12px;flex-shrink:0;
+}
+#topbar h1{font-size:18px;font-weight:800;color:#fff;letter-spacing:.2px}
+#topbar h1 .badge{
+  font-size:10px;background:#1e3a5e;color:var(--smut);
+  padding:2px 8px;border-radius:12px;font-weight:400;margin-left:8px;vertical-align:middle}
+#topbar .sub{font-size:12px;color:#a8b4c8;margin-top:3px}
+
+/* ── Progress dots ── */
+#progress{
+  display:flex;align-items:center;gap:0;margin-top:14px;flex-wrap:wrap;
+}
+.dot{
+  display:flex;align-items:center;gap:7px;cursor:pointer;user-select:none;
+}
+.dot .circle{
+  width:26px;height:26px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:12px;font-weight:700;
+  background:var(--sbg2);border:1px solid var(--sborder);color:var(--smut);
+  transition:all .25s ease;
+}
+.dot .lbl{font-size:10.5px;color:var(--smut);white-space:nowrap;transition:color .25s}
+.dot.done .circle{background:var(--green);border-color:var(--green);color:#fff}
+.dot.active .circle{background:var(--sacc);border-color:var(--sacc);color:#fff;
+  box-shadow:0 0 0 4px rgba(46,164,201,.22)}
+.dot.active .lbl{color:#fff;font-weight:700}
+.dot:hover .circle{border-color:var(--sacc)}
+.connector{width:14px;height:2px;background:var(--sborder);margin:0 3px;flex-shrink:0}
+.connector.done{background:var(--green)}
+
+/* ── Stage (mockup area) ── */
+#stage{
+  flex:1;padding:26px 28px;display:flex;flex-direction:column;
+  align-items:center;position:relative;overflow:auto;
+}
+#scene-frame{
+  width:100%;max-width:1000px;background:#e8eef2;border-radius:8px;
+  padding:1px;box-shadow:0 8px 30px rgba(0,0,0,.4);position:relative;
+}
+#scene-body{position:relative}
+
+/* ════════════════════════════════════════════
+   APP MOCKUP STYLES  (light Calumet theme)
+   ════════════════════════════════════════════ */
+.mockup{font-family:"Segoe UI",sans-serif;font-size:12px;color:#1a2a35;background:#F8F8F8;border-radius:8px;overflow:hidden}
+.m-tabpane{display:flex;flex-direction:column;background:#F8F8F8}
+.m-tabbar{display:flex;background:#D8E6EE;border-bottom:1px solid #9AABBF;flex-shrink:0;overflow-x:auto}
+.m-tab{padding:6px 13px;cursor:default;font-weight:700;font-size:11px;color:#2C3E50;border-right:1px solid #b0c8d8;user-select:none;white-space:nowrap}
+.m-tab.done{background:#27ae60;color:#fff;border-right-color:#1e8a4a}
+.m-tab.act{background:#F8F8F8;color:#1A5276;border-bottom:2px solid #F8F8F8;margin-bottom:-1px}
+.m-body{background:#F8F8F8;padding:12px;min-height:430px}
+
+/* header block: title, active-config band, step chips */
+.m-title{padding:8px 12px 6px;background:#eef5fb;border-bottom:1px solid #c9d9e6}
+.m-title b{display:block;font-size:13px;color:#1A5276}
+.m-title span{font-size:11px;color:#33485c}
+.m-band{display:flex;flex-wrap:wrap;gap:8px;align-items:center;padding:6px 12px;background:#eef5fb;border-bottom:1px solid #c9d9e6}
+.m-stepper{display:flex;flex-wrap:wrap;align-items:center;gap:6px;padding:8px 12px 2px;background:#eef5fb}
+.st{display:flex;align-items:center;gap:6px}
+.st .c{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;background:#e3e7ea;color:#55687a;border:1px solid #cfd6db;flex-shrink:0}
+.st.done .c{background:#27ae60;border-color:#27ae60;color:#fff}
+.st.act .c{background:#2c6fd1;border-color:#2c6fd1;color:#fff}
+.st .t{font-weight:700;font-size:11px;color:#1a2a35;line-height:1.1}
+.st.done .t{color:#1e8a4a}
+.st.act .t{color:#2c6fd1}
+.st .s{font-size:9px;color:#55687a;line-height:1.2;white-space:nowrap}
+.st-sep{color:#9AABBF;font-size:11px;margin:0 2px}
+.st-opt{font-style:italic;font-size:10px;color:#7f8c8d;margin:0 4px 0 6px}
+.m-hint{padding:2px 12px 7px;background:#eef5fb;font-size:10.5px;color:#4a5f70;border-bottom:1px solid #c9d9e6}
+
+.vbox{display:flex;flex-direction:column}
+.hbox{display:flex;flex-direction:row;flex-wrap:wrap}
+.split-pane{display:flex;gap:4px}
+.split-panel{flex:1;min-width:0}
+.spacer{flex:1}
+.vsep{width:1px;background:#9AABBF;align-self:stretch;margin:0 4px}
+.hsep{border:none;border-top:1px solid #9AABBF;margin:4px 0}
+
+.cal-btn{padding:4px 11px;border-radius:3px;font-size:11px;font-weight:700;cursor:pointer;border:1px solid #9AABBF;font-family:inherit;white-space:nowrap;transition:opacity .2s,filter .2s}
+.cal-btn:hover{filter:brightness(1.06)}
+.btn-d{background:#E8EEF2;color:#2C3E50;border-color:#9AABBF}
+.btn-b{background:#2980b9;color:#fff;border-color:#1f6699}
+.btn-g{background:#27ae60;color:#fff;border-color:#1e8a4a}
+.btn-o{background:#e67e22;color:#fff;border-color:#b8621a}
+.btn-r{background:#E74C3C;color:#fff;border-color:#c03a2b}
+.cal-btn.dim{opacity:.5;pointer-events:none}
+.cal-btn[disabled]{opacity:.4;pointer-events:none}
+
+.cal-lbl{font-size:12px;color:#1a2a35}
+.cal-tf,.cal-ta,.cal-cb{padding:3px 7px;background:#fff;border:1px solid #9AABBF;border-radius:3px;font-size:11px;color:#1a2a35;font-family:inherit}
+.cal-tf{height:24px}
+.cal-ta{resize:none;width:100%}
+.cal-cb{height:24px}
+.cal-grow{flex:1;min-width:0}
+.cal-chk{display:flex;align-items:center;gap:4px;font-size:11px;white-space:nowrap}
+.cal-chk input{accent-color:var(--sacc)}
+
+.card{border:1px solid #c9d6df;background:#fbfdff;border-radius:4px;padding:8px 10px}
+.card-h{display:flex;align-items:center;gap:7px;font-weight:700;font-size:12px;color:#1a2a35;margin-bottom:7px}
+.sec-num{width:19px;height:19px;border-radius:50%;background:#2c6fd1;color:#fff;font-size:10.5px;font-weight:700;display:inline-flex;align-items:center;justify-content:center}
+.note-i{font-size:10.5px;font-style:italic;color:#3d7a8a}
+
+.tbl-wrap{overflow-x:auto;border:1px solid #9AABBF;border-radius:3px;margin:2px 0}
+.cal-tbl{border-collapse:collapse;width:100%;font-size:11px}
+.cal-tbl th{background:#b8d5e3;color:#1A5276;font-weight:700;padding:4px 8px;text-align:left;border-right:1px solid #9AABBF;white-space:nowrap}
+.cal-tbl th:last-child{border-right:none}
+.cal-tbl td{padding:3px 8px;border-top:1px solid #d8e8f0}
+.cal-tbl td.n,.cal-tbl th.n{text-align:center}
+.cal-tbl tr.flash-orange{background:#ffe3c4;transition:background .4s}
+.cal-tbl tr.ignored td{color:#9aa8b3}
+.cal-tbl .empty-row td{text-align:center;color:#55687a;padding:34px 8px}
+.lnk{color:#2980b9;text-decoration:underline;cursor:pointer}
+.lnk-red{color:#C0392B;font-weight:700;text-decoration:underline;cursor:pointer}
+
+.cal-listview{border:1px solid #9AABBF;background:#fff;min-height:80px;border-radius:3px;font-size:11px}
+
+.pill{display:inline-block;padding:1px 9px;border-radius:10px;color:#fff;font-size:10px;font-weight:700}
+.pill.p{background:#27ae60}
+.pill.pc{background:#2c7fb8}
+.pill.c{background:#e67e22}
+
+/* overlay windows (popups) */
+.backdrop{position:absolute;left:0;top:0;right:0;bottom:0;background:rgba(20,37,64,.18);z-index:4;border-radius:8px}
+.win{color:#1a2a35;font-family:"Segoe UI",sans-serif;font-size:12px;position:absolute;left:50%;transform:translateX(-50%);top:46px;z-index:5;background:#f6f6f6;border:1px solid #8a9aa8;border-radius:6px;box-shadow:0 12px 34px rgba(0,0,0,.45);overflow:hidden}
+.win-title{display:flex;align-items:center;gap:8px;padding:6px 10px;background:#eceff2;border-bottom:1px solid #cdd5db;font-size:11px;color:#33485c}
+.win-title .x{margin-left:auto;color:#55687a}
+.win-body{padding:10px 12px}
+.win-h{font-weight:800;font-size:13px;color:#1a2a35}
+.win-sub{font-size:10px;color:#7f8c8d;margin-left:8px}
+.mono{font-family:Consolas,"Courier New",monospace;font-size:11px}
+.fail-box{border:1px solid #9AABBF;background:#fff;border-radius:3px;padding:8px 10px;font-family:Consolas,"Courier New",monospace;font-size:10.5px;line-height:1.55;color:#1a2a35;min-height:230px}
+
+/* Row fade-in animation */
+.row-in{animation:rowIn .35s ease both}
+@keyframes rowIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+/* Spinner */
+.spin{display:inline-block;width:13px;height:13px;border:2px solid rgba(41,128,185,.25);border-top-color:#2980b9;border-radius:50%;animation:sp .7s linear infinite;vertical-align:middle}
+@keyframes sp{to{transform:rotate(360deg)}}
+
+/* Mockup progress bar */
+.pbar-track{flex:1;height:16px;background:#c8dae6;border-radius:3px;overflow:hidden}
+.pbar-fill{width:0;height:100%;background:#2980b9;transition:width .12s linear}
+
+/* ── Animated cursor ── */
+#cursor{
+  position:fixed;left:0;top:0;width:30px;height:30px;z-index:9999;
+  pointer-events:none;transform:translate(-100px,-100px);
+  transition:transform .6s cubic-bezier(.4,0,.2,1);
+  filter:drop-shadow(0 2px 3px rgba(0,0,0,.45));
+}
+#ripple{
+  position:fixed;left:0;top:0;width:14px;height:14px;border-radius:50%;
+  border:2px solid var(--sacc);background:rgba(46,164,201,.25);
+  z-index:9998;pointer-events:none;opacity:0;
+  transform:translate(-50%,-50%) scale(.3);
+}
+#ripple.go{animation:rip .65s ease-out}
+@keyframes rip{0%{opacity:.9;transform:translate(-50%,-50%) scale(.3)}100%{opacity:0;transform:translate(-50%,-50%) scale(3.4)}}
+
+/* ── Popup bubble ── */
+#popup{
+  position:fixed;z-index:10000;max-width:340px;
+  background:#fff;color:#1a2a35;border-radius:8px;
+  border-left:4px solid var(--sacc);
+  box-shadow:0 10px 36px rgba(0,0,0,.45);
+  padding:14px 16px 13px;opacity:0;pointer-events:none;
+  transform:translateY(8px) scale(.97);transition:opacity .3s,transform .3s;
+}
+#popup.show{opacity:1;pointer-events:auto;transform:none}
+#popup .p-title{font-size:13.5px;font-weight:800;color:var(--hdr);margin-bottom:6px}
+#popup .p-text{font-size:12.5px;line-height:1.55;color:#33485c}
+#popup .p-text em{color:#2980b9;font-style:normal;font-weight:700}
+#popup .p-text code{background:#eef3f7;padding:0 4px;border-radius:3px;font-size:11.5px}
+#popup .p-btn{
+  margin-top:11px;float:right;background:var(--sacc);color:#fff;border:none;
+  padding:5px 14px;border-radius:5px;font-size:12px;font-weight:700;cursor:pointer;
+  font-family:inherit;transition:filter .2s}
+#popup .p-btn:hover{filter:brightness(1.1)}
+#popup::after{clear:both;content:"";display:block}
+
+/* ── Bottom nav ── */
+#nav{
+  flex-shrink:0;background:var(--sbg);border-top:1px solid var(--sborder);
+  padding:11px 28px;display:flex;align-items:center;gap:12px;
+}
+.nav-btn{
+  background:var(--sbg2);color:var(--stxt);border:1px solid var(--sborder);
+  padding:7px 18px;border-radius:6px;font-size:13px;font-weight:700;cursor:pointer;
+  font-family:inherit;transition:all .2s}
+.nav-btn:hover:not(:disabled){background:#244568;border-color:var(--sacc)}
+.nav-btn:disabled{opacity:.35;cursor:not-allowed}
+.nav-btn.primary{background:var(--sacc);border-color:var(--sacc);color:#fff}
+.nav-btn.primary:hover{filter:brightness(1.1);background:var(--sacc)}
+#scene-counter{font-size:12px;color:var(--smut)}
+#nav .spacer{flex:1}
+#autoplay{background:transparent;border:1px solid var(--sborder);color:var(--stxt);
+  width:38px;height:38px;border-radius:8px;font-size:15px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;transition:all .2s}
+#autoplay:hover{border-color:var(--sacc);color:var(--sacc)}
+#autoplay.on{background:var(--sacc);border-color:var(--sacc);color:#fff}
+
+/* ── Recap scene ── */
+.recap{padding:30px 34px;color:#1a2a35;background:#F8F8F8;border-radius:8px}
+.recap h2{font-size:22px;color:var(--hdr);margin-bottom:4px;font-weight:800}
+.recap .lead{font-size:13px;color:#55687a;margin-bottom:20px}
+.recap-list{list-style:none;margin-bottom:24px}
+.recap-list li{
+  display:flex;align-items:center;gap:10px;font-size:13.5px;padding:6px 0;
+  color:#2c3e50;opacity:0;transform:translateX(-10px);transition:all .4s}
+.recap-list li.in{opacity:1;transform:none}
+.recap-list li .chk{
+  width:22px;height:22px;border-radius:50%;background:var(--green);color:#fff;
+  display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0}
+.recap-list li.opt .chk{background:#9aabbf}
+.recap-list li b{color:var(--hdr)}
+.tips{display:flex;gap:14px;flex-wrap:wrap}
+.tip{
+  flex:1;min-width:200px;background:#fff;border:1px solid #d4e2ec;border-radius:8px;
+  padding:14px 16px;font-size:12.5px;line-height:1.5;color:#3a4d5e;
+  border-top:3px solid var(--blue)}
+.tip.warn{border-top-color:var(--orange)}
+.tip.cycle{border-top-color:var(--green)}
+.tip .icon{font-size:20px;display:block;margin-bottom:6px}
+.tip b{color:var(--hdr)}
+
+/* status line inside mockups */
+.statusline{font-size:11px;font-style:italic;transition:opacity .3s}
+.back-site{display:inline-block;margin-bottom:6px;font-size:12px;color:#7fd4ec;text-decoration:none;opacity:.9}
+.back-site:hover{text-decoration:underline;opacity:1}
+</style>
+</head>
+<body>
+
+<div id="topbar">
+  <a class="back-site" id="backSite" href="../demos.html">&larr; All demos</a>
+  <h1>DataSeeding <span class="badge">Tab 77 · Interactive Tour</span></h1>
+  <div class="sub">A guided walkthrough of the org-to-org data migration pipeline: five steps, plus the optional Automation and Clean.</div>
+  <div id="progress"></div>
+</div>
+
+<div id="stage">
+  <div id="scene-frame">
+    <div id="scene-body"></div>
+  </div>
+</div>
+
+<div id="nav">
+  <button class="nav-btn" id="btn-prev">&larr; Prev</button>
+  <span id="scene-counter">1 / 1</span>
+  <div class="spacer"></div>
+  <button id="autoplay" title="Auto-play">&#9654;</button>
+  <button class="nav-btn primary" id="btn-next">Next &rarr;</button>
+</div>
+
+<!-- floating elements -->
+<svg id="cursor" viewBox="0 0 28 28">
+  <path d="M5 2 L5 22 L10 17 L13 24 L16 23 L13 16 L20 16 Z"
+        fill="#fff" stroke="#1a2a35" stroke-width="1.4" stroke-linejoin="round"/>
+</svg>
+<div id="ripple"></div>
+
+<div id="popup">
+  <div class="p-title"></div>
+  <div class="p-text"></div>
+  <button class="p-btn">Got it &rarr;</button>
+</div>
+
+<script>
+"use strict";
+
+/* ───────────────────────── Helpers ───────────────────────── */
+var $ = function(sel,ctx){return (ctx||document).querySelector(sel);};
+var sceneBody = $("#scene-body");
+var sceneFrame = $("#scene-frame");
+var cursor = $("#cursor");
+var ripple = $("#ripple");
+var popup = $("#popup");
+
+/* One colour per scene, by NAME. Progress dots and the "n / N" counter are derived from the scene
+   registry below, so the three can no longer drift apart (the old tour listed 11 colours and 11 dots
+   next to a hard-coded "1 / 8"). */
+var COL = {
+  config:"#2980b9", community:"#8e44ad", objects:"#27ae60", ignore:"#e67e22", related:"#2c7fb8",
+  extract:"#16a085", plan:"#16a085", count:"#E74C3C", exportRun:"#2980b9",
+  auto:"#e67e22", importRun:"#E74C3C", errfile:"#E74C3C", reenable:"#27ae60",
+  clean:"#e67e22", recap:"#27ae60"
+};
+
+/* timers we must clear on scene change */
+var pending = [];
+function after(ms, fn){ var id = setTimeout(fn, ms); pending.push(id); return id; }
+function clearPending(){ pending.forEach(clearTimeout); pending = []; if(typeInterval){clearInterval(typeInterval);typeInterval=null;} if(playTimer){/*keep autoplay*/} }
+var typeInterval = null;
+
+/* Move the animated cursor to viewport coords of an element, fire ripple + popup */
+function pointAt(targetEl, popupTitle, popupText, color, popupSide){
+  if(!targetEl) return;
+  var r = targetEl.getBoundingClientRect();
+  var x = r.left + r.width/2;
+  var y = r.top + r.height/2;
+  // cursor tip is roughly top-left of svg, offset so the point lands on target
+  cursor.style.transform = "translate(" + (x-3) + "px," + (y-2) + "px)";
+  // ripple after the move completes
+  after(620, function(){
+    ripple.style.left = x + "px";
+    ripple.style.top = y + "px";
+    ripple.classList.remove("go");
+    void ripple.offsetWidth; // reflow
+    ripple.classList.add("go");
+  });
+  // popup ~0.8s after click
+  after(620 + 800, function(){
+    showPopup(popupTitle, popupText, color, targetEl, popupSide);
+  });
+}
+
+function showPopup(title, text, color, anchorEl, side){
+  $(".p-title", popup).textContent = title;
+  $(".p-text", popup).innerHTML = text;
+  popup.style.borderLeftColor = color || "#2ea4c9";
+  $(".p-btn", popup).style.background = color || "#2ea4c9";
+  // position relative to anchor
+  popup.classList.add("show");
+  // need measured size -> position after it's visible
+  var pr = popup.getBoundingClientRect();
+  var ar = anchorEl ? anchorEl.getBoundingClientRect() : sceneFrame.getBoundingClientRect();
+  var left = ar.left + ar.width/2 - pr.width/2;
+  var top;
+  if(side === "above"){ top = ar.top - pr.height - 14; }
+  else { top = ar.bottom + 14; }
+  // clamp to viewport
+  var vw = window.innerWidth, vh = window.innerHeight;
+  if(left < 12) left = 12;
+  if(left + pr.width > vw - 12) left = vw - 12 - pr.width;
+  if(top < 12) top = ar.bottom + 14;
+  if(top + pr.height > vh - 12) top = ar.top - pr.height - 14;
+  if(top < 12) top = 12;
+  popup.style.left = left + "px";
+  popup.style.top = top + "px";
+}
+function hidePopup(){ popup.classList.remove("show"); }
+
+/* A scene often explains several things in a row. Each "Got it" moves to the next element of the
+   list; the last one moves on to the next scene. step = {sel,title,text,color,side,before}. */
+var popupNextFn = null;
+function popupChain(steps){
+  var i = 0;
+  var tries = 0;
+  function show(){
+    var s = steps[i];
+    var last = (i === steps.length-1);
+    var el = $(s.sel);
+    // The target may still be animating in (a row, a link): wait for it instead of skipping the step.
+    if(!el && tries++ < 20){ after(400, show); return; }
+    tries = 0;
+    if(s.before) s.before();
+    popupNextFn = last ? null : function(){ hidePopup(); i++; after(300, show); };
+    pointAt($(s.sel), s.title, s.text, s.color, s.side);
+  }
+  show();
+}
+
+/* type text into a textarea char by char */
+function typeInto(el, text, speed, done){
+  el.value = "";
+  var i = 0;
+  typeInterval = setInterval(function(){
+    el.value = text.slice(0, ++i);
+    el.scrollTop = el.scrollHeight;
+    if(i >= text.length){ clearInterval(typeInterval); typeInterval=null; if(done) done(); }
+  }, speed || 38);
+}
+
+/* append log lines progressively to a textarea */
+function streamLog(el, lines, speed, done){
+  var i = 0;
+  function step(){
+    if(i >= lines.length){ if(done) done(); return; }
+    el.value += (el.value ? "\n" : "") + lines[i++];
+    el.scrollTop = el.scrollHeight;
+    after(speed || 220, step);
+  }
+  step();
+}
+
+/* small builders */
+function btn(cls, label, id, extra){
+  return '<button class="cal-btn '+cls+'"'+(id?' id="'+id+'"':'')+(extra||'')+'>'+label+'</button>';
+}
+function card(num, title, inner, style){
+  return '<div class="card" style="'+(style||'')+'"><div class="card-h"><span class="sec-num">'+num+'</span>'+title+'</div>'+inner+'</div>';
+}
+/* in-scene popup window: a backdrop plus an absolutely positioned window */
+function overlay(title, width, top, body){
+  return '<div class="backdrop"></div>'+
+    '<div class="win" style="width:'+width+'px;top:'+top+'px">'+
+      '<div class="win-title"><span>'+title+'</span><span class="x">&#x2715;</span></div>'+
+      '<div class="win-body">'+body+'</div>'+
+    '</div>';
+}
+
+/* ───────────────────── Shared mockup chrome ─────────────────────
+   Mirrors the real screen: title, Active config band, the 5-step chips (+ the optional
+   Automation and Clean, which are not numbered), one hint line, then the tab strip
+   "1 · Config, Automation, 2 · Objects, 3 · Prepare, 4 · Export, 5 · Import, Clean".
+   "Community Users" joins the strip only when the Config option is ticked, and the two
+   diagnostic tabs (IDs Export, Debug Import) only when debug mode is on: neither is part of the
+   default strip. */
+var STEPS = [
+  {key:"config",  n:"1", title:"Config",  sub:"Source, target, paths…", tab:"1 · Config"},
+  {key:"objects", n:"2", title:"Objects", sub:"Select & filter",        tab:"2 · Objects"},
+  {key:"prepare", n:"3", title:"Prepare", sub:"Preview & validate",     tab:"3 · Prepare"},
+  {key:"export",  n:"4", title:"Export",  sub:"Download data",          tab:"4 · Export"},
+  {key:"import",  n:"5", title:"Import",  sub:"Import into target",     tab:"5 · Import"}
+];
+var OPTIONAL = [
+  {key:"automation", title:"Automation", sub:"Mute triggers & flows",   tab:"Automation"},
+  {key:"clean",      title:"Clean",      sub:"Delete target records",   tab:"Clean"}
+];
+var HINTS = {
+  config:     "Config · name this run and point it at a source org, a target org and a working folder. Every tab below reads that configuration.",
+  community:  "Community Users · Experience Cloud orgs only. Portal users are exported and recreated apart from standard records, with rewritten usernames.",
+  automation: "Automation · mute the triggers, flows and rules of the target org before importing, then restore them. Not a step: a run comes back to it twice.",
+  objects:    "Objects · choose which objects the run may touch, and see how many records each one holds today.",
+  prepare:    "Prepare · read the relations between the selected objects and build the traversal plan: which queries run, in which order, under which limits.",
+  export:     "Export · run that plan against the source org and write one CSV per object.",
+  "import":   "Import · push those CSV files into the target org, remapping every record Id as it goes.",
+  clean:      "Clean · delete records from the target org, to restart a run from a known state."
+};
+var STEP_ORDER = ["config","objects","prepare","export","import"];
+
+function chrome(key, innerHTML, o){
+  o = o || {};
+  var done = o.done;
+  if(!done){
+    var ix = STEP_ORDER.indexOf(key);
+    done = ix >= 0 ? STEP_ORDER.slice(0, ix) : (key === "community" ? ["config"] : []);
+  }
+  var isDone = function(k){ return done.indexOf(k) >= 0; };
+
+  /* chips */
+  var chips = STEPS.map(function(s, i){
+    var cls = key === s.key ? "act" : (isDone(s.key) ? "done" : "");
+    return '<div class="st '+cls+'"><span class="c">'+(isDone(s.key) && key !== s.key ? "✓" : s.n)+'</span>'+
+           '<div><div class="t">'+s.title+'</div><div class="s">'+s.sub+'</div></div></div>'+
+           (i < STEPS.length-1 ? '<span class="st-sep">›</span>' : '');
+  }).join("");
+  chips += '<span class="st-opt">Optional</span>' + OPTIONAL.map(function(s){
+    return '<div class="st'+(key === s.key ? ' act' : '')+'"><div><div class="t">'+s.title+'</div><div class="s">'+s.sub+'</div></div></div>';
+  }).join('<span class="st-sep"> </span>');
+
+  /* tab strip */
+  var tabs = [STEPS[0], {key:"community", tab:"Community Users"}, OPTIONAL[0], STEPS[1], STEPS[2], STEPS[3], STEPS[4], OPTIONAL[1]]
+    .filter(function(t){ return t.key !== "community" || o.community; });
+  var bar = tabs.map(function(t){
+    var cls = key === t.key ? " act" : (isDone(t.key) ? " done" : "");
+    return '<div class="m-tab'+cls+'">'+t.tab+'</div>';
+  }).join("");
+
+  return ''+
+  '<div class="mockup">'+
+    '<div class="m-title"><b>DataSeeding</b><span>Org-to-org data migration tool - configure source/target orgs, export records with dependency traversal, and import them into the target org.</span></div>'+
+    '<div class="m-band">'+
+      '<span class="spacer"></span>'+
+      '<span style="font-weight:bold">Active config:</span>'+
+      '<span class="cal-lbl" style="color:#2980b9;font-weight:bold">Config-Alpha</span>'+
+      '<div class="vsep"></div><span style="font-weight:bold">Source:</span>'+
+      '<span class="cal-lbl" style="color:#27ae60;font-weight:bold">FULL</span>'+
+      '<div class="vsep"></div><span style="font-weight:bold">Target:</span>'+
+      '<span class="cal-lbl" style="color:#27ae60;font-weight:bold">sandbox-dev1</span>'+
+      '<button class="cal-btn btn-d">Open</button>'+
+      '<span class="spacer"></span>'+
+      '<button class="cal-btn btn-b">Tutorial ↗</button>'+
+      '<button class="cal-btn btn-d">How To ↗</button>'+
+    '</div>'+
+    '<div class="m-stepper">'+chips+'</div>'+
+    '<div class="m-hint">'+HINTS[key]+'</div>'+
+    '<div class="m-tabpane"><div class="m-tabbar">'+bar+'</div>'+
+    '<div class="m-body">'+innerHTML+'</div></div>'+
+  '</div>';
+}
+
+/* ───────────────────────── Scene definitions ───────────────────────── */
+
+/* SCENE — Step 1: Config */
+function scene1(){
+  sceneBody.innerHTML = chrome("config",
+    '<div class="vbox" style="gap:8px">'+
+      '<div class="hbox" style="gap:8px;align-items:center">'+
+        '<span class="cal-lbl" style="min-width:110px">Config directory:</span>'+
+        '<input class="cal-tf" readonly value="C:\\tmp\\seeding" style="width:210px">'+
+        '<button class="cal-btn btn-d">Browse…</button>'+
+      '</div>'+
+      '<div class="split-pane" style="gap:0;min-height:400px">'+
+        '<div class="split-panel" style="max-width:190px;min-width:150px;padding-right:8px;border-right:1px solid #9AABBF">'+
+          '<div class="vbox" style="gap:6px">'+
+            '<span style="font-weight:bold;font-size:12px;color:#1A5276">Configurations</span>'+
+            '<div class="hbox" style="gap:6px;flex-wrap:nowrap">'+
+              '<button class="cal-btn btn-g" id="s1-new" style="flex:1">New</button>'+
+              '<button class="cal-btn btn-o" style="flex:1">Clone</button>'+
+              '<button class="cal-btn btn-r" style="flex:1">Delete</button>'+
+            '</div>'+
+            '<div class="cal-listview" style="min-height:260px;padding:4px 0">'+
+              '<div style="padding:3px 10px;background:#d0e8f4;color:#1A5276;font-weight:bold">Config-Alpha</div>'+
+              '<div style="padding:3px 10px;color:#888">Config-Beta</div>'+
+              '<div style="padding:3px 10px;color:#888">Config-Gamma</div>'+
+            '</div>'+
+          '</div>'+
+        '</div>'+
+        '<div class="split-panel" style="padding-left:12px">'+
+          '<div class="vbox" style="gap:8px">'+
+            '<span id="s1-formtitle" style="font-weight:bold;font-size:13px;color:#1A5276">Edit: Config-Alpha</span>'+
+            '<div class="hbox" style="gap:8px;flex-wrap:nowrap">'+
+              card("1","General information",
+                '<div class="hbox" style="gap:8px;align-items:center;flex-wrap:nowrap">'+
+                  '<span class="cal-lbl">Name</span>'+
+                  '<input class="cal-tf" id="s1-name" readonly value="Config-Alpha" style="width:130px">'+
+                  '<span class="cal-lbl">Max depth</span>'+
+                  '<input class="cal-tf" readonly value="15" style="width:44px">'+
+                '</div>', "flex:1")+
+              card("2","Source &amp; Target organizations",
+                '<div class="hbox" style="gap:8px;align-items:center;flex-wrap:nowrap">'+
+                  '<span class="cal-lbl">Source org</span>'+
+                  '<select class="cal-cb" style="width:100px"><option>FULL</option></select>'+
+                  '<span class="cal-lbl">Target org</span>'+
+                  '<select class="cal-cb" style="width:110px"><option>sandbox-dev1</option></select>'+
+                '</div>', "flex:1.2")+
+            '</div>'+
+            card("3","Export path",
+              '<div class="hbox" style="gap:8px;align-items:center;flex-wrap:nowrap">'+
+                '<span class="cal-lbl" style="min-width:60px">Main path</span>'+
+                '<input class="cal-tf cal-grow" id="s1-path" readonly value="C:\\tmp\\seeding\\Config-Alpha">'+
+                '<button class="cal-btn btn-d" style="width:32px">…</button>'+
+              '</div>'+
+              '<label class="cal-chk" id="s1-community" style="margin-top:6px"><input type="checkbox"> Community users (Experience Cloud)</label>')+
+            '<div id="s1-mode">'+card("4","Query mode",
+              '<div class="hbox" style="gap:14px;align-items:center">'+
+                '<span style="font-weight:bold">Mode</span>'+
+                '<label class="cal-chk"><input type="radio" name="s1-mode" checked> Basic</label>'+
+                '<label class="cal-chk"><input type="radio" name="s1-mode"> Single query</label>'+
+                '<label class="cal-chk"><input type="radio" name="s1-mode"> Full copy</label>'+
+              '</div>'+
+              '<div class="note-i" style="margin:4px 0 6px">Basic : the seed query is expanded into parents AND children up to Max depth. Standard mode for most extracts.</div>'+
+              '<div class="hbox" style="gap:10px;align-items:flex-start;flex-wrap:nowrap">'+
+                '<span class="cal-lbl" style="min-width:60px;padding-top:4px">Start query</span>'+
+                '<textarea class="cal-ta cal-grow" id="s1-query" readonly rows="2">SELECT Id FROM Case ORDER BY CreatedDate DESC LIMIT 40</textarea>'+
+              '</div>'+
+              '<div class="hbox" style="gap:10px;align-items:center;flex-wrap:nowrap;margin-top:6px">'+
+                '<span class="cal-lbl" style="min-width:60px">Import after</span>'+
+                '<select class="cal-cb" style="width:170px"><option></option></select>'+
+              '</div>')+'</div>'+
+            card("5","Advanced features",
+              '<label class="cal-chk"><input type="checkbox"> Enable debug mode (one CSV per query, IDs analyser and import debugger)</label>')+
+            '<div class="hbox" style="gap:8px;align-items:center;flex-wrap:nowrap">'+
+              '<span class="cal-lbl statusline" id="s1-status" style="color:#3d7a8a;opacity:0">Saved: Config-Alpha</span>'+
+              '<span class="spacer"></span>'+
+              btn("btn-d","Cancel")+btn("btn-d","Save","s1-save")+btn("btn-b","Save &amp; Next →")+
+            '</div>'+
+          '</div>'+
+        '</div>'+
+      '</div>'+
+    '</div>');
+}
+scene1.run = function(){
+  popupChain([
+    {sel:"#s1-new", title:"Step 1 — Config", color:COL.config, side:"below",
+     text:"Each config stores a <em>source/target org pair</em>, a working folder and a seed SOQL query. You can keep several configs for different migration scenarios, and <b>Clone</b> one to aim it at another sandbox."},
+    {sel:"#s1-mode", title:"Query mode and Start query", color:COL.config, side:"above",
+     text:"<b>Basic</b> expands the seed query into its parents <em>and</em> children up to <em>Max depth</em>. <b>Single query</b> and <b>Full copy</b> are the other two modes — in Full copy the Start query is ignored.<br><br>If you change the Start query of a config that already has a plan, an export or an import, Calumet asks before clearing everything built from the old one (the data model, your object selection and your limits are kept)."},
+    {sel:"#s1-community", title:"Community users (Experience Cloud)", color:COL.community, side:"above",
+     text:"Tick this <b>only if your org uses Experience Cloud</b> (portal / community users linked to a Contact). A dedicated <em>Community Users</em> tab then joins the strip to export and import them apart from standard records — their usernames are recreated with a custom extension on the target org."}
+  ]);
+  // click New -> clear form
+  after(1500, function(){
+    $("#s1-formtitle").textContent = "New configuration";
+    $("#s1-name").value = "";
+    $("#s1-query").value = "";
+    $("#s1-path").value = "C:\\tmp\\seeding\\";
+  });
+  // move to query box + type
+  after(2300, function(){
+    var q = $("#s1-query");
+    var r = q.getBoundingClientRect();
+    cursor.style.transform = "translate(" + (r.left+30) + "px," + (r.top+12) + "px)";
+    after(700, function(){
+      typeInto(q, "SELECT Id FROM Case ORDER BY CreatedDate DESC LIMIT 40", 34);
+    });
+  });
+  // move to Save + click
+  after(5400, function(){
+    $("#s1-name").value = "Config-Alpha";
+    $("#s1-path").value = "C:\\tmp\\seeding\\Config-Alpha";
+    var saveBtn = $("#s1-save");
+    var r = saveBtn.getBoundingClientRect();
+    cursor.style.transform = "translate(" + (r.left+10) + "px," + (r.top+5) + "px)";
+    after(640, function(){
+      ripple.style.left = (r.left+r.width/2)+"px";
+      ripple.style.top = (r.top+r.height/2)+"px";
+      ripple.classList.remove("go"); void ripple.offsetWidth; ripple.classList.add("go");
+      $("#s1-status").style.opacity = "1";
+      $("#s1-formtitle").textContent = "Edit: Config-Alpha";
+    });
+  });
+};
+
+/* SCENE — Optional: Community Users */
+function sceneCommunity(){
+  sceneBody.innerHTML = chrome("community",
+    '<div class="vbox" style="gap:12px;padding:4px">'+
+      '<div class="hbox" style="gap:10px;align-items:center">'+
+        '<span style="font-weight:bold;min-width:60px">Profile:</span>'+
+        '<select class="cal-cb" style="flex:1"><option>Customer Community Login</option></select>'+
+      '</div>'+
+      '<div class="hbox" style="gap:10px;align-items:center">'+
+        '<span style="font-weight:bold;min-width:240px">Extension for new userNames that will be created:</span>'+
+        '<input class="cal-tf" id="sc-ext" placeholder="e.g. myorg_uat" style="width:180px">'+
+      '</div>'+
+      '<div id="sc-warn" style="display:none;color:#e67e22;font-weight:bold;font-size:12px">'+
+        '&#x26A0; 7 user(s) with this profile already exist in target org &mdash; importing again is usually pointless'+
+      '</div>'+
+      '<div class="hbox" style="gap:10px;align-items:center">'+
+        btn("btn-b","Export Community","sc-export")+btn("btn-b","Import Community","sc-import")+
+      '</div>'+
+      '<div id="sc-stats" style="display:none;padding:8px 12px;background:#f0fff4;border:1px solid #27ae60;border-radius:4px;font-size:12px;color:#27ae60">'+
+        '&#x2705; Export complete &mdash; 7 accounts &nbsp;|&nbsp; 7 contacts &nbsp;|&nbsp; 7 community users'+
+      '</div>'+
+    '</div>', {community:true});
+}
+sceneCommunity.run = function(){
+  after(400, function(){
+    var extEl = $("#sc-ext");
+    var r = extEl ? extEl.getBoundingClientRect() : null;
+    if(r){ cursor.style.transform = "translate("+(r.left+10)+"px,"+(r.top+6)+"px)"; }
+    after(500, function(){
+      if(extEl){ extEl.value = "myorg_uat"; }
+      var warn = $("#sc-warn"); if(warn) warn.style.display = "block";
+    });
+    after(1100, function(){
+      pointAt($("#sc-export"),
+        "Optional — Community Users",
+        "Export community accounts, contacts and users from the source org. A username <em>extension</em> (e.g. <code>.myorg_uat</code>) is appended so new users don’t conflict with existing ones on the target.<br><br>The warning means those users already exist — skip import if you see it.",
+        COL.community, "below");
+      after(800, function(){
+        var stats = $("#sc-stats"); if(stats) stats.style.display="block";
+      });
+    });
+  });
+};
+
+/* SCENE — Step 2: Objects */
+var s2rows = [
+  // api, label, records, parents, children, requiredChild(⚡), ignored
+  ["Account","Account","4,210","1","6",false,false],
+  ["Case","Case","12,880","3","4",false,false],
+  ["Contact","Contact","9,455","1","5",true,false],
+  ["GRC_Item__c","GRC Item","1,320","2","1",false,false],
+  ["CRM_Survey__c","CRM Survey","640","2","2",true,false],
+  ["Entitlement","Entitlement","85","2","2",false,true],
+  ["EmailMessage","Email Message","31,904","2","1",false,false],
+  ["User","User","312","","3",false,true]
+];
+function objectsToolbar(){
+  return ''+
+    '<div class="hbox" style="gap:8px;align-items:center">'+
+      btn("btn-b","Refresh","s2-refresh")+
+      '<div class="vsep"></div>'+
+      '<label class="cal-chk"><input type="checkbox"> Hide ignored</label>'+
+      '<label class="cal-chk"><input type="checkbox"> Hide no-relation</label>'+
+      '<label class="cal-chk"><input type="checkbox"> Hide with parents</label>'+
+      '<label class="cal-chk"><input type="checkbox"> Hide with children</label>'+
+      '<span class="cal-lbl statusline" id="s2-status" style="color:#3d7a8a;opacity:0">8 objects loaded (2 ignored).</span>'+
+      btn("btn-g","Ignore list ↗","s2-ignorelist")+
+      btn("btn-b","Related Objects ↗","s2-related")+
+      '<div class="spacer"></div>'+
+      '<span class="cal-lbl" style="color:#888">Ignore profile</span>'+
+      '<select class="cal-cb" style="width:120px"><option>Profile name…</option></select>'+
+      btn("btn-b","Load")+btn("btn-g","Save")+btn("btn-r","Delete")+
+    '</div>'+
+    '<div class="hbox" style="gap:8px;align-items:center">'+
+      btn("btn-g","Select All")+btn("btn-o","Deselect All")+btn("btn-b","Check objects exist on target","s2-check")+
+      '<span id="s2-spin"></span>'+
+    '</div>';
+}
+function objectsTable(withMain){
+  return '<div class="tbl-wrap"><table class="cal-tbl">'+
+    '<thead><tr><th class="n" style="width:55px">Export</th>'+(withMain?'<th class="n" style="width:50px">Main</th>':'')+
+    '<th style="width:200px">API Name</th><th style="width:180px">Label</th>'+
+    '<th class="n" style="width:80px">Records</th><th class="n" style="width:70px">Parents</th>'+
+    '<th class="n" style="width:80px">Children</th></tr></thead>'+
+    '<tbody id="s2-body"></tbody></table></div>';
+}
+function objectRowHtml(r, idx, withMain, settled){
+  var ign = settled && r[6];
+  return '<td class="n"><input type="checkbox" '+((r[6] && settled) ? "" : "checked")+'></td>'+
+    (withMain ? '<td class="n"><input type="checkbox"'+(idx===0?' checked':'')+'></td>' : '')+
+    '<td>'+r[0]+'</td><td>'+r[1]+'</td><td class="n">'+r[2]+'</td><td class="n">'+r[3]+'</td>'+
+    '<td class="n">'+r[4]+(r[5] ? ' <span'+(idx===2 ? ' id="s2-bolt"' : '')+' title="required lookup">⚡</span>' : '')+'</td>';
+}
+function fillObjectRows(withMain){
+  var body = $("#s2-body");
+  s2rows.forEach(function(r, idx){
+    var tr = document.createElement("tr");
+    if(r[6]) tr.className = "ignored";
+    tr.innerHTML = objectRowHtml(r, idx, withMain, true);
+    body.appendChild(tr);
+  });
+  $("#s2-status").style.opacity = "1";
+}
+function scene2(){
+  sceneBody.innerHTML = chrome("objects",
+    '<div class="vbox" style="gap:8px">'+objectsToolbar()+objectsTable(false)+'</div>');
+}
+scene2.run = function(){
+  popupChain([
+    {sel:"#s2-refresh", title:"Step 2 — Objects", color:COL.objects, side:"below",
+     text:"Pick the objects the run may touch. <em>Records</em> shows how many each one holds <b>today</b> in the source org, <em>Parents</em> and <em>Children</em> how many relations it has. Your selection is saved with the config."},
+    {sel:"#s2-bolt", title:"The ⚡ next to Children", color:COL.objects, side:"below",
+     text:"At least one child object points to this one through a <b>required lookup</b> (a field that can’t be left empty). Those children can’t be inserted without their parent, so they deserve a look."},
+    {sel:"#s2-check", title:"Check objects exist on target", color:COL.objects, side:"below",
+     text:"Queries the target org. Objects <em>not found</em> there are added to the ignore list, so the run never tries to load them."}
+  ]);
+  // spinner appears
+  after(640, function(){ $("#s2-spin").innerHTML = '<span class="spin"></span>'; });
+  // rows animate in one by one
+  after(1100, function(){
+    var body = $("#s2-body");
+    body.innerHTML = "";
+    s2rows.forEach(function(r, idx){
+      after(idx*180, function(){
+        var tr = document.createElement("tr");
+        tr.className = "row-in";
+        tr.id = "s2-row-"+idx;
+        tr.innerHTML = objectRowHtml(r, idx, false, false);
+        body.appendChild(tr);
+        if(idx === s2rows.length-1){
+          $("#s2-spin").innerHTML = "";
+          $("#s2-status").style.opacity = "1";
+          // after rows are in, flash + grey out the ignored objects
+          after(500, function(){ flashIgnore(5); });
+          after(900, function(){ flashIgnore(7); });
+        }
+      });
+    });
+  });
+  function flashIgnore(i){
+    var tr = $("#s2-row-"+i);
+    if(!tr) return;
+    tr.classList.add("flash-orange");
+    after(450, function(){
+      var cb = tr.querySelector("input");
+      if(cb) cb.checked = false;
+      tr.classList.remove("flash-orange");
+      tr.classList.add("ignored");
+    });
+  }
+};
+
+/* SCENE — Step 2: Ignore list popup */
+function sceneIgnore(){
+  sceneBody.innerHTML = chrome("objects",
+    '<div class="vbox" style="gap:8px">'+objectsToolbar()+objectsTable(false)+'</div>') +
+    overlay("Ignore List", 640, 60,
+      '<div><span class="win-h">Ignore List</span><span class="win-sub">C:\\tmp\\seeding\\orgs\\FULL\\seeding\\ignoreObjects.txt</span></div>'+
+      '<div class="split-pane" style="gap:10px;margin-top:8px">'+
+        '<div class="split-panel" style="flex:1.5">'+
+          '<div class="hbox" style="gap:6px;align-items:center;margin-bottom:4px"><span style="font-weight:bold">Objects</span><input class="cal-tf cal-grow" placeholder="Filter…"></div>'+
+          '<div class="tbl-wrap"><table class="cal-tbl"><thead><tr><th>API Name</th><th class="n">Records</th><th class="n">Parents</th><th class="n">Children</th></tr></thead><tbody>'+
+            '<tr><td>Account</td><td class="n">4,210</td><td class="n">1</td><td class="n">6</td></tr>'+
+            '<tr><td>Case</td><td class="n">12,880</td><td class="n">3</td><td class="n">4</td></tr>'+
+            '<tr id="ig-row"><td>EmailMessage</td><td class="n">31,904</td><td class="n">2</td><td class="n">1</td></tr>'+
+            '<tr><td>GRC_Item__c</td><td class="n">1,320</td><td class="n">2</td><td class="n">1</td></tr>'+
+            '<tr><td>CRM_Survey__c</td><td class="n">640</td><td class="n">2</td><td class="n">2</td></tr>'+
+          '</tbody></table></div>'+
+          '<button class="cal-btn btn-d" id="ig-add" style="width:100%;margin-top:4px">→ Ignore selected</button>'+
+        '</div>'+
+        '<div class="split-panel">'+
+          '<span style="font-weight:bold">Ignored</span>'+
+          '<div class="tbl-wrap" style="margin-top:4px"><table class="cal-tbl"><thead><tr><th>API Name</th><th class="n">Records</th></tr></thead><tbody id="ig-ignored">'+
+            '<tr><td>Entitlement</td><td class="n">85</td></tr>'+
+            '<tr><td>User</td><td class="n">312</td></tr>'+
+          '</tbody></table></div>'+
+          '<button class="cal-btn btn-d" style="width:100%;margin-top:4px">← Remove from ignore</button>'+
+        '</div>'+
+      '</div>'+
+      '<div class="hbox" style="margin-top:8px;align-items:center"><button class="cal-btn btn-d" style="color:#C0392B;border-color:#e0a9a2">Clear all ignored</button><span class="spacer"></span>'+btn("btn-d","Close")+'</div>');
+  fillObjectRows(false);
+}
+sceneIgnore.run = function(){
+  after(600, function(){ var r = $("#ig-row"); if(r) r.classList.add("flash-orange"); });
+  popupChain([
+    {sel:"#ig-add", title:"Ignore list — permanent exclusions", color:COL.ignore, side:"below",
+     text:"Select objects on the left and click <b>Ignore selected</b>: they move to the <em>Ignored</em> list. Ignored objects are greyed out and unchecked in the Objects tab, so they are no longer part of the selection.<br><br>The list is kept in <code>ignoreObjects.txt</code>, in the org’s own folder, so it outlives any one config. <b>Remove from ignore</b> brings one back; <b>Clear all ignored</b> empties the list."}
+  ]);
+};
+
+/* SCENE — Step 2: Related Objects popup */
+function sceneRelated(){
+  var rel = [
+    ["p","PARENT","Account"],["p","PARENT","Contact"],["p","PARENT","RecordType"],["p","PARENT","User"],
+    ["pc","PARENT+CHILD","GRC_Item__c"],
+    ["c","CHILD","EmailMessage"],["c","CHILD","CRM_Survey__c"],["c","CHILD","CaseComment"]
+  ];
+  sceneBody.innerHTML = chrome("objects",
+    '<div class="vbox" style="gap:8px">'+objectsToolbar()+objectsTable(true)+'</div>') +
+    overlay("Related Objects", 420, 70,
+      '<div><span class="win-h">Related Objects</span><span class="win-sub">Related to: Case</span></div>'+
+      '<div class="tbl-wrap" style="margin-top:8px"><table class="cal-tbl"><thead><tr><th style="width:130px">Direction</th><th>Object</th><th class="n" style="width:60px" id="rel-main">Main</th></tr></thead><tbody>'+
+        rel.map(function(r){
+          return '<tr><td><span class="pill '+r[0]+'">'+r[1]+'</span></td><td>'+r[2]+'</td><td class="n"><input type="checkbox" checked></td></tr>';
+        }).join("")+
+      '</tbody></table></div>'+
+      '<div class="hbox" style="margin-top:8px;gap:6px">'+btn("btn-d","Select All")+btn("btn-d","None")+'<span class="spacer"></span>'+btn("btn-d","Save")+'</div>');
+  fillObjectRows(true);
+}
+sceneRelated.run = function(){
+  popupChain([
+    {sel:"#rel-main", title:"Related Objects and the Main column", color:COL.related, side:"below",
+     text:"Lists the objects related to the <b>seed object</b> of your Start query (here <em>Case</em>): <span style='color:#27ae60;font-weight:700'>PARENT</span>, <span style='color:#e67e22;font-weight:700'>CHILD</span> or both.<br><br>Tick <b>Main</b> for the ones that are the core of the run. A Main object counts as selected for export, and its queries appear as <em>MAIN</em> in the traversal plan. Once this popup has been opened, a <em>Main</em> column is added to the Objects table behind it."}
+  ]);
+};
+
+/* Prepare panel builder. showCheck1 -> button1 has check, showRecap -> recap + plan box shown */
+function preparePanel(showCheck1, showRecap){
+  var recapCols = '<th>Object</th><th class="n">Queries</th><th class="n">From</th><th class="n">Related</th><th class="n">Records</th><th>✎ Limit</th>';
+  return ''+
+  '<div class="vbox" style="gap:8px">'+
+    '<div class="hbox" style="gap:10px;align-items:flex-start;flex-wrap:nowrap">'+
+      '<div class="hbox" style="gap:8px;align-items:center">'+
+        btn("btn-g",'1 · Extract Metadata'+(showCheck1?' ✓':''),"s3-extract")+
+        btn("btn-g","2 · Generate Relation Queries","s4-gen")+
+        btn("btn-d","Reload plan")+
+        btn("btn-o","Report ↗")+
+      '</div>'+
+      '<div class="spacer"></div>'+
+      (showRecap ? '<div class="vbox" id="s4-statbar" style="gap:4px;background:#eef5fb;border:1px solid #9AABBF;border-radius:4px;padding:8px 12px;opacity:0;transition:opacity .4s;max-width:430px">'+
+        '<div class="hbox" style="gap:14px;align-items:baseline"><span style="font-weight:bold;color:#1A5276">Traversal Plan</span>'+
+        '<span class="cal-lbl">Total: 202</span>'+
+        '<span style="color:#2980b9;font-weight:bold">SEED: 1</span>'+
+        '<span style="color:#27ae60;font-weight:bold">SELECTED: 201</span></div>'+
+        '<div style="font-size:11px"><b>Start query:</b> <i>SELECT Id FROM Case ORDER BY CreatedDate DESC LIMIT 40</i></div></div>' : '')+
+    '</div>'+
+    '<label class="cal-chk"><input type="checkbox"> Include children of related objects (1 level)</label>'+
+    '<div class="split-pane" style="gap:8px;min-height:300px">'+
+      '<div class="split-panel" style="max-width:470px">'+
+        '<div class="vbox" style="gap:4px">'+
+          '<span style="font-weight:bold;font-size:12px;color:#1A5276">Query Recap</span>'+
+          (showRecap ? '<div class="hbox" style="gap:6px;align-items:center">'+
+            btn("btn-g","3 · Add Limits","s4-addlimits")+btn("btn-d","Save limits")+btn("btn-d","Load limits")+btn("btn-d","Legends","s4-legends")+'</div>'+
+            '<div class="note-i">✎ Double-click the Limit column to edit &nbsp; auto-saved</div>' : '')+
+          '<div class="tbl-wrap"><table class="cal-tbl">'+
+            '<thead><tr>'+recapCols+'</tr></thead>'+
+            '<tbody id="s4-recap"></tbody></table></div>'+
+        '</div>'+
+      '</div>'+
+      '<div class="split-panel">'+
+        '<div class="vbox" style="gap:4px;height:100%">'+
+          '<span style="font-weight:bold;font-size:12px;color:#1A5276">Execution log</span>'+
+          '<textarea class="cal-ta" id="s3-log" readonly rows="14" style="font-family:Consolas,monospace;font-size:10px"></textarea>'+
+        '</div>'+
+      '</div>'+
+    '</div>'+
+  '</div>';
+}
+
+/* SCENE — Step 3: Prepare / Extract Metadata */
+function scene3(){
+  sceneBody.innerHTML = chrome("prepare", preparePanel(false, false));
+}
+scene3.run = function(){
+  pointAt($("#s3-extract"), "Step 3 — Prepare: extract metadata",
+    "Calumet reads the Salesforce schema to map all relationships between the selected objects. Result: <em>_relations.csv</em> saved locally — the data model the plan is built from.",
+    COL.extract, "above");
+  after(640, function(){
+    $("#s3-extract").classList.add("dim");
+    $("#s3-extract").innerHTML = '1 · Extract Metadata <span class="spin"></span>';
+  });
+  after(1100, function(){
+    var log = $("#s3-log");
+    var lines = ["[CACHE] Account","[DONE]  Account","[CACHE] Case","[DONE]  Case",
+                 "[CACHE] Contact","[DONE]  Contact","[CACHE] GRC_Item__c","[DONE]  GRC_Item__c"];
+    streamLog(log, lines, 170, function(){
+      $("#s3-extract").classList.remove("dim");
+      $("#s3-extract").innerHTML = '1 · Extract Metadata ✓';
+    });
+  });
+};
+
+/* SCENE — Step 3: Prepare / Generate Relation Queries */
+function scene4(){
+  sceneBody.innerHTML = chrome("prepare", preparePanel(true, true));
+}
+scene4.run = function(){
+  popupChain([
+    {sel:"#s4-gen", title:"Step 3 — Prepare: traversal plan", color:COL.plan, side:"above",
+     text:"The engine generates every SOQL query needed to pull the dependent records, in import order. <b>Total</b> counts the seed query plus the generated ones; a query only returns rows if matching records exist in the source org.<br><br>Generating a plan <b>deletes the CSV files already exported</b> — Calumet asks first. The Prepare hint reminds you: <em>Include children of related objects</em> goes one level further down (Basic mode only)."},
+    {sel:"#s4-statbar", title:"Reading the plan", color:COL.plan, side:"below",
+     text:"<b>SEED</b> is your Start query. <b>SELECTED</b> are the queries for objects you ticked. <b>Report ↗</b> opens a readable summary, including any selected object the plan cannot reach."},
+    {sel:"#s4-addlimits", title:"3 · Add Limits — control the volume", color:COL.plan, side:"below",
+     text:"<b>Add Limits</b> sets the same SOQL <code>LIMIT</code> on every object above a record count — or double-click one <em>Limit</em> cell to set it by hand. A limit applies <b>per query</b>: 19 queries × LIMIT 100 means up to 1,900 records. It also keeps the Id lists short enough for Salesforce to accept the next queries. <b>Legends</b> explains every column."}
+  ]);
+  after(640, function(){
+    $("#s4-gen").classList.add("dim");
+    $("#s4-gen").innerHTML = '2 · Generate Relation Queries <span class="spin"></span>';
+  });
+  after(1200, function(){
+    var recapRows = [["Case",14,9,22,"12,880"],["Contact",12,8,18,"9,455"],["Account",9,6,20,"4,210"],["GRC_Item__c",3,2,4,"1,320"],["EmailMessage",4,3,5,"31,904"]];
+    var body = $("#s4-recap");
+    body.innerHTML = "";
+    recapRows.forEach(function(r,idx){
+      after(idx*200, function(){
+        var tr = document.createElement("tr");
+        tr.className = "row-in";
+        tr.innerHTML = '<td>'+r[0]+'</td>'+
+          '<td class="n"><span class="lnk">'+r[1]+'</span></td><td class="n"><span class="lnk">'+r[2]+'</span></td><td class="n"><span class="lnk">'+r[3]+'</span></td>'+
+          '<td class="n">'+r[4]+'</td><td></td>';
+        body.appendChild(tr);
+        if(idx===recapRows.length-1){
+          $("#s4-gen").classList.remove("dim");
+          $("#s4-gen").innerHTML = '2 · Generate Relation Queries ✓';
+          var sb = $("#s4-statbar"); if(sb) sb.style.opacity = "1";
+          var log = $("#s3-log");
+          streamLog(log, ["Plan written to C:\\tmp\\seeding\\Config-Alpha\\metadata\\traversal_plan.json",
+            "  Total queries : 201","  MAIN          : 201","  HORS_LISTE    : 0",
+            "Selection dir deleted : C:\\tmp\\seeding\\Config-Alpha\\selection\\",
+            "-- GenerateRelationQueries completed --"], 90);
+        }
+      });
+    });
+  });
+};
+
+/* Export panel, shared by the Count and the Export scenes */
+function exportPanel(){
+  return ''+
+  '<div class="vbox" style="gap:10px">'+
+    '<div class="hbox" style="gap:8px;align-items:center">'+
+      btn("btn-b","Export Records","p-export")+
+      btn("btn-b","Count Records","p-count")+
+      '<span class="cal-lbl" style="font-weight:bold;color:#27ae60">&rarr; FULL</span>'+
+      '<button class="cal-btn btn-d" id="p-cancel" style="display:none">Cancel</button>'+
+      '<span id="p-spin" style="display:none"><span class="spin"></span></span>'+
+      '<div class="vsep"></div>'+
+      btn("btn-d","Check IDs","p-ids")+
+      '<div class="vsep"></div>'+
+      btn("btn-d","Check Users","p-users")+
+    '</div>'+
+    '<div class="vbox" id="p-prog" style="display:none;gap:6px;background:#eef5fb;border:1px solid #9AABBF;border-radius:4px;padding:8px 12px">'+
+      '<div class="hbox" style="gap:10px;align-items:center;flex-wrap:nowrap">'+
+        '<span style="min-width:70px">Progress:</span>'+
+        '<div class="pbar-track" style="max-width:260px"><div class="pbar-fill" id="p-bar"></div></div>'+
+        '<span style="font-weight:bold;min-width:64px" id="p-pct">0 / 201</span>'+
+      '</div>'+
+      '<span class="note-i" id="p-cur"></span>'+
+    '</div>'+
+    '<span id="p-warn" style="display:none;color:#E67E22;font-weight:bold;font-size:11px">⚠  Count only — run Export Records before importing.</span>'+
+    '<div class="split-pane" style="gap:8px;min-height:280px">'+
+      '<div class="split-panel" style="max-width:430px">'+
+        '<span style="font-weight:bold;font-size:12px;color:#1A5276">Results</span>'+
+        '<div class="tbl-wrap"><table class="cal-tbl">'+
+          '<thead><tr><th style="width:200px">Object</th><th class="n" style="width:90px">Records</th><th class="n" style="width:110px">Failed</th></tr></thead>'+
+          '<tbody id="p-body"><tr class="empty-row" id="p-empty"><td colspan="3">No results — run Count Records or Export Records.</td></tr></tbody></table></div>'+
+      '</div>'+
+      '<div class="split-panel" id="p-right">'+
+        '<span style="font-weight:bold;font-size:12px;color:#1A5276">Execution log</span>'+
+        '<textarea class="cal-ta" id="p-log" readonly rows="13" style="font-family:Consolas,monospace;font-size:10px"></textarea>'+
+      '</div>'+
+    '</div>'+
+  '</div>';
+}
+function runBar(total, ms, onTick, onDone){
+  var bar = $("#p-bar"), pct = $("#p-pct");
+  var start = Date.now();
+  (function tick(){
+    var t = Math.min(1, (Date.now()-start)/ms);
+    bar.style.width = (t*100)+"%";
+    pct.textContent = Math.round(t*total) + " / " + total;
+    if(onTick) onTick(t);
+    if(t<1){ after(50, tick); } else { pct.textContent = total + " / " + total; if(onDone) onDone(); }
+  })();
+}
+
+/* SCENE — Step 4: Count Records, and what "Failed" means */
+function scene5(){
+  sceneBody.innerHTML = chrome("export", exportPanel());
+}
+scene5.run = function(){
+  var rows = [["Account","65",""],["Case","80","#29"],["Contact","31",""],["GRC_Item__c","37",""],["CRM_Survey__c","40",""]];
+  function showDetail(){
+    $("#p-right").innerHTML =
+      '<div class="hbox" style="align-items:center"><span style="font-weight:bold;font-size:12px;color:#1A5276">Failed query</span><span class="spacer"></span><span class="x" style="cursor:pointer;color:#55687a">✕</span></div>'+
+      '<div class="fail-box">'+
+        '<b>Plan #29  [CHILD  L2]  Case</b><br><br>'+
+        'Source  : :account_ids  →  6,200 IDs<br>'+
+        '<i>Template: SELECT Id FROM Case WHERE AccountId IN :account_ids</i><br>'+
+        '<i style="color:#1A5276">Executed: SELECT Id FROM Case WHERE AccountId IN (\'001…\', \'001…\', …)</i><br>'+
+        '<span style="color:#C0392B">Error   : the message Salesforce sent back</span><br><br>'+
+        'IDs at failure:<br>'+
+        '&nbsp;&nbsp;:account_ids  →  6,200 records<br><br>'+
+        '<span style="color:#E67E22">⚠  Total sub-query IDs: 6200 — Salesforce IN-list limit is 5 000.</span><br>'+
+        '<span style="color:#C0392B">&nbsp;&nbsp;&nbsp;→ Use limits in the Prepare tab to reduce volumes before re-running.</span>'+
+      '</div>';
+  }
+  popupChain([
+    {sel:"#p-count", title:"Step 4 — Export: Count Records", color:COL.count, side:"below",
+     text:"A <b>dry run</b>: Calumet executes <code>SELECT Id FROM …</code> for every query of the plan, so you see the volumes <em>without writing any CSV</em>. Use it to estimate, and to adjust limits before the real export."},
+    {sel:"#p-body .lnk-red", title:"What “Failed” means", color:COL.count, side:"below", before:showDetail,
+     text:"When a query of the plan <b>cannot run</b>, its plan number shows up in the <em>Failed</em> column as a red link (<code>#29</code>). Click it: the log is replaced by the detail — the query template, the query as executed, Salesforce’s error and how many Ids fed it.<br><br>The usual cause is an <em>IN</em> list above Salesforce’s limit of 5,000 Ids; the cure is a <b>limit</b> on the parent object in Prepare. An empty cell means every query of that object ran."}
+  ]);
+  after(640, function(){
+    $("#p-spin").style.display = "inline";
+    $("#p-prog").style.display = "flex";
+    $("#p-count").classList.add("dim"); $("#p-export").classList.add("dim");
+  });
+  after(900, function(){
+    runBar(201, 1800, null, function(){
+      $("#p-spin").style.display = "none";
+      $("#p-count").classList.remove("dim"); $("#p-export").classList.remove("dim");
+      $("#p-warn").style.display = "inline";
+      var body = $("#p-body"); body.innerHTML = "";
+      rows.forEach(function(r,idx){
+        after(idx*200, function(){
+          var tr = document.createElement("tr"); tr.className = "row-in";
+          tr.innerHTML = '<td>'+r[0]+'</td><td class="n">'+r[1]+'</td><td class="n">'+(r[2] ? '<span class="lnk-red">'+r[2]+'</span>' : '')+'</td>';
+          body.appendChild(tr);
+        });
+      });
+    });
+  });
+};
+
+/* SCENE — Step 4: Export Records */
+function scene5b(){
+  sceneBody.innerHTML = chrome("export", exportPanel());
+}
+scene5b.run = function(){
+  var rows = [["Account","65"],["Case","80"],["Contact","31"],["GRC_Item__c","37"],["CRM_Survey__c","40"]];
+  popupChain([
+    {sel:"#p-export", title:"Step 4 — Export", color:COL.exportRun, side:"below",
+     text:"Records are fetched from the source org and written as <b>one CSV per object</b> in the working folder. <em>Nothing is written to Salesforce.</em> The progress bar counts the queries of the plan; <b>Cancel</b> stops the run."},
+    {sel:"#p-ids", title:"Check IDs", color:COL.exportRun, side:"below",
+     text:"Checks that every <b>required parent Id</b> referenced in the exported CSVs is itself present in them. A missing parent means the child can’t be imported."},
+    {sel:"#p-users", title:"Check Users", color:COL.exportRun, side:"below",
+     text:"Checks that each user Id found in the CSVs has an <b>active counterpart in the target org with the same profile</b>. Users that can’t be mapped are listed, with how many times each one appears."}
+  ]);
+  after(640, function(){
+    $("#p-export").classList.add("dim"); $("#p-count").classList.add("dim");
+    $("#p-cancel").style.display = "inline-block";
+    $("#p-spin").style.display = "inline";
+    $("#p-prog").style.display = "flex";
+  });
+  after(900, function(){
+    var steps = ["[PARENT] Account","[CHILD] Case","[PARENT] Contact","[CHILD] GRC_Item__c","[CHILD] CRM_Survey__c"];
+    runBar(201, 2200, function(t){ $("#p-cur").textContent = steps[Math.min(steps.length-1, Math.floor(t*steps.length))]; }, function(){
+      $("#p-cancel").style.display = "none"; $("#p-spin").style.display = "none";
+      $("#p-export").classList.remove("dim"); $("#p-count").classList.remove("dim");
+      $("#p-cur").textContent = "Export complete.";
+      var body = $("#p-body"); body.innerHTML = "";
+      rows.forEach(function(r,idx){
+        after(idx*200, function(){
+          var tr = document.createElement("tr"); tr.className = "row-in";
+          tr.innerHTML = '<td>'+r[0]+'</td><td class="n">'+r[1]+'</td><td></td>';
+          body.appendChild(tr);
+        });
+      });
+    });
+  });
+};
+
+/* Automation panel (disable, then re-enable) */
+function automationPanel(state){
+  var off = state === "off";
+  var statusHtml = off
+    ? '<span style="color:#E74C3C;font-weight:bold">Disabled &nbsp;&mdash;&nbsp; flows &amp; triggers are off</span>'
+    : '<span style="color:#27ae60;font-weight:bold">Active &nbsp;&mdash;&nbsp; 3 flow(s) and 5 trigger(s) running</span>';
+  var detail = '“Disable” also turns off process builders &amp; workflow rules. &nbsp;6 validation rule(s) are active — tick the box below to disable them too.'+
+    '<br>Managed-package automations (0 flow(s), 14 trigger(s)) can\'t be changed and are left untouched.'+
+    (off ? '<br>Backup ready to restore: 3 flow(s), 5 trigger(s), 0 validation rule(s), 0 workflow rule(s).' : '');
+  return ''+
+  '<div class="vbox" style="gap:10px;padding:4px">'+
+    '<div class="hbox" style="gap:8px;align-items:center">'+
+      btn("btn-b","Check status","sa-check")+
+      '<span class="cal-lbl" style="color:#27ae60;font-weight:bold">&#x2192; sandbox-dev1</span>'+
+    '</div>'+
+    '<div class="vbox" style="gap:6px;padding:8px 12px;background:#f4f8fb;border:1px solid #9AABBF;border-radius:4px">'+
+      '<div class="hbox" style="gap:8px;align-items:center"><span style="font-weight:bold;min-width:80px">Status:</span><span id="sa-status">'+statusHtml+'</span></div>'+
+      '<div id="sa-detail" style="margin-left:88px;font-size:10.5px;color:#7f8c8d;line-height:1.5">'+detail+'</div>'+
+      '<div class="hbox" style="gap:8px;align-items:center"><span style="font-weight:bold;min-width:80px">Retrieve dir:</span>'+
+        '<span style="color:#3d7a8a;font-size:11px">C:\\tmp\\seeding\\Config-Alpha\\automationRetrieve</span>'+btn("btn-d","Open")+'</div>'+
+    '</div>'+
+    '<hr style="border:none;border-top:1px solid #d5dfe8">'+
+    '<label class="cal-chk" id="sa-vr"><input type="checkbox"> Also disable Validation Rules</label>'+
+    '<div class="hbox" style="gap:10px;align-items:center">'+
+      '<button class="cal-btn btn-o" id="sa-disable"'+(off?' disabled':'')+'>Disable automations</button>'+
+      '<button class="cal-btn btn-g" id="sa-enable"'+(off?'':' disabled')+'>Re-enable automations</button>'+
+      '<span id="sa-spin" style="display:none"><span class="spin"></span></span>'+
+      '<span class="statusline" id="sa-done" style="color:#7f8c8d;'+(off?'':'display:none')+'">All automations disabled.</span>'+
+      btn("btn-d","View log")+
+    '</div>'+
+    '<span style="font-weight:bold;font-size:12px;color:#1A5276">Execution log</span>'+
+    '<textarea class="cal-ta" id="sa-log" readonly rows="9" style="font-family:Consolas,monospace;font-size:10px"></textarea>'+
+  '</div>';
+}
+
+/* SCENE — Optional: Automation (before the import) */
+function sceneAuto(){
+  sceneBody.innerHTML = chrome("automation", automationPanel("on"), {done:["config","objects","prepare","export"]});
+}
+sceneAuto.run = function(){
+  popupChain([
+    {sel:"#sa-disable", title:"Optional — Automation: mute the target org", color:COL.auto, side:"below",
+     text:"The status shows what is currently running on the <b>target</b> org. <b>Disable automations</b> turns off flows, triggers, process builders and workflow rules so seeding doesn’t fire side effects, after saving a backup in the <em>Retrieve dir</em>. Managed-package automations can’t be changed and are never touched.<br><br>If the org is already disabled, the existing backup is kept rather than overwritten."},
+    {sel:"#sa-vr", title:"Validation rules", color:COL.auto, side:"above",
+     text:"Validation rules are not disabled by default: tick this box to disable them as well. They come back with everything else when you <em>Re-enable automations</em> after the import."}
+  ]);
+  after(700, function(){
+    $("#sa-disable").setAttribute("disabled",""); $("#sa-spin").style.display = "inline";
+    streamLog($("#sa-log"), [
+      "Retrieving automations from sandbox-dev1 ...",
+      "Package: 3 flow definition(s), 5 trigger(s), 0 validation rule(s), 0 workflow rule(s) (managed excluded)",
+      "Retrieve Status: Succeeded ...","Inactivating flows ...","Inactivating triggers ...",
+      "Deploying inactivated automations ...","Deploy: Succeeded (8/8)","Disabling process builders ...","All automations disabled."], 190, function(){
+      $("#sa-spin").style.display = "none";
+      $("#sa-enable").removeAttribute("disabled");
+      $("#sa-status").innerHTML = '<span style="color:#E74C3C;font-weight:bold">Disabled &nbsp;&mdash;&nbsp; flows &amp; triggers are off</span>';
+      $("#sa-done").style.display = "inline";
+    });
+  });
+};
+
+/* SCENE — Step 5: Import */
+var s6rows = [["Account",65,0,""],["Contact",31,1,"ContactErrors.txt"],["Case",80,0,""],["GRC_Item__c",37,3,"GRC_Item__cErrors.txt"],["CRM_Survey__c",40,0,""]];
+function importPanel(final){
+  return ''+
+  '<div class="vbox" style="gap:10px">'+
+    '<div class="hbox" style="gap:10px;align-items:center">'+
+      btn("btn-r","Run Import","s6-run")+
+      '<button class="cal-btn btn-o" id="s6-retry"'+(final?'':' disabled')+'>Retry Failed</button>'+
+      '<label class="cal-chk" id="s6-resume"><input type="checkbox"> Resume from last imported object</label>'+
+      '<label class="cal-chk" id="s6-upsert"><input type="checkbox"> Upsert by external ID</label>'+
+      '<input class="cal-tf" placeholder="External_Id__c" disabled style="width:120px">'+
+      '<span class="cal-lbl" style="font-weight:bold;color:#27ae60">&rarr; sandbox-dev1</span>'+
+    '</div>'+
+    '<div class="vbox" id="s6-prog" style="'+(final?'':'display:none;')+'gap:6px;background:#eef5fb;border:1px solid #9AABBF;border-radius:4px;padding:8px 12px">'+
+      '<div class="hbox" style="gap:10px;align-items:center;flex-wrap:nowrap">'+
+        '<span style="min-width:70px">Progress:</span>'+
+        '<div class="pbar-track" style="max-width:260px"><div class="pbar-fill" id="s6-bar"'+(final?' style="width:100%"':'')+'></div></div>'+
+        '<span style="font-weight:bold;min-width:50px" id="s6-pct">'+(final?'5 / 5':'0 / 5')+'</span>'+
+      '</div>'+
+      '<span class="note-i" id="s6-done">'+(final?'Import complete.':'')+'</span>'+
+    '</div>'+
+    '<div class="vbox" style="gap:4px">'+
+      '<span style="font-weight:bold;font-size:12px;color:#1A5276">Objects to Import</span>'+
+      '<div class="tbl-wrap"><table class="cal-tbl">'+
+        '<thead><tr><th class="n" style="width:40px">#</th><th style="width:220px">Object</th><th class="n" style="width:90px">Records</th>'+
+        '<th class="n" style="width:80px">Errors</th><th>Error file</th></tr></thead>'+
+        '<tbody id="s6-body">'+
+          s6rows.map(function(r,i){
+            var bad = r[2] > 0;
+            return '<tr><td class="n">'+(i+1)+'</td><td>'+r[0]+'</td>'+
+              '<td class="n" id="s6-rec-'+i+'">'+(final && bad ? (r[1]-r[2])+'/'+r[1] : r[1])+'</td>'+
+              '<td class="n" id="s6-err-'+i+'">'+(final ? (bad ? '<b style="color:#E74C3C">'+r[2]+'</b>' : '<span style="color:#27ae60;font-weight:bold">✅</span>') : '')+'</td>'+
+              '<td id="s6-file-'+i+'">'+(final && bad ? '<span class="lnk">'+r[3]+'</span>' : '')+'</td></tr>';
+          }).join("")+
+        '</tbody></table></div>'+
+    '</div>'+
+  '</div>';
+}
+function scene6(){
+  sceneBody.innerHTML = chrome("import", importPanel(false), {done:["config","objects","prepare","export"]});
+}
+scene6.run = function(){
+  popupChain([
+    {sel:"#s6-run", title:"Step 5 — Import", color:COL.importRun, side:"below",
+     text:"The CSV files are loaded into the target org, parents first. Record Ids are <em>remapped</em> on the way: each old Id is replaced by the new one in the children that point to it. The table below lists the objects in import order.",
+     },
+    {sel:"#s6-err-3", title:"Records and Errors", color:COL.importRun, side:"below",
+     text:"<em>Records</em> shows <b>imported / total</b> when something was rejected (<code>34/37</code>), and just the total when everything went in. <em>Errors</em> is the number of rejected records, or a green tick. <em>Error file</em> is a link to <code>&lt;Object&gt;Errors.txt</code> — click it to open it (next screen)."},
+    {sel:"#s6-retry", title:"Retry Failed", color:COL.importRun, side:"below",
+     text:"Enabled once an object has a <code>Failed.csv</code>. It re-imports <b>only the rejected records</b> — not a full re-run — and the ones that succeed this time leave the failed list. Fix the cause first (data, a rule in the target org), then retry."},
+    {sel:"#s6-resume", title:"Resume and Upsert", color:COL.importRun, side:"above",
+     text:"<b>Resume from last imported object</b>: restarts from the last object of the previous run — its records are deleted first and it is re-imported cleanly, then the rest follows. Handy for repeated test runs.<br><br><b>Upsert by external ID</b>: inserts new records and <em>updates</em> existing ones matched on the external-Id field, so an import can be re-run on an org that already holds data, without a Clean."}
+  ]);
+  after(640, function(){ $("#s6-prog").style.display = "flex"; $("#s6-run").classList.add("dim"); });
+  after(1000, function(){
+    s6rows.forEach(function(r,i){
+      after(i*520, function(){
+        var bad = r[2] > 0;
+        $("#s6-bar").style.width = (((i+1)/s6rows.length)*100)+"%";
+        $("#s6-pct").textContent = (i+1)+" / "+s6rows.length;
+        if(bad){
+          $("#s6-rec-"+i).textContent = (r[1]-r[2])+"/"+r[1];
+          $("#s6-err-"+i).innerHTML = '<b style="color:#E74C3C">'+r[2]+'</b>';
+          $("#s6-file-"+i).innerHTML = '<span class="lnk">'+r[3]+'</span>';
+        } else {
+          $("#s6-err-"+i).innerHTML = '<span style="color:#27ae60;font-weight:bold">✅</span>';
+        }
+        if(i === s6rows.length-1){
+          $("#s6-done").textContent = "Import complete.";
+          $("#s6-retry").removeAttribute("disabled");
+          $("#s6-run").classList.remove("dim");
+        }
+      });
+    });
+  });
+};
+
+/* SCENE — Step 5: what an error file contains */
+function sceneErrFile(){
+  sceneBody.innerHTML = chrome("import", importPanel(true), {done:["config","objects","prepare","export"]}) +
+    overlay("C:\\tmp\\seeding\\Config-Alpha\\importErr\\ContactErrors.txt", 640, 120,
+      '<div class="mono" id="ef-text" style="background:#fff;border:1px solid #cdd5db;min-height:110px;padding:8px 10px;line-height:1.7;font-size:13px">'+
+        '<span style="color:#7f8c8d;margin-right:12px">1</span><span id="ef-line">position 2 : This contact is a duplicate. Please use the existing contact</span><br>'+
+        '<span style="color:#7f8c8d;margin-right:12px">2</span>'+
+      '</div>');
+}
+sceneErrFile.run = function(){
+  popupChain([
+    {sel:"#ef-line", title:"An error file, line by line", color:COL.errfile, side:"below",
+     text:"One line per rejected record: <code>position N : message</code>. <b>position</b> is the record’s place in that object’s CSV, and the message is <b>exactly what the target org answered</b> — here a duplicate protection of the target org refused a Contact that already exists there.<br><br>Fix the cause (the data, or a rule in the target org), then use <b>Retry Failed</b> to re-import only those records."}
+  ]);
+};
+
+/* SCENE — Optional: Re-enable Automations */
+function sceneAutoRe(){
+  sceneBody.innerHTML = chrome("automation", automationPanel("off"), {done:["config","objects","prepare","export","import"]});
+}
+sceneAutoRe.run = function(){
+  after(400, function(){
+    var en = $("#sa-enable");
+    if(!en) return;
+    pointAt(en, "Optional — Automation: put everything back",
+      "The import is finished. <b>Re-enable automations</b> restores flows, triggers, process builders and workflow rules from the backup — the org returns to its original state. A run comes back to this tab twice: once to mute, once to restore.",
+      COL.reenable, "below");
+    after(700, function(){
+      en.setAttribute("disabled",""); $("#sa-spin").style.display = "inline";
+    });
+    after(2200, function(){
+      $("#sa-spin").style.display = "none";
+      $("#sa-status").innerHTML = '<span style="color:#27ae60;font-weight:bold">Active &nbsp;&mdash;&nbsp; 3 flow(s) and 5 trigger(s) running</span>';
+      $("#sa-done").style.display = "none";
+      $("#sa-disable").removeAttribute("disabled");
+    });
+  });
+};
+
+/* SCENE — Optional: Clean */
+var s7rows = [["Account",65],["Contact",31],["Case",80]];
+function scene7(){
+  sceneBody.innerHTML = chrome("clean",
+    '<div class="vbox" style="gap:8px">'+
+      '<div class="hbox" style="gap:8px;align-items:center">'+
+        btn("btn-r","Clean org","s7-clean")+
+        '<span class="cal-lbl" style="font-weight:bold;color:#27ae60">&rarr; sandbox-dev1</span>'+
+        '<label class="cal-chk" id="s7-imported"><input type="checkbox" checked> Imported objects only</label>'+
+        '<label class="cal-chk"><input type="checkbox" checked> Deletable only</label>'+
+        '<div class="vsep"></div>'+
+        '<span class="cal-lbl" style="color:#7f8c8d">Stop after</span><input class="cal-tf" readonly value="500" style="width:55px;text-align:right" id="s7-stop"><span class="cal-lbl" style="color:#7f8c8d">errors</span>'+
+        '<div class="vsep"></div>'+
+        '<span class="cal-lbl" style="color:#7f8c8d">Created after</span><input class="cal-tf" readonly placeholder="2026-04-27T14:23:29Z (optional)" style="width:200px" id="s7-after">'+
+        btn("btn-d","Now")+
+        '<div class="vsep"></div>'+
+        '<span class="cal-lbl" style="color:#7f8c8d">Created before</span><input class="cal-tf" readonly value="2026-03-12T10:40:57Z" style="width:150px">'+
+      '</div>'+
+      '<div class="note-i">Imported objects only: delete only objects that were part of this seeding (have an exported CSV) - leave OFF to wipe the whole target org.</div>'+
+      '<div class="note-i">Deletable only: hide rows skipped from deletion (User, or non-imported objects when the option above is on).</div>'+
+      '<div class="vbox" style="gap:4px">'+
+        '<span style="font-weight:bold;font-size:12px;color:#1A5276">Clean results</span>'+
+        '<div class="tbl-wrap"><table class="cal-tbl">'+
+          '<thead><tr><th style="width:220px">Object</th><th class="n" style="width:90px">Records</th><th class="n" style="width:80px">Delete?</th><th class="n" style="width:80px">After</th><th class="n" style="width:80px">Errors</th></tr></thead>'+
+          '<tbody id="s7-body"><tr class="empty-row"><td colspan="5">Click \'Clean org\' to start.</td></tr></tbody></table></div>'+
+      '</div>'+
+    '</div>', {done:["config","objects","prepare","export","import"]});
+}
+scene7.run = function(){
+  popupChain([
+    {sel:"#s7-clean", title:"Optional — Clean the target org", color:COL.clean, side:"below",
+     text:"Deletes records from the <b>target</b> org so you can restart a run from a known state. Use it <em>during testing phases</em> — never on an org whose data you want to keep."},
+    {sel:"#s7-imported", title:"Imported objects only", color:COL.clean, side:"below",
+     text:"Checked: only objects that have an exported CSV are cleaned. Leave it <b>off to wipe the whole target org</b>. <em>Deletable only</em> hides the rows that will be skipped (User, for instance)."},
+    {sel:"#s7-after", title:"Limits of a clean", color:COL.clean, side:"below",
+     text:"<b>Created after</b> / <b>Created before</b> (SOQL date format) restrict the deletion to records created in that window — <b>Now</b> fills the current UTC time. <b>Stop after N errors</b> gives up on an object once N deletions have failed and shows <code>500+</code> in <em>After</em>."}
+  ]);
+  after(1200, function(){
+    var body = $("#s7-body"); body.innerHTML = "";
+    s7rows.forEach(function(r,i){
+      var tr = document.createElement("tr"); tr.className = "row-in";
+      tr.innerHTML = '<td>'+r[0]+'</td><td class="n">'+r[1]+'</td><td class="n">Yes</td>'+
+        '<td class="n" style="font-weight:bold" id="s7-after-'+i+'">'+r[1]+'</td><td class="n" id="s7-err-'+i+'"></td>';
+      body.appendChild(tr);
+      after(300+i*350, function(){
+        var afterCell = $("#s7-after-"+i);
+        var count = r[1];
+        var start = Date.now(), dur = 700;
+        (function tick(){
+          var t = Math.min(1,(Date.now()-start)/dur);
+          afterCell.textContent = Math.round(count*(1-t));
+          afterCell.style.color = "#e67e22";
+          if(t<1){ after(40,tick); }
+          else {
+            afterCell.textContent = "0";
+            afterCell.style.color = "#27ae60";
+            $("#s7-err-"+i).textContent = "0";
+          }
+        })();
+      });
+    });
+  });
+};
+
+/* SCENE — Recap */
+var recapItems = [
+  ["Configuration created","Step 1",false],
+  ["Community Users configured","optional",true],
+  ["Objects selected, ignored and related","Step 2",false],
+  ["Metadata extracted, traversal plan generated","Step 3",false],
+  ["Records counted, then exported to CSV","Step 4",false],
+  ["Automations disabled","optional",true],
+  ["Records imported into the target org","Step 5",false],
+  ["Error files read, failed records retried","Step 5",false],
+  ["Automations re-enabled","optional",true],
+  ["Target org cleaned","optional",true]
+];
+function scene8(){
+  sceneBody.innerHTML =
+  '<div class="recap">'+
+    '<h2>You’re all set!</h2>'+
+    '<div class="lead">DataSeeding is ready to use. Start with a small <b>LIMIT</b> in your seed query to validate the full pipeline before running at scale.</div>'+
+    '<ul class="recap-list" id="recap-list">'+
+      recapItems.map(function(it,i){
+        return '<li id="rl-'+i+'"'+(it[2]?' class="opt"':'')+'><span class="chk">✓</span> <span><b>'+it[1].charAt(0).toUpperCase()+it[1].slice(1)+'</b> — '+it[0]+'</span></li>';
+      }).join("")+
+    '</ul>'+
+    '<div class="tips">'+
+      '<div class="tip"><span class="icon">💡</span><b>Estimate first.</b> Run <b>Count Records</b> before Export to estimate volumes without writing any CSV — and to spot a failing query (the red <b>Failed</b> link) early.</div>'+
+      '<div class="tip warn"><span class="icon">⚠️</span><b>Read the error files.</b> Each <code>&lt;Object&gt;Errors.txt</code> says <code>position N : message</code>; fix the cause, then <b>Retry Failed</b>.</div>'+
+      '<div class="tip cycle"><span class="icon">🔄</span><b>Clone configs.</b> Use <b>Clone</b> to duplicate a config for a different sandbox target.</div>'+
+      '<div class="tip"><span class="icon">🧰</span><b>Debug mode.</b> Tick <b>Enable debug mode</b> in Config to add two diagnostic tabs: <b>IDs Export</b> and <b>Debug Import</b>.</div>'+
+    '</div>'+
+  '</div>';
+}
+scene8.run = function(){
+  for(var i=0;i<recapItems.length;i++){
+    (function(i){ after(250 + i*220, function(){ var li=$("#rl-"+i); if(li) li.classList.add("in"); }); })(i);
+  }
+  after(250 + 7*220 + 300, function(){
+    showPopup("You’re all set!",
+      "DataSeeding is ready to use. Start with a small <em>LIMIT</em> in your seed query to validate the full pipeline before running at scale.",
+      COL.recap, sceneFrame, "below");
+  });
+};
+
+/* ───────────────────────── Scene registry ───────────────────────── */
+/* Order follows the work: the five numbered steps, with the optional Automation placed where it
+   is used (muted just before the import, restored just after) and Clean last. */
+var scenes = [
+  {fn:scene1,        run:scene1.run},        // Step 1  Config
+  {fn:sceneCommunity,run:sceneCommunity.run},// optional Community Users
+  {fn:scene2,        run:scene2.run},        // Step 2  Objects
+  {fn:sceneIgnore,   run:sceneIgnore.run},   //         Ignore list popup
+  {fn:sceneRelated,  run:sceneRelated.run},  //         Related Objects popup
+  {fn:scene3,        run:scene3.run},        // Step 3  Prepare: extract metadata
+  {fn:scene4,        run:scene4.run},        //         Prepare: traversal plan
+  {fn:scene5,        run:scene5.run},        // Step 4  Export: Count Records, Failed
+  {fn:scene5b,       run:scene5b.run},       //         Export: Export Records
+  {fn:sceneAuto,     run:sceneAuto.run},     // optional Automation: disable
+  {fn:scene6,        run:scene6.run},        // Step 5  Import
+  {fn:sceneErrFile,  run:sceneErrFile.run},  //         Import: an error file
+  {fn:sceneAutoRe,   run:sceneAutoRe.run},   // optional Automation: re-enable
+  {fn:scene7,        run:scene7.run},        // optional Clean
+  {fn:scene8,        run:scene8.run}         // Recap
+];
+
+/* ───────────────────────── Engine ───────────────────────── */
+var current = 0;
+
+function buildProgress(){
+  var p = $("#progress");
+  var html = "";
+  for(var i=0;i<scenes.length;i++){
+    html += '<div class="dot" data-i="'+i+'"><span class="circle">'+(i+1)+'</span></div>';
+    if(i<scenes.length-1) html += '<div class="connector" data-c="'+i+'"></div>';
+  }
+  p.innerHTML = html;
+  p.querySelectorAll(".dot").forEach(function(d){
+    d.addEventListener("click", function(){ goTo(parseInt(d.getAttribute("data-i"),10)); });
+  });
+}
+
+function updateProgress(){
+  var dots = $("#progress").querySelectorAll(".dot");
+  var conns = $("#progress").querySelectorAll(".connector");
+  dots.forEach(function(d,i){
+    d.classList.toggle("active", i===current);
+    d.classList.toggle("done", i<current);
+  });
+  conns.forEach(function(c,i){ c.classList.toggle("done", i<current); });
+}
+
+function goTo(i){
+  if(i<0 || i>=scenes.length) return;
+  clearPending();
+  hidePopup();
+  popupNextFn = null;   // a chain left over from the previous scene must not answer this scene's "Got it"
+  // park cursor off-screen during transition
+  cursor.style.transition = "none";
+  cursor.style.transform = "translate(-120px,-120px)";
+  void cursor.offsetWidth;
+  current = i;
+  scenes[i].fn();
+  updateProgress();
+  $("#scene-counter").textContent = (i+1) + " / " + scenes.length;
+  $("#btn-prev").disabled = (i===0);
+  $("#btn-next").textContent = (i===scenes.length-1) ? "Restart ↺" : "Next →";
+  // restore transition then run the scene animation
+  after(60, function(){
+    cursor.style.transition = "transform .6s cubic-bezier(.4,0,.2,1)";
+    scenes[i].run();
+  });
+}
+
+function goNext(){
+  if(current === scenes.length-1){ goTo(0); }
+  else goTo(current+1);
+}
+function goPrev(){ goTo(current-1); }
+
+/* ── Controls ── */
+$("#btn-next").addEventListener("click", goNext);
+$("#btn-prev").addEventListener("click", goPrev);
+$(".p-btn", popup).addEventListener("click", function(){ (popupNextFn || goNext)(); });
+
+document.addEventListener("keydown", function(e){
+  if(e.key === "ArrowRight" || e.key === " "){ e.preventDefault(); goNext(); }
+  else if(e.key === "ArrowLeft"){ e.preventDefault(); goPrev(); }
+});
+
+/* ── Auto-play ── */
+var playTimer = null;
+var autoBtn = $("#autoplay");
+function startAuto(){
+  autoBtn.classList.add("on");
+  autoBtn.innerHTML = "&#10073;&#10073;"; // pause
+  playTimer = setInterval(goNext, 5000);
+}
+function stopAuto(){
+  autoBtn.classList.remove("on");
+  autoBtn.innerHTML = "&#9654;";
+  if(playTimer){ clearInterval(playTimer); playTimer = null; }
+}
+autoBtn.addEventListener("click", function(){
+  if(playTimer) stopAuto(); else startAuto();
+});
+
+/* reposition popup on resize */
+window.addEventListener("resize", function(){
+  if(popup.classList.contains("show")) hidePopup();
+});
+
+/* ── Init ── */
+buildProgress();
+goTo(0);
+</script>
+<script>/* Back link: website only, hidden in the application help (JavaFX WebView) */
+if(navigator.userAgent.indexOf('JavaFX')>=0){var b=document.getElementById('backSite');if(b)b.style.display='none';}</script>
+</body>
+</html>

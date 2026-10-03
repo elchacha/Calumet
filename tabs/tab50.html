@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>History Storage — Calumet</title>
+<link rel="stylesheet" href="../shared.css">
+<style>
+  /* Snapshot date list */
+  .snap-list { border:1px solid #9AABBF; background:#fff; border-radius:3px;
+    font-size:11px; overflow-y:auto; flex:1; }
+  .snap-item { padding:4px 10px; cursor:default; border-bottom:1px solid #e8f0f4; white-space:nowrap; }
+  .snap-item:hover { background:#d8eef6; }
+  .snap-item.sel  { background:#2980b9; color:#fff; }
+  .snap-item.sel2 { background:#5b9bac; color:#fff; }
+
+  /* Color coding for diff / evol columns */
+  .td-pos { color:#E74C3C; font-weight:600; }  /* record count grew — red */
+  .td-neg { color:#27ae60; font-weight:600; }  /* record count shrank — green */
+
+  /* Data split layout */
+  .data-split { display:flex; gap:0; min-height:440px; }
+  .snap-col    { width:230px; min-width:230px; padding:0 6px 0 0; display:flex; flex-direction:column; gap:4px; }
+  .compare-col { flex:1; min-width:0; padding:0 0 0 4px; display:flex; flex-direction:column; overflow:hidden; }
+  .tbl-scroll  { overflow:auto; flex:1; border:1px solid #9AABBF; border-radius:3px; }
+
+  /* Evolution chart area */
+  .chart-area { background:#fff; border:1px solid #9AABBF; border-radius:3px; display:flex; min-height:380px; }
+  .chart-sidebar { width:215px; min-width:215px; border-right:1px solid #9AABBF;
+    padding:8px; overflow-y:auto; font-size:11px; background:#f5fafd; }
+  .chart-sidebar h4 { font-size:11px; font-weight:700; color:#3d7a8a; margin-bottom:6px; }
+  .cb-item { display:flex; align-items:center; gap:5px; margin:3px 0; }
+  .cb-dot  { width:10px; height:10px; border-radius:2px; flex-shrink:0; }
+  .chart-canvas-wrap { flex:1; min-width:0; padding:8px; display:flex; flex-direction:column; }
+  .fake-chart { width:100%; height:auto; }
+</style>
+</head>
+<body class="tab-page">
+
+<div class="sum">
+  <div class="sum-title">
+    <h2>History Storage</h2>
+    <span class="sum-badge">Tab 50</span>
+  </div>
+  <p class="sum-desc">
+    Track org storage evolution over time using saved daily snapshots. Compare any two dates side-by-side to spot growth trends, identify top consumers, and monitor custom-object bloat.
+    <button class="cal-btn btn-d" style="margin-left:10px" onclick="document.getElementById('modal-kf').style.display='flex'">&#9733; Key features</button>
+  </p>
+</div>
+
+<div class="mockup-wrap">
+  <div class="mockup">
+
+    <div class="m-tabpane" id="tp50">
+      <div class="m-tabbar">
+        <div class="m-tab act" onclick="sw('tp50',0)">Data</div>
+        <div class="m-tab" onclick="sw('tp50',1)">Evolution</div>
+      </div>
+      <div class="m-body">
+
+        <!-- ══ DATA TAB ══ -->
+        <div class="m-panel act" id="tp50-0" style="padding:6px 8px">
+
+          <!-- Toolbar row -->
+          <div class="hbox" style="gap:8px;align-items:center;margin-bottom:6px">
+            <button class="cal-btn btn-d" data-tip="Normalise record counts across all snapshots to ensure consistent comparison">Harmonize Values</button>
+            <div class="spacer"></div>
+            <input class="cal-tf" readonly placeholder="filter" style="width:280px;color:#aaa">
+            <button class="cal-btn btn-d" style="opacity:.7" data-tip="Open current selection in a detached floating chart window">Open in popup</button>
+          </div>
+
+          <!-- Split: left snapshot list, right comparison table -->
+          <div class="data-split">
+
+            <!-- Left: snapshot dates -->
+            <div class="snap-col">
+              <div class="snap-list">
+                <div class="snap-item sel">2026-05-04</div>
+                <div class="snap-item">2026-04-29</div>
+                <div class="snap-item">2026-04-28</div>
+                <div class="snap-item">2026-04-27</div>
+                <div class="snap-item">2026-04-23</div>
+                <div class="snap-item">2026-04-22</div>
+                <div class="snap-item">2026-04-21</div>
+                <div class="snap-item">2026-04-20</div>
+                <div class="snap-item">2026-04-17</div>
+                <div class="snap-item">2026-04-15</div>
+                <div class="snap-item">2026-04-14</div>
+                <div class="snap-item">2026-04-13</div>
+                <div class="snap-item">2026-04-12</div>
+                <div class="snap-item sel2">2026-04-11</div>
+                <div class="snap-item">2026-04-10</div>
+                <div class="snap-item">2026-04-09</div>
+                <div class="snap-item">2026-04-08</div>
+                <div class="snap-item">2026-04-07</div>
+                <div class="snap-item">2026-04-06</div>
+                <div class="snap-item">2026-04-05</div>
+                <div class="snap-item">2026-04-04</div>
+                <div class="snap-item">2026-04-03</div>
+                <div class="snap-item">2026-04-02</div>
+                <div class="snap-item">2026-04-01</div>
+                <div class="snap-item">2026-03-31</div>
+                <div class="snap-item">2026-03-30</div>
+                <div class="snap-item">2026-03-29</div>
+                <div class="snap-item">2026-03-28</div>
+                <div class="snap-item">2026-03-27</div>
+                <div class="snap-item">2026-03-26</div>
+              </div>
+            </div>
+
+            <!-- Right: comparison table -->
+            <div class="compare-col">
+              <div class="tbl-scroll">
+                <table class="cal-tbl" style="min-width:900px">
+                  <thead>
+                    <tr>
+                      <th style="width:195px">Object</th>
+                      <th style="width:195px">Label</th>
+                      <th style="width:100px;text-align:right">2026-05-04</th>
+                      <th style="width:78px;text-align:right">Size<br><span style="font-weight:400;font-size:10px;color:#5b9bac">295,6 G</span></th>
+                      <th style="width:100px;text-align:right">2026-04-11</th>
+                      <th style="width:78px;text-align:right">Size<br><span style="font-weight:400;font-size:10px;color:#5b9bac">296,1 G</span></th>
+                      <th style="width:85px;text-align:right">diff</th>
+                      <th style="width:78px;text-align:right">Size<br><span style="font-weight:400;font-size:10px;color:#5b9bac">461,5 M</span></th>
+                      <th style="width:70px;text-align:right">evol(%)</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>AgentWorkSkill</td><td>Agent Work Skills</td>
+                      <td style="text-align:right">2&nbsp;480&nbsp;912</td><td style="text-align:right">4,73 GB</td>
+                      <td style="text-align:right">1&nbsp;414&nbsp;869</td><td style="text-align:right">2,7 GB</td>
+                      <td class="td-pos" style="text-align:right">1&nbsp;066&nbsp;043</td>
+                      <td class="td-pos" style="text-align:right">2,03 GB</td>
+                      <td class="td-pos" style="text-align:right">42,97</td>
+                    </tr>
+                    <tr>
+                      <td>CaseMilestone</td><td>Case Milestones</td>
+                      <td style="text-align:right">5&nbsp;956&nbsp;095</td><td style="text-align:right">11,36 GB</td>
+                      <td style="text-align:right">6&nbsp;262&nbsp;537</td><td style="text-align:right">11,94 GB</td>
+                      <td class="td-neg" style="text-align:right">-&nbsp;306&nbsp;442</td>
+                      <td class="td-neg" style="text-align:right">599 MB</td>
+                      <td class="td-neg" style="text-align:right">-5,15</td>
+                    </tr>
+                    <tr>
+                      <td>GRC_Multi_LT__c</td><td>Liaisons Multi-LT</td>
+                      <td style="text-align:right">14&nbsp;026&nbsp;797</td><td style="text-align:right">26,75 GB</td>
+                      <td style="text-align:right">14&nbsp;307&nbsp;192</td><td style="text-align:right">27,29 GB</td>
+                      <td class="td-neg" style="text-align:right">-&nbsp;280&nbsp;395</td>
+                      <td class="td-neg" style="text-align:right">548 MB</td>
+                      <td class="td-neg" style="text-align:right">-2,00</td>
+                    </tr>
+                    <tr>
+                      <td>Case</td><td>Cases</td>
+                      <td style="text-align:right">14&nbsp;518&nbsp;769</td><td style="text-align:right">27,69 GB</td>
+                      <td style="text-align:right">14&nbsp;794&nbsp;598</td><td style="text-align:right">28,22 GB</td>
+                      <td class="td-neg" style="text-align:right">-&nbsp;275&nbsp;829</td>
+                      <td class="td-neg" style="text-align:right">539 MB</td>
+                      <td class="td-neg" style="text-align:right">-1,90</td>
+                    </tr>
+                    <tr>
+                      <td>Suivi_Usage__c</td><td>Suivis Usage</td>
+                      <td style="text-align:right">225&nbsp;632</td><td style="text-align:right">441 MB</td>
+                      <td style="text-align:right;color:#888">0</td><td style="text-align:right;color:#888">0 byte</td>
+                      <td class="td-pos" style="text-align:right">225&nbsp;632</td>
+                      <td class="td-pos" style="text-align:right">441 MB</td>
+                      <td class="td-pos" style="text-align:right">100,00</td>
+                    </tr>
+                    <tr>
+                      <td>Task</td><td>Tasks</td>
+                      <td style="text-align:right">14&nbsp;990&nbsp;197</td><td style="text-align:right">28,59 GB</td>
+                      <td style="text-align:right">15&nbsp;198&nbsp;847</td><td style="text-align:right">28,99 GB</td>
+                      <td class="td-neg" style="text-align:right">-&nbsp;208&nbsp;650</td>
+                      <td class="td-neg" style="text-align:right">408 MB</td>
+                      <td class="td-neg" style="text-align:right">-1,39</td>
+                    </tr>
+                    <tr>
+                      <td>MAJ_Tiers__c</td><td>Logs MAJ Tiers</td>
+                      <td style="text-align:right">756&nbsp;732</td><td style="text-align:right">1,44 GB</td>
+                      <td style="text-align:right">943&nbsp;798</td><td style="text-align:right">1,8 GB</td>
+                      <td class="td-neg" style="text-align:right">-&nbsp;187&nbsp;066</td>
+                      <td class="td-neg" style="text-align:right">365 MB</td>
+                      <td class="td-neg" style="text-align:right">-24,72</td>
+                    </tr>
+                    <tr>
+                      <td>AgentWork</td><td>Agent Work</td>
+                      <td style="text-align:right">4&nbsp;984&nbsp;648</td><td style="text-align:right">9,51 GB</td>
+                      <td style="text-align:right">4&nbsp;810&nbsp;365</td><td style="text-align:right">9,18 GB</td>
+                      <td class="td-pos" style="text-align:right">174&nbsp;283</td>
+                      <td class="td-pos" style="text-align:right">340 MB</td>
+                      <td class="td-pos" style="text-align:right">3,50</td>
+                    </tr>
+                    <tr>
+                      <td>Message__c</td><td>Messages</td>
+                      <td style="text-align:right">9&nbsp;613&nbsp;888</td><td style="text-align:right">18,34 GB</td>
+                      <td style="text-align:right">9&nbsp;774&nbsp;842</td><td style="text-align:right">18,64 GB</td>
+                      <td class="td-neg" style="text-align:right">-&nbsp;160&nbsp;954</td>
+                      <td class="td-neg" style="text-align:right">314 MB</td>
+                      <td class="td-neg" style="text-align:right">-1,67</td>
+                    </tr>
+                    <tr>
+                      <td>DMT_BI_SC__c</td><td>DMT BI Service client</td>
+                      <td style="text-align:right">414&nbsp;818</td><td style="text-align:right">810 MB</td>
+                      <td style="text-align:right">570&nbsp;594</td><td style="text-align:right">1,09 GB</td>
+                      <td class="td-neg" style="text-align:right">-&nbsp;155&nbsp;776</td>
+                      <td class="td-neg" style="text-align:right">304 MB</td>
+                      <td class="td-neg" style="text-align:right">-37,55</td>
+                    </tr>
+                    <tr>
+                      <td>GRC_Enquete__c</td><td>Echanges SC/OPS</td>
+                      <td style="text-align:right">5&nbsp;065&nbsp;102</td><td style="text-align:right">9,66 GB</td>
+                      <td style="text-align:right">5&nbsp;196&nbsp;918</td><td style="text-align:right">9,91 GB</td>
+                      <td class="td-neg" style="text-align:right">-&nbsp;131&nbsp;816</td>
+                      <td class="td-neg" style="text-align:right">257 MB</td>
+                      <td class="td-neg" style="text-align:right">-2,60</td>
+                    </tr>
+                    <tr>
+                      <td>Contact</td><td>Contacts</td>
+                      <td style="text-align:right">5&nbsp;514&nbsp;173</td><td style="text-align:right">10,52 GB</td>
+                      <td style="text-align:right">5&nbsp;641&nbsp;537</td><td style="text-align:right">10,76 GB</td>
+                      <td class="td-neg" style="text-align:right">-&nbsp;127&nbsp;364</td>
+                      <td class="td-neg" style="text-align:right">249 MB</td>
+                      <td class="td-neg" style="text-align:right">-2,31</td>
+                    </tr>
+                    <tr>
+                      <td>GRC_LT__c</td><td>LT</td>
+                      <td style="text-align:right">11&nbsp;345&nbsp;028</td><td style="text-align:right">21,64 GB</td>
+                      <td style="text-align:right">11&nbsp;469&nbsp;080</td><td style="text-align:right">21,88 GB</td>
+                      <td class="td-neg" style="text-align:right">-&nbsp;124&nbsp;052</td>
+                      <td class="td-neg" style="text-align:right">242 MB</td>
+                      <td class="td-neg" style="text-align:right">-1,09</td>
+                    </tr>
+                    <tr>
+                      <td>Account</td><td>Accounts</td>
+                      <td style="text-align:right">5&nbsp;639&nbsp;941</td><td style="text-align:right">10,76 GB</td>
+                      <td style="text-align:right">5&nbsp;761&nbsp;612</td><td style="text-align:right">10,99 GB</td>
+                      <td class="td-neg" style="text-align:right">-&nbsp;121&nbsp;671</td>
+                      <td class="td-neg" style="text-align:right">238 MB</td>
+                      <td class="td-neg" style="text-align:right">-2,16</td>
+                    </tr>
+                    <tr>
+                      <td>CS24__Track_API__c</td><td>Track APIs</td>
+                      <td style="text-align:right">367&nbsp;426</td><td style="text-align:right">718 MB</td>
+                      <td style="text-align:right">251&nbsp;514</td><td style="text-align:right">491 MB</td>
+                      <td class="td-pos" style="text-align:right">115&nbsp;912</td>
+                      <td class="td-pos" style="text-align:right">226 MB</td>
+                      <td class="td-pos" style="text-align:right">31,55</td>
+                    </tr>
+                    <tr>
+                      <td>ClosEtab__c</td><td>Cl&#244;tures d&#39;&#233;tablissement</td>
+                      <td style="text-align:right">359&nbsp;606</td><td style="text-align:right">702 MB</td>
+                      <td style="text-align:right">245&nbsp;575</td><td style="text-align:right">480 MB</td>
+                      <td class="td-pos" style="text-align:right">114&nbsp;031</td>
+                      <td class="td-pos" style="text-align:right">223 MB</td>
+                      <td class="td-pos" style="text-align:right">31,71</td>
+                    </tr>
+                    <tr>
+                      <td>OptionContrat__c</td><td>Options de contrat</td>
+                      <td style="text-align:right">2&nbsp;537&nbsp;336</td><td style="text-align:right">4,84 GB</td>
+                      <td style="text-align:right">2&nbsp;450&nbsp;048</td><td style="text-align:right">4,67 GB</td>
+                      <td class="td-pos" style="text-align:right">87&nbsp;288</td>
+                      <td class="td-pos" style="text-align:right">170 MB</td>
+                      <td class="td-pos" style="text-align:right">3,44</td>
+                    </tr>
+                    <tr>
+                      <td>EmailMessage</td><td>Email Messages</td>
+                      <td style="text-align:right">831&nbsp;370</td><td style="text-align:right">7,93 GB</td>
+                      <td style="text-align:right">773&nbsp;269</td><td style="text-align:right">7,37 GB</td>
+                      <td class="td-pos" style="text-align:right">58&nbsp;101</td>
+                      <td class="td-pos" style="text-align:right">567 MB</td>
+                      <td class="td-pos" style="text-align:right">6,99</td>
+                    </tr>
+                    <tr>
+                      <td>InteractionClient__c</td><td>Interactions Client</td>
+                      <td style="text-align:right">2&nbsp;971&nbsp;800</td><td style="text-align:right">5,67 GB</td>
+                      <td style="text-align:right">3&nbsp;026&nbsp;704</td><td style="text-align:right">5,77 GB</td>
+                      <td class="td-neg" style="text-align:right">-&nbsp;54&nbsp;904</td>
+                      <td class="td-neg" style="text-align:right">107 MB</td>
+                      <td class="td-neg" style="text-align:right">-1,85</td>
+                    </tr>
+                    <tr>
+                      <td>GRC_Reponse__c</td><td>R&#233;ponses</td>
+                      <td style="text-align:right">2&nbsp;424&nbsp;911</td><td style="text-align:right">4,63 GB</td>
+                      <td style="text-align:right">2&nbsp;477&nbsp;814</td><td style="text-align:right">4,73 GB</td>
+                      <td class="td-neg" style="text-align:right">-&nbsp;52&nbsp;903</td>
+                      <td class="td-neg" style="text-align:right">103 MB</td>
+                      <td class="td-neg" style="text-align:right">-2,18</td>
+                    </tr>
+                    <tr>
+                      <td>Flux_SFAToRocbis__c</td><td>Flux SFA To Rocbis</td>
+                      <td style="text-align:right">107&nbsp;235</td><td style="text-align:right">209 MB</td>
+                      <td style="text-align:right">156&nbsp;719</td><td style="text-align:right">306 MB</td>
+                      <td class="td-neg" style="text-align:right">-&nbsp;49&nbsp;484</td>
+                      <td class="td-neg" style="text-align:right">97 MB</td>
+                      <td class="td-neg" style="text-align:right">-46,15</td>
+                    </tr>
+                    <tr>
+                      <td>MessageICP__c</td><td>MessageICPs</td>
+                      <td style="text-align:right">2&nbsp;873&nbsp;144</td><td style="text-align:right">5,48 GB</td>
+                      <td style="text-align:right">2&nbsp;834&nbsp;779</td><td style="text-align:right">5,41 GB</td>
+                      <td class="td-pos" style="text-align:right">38&nbsp;365</td>
+                      <td class="td-pos" style="text-align:right">75 MB</td>
+                      <td class="td-pos" style="text-align:right">1,34</td>
+                    </tr>
+                    <tr>
+                      <td>Injection_Siret__c</td><td>Injections Siret</td>
+                      <td style="text-align:right">356&nbsp;962</td><td style="text-align:right">697 MB</td>
+                      <td style="text-align:right">393&nbsp;269</td><td style="text-align:right">768 MB</td>
+                      <td class="td-neg" style="text-align:right">-&nbsp;36&nbsp;307</td>
+                      <td class="td-neg" style="text-align:right">71 MB</td>
+                      <td class="td-neg" style="text-align:right">-10,17</td>
+                    </tr>
+                    <tr>
+                      <td>MappingFilesAttachment__c</td><td>MappingFilesAttachments</td>
+                      <td style="text-align:right">3&nbsp;985&nbsp;382</td><td style="text-align:right">7,6 GB</td>
+                      <td style="text-align:right">3&nbsp;949&nbsp;143</td><td style="text-align:right">7,53 GB</td>
+                      <td class="td-pos" style="text-align:right">36&nbsp;239</td>
+                      <td class="td-pos" style="text-align:right">71 MB</td>
+                      <td class="td-pos" style="text-align:right">0,91</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div><!-- end compare-col -->
+          </div><!-- end data-split -->
+        </div><!-- end Data panel -->
+
+        <!-- ══ EVOLUTION TAB ══ -->
+        <div class="m-panel" id="tp50-1" style="padding:8px">
+
+          <!-- Date range row -->
+          <div class="hbox" style="gap:10px;align-items:center;margin-bottom:8px">
+            <span class="cal-lbl">From</span>
+            <input class="cal-tf" readonly value="2026-03-01" style="width:130px" data-tip="Start of the period shown on the chart">
+            <span class="cal-lbl">to</span>
+            <input class="cal-tf" readonly value="2026-05-04" style="width:130px" data-tip="End of the period shown on the chart">
+            <div class="spacer"></div>
+            <button class="cal-btn btn-b" data-tip="Show storage evolution chart for the selected period">Display evolution</button>
+          </div>
+
+          <!-- Chart area: sidebar + SVG fake chart -->
+          <div class="chart-area">
+
+            <!-- Object selector sidebar -->
+            <div class="chart-sidebar">
+              <h4>Objects</h4>
+              <div class="hbox" style="gap:4px;margin-bottom:6px">
+                <button class="cal-btn btn-d" style="font-size:10px;padding:2px 7px">Name &#8593;</button>
+                <button class="cal-btn btn-d" style="font-size:10px;padding:2px 7px">Total &#8595;</button>
+              </div>
+              <div class="cb-item"><span class="cb-dot" style="background:#3d7a8a"></span><label class="cal-chk"><input type="checkbox" checked disabled> Task (14&nbsp;990&nbsp;197)</label></div>
+              <div class="cb-item"><span class="cb-dot" style="background:#e74c3c"></span><label class="cal-chk"><input type="checkbox" checked disabled> Case (14&nbsp;518&nbsp;769)</label></div>
+              <div class="cb-item"><span class="cb-dot" style="background:#2ecc71"></span><label class="cal-chk"><input type="checkbox" checked disabled> GRC_Multi_LT__c (14&nbsp;026&nbsp;797)</label></div>
+              <div class="cb-item"><span class="cb-dot" style="background:#9b59b6"></span><label class="cal-chk"><input type="checkbox" checked disabled> GRC_LT__c (11&nbsp;345&nbsp;028)</label></div>
+              <div class="cb-item"><span class="cb-dot" style="background:#f39c12"></span><label class="cal-chk"><input type="checkbox" checked disabled> Message__c (9&nbsp;613&nbsp;888)</label></div>
+              <div class="cb-item"><span class="cb-dot" style="background:#ddd"></span><label class="cal-chk"><input type="checkbox" disabled> CaseMilestone (5&nbsp;956&nbsp;095)</label></div>
+              <div class="cb-item"><span class="cb-dot" style="background:#ddd"></span><label class="cal-chk"><input type="checkbox" disabled> Account (5&nbsp;639&nbsp;941)</label></div>
+              <div class="cb-item"><span class="cb-dot" style="background:#ddd"></span><label class="cal-chk"><input type="checkbox" disabled> Contact (5&nbsp;514&nbsp;173)</label></div>
+              <div class="cb-item"><span class="cb-dot" style="background:#ddd"></span><label class="cal-chk"><input type="checkbox" disabled> GRC_Enquete__c (5&nbsp;065&nbsp;102)</label></div>
+              <div class="cb-item"><span class="cb-dot" style="background:#ddd"></span><label class="cal-chk"><input type="checkbox" disabled> AgentWork (4&nbsp;984&nbsp;648)</label></div>
+              <div class="cb-item"><span class="cb-dot" style="background:#ddd"></span><label class="cal-chk"><input type="checkbox" disabled> MappingFilesAttachment__c (3&nbsp;985&nbsp;382)</label></div>
+              <div class="cb-item"><span class="cb-dot" style="background:#ddd"></span><label class="cal-chk"><input type="checkbox" disabled> MessageICP__c (2&nbsp;873&nbsp;144)</label></div>
+              <div class="cb-item"><span class="cb-dot" style="background:#ddd"></span><label class="cal-chk"><input type="checkbox" disabled> InteractionClient__c (2&nbsp;971&nbsp;800)</label></div>
+              <div class="cb-item"><span class="cb-dot" style="background:#ddd"></span><label class="cal-chk"><input type="checkbox" disabled> AgentWorkSkill (2&nbsp;480&nbsp;912)</label></div>
+              <div class="cb-item"><span class="cb-dot" style="background:#ddd"></span><label class="cal-chk"><input type="checkbox" disabled> GRC_Reponse__c (2&nbsp;424&nbsp;911)</label></div>
+            </div>
+
+            <!-- Chart canvas -->
+            <div class="chart-canvas-wrap">
+              <!-- Group-by toolbar -->
+              <div class="hbox" style="gap:8px;align-items:center;font-size:11px;padding-bottom:6px;margin-bottom:6px;border-bottom:1px solid #e0e8f0">
+                <span>Group by</span>
+                <input type="number" value="7" readonly style="width:48px;padding:2px 4px;font-size:11px;border:1px solid #9AABBF;border-radius:2px;text-align:center">
+                <span>day(s)</span>
+              </div>
+              <!-- Fake SVG line chart: 5 object time-series over Mar-May 2026 -->
+              <svg class="fake-chart" viewBox="0 0 760 270" xmlns="http://www.w3.org/2000/svg">
+                <!-- Grid -->
+                <line x1="55" y1="10" x2="55" y2="235" stroke="#e0e8f0" stroke-width="1"/>
+                <line x1="55" y1="235" x2="755" y2="235" stroke="#ccc" stroke-width="1"/>
+                <line x1="55" y1="183" x2="755" y2="183" stroke="#e8f0f4" stroke-width="1" stroke-dasharray="3,3"/>
+                <line x1="55" y1="131" x2="755" y2="131" stroke="#e8f0f4" stroke-width="1" stroke-dasharray="3,3"/>
+                <line x1="55" y1="79"  x2="755" y2="79"  stroke="#e8f0f4" stroke-width="1" stroke-dasharray="3,3"/>
+                <!-- Y labels -->
+                <text x="50" y="238" font-size="9" text-anchor="end" fill="#888">0</text>
+                <text x="50" y="186" font-size="9" text-anchor="end" fill="#888">5M</text>
+                <text x="50" y="134" font-size="9" text-anchor="end" fill="#888">10M</text>
+                <text x="50" y="82"  font-size="9" text-anchor="end" fill="#888">15M</text>
+                <!-- X labels -->
+                <text x="55"  y="249" font-size="9" text-anchor="middle" fill="#888">Mar 01</text>
+                <text x="180" y="249" font-size="9" text-anchor="middle" fill="#888">Mar 15</text>
+                <text x="305" y="249" font-size="9" text-anchor="middle" fill="#888">Apr 01</text>
+                <text x="430" y="249" font-size="9" text-anchor="middle" fill="#888">Apr 15</text>
+                <text x="590" y="249" font-size="9" text-anchor="middle" fill="#888">May 01</text>
+                <text x="755" y="249" font-size="9" text-anchor="middle" fill="#888">May 04</text>
+
+                <!-- Task (#3d7a8a) — highest, gently declining -->
+                <polyline points="55,195 120,194 180,193 240,192 300,191 360,190 420,189 480,188 540,187 590,186 660,185 720,184 755,183"
+                  fill="none" stroke="#3d7a8a" stroke-width="2"/>
+                <!-- Case (#e74c3c) — second, slight decline -->
+                <polyline points="55,188 120,187 180,187 240,186 300,186 360,185 420,185 480,184 540,184 590,183 660,183 720,183 755,183"
+                  fill="none" stroke="#e74c3c" stroke-width="2"/>
+                <!-- GRC_Multi_LT__c (#2ecc71) — third, slight decline -->
+                <polyline points="55,186 120,185 180,185 240,184 300,184 360,183 420,183 480,182 540,182 590,181 660,181 720,181 755,181"
+                  fill="none" stroke="#2ecc71" stroke-width="2"/>
+                <!-- GRC_LT__c (#9b59b6) — mid-range, flat -->
+                <polyline points="55,147 120,147 180,146 240,146 300,145 360,145 420,145 480,145 540,145 590,144 660,144 720,144 755,143"
+                  fill="none" stroke="#9b59b6" stroke-width="2"/>
+                <!-- Message__c (#f39c12) — slight upward trend -->
+                <polyline points="55,122 120,122 180,121 240,121 300,121 360,120 420,120 480,120 540,120 590,119 660,119 720,119 755,119"
+                  fill="none" stroke="#f39c12" stroke-width="2"/>
+
+                <!-- Legend -->
+                <rect x="60" y="14" width="10" height="3" fill="#3d7a8a"/>
+                <text x="74" y="19" font-size="9" fill="#444">Task</text>
+                <rect x="108" y="14" width="10" height="3" fill="#e74c3c"/>
+                <text x="122" y="19" font-size="9" fill="#444">Case</text>
+                <rect x="158" y="14" width="10" height="3" fill="#2ecc71"/>
+                <text x="172" y="19" font-size="9" fill="#444">GRC_Multi_LT__c</text>
+                <rect x="288" y="14" width="10" height="3" fill="#9b59b6"/>
+                <text x="302" y="19" font-size="9" fill="#444">GRC_LT__c</text>
+                <rect x="367" y="14" width="10" height="3" fill="#f39c12"/>
+                <text x="381" y="19" font-size="9" fill="#444">Message__c</text>
+              </svg>
+            </div>
+
+          </div><!-- end chart-area -->
+        </div><!-- end Evolution panel -->
+
+      </div><!-- end m-body -->
+    </div><!-- end m-tabpane -->
+
+  </div><!-- end mockup -->
+</div><!-- end mockup-wrap -->
+
+<!-- Key features modal -->
+<div id="modal-kf" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:999;align-items:center;justify-content:center" onclick="if(event.target===this)this.style.display='none'">
+  <div style="background:#fff;border-radius:8px;padding:28px 32px;max-width:540px;width:90%;color:#1a2a35;box-shadow:0 8px 32px rgba(0,0,0,.3)">
+    <h3 style="margin:0 0 14px;color:#2980b9">&#9733; Key features</h3>
+    <ul style="margin:0;padding-left:20px;line-height:1.8">
+      <li>Saves daily <code>.hist</code> snapshots of all SObject record counts and storage sizes to disk</li>
+      <li>Select one snapshot to view totals; select two to compare them side-by-side</li>
+      <li>diff and evol(%) columns are color-coded: red = record growth, green = reduction</li>
+      <li>Filter bar narrows the table to matching object names or labels in real time (500 ms debounce)</li>
+      <li>"Harmonize Values" reconciles counts across snapshots when objects were added or renamed</li>
+      <li>"Refresh Daily" forces an immediate snapshot refresh outside the scheduled window</li>
+      <li>Evolution sub-tab renders an interactive Chart.js line chart over any custom date range</li>
+      <li>Object selector sidebar lets you overlay any combination of SObjects on the chart</li>
+      <li>"Group by N days" aggregates data points to smooth daily noise into weekly or monthly trends</li>
+      <li>"Open in popup" opens the current chart selection in a detached floating window</li>
+      <li>Monitoring scope is configurable per org via Calumet Config — unmonitored orgs see a notice</li>
+      <li>Date range is persisted between sessions via <code>memoryPath.properties</code></li>
+    </ul>
+    <div style="text-align:right;margin-top:18px">
+      <button class="cal-btn btn-d" onclick="document.getElementById('modal-kf').style.display='none'">Close</button>
+    </div>
+  </div>
+</div>
+
+<script>
+function sw(id,idx){
+  var tp=document.getElementById(id);
+  tp.querySelectorAll('.m-tab').forEach(function(t,i){t.classList.toggle('act',i===idx)});
+  tp.querySelectorAll('.m-panel').forEach(function(p,i){p.classList.toggle('act',i===idx)});
+}
+</script>
+</body>
+</html>

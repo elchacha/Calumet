@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Storage — Calumet</title>
+<link rel="stylesheet" href="../shared.css">
+</head>
+<body class="tab-page">
+<div class="sum">
+  <div class="sum-title">
+    <h2>Storage</h2>
+    <span class="sum-badge">Tab 24</span>
+  </div>
+  <p class="sum-desc">Analyse org storage usage by metadata type. Identify large objects and data volume drivers.</p>
+</div>
+<div class="mockup-wrap">
+  <div class="mockup"><div class="vbox" style="gap:0px"><div class="anchor"><div class="m-tabpane" id="tp10"><div class="m-tabbar"><div class="m-tab act" onclick="sw('tp10',0)">Debug</div><div class="m-tab" onclick="sw('tp10',1)">Debug request</div><div class="m-tab" onclick="sw('tp10',2)">Results</div></div><div class="m-body"><div class="m-panel act" id="tp10-0"><div class="anchor"><span class="cal-lbl">User to debug :</span><span class="cal-lbl">Class or trigger name :</span><span class="cal-lbl">Action type :</span><input class="cal-tf" placeholder="" style="width:202.0px;" readonly><select class="cal-cb" style="width:150.0px;"><option class="ph">Select...</option></select><span class="cal-lbl">Iteration :</span><span class="cal-lbl">Line :</span><label class="cal-chk"><input type="checkbox" disabled> Dump</label><button class="cal-btn btn-d">Generate CheckPoint</button><input class="cal-tf" placeholder="" style="width:51.0px;" readonly><input class="cal-tf" placeholder="" style="width:80.0px;" readonly><textarea class="cal-ta" placeholder="" rows="16" readonly></textarea></div></div><div class="m-panel" id="tp10-1"><div class="anchor"><div class="tbl-wrap"><table class="cal-tbl"><thead><tr><th>Id</th><th style="width:150.0px">Name</th><th style="width:70.0px">ActionType</th><th style="width:120.0px">Modify by</th><th style="width:150.0px">Created</th><th style="width:150.0px">Expiration</th><th style="width:150.0px">Modified</th><th style="width:50.0px">Dump</th><th style="width:120.0px">User debugged</th><th style="width:40.0px">Iter</th><th style="width:50.0px">Line</th></tr></thead><tbody><tr><td colspan="20" class="tbl-empty"></td></tr></tbody></table></div><button class="cal-btn btn-b">Search</button></div></div><div class="m-panel" id="tp10-2"><div class="anchor"><div class="tbl-wrap"><table class="cal-tbl"><thead><tr><th>Id</th><th style="width:150.0px">Name</th><th style="width:70.0px">ActionType</th><th style="width:120.0px">CreatedBy</th><th style="width:150.0px">Created</th><th style="width:50.0px">Dump</th><th style="width:50.0px">Length</th><th style="width:120.0px">RequestBy</th><th style="width:120.0px">UserDebugged</th></tr></thead><tbody><tr><td colspan="20" class="tbl-empty"></td></tr></tbody></table></div><button class="cal-btn btn-b">Search</button></div></div></div></div></div></div></div>
+</div>
+<script>
+function sw(id,idx){
+  var tp=document.getElementById(id);
+  tp.querySelectorAll('.m-tab').forEach(function(t,i){t.classList.toggle('act',i===idx)});
+  tp.querySelectorAll('.m-panel').forEach(function(p,i){p.classList.toggle('act',i===idx)});
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Formula Tester — Calumet</title>
+<link rel="stylesheet" href="../shared.css">
+<style>
+.formula-block { display:flex; gap:16px; align-items:flex-start; margin-bottom:10px; }
+.formula-label { font-size:12px; font-weight:700; color:#2980b9; margin-bottom:4px; }
+.formula-col { flex:1; min-width:0; }
+.result-col { flex:1; min-width:0; }
+.result-box { background:#f0f4f8; border:1px solid #c0cdd8; border-radius:4px; padding:8px 10px; font-family:monospace; font-size:13px; color:#1a5276; min-height:32px; }
+.formula-ta { width:100%; font-family:monospace; font-size:12px; background:#fafcfe; border:1px solid #c0cdd8; border-radius:4px; padding:8px; resize:none; color:#1a2a35; box-sizing:border-box; }
+.status-ok { color:#27ae60; font-size:12px; font-weight:600; }
+.explode-sub { background:#f8f9fa; border:1px solid #dce3ea; border-radius:4px; padding:6px 10px; }
+.tab-expand-ta { width:100%; font-family:monospace; font-size:12px; background:#fafcfe; border:1px solid #c0cdd8; border-radius:4px; padding:8px; resize:none; color:#1a2a35; box-sizing:border-box; }
+</style>
+</head>
+<body class="tab-page">
+
+<div class="sum">
+  <div class="sum-title">
+    <h2>Formula Tester</h2>
+    <span class="sum-badge">Tab 19</span>
+  </div>
+  <p class="sum-desc">
+    Test and debug Salesforce formulas against any record ID. The Test tab evaluates one or more formulas in real time; the Explode tab pretty-prints a complex formula into a structured, readable form.
+    <button class="cal-btn btn-d" style="margin-left:10px" onclick="document.getElementById('modal-kf').style.display='flex'">&#9733; Key features</button>
+  </p>
+</div>
+
+<div class="mockup-wrap">
+  <div class="mockup">
+
+    <div class="m-tabpane" id="tp19">
+      <div class="m-tabbar">
+        <div class="m-tab act" onclick="sw('tp19',0)">Test</div>
+        <div class="m-tab" onclick="sw('tp19',1)">Explode</div>
+      </div>
+      <div class="m-body">
+
+        <!-- Test panel -->
+        <div class="m-panel act" id="tp19-0">
+          <div style="padding:10px;">
+
+            <!-- Row 1: field type + object ID + status -->
+            <div class="hbox" style="gap:10px;align-items:center;margin-bottom:8px;">
+              <span class="cal-lbl">Field type</span>
+              <select class="cal-cb" style="width:150px" disabled data-tip="Return type expected from the formula">
+                <option>Text</option>
+                <option>Checkbox</option>
+                <option>Date</option>
+                <option>Double</option>
+                <option>Decimal</option>
+              </select>
+              <div class="vsep" style="height:20px"></div>
+              <span class="cal-lbl">Object ID</span>
+              <input class="cal-tf" style="width:210px" value="001G500000yDfaNIAS" readonly data-tip="Salesforce record Id used as context for formula evaluation">
+              <div class="spacer"></div>
+              <span class="status-ok">Record type : Account</span>
+            </div>
+
+            <!-- Row 2: optional query -->
+            <div class="hbox" style="gap:10px;align-items:center;margin-bottom:8px;">
+              <span class="cal-lbl">Optional query</span>
+              <input class="cal-tf cal-grow" placeholder="SOQL filter applied before formula evaluation" readonly data-tip="Optional SOQL WHERE clause to narrow the target records">
+            </div>
+
+            <!-- Row 3: execute + formula count + explode -->
+            <div class="hbox" style="gap:10px;align-items:center;margin-bottom:14px;">
+              <button class="cal-btn btn-b" data-tip="Evaluate all formulas against the provided record Id">Execute formulas</button>
+              <div class="vsep" style="height:20px"></div>
+              <span class="cal-lbl">Formulas</span>
+              <input class="cal-tf" style="width:50px;text-align:center" value="1" readonly data-tip="Number of formula inputs to display">
+              <label class="cal-chk" data-tip="Split a compound formula on &amp;&amp; into individual sub-formulas"><input type="checkbox" disabled> Explode formula (Beta)</label>
+            </div>
+
+            <!-- Formula 1 (single mode) -->
+            <div class="formula-block">
+              <div class="formula-col">
+                <div class="formula-label">Formula 1</div>
+                <textarea class="formula-ta" rows="8" readonly>IF(ISPICKVAL(Type, "Customer")
+  &amp;&amp; AnnualRevenue &gt; 1000000
+  &amp;&amp; ISPICKVAL(Industry, "Technology"),
+  "Strategic",
+  "Standard"
+)</textarea>
+              </div>
+              <div class="result-col">
+                <div class="formula-label">Result 1</div>
+                <div class="result-box">Standard</div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Explode panel -->
+        <div class="m-panel" id="tp19-1">
+          <div style="padding:10px;">
+
+            <!-- Row 1: label + expand button -->
+            <div class="hbox" style="gap:10px;align-items:center;margin-bottom:8px;">
+              <span class="cal-lbl">Formula to expand</span>
+              <div class="spacer"></div>
+              <button class="cal-btn btn-b" data-tip="Format and expand the pasted formula into a readable structure">Expand formula</button>
+            </div>
+
+            <!-- Input formula -->
+            <div style="margin-bottom:10px;">
+              <textarea class="tab-expand-ta" rows="5" readonly>IF(AND(ISPICKVAL(StageName,"Closed Won"),AnnualRevenue&gt;1000000,NOT(ISPICKVAL(Type,"Partner"))),"Strategic Win","Standard")</textarea>
+            </div>
+
+            <!-- Exploded result -->
+            <div class="formula-label" style="margin-bottom:4px;">Expanded formula</div>
+            <textarea class="tab-expand-ta" rows="10" readonly>IF(
+  AND(
+    ISPICKVAL(StageName, "Closed Won"),
+    AnnualRevenue &gt; 1000000,
+    NOT(
+      ISPICKVAL(Type, "Partner")
+    )
+  ),
+  "Strategic Win",
+  "Standard"
+)</textarea>
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Key features modal -->
+<div id="modal-kf" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:999;align-items:center;justify-content:center" onclick="if(event.target===this)this.style.display='none'">
+  <div style="background:#fff;border-radius:8px;padding:28px 32px;max-width:520px;width:90%;color:#1a2a35;box-shadow:0 8px 32px rgba(0,0,0,.3)">
+    <h3 style="margin:0 0 14px;color:#2980b9">&#9733; Key features</h3>
+    <ul style="margin:0;padding-left:20px;line-height:1.8">
+      <li>Evaluate any Salesforce formula against a real record ID without deploying</li>
+      <li>Choose the expected return type (Text, Checkbox, Date, Double, etc.)</li>
+      <li>Test multiple formulas simultaneously by increasing the formula count</li>
+      <li>Explode mode splits a compound formula on &amp;&amp; into individual sub-conditions</li>
+      <li>Expand tab pretty-prints any raw formula into indented, readable structure</li>
+      <li>Optional SOQL query filter to narrow context before evaluation</li>
+    </ul>
+    <div style="text-align:right;margin-top:18px">
+      <button class="cal-btn btn-d" onclick="document.getElementById('modal-kf').style.display='none'">Close</button>
+    </div>
+  </div>
+</div>
+
+<script>
+function sw(id,idx){
+  var tp=document.getElementById(id);
+  tp.querySelectorAll('.m-tab').forEach(function(t,i){t.classList.toggle('act',i===idx)});
+  tp.querySelectorAll('.m-panel').forEach(function(p,i){p.classList.toggle('act',i===idx)});
+}
+</script>
+</body>
+</html>

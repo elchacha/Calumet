@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SOQL Bulk Executor — Calumet</title>
+<link rel="stylesheet" href="../shared.css">
+</head>
+<body class="tab-page">
+<div class="sum">
+  <div class="sum-title">
+    <h2>SOQL Bulk Executor</h2>
+    <span class="sum-badge">Tab 61</span>
+  </div>
+  <p class="sum-desc">Execute SOQL queries in bulk mode with configurable timeout, result cap and fast-count option.</p>
+</div>
+<div class="mockup-wrap">
+  <div class="mockup"><div class="vbox" style="gap:0px"><div class="anchor"><div class="split-pane"><div class="split-panel"><div class="anchor"><div class="anchor"></div></div><div class="anchor"><span class="cal-lbl">Timeout (s)</span><input class="cal-tf" placeholder="" style="width:47.0px;" readonly><span class="cal-lbl">Max display</span><input class="cal-tf" placeholder="" style="width:66.0px;" readonly><button class="cal-btn btn-d">Execute</button><label class="cal-chk"><input type="checkbox" disabled> Fast count</label><label class="cal-chk"><input type="checkbox" disabled> Bulk Mode</label><select class="cal-cb" style="width:255.0px;"><option class="ph">Select...</option></select><button class="cal-btn btn-d">Save query</button><label class="cal-chk"><input type="checkbox" disabled> Tooling</label><label class="cal-chk"><input type="checkbox" checked disabled> Filter * query</label><input class="cal-tf" placeholder="" style="width:77.0px;" readonly><span class="cal-lbl">Max</span><input class="cal-tf" placeholder="" style="width:77.0px;" readonly><label class="cal-chk"><input type="checkbox" disabled> No Check</label><button class="cal-btn btn-d">Open query folder</button><button class="cal-btn btn-d">Refresh list</button><span class="cal-lbl">Number of records :</span><span class="cal-lbl">RecordsFound</span><span class="cal-lbl">Separator</span><select class="cal-cb" style="width:57.0px;"><option class="ph">Select...</option></select><button class="cal-btn btn-b">Extract</button><label class="cal-chk"><input type="checkbox" disabled> Add &quot; &quot; to value</label><label class="cal-chk"><input type="checkbox" disabled> truncate if exceeding 32K</label><div class="anchor"></div><input class="cal-tf" placeholder="" style="width:210.0px;" readonly><label class="cal-chk"><input type="checkbox" disabled> monoQueries</label><span class="cal-lbl">bulk Consommation</span><button class="cal-btn btn-d">show query</button><span class="cal-lbl">Max *</span><label class="cal-chk"><input type="checkbox" disabled> reuse filter on execution</label></div></div></div><span class="cal-lbl">Label</span></div></div></div>
+</div>
+<script>
+function sw(id,idx){
+  var tp=document.getElementById(id);
+  tp.querySelectorAll('.m-tab').forEach(function(t,i){t.classList.toggle('act',i===idx)});
+  tp.querySelectorAll('.m-panel').forEach(function(p,i){p.classList.toggle('act',i===idx)});
+}
+</script>
+</body>
+</html>

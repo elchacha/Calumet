@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>DataSeeding — Calumet</title>
+<link rel="stylesheet" href="../shared.css">
+<style>
+.ds-stepper{display:flex;flex-wrap:wrap;align-items:center;gap:6px;padding:8px 12px 2px;background:#eef5fb}
+.ds-st{display:flex;align-items:center;gap:6px}
+.ds-st .c{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;background:#e3e7ea;color:#55687a;border:1px solid #cfd6db;flex-shrink:0}
+.ds-st.act .c{background:#2c6fd1;border-color:#2c6fd1;color:#fff}
+.ds-st .t{font-weight:700;font-size:11px;color:#1a2a35;line-height:1.1}
+.ds-st .s{font-size:9px;color:#55687a;line-height:1.2;white-space:nowrap}
+.ds-sep{color:#9AABBF;font-size:11px;margin:0 2px}
+.ds-opt{font-style:italic;font-size:10px;color:#7f8c8d;margin:0 4px 0 6px}
+.ds-band{display:flex;flex-wrap:wrap;gap:8px;align-items:center;padding:6px 12px;background:#dce9f0;border-bottom:1px solid #9AABBF}
+.ds-hint{font-size:11px;color:#4a5f70;font-style:italic;padding:0 0 4px}
+.ds-card{border:1px solid #c9d6df;background:#fbfdff;border-radius:4px;padding:8px 10px}
+.ds-card-h{display:flex;align-items:center;gap:7px;font-weight:700;font-size:12px;margin-bottom:7px}
+.ds-num{width:19px;height:19px;border-radius:50%;background:#2c6fd1;color:#fff;font-size:10.5px;font-weight:700;display:inline-flex;align-items:center;justify-content:center}
+.ds-note{font-size:10.5px;font-style:italic;color:#3d7a8a}
+.ds-box{background:#dce9f0;border:1px solid #9AABBF;border-radius:4px;padding:8px 12px}
+.ds-pill{display:inline-block;padding:1px 9px;border-radius:10px;color:#fff;font-size:10px;font-weight:700}
+.ds-bar{flex:1;height:16px;background:#c8dae6;border-radius:3px;overflow:hidden;max-width:300px}
+.ds-fail{border:1px solid #9AABBF;background:#fff;border-radius:3px;padding:8px 10px;font-family:Consolas,monospace;font-size:10.5px;line-height:1.55;color:#1a2a35}
+.ds-lnk{color:#2980b9;text-decoration:underline;cursor:pointer}
+.ds-lnk-red{color:#C0392B;font-weight:700;text-decoration:underline;cursor:pointer}
+</style>
+</head>
+<body class="tab-page">
+
+<div class="sum">
+  <div class="sum-title">
+    <h2>DataSeeding</h2>
+    <span class="sum-badge">Tab 77</span>
+  </div>
+  <p class="sum-desc">
+    Org-to-org data migration tool — configure a source and a target org, export records with dependency traversal, and import them into the target org in five steps, with an optional Automation tab and a Clean tab.
+    <button class="cal-btn btn-d" style="margin-left:10px" onclick="document.getElementById('modal-kf').style.display='flex'">&#9733; Key features</button>
+  </p>
+</div>
+
+<div class="mockup-wrap">
+  <div class="mockup">
+
+    <!-- Header band -->
+    <div class="ds-band">
+      <span class="spacer"></span>
+      <span style="font-weight:bold">Active config:</span>
+      <span class="cal-lbl" style="color:#2980b9;font-weight:bold">Config-Alpha</span>
+      <div class="vsep"></div>
+      <span style="font-weight:bold">Source:</span>
+      <span class="cal-lbl" style="color:#27ae60;font-weight:bold">FULL</span>
+      <div class="vsep"></div>
+      <span style="font-weight:bold">Target:</span>
+      <span class="cal-lbl" style="color:#27ae60;font-weight:bold">sandbox-dev1</span>
+      <button class="cal-btn btn-d" data-tip="Open the main folder of the active configuration">Open</button>
+      <span class="spacer"></span>
+      <button class="cal-btn btn-b" data-tip="Open the interactive tutorial">Tutorial &#8599;</button>
+      <button class="cal-btn btn-d" data-tip="Open the Data Seeding step-by-step guide">How To &#8599;</button>
+    </div>
+
+    <!-- Step chips -->
+    <div class="ds-stepper">
+      <div class="ds-st act"><span class="c">1</span><div><div class="t">Config</div><div class="s">Source, target, paths&hellip;</div></div></div><span class="ds-sep">&rsaquo;</span>
+      <div class="ds-st"><span class="c">2</span><div><div class="t">Objects</div><div class="s">Select &amp; filter</div></div></div><span class="ds-sep">&rsaquo;</span>
+      <div class="ds-st"><span class="c">3</span><div><div class="t">Prepare</div><div class="s">Preview &amp; validate</div></div></div><span class="ds-sep">&rsaquo;</span>
+      <div class="ds-st"><span class="c">4</span><div><div class="t">Export</div><div class="s">Download data</div></div></div><span class="ds-sep">&rsaquo;</span>
+      <div class="ds-st"><span class="c">5</span><div><div class="t">Import</div><div class="s">Import into target</div></div></div>
+      <span class="ds-opt">Optional</span>
+      <div class="ds-st"><div><div class="t">Automation</div><div class="s">Mute triggers &amp; flows</div></div></div>
+      <div class="ds-st" style="margin-left:10px"><div><div class="t">Clean</div><div class="s">Delete target records</div></div></div>
+    </div>
+
+    <!-- Sub-tab pane -->
+    <div class="m-tabpane" id="tp77">
+      <div class="m-tabbar">
+        <div class="m-tab act" onclick="sw('tp77',0)">1 &middot; Config</div>
+        <div class="m-tab" onclick="sw('tp77',1)" data-tip="Shown only when the Config option 'Community users (Experience Cloud)' is ticked">Community Users</div>
+        <div class="m-tab" onclick="sw('tp77',2)">Automation</div>
+        <div class="m-tab" onclick="sw('tp77',3)">2 &middot; Objects</div>
+        <div class="m-tab" onclick="sw('tp77',4)">3 &middot; Prepare</div>
+        <div class="m-tab" onclick="sw('tp77',5)">4 &middot; Export</div>
+        <div class="m-tab" onclick="sw('tp77',6)">5 &middot; Import</div>
+        <div class="m-tab" onclick="sw('tp77',7)">Clean</div>
+      </div>
+      <div class="m-body">
+
+        <!-- ══ 0 : Config ══ -->
+        <div class="m-panel act" id="tp77-0">
+          <div class="vbox" style="gap:8px">
+            <div class="ds-hint">Config &middot; name this run and point it at a source org, a target org and a working folder. Every tab below reads that configuration.</div>
+
+            <div class="hbox" style="gap:8px;align-items:center">
+              <span class="cal-lbl" style="min-width:110px">Config directory:</span>
+              <input class="cal-tf cal-grow" readonly value="C:\tmp\seeding">
+              <button class="cal-btn btn-d">Browse...</button>
+            </div>
+
+            <div class="split-pane" style="gap:0;min-height:400px">
+              <div class="split-panel" style="max-width:200px;min-width:160px;padding-right:8px;border-right:1px solid #9AABBF">
+                <div class="vbox" style="gap:6px">
+                  <span style="font-weight:bold;font-size:12px;color:#1A5276">Configurations</span>
+                  <div class="hbox" style="gap:6px;flex-wrap:nowrap">
+                    <button class="cal-btn btn-g" style="flex:1" data-tip="Create a new configuration">New</button>
+                    <button class="cal-btn btn-o" style="flex:1" data-tip="Clone the selected configuration, e.g. to aim it at another sandbox">Clone</button>
+                    <button class="cal-btn btn-r" style="flex:1" data-tip="Delete the selected configuration">Delete</button>
+                  </div>
+                  <div class="cal-listview" style="min-height:240px;padding:4px 0">
+                    <div style="padding:3px 10px;background:#d0e8f4;color:#1A5276;font-weight:bold">Config-Alpha</div>
+                    <div style="padding:3px 10px;color:#888">Config-Beta</div>
+                    <div style="padding:3px 10px;color:#888">Config-Gamma</div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="split-panel" style="padding-left:12px">
+                <div class="vbox" style="gap:8px">
+                  <span style="font-weight:bold;font-size:13px;color:#1A5276">Edit: Config-Alpha</span>
+
+                  <div class="hbox" style="gap:8px;flex-wrap:nowrap">
+                    <div class="ds-card" style="flex:1">
+                      <div class="ds-card-h"><span class="ds-num">1</span>General information</div>
+                      <div class="hbox" style="gap:8px;align-items:center;flex-wrap:nowrap">
+                        <span class="cal-lbl">Name</span>
+                        <input class="cal-tf" readonly value="Config-Alpha" style="width:130px">
+                        <span class="cal-lbl">Max depth</span>
+                        <input class="cal-tf" readonly value="15" style="width:44px;text-align:center" data-tip="Maximum traversal depth (higher = more relations resolved)">
+                      </div>
+                    </div>
+                    <div class="ds-card" style="flex:1.2">
+                      <div class="ds-card-h"><span class="ds-num">2</span>Source &amp; Target organizations</div>
+                      <div class="hbox" style="gap:8px;align-items:center;flex-wrap:nowrap">
+                        <span class="cal-lbl">Source org</span>
+                        <select class="cal-cb" style="width:100px" disabled><option>FULL</option></select>
+                        <span class="cal-lbl">Target org</span>
+                        <select class="cal-cb" style="width:110px" disabled><option>sandbox-dev1</option></select>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="ds-card">
+                    <div class="ds-card-h"><span class="ds-num">3</span>Export path</div>
+                    <div class="hbox" style="gap:8px;align-items:center;flex-wrap:nowrap">
+                      <span class="cal-lbl" style="min-width:60px">Main path</span>
+                      <input class="cal-tf cal-grow" readonly value="C:\tmp\seeding\Config-Alpha">
+                      <button class="cal-btn btn-d" style="width:32px" data-tip="Choose main path directory">&hellip;</button>
+                    </div>
+                    <label class="cal-chk" style="margin-top:6px" data-tip="Adds the Community Users tab to the strip when ticked">
+                      <input type="checkbox" disabled> Community users (Experience Cloud)
+                    </label>
+                  </div>
+
+                  <div class="ds-card">
+                    <div class="ds-card-h"><span class="ds-num">4</span>Query mode</div>
+                    <div class="hbox" style="gap:14px;align-items:center">
+                      <span style="font-weight:bold">Mode</span>
+                      <label class="cal-chk"><input type="radio" name="qm" checked disabled> Basic</label>
+                      <label class="cal-chk"><input type="radio" name="qm" disabled> Single query</label>
+                      <label class="cal-chk"><input type="radio" name="qm" disabled> Full copy</label>
+                    </div>
+                    <div class="ds-note" style="margin:4px 0 6px">Basic: the seed query is expanded into parents AND children up to Max depth. Single query keeps only the seed and its mandatory parents. In Full copy the Start query is ignored.</div>
+                    <div class="hbox" style="gap:10px;align-items:flex-start;flex-wrap:nowrap">
+                      <span class="cal-lbl" style="min-width:60px;padding-top:4px">Start query</span>
+                      <textarea class="cal-ta cal-grow" readonly rows="2">SELECT Id FROM Case ORDER BY CreatedDate DESC LIMIT 40</textarea>
+                    </div>
+                    <div class="hbox" style="gap:10px;align-items:center;flex-wrap:nowrap;margin-top:6px">
+                      <span class="cal-lbl" style="min-width:60px">Import after</span>
+                      <select class="cal-cb" style="width:200px" disabled data-tip="If set, import will pre-load oldNewIds from this config and skip records already imported there"><option>None (independent import)</option></select>
+                    </div>
+                    <div class="ds-note" style="margin-top:6px">Changing the Start query of a config that already has a plan, an export or an import asks before clearing everything built from the old one. The data model, selected objects, limits, user remap and automation are kept.</div>
+                  </div>
+
+                  <div class="ds-card">
+                    <div class="ds-card-h"><span class="ds-num">5</span>Advanced features</div>
+                    <label class="cal-chk"><input type="checkbox" disabled> Enable debug mode (one CSV per query, IDs analyser and import debugger)</label>
+                  </div>
+
+                  <div class="hbox" style="gap:8px;align-items:center;flex-wrap:nowrap">
+                    <span class="cal-lbl" style="color:#3d7a8a;font-style:italic">Saved: Config-Alpha</span>
+                    <span class="spacer"></span>
+                    <button class="cal-btn btn-d">Cancel</button>
+                    <button class="cal-btn btn-d">Save</button>
+                    <button class="cal-btn btn-b">Save &amp; Next &rarr;</button>
+                  </div>
+                  <span class="cal-lbl" style="color:#888;font-size:11px">Tick &ldquo;Enable debug mode&rdquo; to add two diagnostic tabs after Import: IDs Export and Debug Import.</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ══ 1 : Community Users ══ -->
+        <div class="m-panel" id="tp77-1">
+          <div class="vbox" style="gap:12px">
+            <div class="ds-hint">Community Users &middot; Experience Cloud orgs only. Portal users are exported and recreated apart from standard records, with rewritten usernames.</div>
+            <div class="hbox" style="gap:10px;align-items:center">
+              <span class="cal-lbl" style="min-width:60px;font-weight:bold">Profile:</span>
+              <select class="cal-cb cal-grow" disabled data-tip="Community profiles loaded from the source org (users with a ContactId)"><option>Customer Community Login</option></select>
+            </div>
+            <div class="hbox" style="gap:10px;align-items:center">
+              <span class="cal-lbl" style="font-weight:bold">Extension for new userNames that will be created:</span>
+              <input class="cal-tf" readonly value="myorg_uat" style="width:200px">
+            </div>
+            <span class="cal-lbl" style="color:#e67e22;font-weight:bold">&#9888; 7 user(s) with this profile already exist in target org &mdash; importing again is usually pointless</span>
+            <div class="hbox" style="gap:12px;align-items:center">
+              <button class="cal-btn btn-b" data-tip="Export community Account, Contact and User records from the source org">Export Community</button>
+              <button class="cal-btn btn-b" data-tip="Import community Account, Contact and User records into the target org">Import Community</button>
+            </div>
+            <div class="vbox ds-box" style="gap:4px">
+              <span style="font-family:Consolas,monospace;color:#27ae60;font-weight:bold">&#10003; Export complete &mdash; 7 accounts | 7 contacts | 7 community users</span>
+              <span class="cal-lbl" style="color:#888;font-size:11px">Source: FULL &middot; CSVs written to C:\tmp\seeding\Config-Alpha\community\</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- ══ 2 : Automation ══ -->
+        <div class="m-panel" id="tp77-2">
+          <div class="vbox" style="gap:10px">
+            <div class="ds-hint">Automation &middot; mute the triggers, flows and rules of the target org before importing, then restore them. Not a step: a run comes back to it twice, before and after the import.</div>
+            <div class="hbox" style="gap:8px;align-items:center">
+              <button class="cal-btn btn-b" data-tip="Query the target org to get current automation status">Check status</button>
+              <span class="cal-lbl" style="font-weight:bold;color:#27ae60">&rarr; sandbox-dev1</span>
+            </div>
+            <div class="vbox ds-box" style="gap:6px">
+              <div class="hbox" style="gap:8px;align-items:center"><span style="font-weight:bold;min-width:80px">Status:</span><span style="color:#E74C3C;font-weight:bold">Disabled &mdash; flows &amp; triggers are off</span></div>
+              <div style="margin-left:88px;font-size:10.5px;color:#55687a;line-height:1.5">
+                &ldquo;Disable&rdquo; also turns off process builders &amp; workflow rules. 6 validation rule(s) are active &mdash; tick the box below to disable them too.<br>
+                Managed-package automations (0 flow(s), 14 trigger(s)) can't be changed and are left untouched.<br>
+                Backup ready to restore: 3 flow(s), 5 trigger(s), 0 validation rule(s), 0 workflow rule(s).
+              </div>
+              <div class="hbox" style="gap:8px;align-items:center"><span style="font-weight:bold;min-width:80px">Retrieve dir:</span>
+                <span style="color:#3d7a8a;font-size:11px">C:\tmp\seeding\Config-Alpha\automationRetrieve</span>
+                <button class="cal-btn btn-d" data-tip="Open the retrieve directory in the file explorer">Open</button></div>
+            </div>
+            <label class="cal-chk"><input type="checkbox" disabled> Also disable Validation Rules</label>
+            <div class="hbox" style="gap:10px;align-items:center">
+              <button class="cal-btn btn-o" data-tip="Back up, then deactivate flows, triggers, process builders and workflow rules on the target org. An existing backup is kept, never overwritten." disabled style="opacity:.5">Disable automations</button>
+              <button class="cal-btn btn-g" data-tip="Restore automations from the backup on the target org">Re-enable automations</button>
+              <span class="cal-lbl" style="color:#7f8c8d;font-style:italic">All automations disabled.</span>
+              <button class="cal-btn btn-d" data-tip="Show the full operation log">View log</button>
+            </div>
+            <span style="font-weight:bold;font-size:12px;color:#1A5276">Execution log</span>
+            <textarea class="cal-ta" readonly rows="8" style="font-family:Consolas,monospace;font-size:10px">Retrieving automations from sandbox-dev1 ...
+Package: 3 flow definition(s), 5 trigger(s), 0 validation rule(s), 0 workflow rule(s) (managed excluded)
+Retrieve Status: Succeeded ...
+Inactivating flows ...
+Inactivating triggers ...
+Deploying inactivated automations ...
+Deploy: Succeeded (8/8)
+Disabling process builders ...
+All automations disabled.</textarea>
+          </div>
+        </div>
+
+        <!-- ══ 3 : Objects ══ -->
+        <div class="m-panel" id="tp77-3">
+          <div class="vbox" style="gap:8px">
+            <div class="ds-hint">Objects &middot; choose which objects the run may touch, and see how many records each one holds today.</div>
+            <div class="hbox" style="gap:8px;align-items:center">
+              <button class="cal-btn btn-b" data-tip="Retrieve all objects and relations from Salesforce">Refresh</button>
+              <button class="cal-btn btn-d" data-tip="Show or hide the Hide-* filters">Hide filters</button>
+              <div class="vsep"></div>
+              <label class="cal-chk"><input type="checkbox" disabled> Hide ignored</label>
+              <label class="cal-chk"><input type="checkbox" disabled> Hide no-relation</label>
+              <label class="cal-chk"><input type="checkbox" disabled> Hide with parents</label>
+              <label class="cal-chk"><input type="checkbox" disabled> Hide with children</label>
+              <span class="cal-lbl" style="color:#3d7a8a;font-style:italic">8 objects loaded (2 ignored).</span>
+              <button class="cal-btn btn-g" data-tip="Open the ignore list manager">Ignore list &#8599;</button>
+              <button class="cal-btn btn-b" data-tip="Open the objects related to the seed object (parents, children), and flag the Main ones">Related Objects &#8599;</button>
+              <div class="spacer"></div>
+              <span class="cal-lbl" style="color:#888">Ignore profile</span>
+              <select class="cal-cb" style="width:120px" disabled><option>global</option></select>
+              <button class="cal-btn btn-b" data-tip="Load profile: reset all checkboxes then apply the saved selection">Load</button>
+              <button class="cal-btn btn-g" data-tip="Save the current checkbox state under this profile name">Save</button>
+              <button class="cal-btn btn-r" data-tip="Delete this profile">Delete</button>
+            </div>
+            <div class="hbox" style="gap:8px;align-items:center">
+              <button class="cal-btn btn-g" data-tip="Select all visible objects for export">Select All</button>
+              <button class="cal-btn btn-o" data-tip="Deselect all visible objects">Deselect All</button>
+              <button class="cal-btn btn-b" data-tip="Query the target org — objects not found are added to the ignore list">Check objects exist on target</button>
+            </div>
+            <div class="tbl-wrap">
+              <table class="cal-tbl">
+                <thead><tr>
+                  <th style="width:55px;text-align:center">Export</th>
+                  <th style="width:50px;text-align:center" data-tip="Appears once the Related Objects popup has been opened">Main</th>
+                  <th style="width:200px">API Name</th>
+                  <th style="width:180px">Label</th>
+                  <th style="width:80px;text-align:center">Records</th>
+                  <th style="width:70px;text-align:center">Parents</th>
+                  <th style="width:80px;text-align:center">Children</th>
+                </tr></thead>
+                <tbody>
+                  <tr><td style="text-align:center"><input type="checkbox" checked disabled></td><td style="text-align:center"><input type="checkbox" disabled></td><td>Account</td><td>Account</td><td style="text-align:center">4,210</td><td style="text-align:center">1</td><td style="text-align:center">6</td></tr>
+                  <tr><td style="text-align:center"><input type="checkbox" checked disabled></td><td style="text-align:center"><input type="checkbox" checked disabled></td><td>Case</td><td>Case</td><td style="text-align:center">12,880</td><td style="text-align:center">3</td><td style="text-align:center">4</td></tr>
+                  <tr><td style="text-align:center"><input type="checkbox" checked disabled></td><td style="text-align:center"><input type="checkbox" disabled></td><td>Contact</td><td>Contact</td><td style="text-align:center">9,455</td><td style="text-align:center">1</td><td style="text-align:center">5 &#9889;</td></tr>
+                  <tr><td style="text-align:center"><input type="checkbox" checked disabled></td><td style="text-align:center"><input type="checkbox" disabled></td><td>GRC_Item__c</td><td>GRC Item</td><td style="text-align:center">1,320</td><td style="text-align:center">2</td><td style="text-align:center">1</td></tr>
+                  <tr><td style="text-align:center"><input type="checkbox" checked disabled></td><td style="text-align:center"><input type="checkbox" disabled></td><td>CRM_Survey__c</td><td>CRM Survey</td><td style="text-align:center">640</td><td style="text-align:center">2</td><td style="text-align:center">2 &#9889;</td></tr>
+                  <tr style="color:#9aa8b3"><td style="text-align:center"><input type="checkbox" disabled></td><td style="text-align:center"><input type="checkbox" disabled></td><td>Entitlement</td><td>Entitlement</td><td style="text-align:center">85</td><td style="text-align:center">2</td><td style="text-align:center">2</td></tr>
+                  <tr><td style="text-align:center"><input type="checkbox" checked disabled></td><td style="text-align:center"><input type="checkbox" disabled></td><td>EmailMessage</td><td>Email Message</td><td style="text-align:center">31,904</td><td style="text-align:center">2</td><td style="text-align:center">1</td></tr>
+                  <tr style="color:#9aa8b3"><td style="text-align:center"><input type="checkbox" disabled></td><td style="text-align:center"><input type="checkbox" disabled></td><td>User</td><td>User</td><td style="text-align:center">312</td><td style="text-align:center"></td><td style="text-align:center">3</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <span class="cal-lbl" style="color:#888;font-size:11px">&#9889; next to Children: at least one child object points to this one through a required lookup (a field that can't be left empty). Those children can't be inserted without their parent.</span>
+
+            <hr class="hsep">
+            <div class="hbox" style="gap:12px;align-items:flex-start">
+              <div class="vbox" style="gap:4px;flex:1;min-width:280px">
+                <span style="font-weight:bold;font-size:12px;color:#1A5276">Ignore list &#8599; (popup)</span>
+                <div class="split-pane" style="gap:8px">
+                  <div class="split-panel" style="flex:1.4">
+                    <div class="tbl-wrap"><table class="cal-tbl"><thead><tr><th>API Name</th><th style="text-align:center">Records</th></tr></thead><tbody>
+                      <tr><td>Account</td><td style="text-align:center">4,210</td></tr>
+                      <tr><td>Case</td><td style="text-align:center">12,880</td></tr>
+                      <tr><td>EmailMessage</td><td style="text-align:center">31,904</td></tr>
+                    </tbody></table></div>
+                    <button class="cal-btn btn-d" style="width:100%;margin-top:4px">&rarr; Ignore selected</button>
+                  </div>
+                  <div class="split-panel">
+                    <div class="tbl-wrap"><table class="cal-tbl"><thead><tr><th>Ignored</th><th style="text-align:center">Records</th></tr></thead><tbody>
+                      <tr><td>Entitlement</td><td style="text-align:center">85</td></tr>
+                      <tr><td>User</td><td style="text-align:center">312</td></tr>
+                    </tbody></table></div>
+                    <button class="cal-btn btn-d" style="width:100%;margin-top:4px">&larr; Remove from ignore</button>
+                  </div>
+                </div>
+                <span class="ds-note">Ignored objects are greyed out and unchecked. The list is kept per org and outlives any one config. Clear all ignored empties it.</span>
+              </div>
+              <div class="vbox" style="gap:4px;flex:1;min-width:280px">
+                <span style="font-weight:bold;font-size:12px;color:#1A5276">Related Objects &#8599; (popup) &mdash; Related to: Case</span>
+                <div class="tbl-wrap"><table class="cal-tbl"><thead><tr><th style="width:130px">Direction</th><th>Object</th><th style="width:60px;text-align:center">Main</th></tr></thead><tbody>
+                  <tr><td><span class="ds-pill" style="background:#27ae60">PARENT</span></td><td>Account</td><td style="text-align:center"><input type="checkbox" checked disabled></td></tr>
+                  <tr><td><span class="ds-pill" style="background:#27ae60">PARENT</span></td><td>Contact</td><td style="text-align:center"><input type="checkbox" checked disabled></td></tr>
+                  <tr><td><span class="ds-pill" style="background:#2c7fb8">PARENT+CHILD</span></td><td>GRC_Item__c</td><td style="text-align:center"><input type="checkbox" disabled></td></tr>
+                  <tr><td><span class="ds-pill" style="background:#e67e22">CHILD</span></td><td>EmailMessage</td><td style="text-align:center"><input type="checkbox" disabled></td></tr>
+                  <tr><td><span class="ds-pill" style="background:#e67e22">CHILD</span></td><td>CRM_Survey__c</td><td style="text-align:center"><input type="checkbox" disabled></td></tr>
+                </tbody></table></div>
+                <span class="ds-note">Tick Main for the objects that are the core of the run: a Main object counts as selected for export, and its queries appear as MAIN in the traversal plan.</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ══ 4 : Prepare ══ -->
+        <div class="m-panel" id="tp77-4">
+          <div class="vbox" style="gap:8px">
+            <div class="ds-hint">Prepare &middot; read the relations between the selected objects and build the traversal plan: which queries run, in which order, under which limits.</div>
+            <div class="hbox" style="gap:10px;align-items:flex-start;flex-wrap:nowrap">
+              <div class="hbox" style="gap:8px;align-items:center">
+                <button class="cal-btn btn-g" data-tip="Reads the selected objects and produces _relations.csv, the data model the plan is built from">1 &middot; Extract Metadata &#10003;</button>
+                <button class="cal-btn btn-g" data-tip="Builds the traversal plan. Deletes the CSV files already exported, so Calumet asks first.">2 &middot; Generate Relation Queries &#10003;</button>
+                <button class="cal-btn btn-d" data-tip="Reload the traversal plan from disk and refresh the stats">Reload plan</button>
+                <button class="cal-btn btn-o" data-tip="Open a readable summary of the plan, including any selected object the plan cannot reach">Report &#8599;</button>
+              </div>
+              <div class="spacer"></div>
+              <div class="vbox ds-box" style="gap:4px;max-width:430px">
+                <div class="hbox" style="gap:14px;align-items:baseline">
+                  <span style="font-weight:bold;color:#1A5276">Traversal Plan</span>
+                  <span class="cal-lbl">Total: 202</span>
+                  <span style="color:#2980b9;font-weight:bold">SEED: 1</span>
+                  <span style="color:#27ae60;font-weight:bold">SELECTED: 201</span>
+                </div>
+                <div style="font-size:11px"><b>Start query:</b> <i>SELECT Id FROM Case ORDER BY CreatedDate DESC LIMIT 40</i></div>
+              </div>
+            </div>
+            <label class="cal-chk" data-tip="Goes one level further down from the related objects (Basic mode only)"><input type="checkbox" disabled> Include children of related objects (1 level)</label>
+
+            <div class="split-pane" style="gap:8px;min-height:300px">
+              <div class="split-panel" style="max-width:520px">
+                <div class="vbox" style="gap:4px">
+                  <span style="font-weight:bold;font-size:12px;color:#1A5276">Query Recap</span>
+                  <div class="hbox" style="gap:6px;align-items:center">
+                    <button class="cal-btn btn-g" data-tip="Set the same SOQL LIMIT on every object above a record count">3 &middot; Add Limits</button>
+                    <button class="cal-btn btn-d" data-tip="Save the current limits to disk">Save limits</button>
+                    <button class="cal-btn btn-d" data-tip="Restore the limits for objects still present in the plan">Load limits</button>
+                    <button class="cal-btn btn-d" data-tip="Explains every column of the recap">Legends</button>
+                  </div>
+                  <div class="ds-note">&#9998; Double-click the Limit column to edit &mdash; auto-saved. A limit applies per query: 19 queries &times; LIMIT 100 means up to 1,900 records.</div>
+                  <div class="tbl-wrap"><table class="cal-tbl">
+                    <thead><tr>
+                      <th style="width:150px">Object</th>
+                      <th style="text-align:center">Queries</th>
+                      <th style="text-align:center">From</th>
+                      <th style="text-align:center">Related</th>
+                      <th style="text-align:center">Records</th>
+                      <th style="text-align:center">&#9998; Limit</th>
+                    </tr></thead>
+                    <tbody>
+                      <tr><td>Case</td><td style="text-align:center"><span class="ds-lnk">14</span></td><td style="text-align:center"><span class="ds-lnk">9</span></td><td style="text-align:center"><span class="ds-lnk">22</span></td><td style="text-align:center">12,880</td><td style="text-align:center">100</td></tr>
+                      <tr><td>Contact</td><td style="text-align:center"><span class="ds-lnk">12</span></td><td style="text-align:center"><span class="ds-lnk">8</span></td><td style="text-align:center"><span class="ds-lnk">18</span></td><td style="text-align:center">9,455</td><td style="text-align:center">100</td></tr>
+                      <tr><td>Account</td><td style="text-align:center"><span class="ds-lnk">9</span></td><td style="text-align:center"><span class="ds-lnk">6</span></td><td style="text-align:center"><span class="ds-lnk">20</span></td><td style="text-align:center">4,210</td><td style="text-align:center">100</td></tr>
+                      <tr><td>GRC_Item__c</td><td style="text-align:center"><span class="ds-lnk">3</span></td><td style="text-align:center"><span class="ds-lnk">2</span></td><td style="text-align:center"><span class="ds-lnk">4</span></td><td style="text-align:center">1,320</td><td style="text-align:center"></td></tr>
+                      <tr><td>EmailMessage</td><td style="text-align:center"><span class="ds-lnk">4</span></td><td style="text-align:center"><span class="ds-lnk">3</span></td><td style="text-align:center"><span class="ds-lnk">5</span></td><td style="text-align:center">31,904</td><td style="text-align:center">100</td></tr>
+                    </tbody>
+                  </table></div>
+                </div>
+              </div>
+              <div class="split-panel">
+                <div class="vbox" style="gap:4px;height:100%">
+                  <span style="font-weight:bold;font-size:12px;color:#1A5276">Execution log</span>
+                  <textarea class="cal-ta" readonly rows="14" style="font-family:Consolas,monospace;font-size:10px">[CACHE] Account
+[DONE]  Account
+[CACHE] Case
+[DONE]  Case
+[CACHE] Contact
+[DONE]  Contact
+Plan written to C:\tmp\seeding\Config-Alpha\metadata\traversal_plan.json
+  Total queries : 201
+Selection dir deleted : C:\tmp\seeding\Config-Alpha\selection\
+-- GenerateRelationQueries completed --</textarea>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ══ 5 : Export ══ -->
+        <div class="m-panel" id="tp77-5">
+          <div class="vbox" style="gap:10px">
+            <div class="ds-hint">Export &middot; run that plan against the source org and write one CSV per object.</div>
+            <div class="hbox" style="gap:8px;align-items:center">
+              <button class="cal-btn btn-b" data-tip="Run every query of the plan and write one CSV per object. Nothing is written to Salesforce.">Export Records</button>
+              <button class="cal-btn btn-b" data-tip="Dry run: SELECT Id FROM ... for every query of the plan, without writing any CSV. Use it to estimate volumes and adjust limits.">Count Records</button>
+              <span class="cal-lbl" style="font-weight:bold;color:#27ae60">&rarr; FULL</span>
+              <div class="vsep"></div>
+              <button class="cal-btn btn-d" data-tip="Checks that every required parent Id referenced in the exported CSVs is present in them">Check IDs</button>
+              <div class="vsep"></div>
+              <button class="cal-btn btn-d" data-tip="Checks that each user Id in the CSVs has an active counterpart in the target org with the same profile">Check Users</button>
+            </div>
+            <div class="vbox ds-box" style="gap:6px">
+              <div class="hbox" style="gap:10px;align-items:center;flex-wrap:nowrap">
+                <span style="min-width:70px">Progress:</span>
+                <div class="ds-bar"><div style="width:100%;height:100%;background:#2980b9"></div></div>
+                <span style="font-weight:bold;min-width:64px">201 / 201</span>
+              </div>
+              <span class="ds-note">[CHILD] CRM_Survey__c</span>
+            </div>
+            <span style="color:#E67E22;font-weight:bold;font-size:11px">&#9888; Count only &mdash; run Export Records before importing.</span>
+            <div class="split-pane" style="gap:8px;min-height:260px">
+              <div class="split-panel" style="max-width:430px">
+                <span style="font-weight:bold;font-size:12px;color:#1A5276">Results</span>
+                <div class="tbl-wrap"><table class="cal-tbl">
+                  <thead><tr><th style="width:200px">Object</th><th style="text-align:center">Records</th><th style="text-align:center" data-tip="Filled by Count Records. A failing plan query shows as a red link, e.g. #29">Failed</th></tr></thead>
+                  <tbody>
+                    <tr><td>Account</td><td style="text-align:center">65</td><td style="text-align:center"></td></tr>
+                    <tr><td>Case</td><td style="text-align:center">80</td><td style="text-align:center"><span class="ds-lnk-red">#29</span></td></tr>
+                    <tr><td>Contact</td><td style="text-align:center">31</td><td style="text-align:center"></td></tr>
+                    <tr><td>GRC_Item__c</td><td style="text-align:center">37</td><td style="text-align:center"></td></tr>
+                    <tr><td>CRM_Survey__c</td><td style="text-align:center">40</td><td style="text-align:center"></td></tr>
+                  </tbody>
+                </table></div>
+                <span class="ds-note">Failed is filled by Count Records. An empty cell means every query of that object ran. Click a red link to see the failing query.</span>
+              </div>
+              <div class="split-panel">
+                <div class="hbox" style="align-items:center"><span style="font-weight:bold;font-size:12px;color:#1A5276">Failed query</span><span class="spacer"></span><span style="color:#55687a">&#10005;</span></div>
+                <div class="ds-fail">
+                  <b>Plan #29 &nbsp;[CHILD &nbsp;L2] &nbsp;Case</b><br><br>
+                  Source &nbsp;: :account_ids &rarr; 6,200 IDs<br>
+                  <i>Template: SELECT Id FROM Case WHERE AccountId IN :account_ids</i><br>
+                  <i style="color:#1A5276">Executed: SELECT Id FROM Case WHERE AccountId IN ('001&hellip;', '001&hellip;', &hellip;)</i><br>
+                  <span style="color:#C0392B">Error &nbsp;&nbsp;: the message Salesforce sent back</span><br><br>
+                  IDs at failure:<br>
+                  &nbsp;&nbsp;:account_ids &rarr; 6,200 records<br><br>
+                  <span style="color:#E67E22">&#9888; Total sub-query IDs: 6200 &mdash; Salesforce IN-list limit is 5 000.</span><br>
+                  <span style="color:#C0392B">&nbsp;&nbsp;&nbsp;&rarr; Use limits in the Prepare tab to reduce volumes before re-running.</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ══ 6 : Import ══ -->
+        <div class="m-panel" id="tp77-6">
+          <div class="vbox" style="gap:10px">
+            <div class="ds-hint">Import &middot; push those CSV files into the target org, remapping every record Id as it goes.</div>
+            <div class="hbox" style="gap:10px;align-items:center">
+              <button class="cal-btn btn-r" data-tip="Import all exported CSVs into the target org, parents first">Run Import</button>
+              <button class="cal-btn btn-o" data-tip="Re-import only the rejected records listed in Failed.csv">Retry Failed</button>
+              <label class="cal-chk" data-tip="Restart from the last object of the previous run: its records are deleted first and it is re-imported cleanly"><input type="checkbox" disabled> Resume from last imported object</label>
+              <label class="cal-chk" data-tip="Insert new records and update existing ones matched on the external-Id field"><input type="checkbox" disabled> Upsert by external ID</label>
+              <input class="cal-tf" readonly placeholder="External_Id__c" style="width:120px">
+              <span class="cal-lbl" style="font-weight:bold;color:#27ae60">&rarr; sandbox-dev1</span>
+            </div>
+            <div class="vbox ds-box" style="gap:6px">
+              <div class="hbox" style="gap:10px;align-items:center;flex-wrap:nowrap">
+                <span style="min-width:70px">Progress:</span>
+                <div class="ds-bar"><div style="width:100%;height:100%;background:#2980b9"></div></div>
+                <span style="font-weight:bold;min-width:50px">5 / 5</span>
+              </div>
+              <span class="ds-note">Import complete.</span>
+            </div>
+            <div class="vbox" style="gap:4px">
+              <span style="font-weight:bold;font-size:12px;color:#1A5276">Objects to Import</span>
+              <div class="tbl-wrap"><table class="cal-tbl">
+                <thead><tr>
+                  <th style="width:40px;text-align:center">#</th>
+                  <th style="width:220px">Object</th>
+                  <th style="width:90px;text-align:center">Records</th>
+                  <th style="width:80px;text-align:center">Errors</th>
+                  <th>Error file</th>
+                </tr></thead>
+                <tbody>
+                  <tr><td style="text-align:center">1</td><td>Account</td><td style="text-align:center">65</td><td style="text-align:center;color:#27ae60;font-weight:bold">&#10004;</td><td></td></tr>
+                  <tr><td style="text-align:center">2</td><td>Contact</td><td style="text-align:center">30/31</td><td style="text-align:center;color:#E74C3C;font-weight:bold">1</td><td><span class="ds-lnk">ContactErrors.txt</span></td></tr>
+                  <tr><td style="text-align:center">3</td><td>Case</td><td style="text-align:center">80</td><td style="text-align:center;color:#27ae60;font-weight:bold">&#10004;</td><td></td></tr>
+                  <tr><td style="text-align:center">4</td><td>GRC_Item__c</td><td style="text-align:center">34/37</td><td style="text-align:center;color:#E74C3C;font-weight:bold">3</td><td><span class="ds-lnk">GRC_Item__cErrors.txt</span></td></tr>
+                  <tr><td style="text-align:center">5</td><td>CRM_Survey__c</td><td style="text-align:center">40</td><td style="text-align:center;color:#27ae60;font-weight:bold">&#10004;</td><td></td></tr>
+                </tbody>
+              </table></div>
+              <span class="ds-note">Records shows imported/total when something was rejected, and just the total when everything went in. Errors is the number of rejected records, or a tick.</span>
+            </div>
+            <div class="vbox" style="gap:4px">
+              <span style="font-weight:bold;font-size:12px;color:#1A5276">Error file &mdash; C:\tmp\seeding\Config-Alpha\importErr\ContactErrors.txt</span>
+              <div style="background:#fff;border:1px solid #9AABBF;border-radius:3px;padding:8px 10px;font-family:Consolas,monospace;font-size:12px;line-height:1.7">
+                <span style="color:#7f8c8d;margin-right:12px">1</span>position 2 : This contact is a duplicate. Please use the existing contact
+              </div>
+              <span class="ds-note">One line per rejected record: &ldquo;position N : message&rdquo;. N is the record's place in that object's CSV, and the message is exactly what the target org answered. Fix the cause, then use Retry Failed to re-import only those records.</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- ══ 7 : Clean ══ -->
+        <div class="m-panel" id="tp77-7">
+          <div class="vbox" style="gap:8px">
+            <div class="ds-hint">Clean &middot; delete records from the target org, to restart a run from a known state.</div>
+            <div class="hbox" style="gap:8px;align-items:center">
+              <button class="cal-btn btn-r" data-tip="Delete records from the target org. Use it during testing phases only.">Clean org</button>
+              <span class="cal-lbl" style="font-weight:bold;color:#27ae60">&rarr; sandbox-dev1</span>
+              <label class="cal-chk" data-tip="Only objects that have an exported CSV are cleaned. Leave off to wipe the whole target org."><input type="checkbox" checked disabled> Imported objects only</label>
+              <label class="cal-chk" data-tip="Hide the rows skipped from deletion"><input type="checkbox" checked disabled> Deletable only</label>
+              <div class="vsep"></div>
+              <span class="cal-lbl" style="color:#7f8c8d">Stop after</span>
+              <input class="cal-tf" readonly value="500" style="width:55px;text-align:center" data-tip="Give up on an object once this many deletions have failed; the After column then shows 500+">
+              <span class="cal-lbl" style="color:#7f8c8d">errors</span>
+              <div class="vsep"></div>
+              <span class="cal-lbl" style="color:#7f8c8d">Created after</span>
+              <input class="cal-tf" readonly value="2026-03-12T08:00:00Z" style="width:170px" data-tip="Only delete records created after this datetime (SOQL format)">
+              <button class="cal-btn btn-d" data-tip="Fill 'Created after' with the current UTC datetime">Now</button>
+              <div class="vsep"></div>
+              <span class="cal-lbl" style="color:#7f8c8d">Created before</span>
+              <input class="cal-tf" readonly value="2026-03-12T10:40:57Z" style="width:170px" data-tip="Only delete records created before this datetime">
+            </div>
+            <div class="ds-note">Imported objects only: delete only objects that were part of this seeding (have an exported CSV) &mdash; leave OFF to wipe the whole target org.</div>
+            <div class="ds-note">Deletable only: hide rows skipped from deletion (User, or non-imported objects when the option above is on).</div>
+            <div class="vbox" style="gap:4px">
+              <span style="font-weight:bold;font-size:12px;color:#1A5276">Clean results</span>
+              <div class="tbl-wrap"><table class="cal-tbl">
+                <thead><tr>
+                  <th style="width:220px">Object</th>
+                  <th style="width:90px;text-align:center">Records</th>
+                  <th style="width:80px;text-align:center">Delete?</th>
+                  <th style="width:80px;text-align:center">After</th>
+                  <th style="width:80px;text-align:center">Errors</th>
+                </tr></thead>
+                <tbody>
+                  <tr><td>Account</td><td style="text-align:center">65</td><td style="text-align:center">Yes</td><td style="text-align:center;color:#27ae60;font-weight:bold">0</td><td style="text-align:center">0</td></tr>
+                  <tr><td>Contact</td><td style="text-align:center">31</td><td style="text-align:center">Yes</td><td style="text-align:center;color:#27ae60;font-weight:bold">0</td><td style="text-align:center">0</td></tr>
+                  <tr><td>Case</td><td style="text-align:center">80</td><td style="text-align:center">Yes</td><td style="text-align:center;color:#27ae60;font-weight:bold">0</td><td style="text-align:center">0</td></tr>
+                  <tr><td>GRC_Item__c</td><td style="text-align:center">37</td><td style="text-align:center">Yes</td><td style="text-align:center;color:#E74C3C;font-weight:bold">3</td><td style="text-align:center;color:#E74C3C;font-weight:bold">3</td></tr>
+                  <tr style="color:#9aa8b3"><td>User</td><td style="text-align:center">312</td><td style="text-align:center">&mdash;</td><td style="text-align:center">312</td><td style="text-align:center">0</td></tr>
+                </tbody>
+              </table></div>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- .m-body -->
+    </div><!-- .m-tabpane -->
+
+  </div><!-- .mockup -->
+</div><!-- .mockup-wrap -->
+
+<script>
+function sw(id,idx){
+  var tp=document.getElementById(id);
+  tp.querySelectorAll('.m-tab').forEach(function(t,i){t.classList.toggle('act',i===idx)});
+  tp.querySelectorAll('.m-panel').forEach(function(p,i){p.classList.toggle('act',i===idx)});
+}
+</script>
+
+<!-- Key features modal -->
+<div id="modal-kf" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:999;align-items:center;justify-content:center" onclick="if(event.target===this)this.style.display='none'">
+  <div style="background:#fff;border-radius:8px;padding:28px 32px;max-width:560px;width:90%;color:#1a2a35;box-shadow:0 8px 32px rgba(0,0,0,.3)">
+    <h3 style="margin:0 0 14px;color:#2980b9">&#9733; Key features</h3>
+    <ul style="margin:0;padding-left:20px;line-height:1.8">
+      <li><strong>Five guided steps</strong> — Config, Objects, Prepare, Export and Import, with the optional Automation and Clean tabs; the Tutorial and How To buttons walk through them.</li>
+      <li><strong>Named configurations</strong> — create, clone and switch between configurations, each with its own source/target pair, main path and start query.</li>
+      <li><strong>Three query modes</strong> — Basic (parents and children up to Max depth), Single query, or Full copy.</li>
+      <li><strong>Dependency traversal</strong> — the traversal plan lists every query to run, in import order; the Report shows anything the plan cannot reach.</li>
+      <li><strong>Per-query limits</strong> — Add Limits or edit the Limit column; a limit applies per query, and limits can be saved and reloaded.</li>
+      <li><strong>Count Records dry run</strong> — estimate volumes without writing a CSV and spot failing queries through the red Failed links.</li>
+      <li><strong>Check IDs / Check Users</strong> — verify parent Ids and user counterparts before importing.</li>
+      <li><strong>Import with remapping</strong> — parents first, every record Id remapped; error files say which record was rejected and why, and Retry Failed re-imports only those.</li>
+      <li><strong>Automation muting</strong> — disable flows, triggers, process builders and workflow rules on the target before the import, and restore them afterwards from a backup.</li>
+      <li><strong>Clean</strong> — delete imported records from the target, optionally within a Created after / before window.</li>
+      <li><strong>Community Users and debug tabs</strong> — shown only when the matching Config option is ticked.</li>
+    </ul>
+    <div style="text-align:right;margin-top:18px">
+      <button class="cal-btn btn-d" onclick="document.getElementById('modal-kf').style.display='none'">Close</button>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

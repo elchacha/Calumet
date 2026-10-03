@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Calumet &mdash; Interactive demos</title>
+<meta name="description" content="Step-by-step interactive walkthroughs of Calumet, the Salesforce administration suite. No install, no org connection, no real data.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Calumet &mdash; Interactive demos">
+<meta property="og:description" content="Step-by-step interactive walkthroughs of Calumet, the Salesforce administration suite. No install, no org connection, no real data.">
+<meta property="og:image" content="https://elchacha.github.io/Calumet/littlechaman.png">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#142540;--bg2:#1a3050;--border:#244568;--txt:#e2e8f0;--muted:#8892a4;--acc:#2ea4c9}
+body{font-family:"Segoe UI",system-ui,sans-serif;background:var(--bg);color:var(--txt);
+     min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:0 20px 64px}
+.hero{text-align:center;padding:48px 0 30px;max-width:680px;width:100%}
+.hero h1{font-size:34px;font-weight:800;color:#fff;letter-spacing:-1px;margin-bottom:10px}
+.hero p{font-size:15px;color:#a8b4c8;line-height:1.7;max-width:520px;margin:0 auto}
+.back{align-self:flex-start;width:100%;max-width:700px;padding-top:18px;font-size:12px}
+.back a{color:var(--acc);text-decoration:none}
+.back a:hover{text-decoration:underline}
+.grid{display:flex;flex-direction:column;gap:14px;width:100%;max-width:700px}
+.demo{display:flex;align-items:center;gap:16px;padding:20px 22px;border-radius:10px;text-decoration:none;
+  background:var(--bg2);border:1px solid var(--border);color:inherit;transition:border-color .15s,background .15s}
+.demo:hover{border-color:var(--acc);background:rgba(46,164,201,.08)}
+.demo-ico{font-size:30px;flex-shrink:0}
+.demo-t{font-size:15px;font-weight:700;color:#fff;margin-bottom:4px}
+.demo-d{font-size:12.5px;color:#a8b4c8;line-height:1.55}
+.demo-m{font-size:11px;color:var(--muted);margin-top:6px}
+.demo-arr{margin-left:auto;font-size:22px;color:var(--acc);font-weight:700;flex-shrink:0}
+.note{width:100%;max-width:700px;margin-top:26px;font-size:12px;color:var(--muted);line-height:1.6}
+footer{margin-top:40px;font-size:12px;color:var(--muted)}
+footer a{color:var(--acc);text-decoration:none}
+</style>
+</head>
+<body>
+
+<div class="back"><a href="index.html">&larr; Calumet</a></div>
+
+<div class="hero">
+  <h1>Interactive demos</h1>
+  <p>Walk through Calumet screen by screen. Everything runs in your browser: nothing to install, no Salesforce org to connect, and none of it is real data.</p>
+</div>
+
+<div class="grid">
+  <a class="demo" href="tabs/tab77-tour.html" target="_blank" rel="noopener" data-goatcounter-click="demo-dataseeding" data-goatcounter-title="Demo DataSeeding">
+    <span class="demo-ico">&#x1F5C4;&#xFE0F;</span>
+    <div>
+      <div class="demo-t">DataSeeding &mdash; copy data from one org to another</div>
+      <div class="demo-d">Pick a few seed records and let Calumet follow their relations: parents, children, import order, id remapping. See how failed queries and rejected records are reported, and how to retry only those.</div>
+      <div class="demo-m">15 steps &middot; about 5 minutes</div>
+    </div>
+    <span class="demo-arr">&rarr;</span>
+  </a>
+  <a class="demo" href="tabs/tab4-tour.html" target="_blank" rel="noopener" data-goatcounter-click="demo-deployment" data-goatcounter-title="Demo Deployment pipeline">
+    <span class="demo-ico">&#x1F4E6;</span>
+    <div>
+      <div class="demo-t">Deployment pipeline &mdash; ChangeTracker to Deploy</div>
+      <div class="demo-d">Track what changed, retrieve it, control it, deploy it, and keep a history of every deployment.</div>
+      <div class="demo-m">Guided walkthrough</div>
+    </div>
+    <span class="demo-arr">&rarr;</span>
+  </a>
+  <a class="demo" href="tabs/tab69-tour.html" target="_blank" rel="noopener" data-goatcounter-click="demo-access-score" data-goatcounter-title="Demo User Access Score">
+    <span class="demo-ico">&#x1F6E1;&#xFE0F;</span>
+    <div>
+      <div class="demo-t">User Access Score &mdash; who holds the most power</div>
+      <div class="demo-d">Rank every user by the privileges of their profile and permission sets. Filter by level or dormant accounts, choose a weighting, see where a score comes from, compare users and spot permission sets that add nothing.</div>
+      <div class="demo-m">8 steps &middot; about 4 minutes</div>
+    </div>
+    <span class="demo-arr">&rarr;</span>
+  </a>
+  <a class="demo" href="tabs/tab75-tour.html" target="_blank" rel="noopener" data-goatcounter-click="demo-flexipage-diff" data-goatcounter-title="Demo FlexiPage Diff">
+    <span class="demo-ico">&#x1F9E9;</span>
+    <div>
+      <div class="demo-t">FlexiPage Diff &mdash; compare two Lightning pages</div>
+      <div class="demo-d">Pick the same page in two orgs, compare them, and read what was added, deleted, modified or moved: as a summary, as cards with before and after, and side by side region by region.</div>
+      <div class="demo-m">7 steps &middot; about 3 minutes</div>
+    </div>
+    <span class="demo-arr">&rarr;</span>
+  </a>
+  <a class="demo" href="tabs/tab54-tour.html" target="_blank" rel="noopener" data-goatcounter-click="demo-permsets" data-goatcounter-title="Demo Permission Sets">
+    <span class="demo-ico">&#x1F511;</span>
+    <div>
+      <div class="demo-t">Permission Sets &mdash; who can do what</div>
+      <div class="demo-d">Browse every permission set and group, search by name, content or user, see what changed and who got what, compare overlaps, and open the detail of any set.</div>
+      <div class="demo-m">6 steps &middot; about 4 minutes</div>
+    </div>
+    <span class="demo-arr">&rarr;</span>
+  </a>
+</div>
+
+<p class="note">Use the arrow keys or the Next button to move on, or press play to let a demo run by itself. The screens are redrawn from the real application; the org names, objects and numbers are invented.</p>
+
+<footer>
+  Built for Salesforce professionals &mdash;
+  <a href="https://github.com/elchacha/Calumet" target="_blank">GitHub</a>
+  &middot; This website counts visits, without cookies.
+</footer>
+
+<script>
+/* Comptage des visites du SITE (jamais de l'application) avec GoatCounter : sans cookie, sans IP stockee.
+   Renseigner GC_SITE avec le code du site (https://<code>.goatcounter.com) pour l'activer.
+   Vide = aucun script n'est charge et aucune requete n'est envoyee. */
+(function(){
+  var GC_SITE = 'littlec';
+  if (!GC_SITE) return;
+  var s = document.createElement('script');
+  s.async = true;
+  s.src = '//gc.zgo.at/count.js';
+  s.setAttribute('data-goatcounter', 'https://' + GC_SITE + '.goatcounter.com/count');
+  document.head.appendChild(s);
+})();
+</script>
+</body>
+</html>

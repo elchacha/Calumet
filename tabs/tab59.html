@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>All Relations — Calumet</title>
+<link rel="stylesheet" href="../shared.css">
+<style>
+/* ── Relation-type badge pills ── */
+.badge-rel {
+  display:inline-block;padding:2px 9px;border-radius:10px;
+  font-size:10px;font-weight:700;letter-spacing:.3px;white-space:nowrap;
+}
+.badge-rel-lookup       { background:#2980b9;color:#fff; }
+.badge-rel-masterdetail { background:#27ae60;color:#fff; }
+.badge-rel-hierarchy    { background:#8e44ad;color:#fff; }
+.badge-rel-junction     { background:#7B3FA5;color:#fff; }
+.badge-rel-default      { background:#7f8c8d;color:#fff; }
+
+/* ── Nillable icons ── */
+.ico-ok  { color:#27ae60;font-weight:900;font-size:13px; }
+.ico-no  { color:#E74C3C;font-weight:900;font-size:13px; }
+
+/* ── Cache label ── */
+.cache-lbl {
+  font-size:11px;color:#5b9bac;background:#e8f4fb;
+  border:1px solid #9AABBF;border-radius:3px;
+  padding:3px 8px;white-space:nowrap;
+}
+
+/* ── Feature pills ── */
+.feat-row {
+  display:flex;flex-wrap:wrap;gap:6px;
+  padding:16px 28px;background:#141724;
+  border-bottom:1px solid #1f2438;
+}
+.feat-pill {
+  font-size:11px;padding:3px 10px;border-radius:12px;
+  background:#1f2438;color:#a8b4c8;border:1px solid #2a3050;
+}
+
+/* Table striping */
+.cal-tbl tbody tr:nth-child(even) td { background:#f0f6f9; }
+
+/* Sticky header for the big relation table */
+.tbl-scroll { overflow-x:auto; overflow-y:auto; max-height:480px;
+              border:1px solid #9AABBF;border-radius:3px; }
+.tbl-scroll table { border-collapse:collapse;width:100%;font-size:11px; }
+.tbl-scroll thead th {
+  position:sticky;top:0;z-index:2;
+  background:#b8d5e3;color:#1A5276;font-weight:700;
+  padding:4px 8px;text-align:left;
+  border-right:1px solid #9AABBF;white-space:nowrap;
+}
+.tbl-scroll thead th:last-child { border-right:none; }
+.tbl-scroll tbody td { padding:3px 8px;border-top:1px solid #d8e8f0; }
+.tbl-scroll tbody tr:nth-child(even) td { background:#f0f6f9; }
+
+/* Count badge */
+.count-pill {
+  display:inline-block;background:#5b9bac;color:#fff;
+  font-size:10px;font-weight:700;border-radius:10px;
+  padding:1px 7px;margin-left:6px;
+}
+</style>
+</head>
+<body class="tab-page">
+
+<!-- ── Summary card ── -->
+<div class="sum">
+  <div class="sum-title">
+    <h2>All Relations</h2>
+    <span class="sum-badge">Tab 59</span>
+  </div>
+  <p class="sum-desc">
+    Explores every inter-object relationship (Lookup, Master-Detail, Hierarchy, Junction) defined in the connected Salesforce org.
+    The full relationship graph is fetched once and stored in a local cache; subsequent visits load instantly.
+    Use the filter bar to narrow results by relation type, object name, field label, or referenced object.
+    The <em>RollupFields</em> column surfaces any roll-up summary fields associated with a Master-Detail or Junction relationship.
+  </p>
+</div>
+
+<!-- ── Feature pills ── -->
+<div class="feat-row">
+  <span class="feat-pill">Lookup relationships</span>
+  <span class="feat-pill">Master-Detail relationships</span>
+  <span class="feat-pill">Hierarchy relationships</span>
+  <span class="feat-pill">Junction relationships</span>
+  <span class="feat-pill">Nillable flag</span>
+  <span class="feat-pill">Roll-up summary fields</span>
+  <span class="feat-pill">Local cache (auto-loaded)</span>
+  <span class="feat-pill">Live filter (type / object / field / reference)</span>
+</div>
+
+<!-- ── Mockup ── -->
+<div class="mockup-wrap">
+  <div class="mockup" style="padding:10px;">
+
+    <!-- toolbar -->
+    <div class="hbox" style="gap:8px;align-items:center;margin-bottom:8px;flex-wrap:wrap;">
+      <button class="cal-btn btn-d"
+        data-tip="Force a fresh fetch from Salesforce and overwrite the local cache">Refresh</button>
+      <span class="cache-lbl">Cache : 29/04/2026 08:14</span>
+      <div class="vsep"></div>
+      <span class="cal-lbl">Type:</span>
+      <select class="cal-cb" style="width:130px;">
+        <option value="">— All types —</option>
+        <option>Lookup</option>
+        <option>Master-Detail</option>
+        <option>Hierarchy</option>
+        <option>Junction</option>
+      </select>
+      <span class="cal-lbl">Object:</span>
+      <input class="cal-tf" style="width:150px;" placeholder="Object name..." readonly
+        data-tip="Filter by API name of the child object (partial match)">
+      <span class="cal-lbl">Field Label:</span>
+      <input class="cal-tf" style="width:150px;" placeholder="Field label..." readonly
+        data-tip="Filter by the relationship field label (partial match)">
+      <span class="cal-lbl">Reference:</span>
+      <input class="cal-tf" style="width:150px;" placeholder="Reference..." readonly
+        data-tip="Filter by the parent object the field points to (partial match)">
+      <span class="spacer"></span>
+      <span class="cal-lbl" style="color:#5b9bac;">
+        <strong>247</strong> relations<span class="count-pill">247</span>
+      </span>
+    </div>
+
+    <!-- relationship table -->
+    <div class="tbl-scroll">
+      <table>
+        <thead>
+          <tr>
+            <th style="width:110px;">Relation Type</th>
+            <th style="width:60px;text-align:center;">Nillable</th>
+            <th style="width:210px;">Object Name</th>
+            <th style="width:200px;">Object Label</th>
+            <th style="width:220px;">Field Name</th>
+            <th style="width:200px;">Field Label</th>
+            <th style="width:200px;">Reference</th>
+            <th>RollupFields</th>
+          </tr>
+        </thead>
+        <tbody>
+
+          <!-- Master-Detail rows -->
+          <tr>
+            <td style="text-align:center;"><span class="badge-rel badge-rel-masterdetail">Master-Detail</span></td>
+            <td style="text-align:center;"><span class="ico-no">&#x2717;</span></td>
+            <td>Review_Committee__c</td>
+            <td>Review Committee</td>
+            <td>Project__c</td>
+            <td>Project</td>
+            <td>Project__c</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td style="text-align:center;"><span class="badge-rel badge-rel-masterdetail">Master-Detail</span></td>
+            <td style="text-align:center;"><span class="ico-no">&#x2717;</span></td>
+            <td>Weekly_Update__c</td>
+            <td>Weekly Update</td>
+            <td>Settings__c</td>
+            <td>Settings</td>
+            <td>Settings__c</td>
+            <td></td>
+          </tr>
+
+          <!-- Lookup rows -->
+          <tr>
+            <td style="text-align:center;"><span class="badge-rel badge-rel-lookup">Lookup</span></td>
+            <td style="text-align:center;"><span class="ico-ok">&#x2713;</span></td>
+            <td>Weekly_Update__c</td>
+            <td>Weekly Update</td>
+            <td>RecordOwner__c</td>
+            <td>Record Owner</td>
+            <td>User</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td style="text-align:center;"><span class="badge-rel badge-rel-lookup">Lookup</span></td>
+            <td style="text-align:center;"><span class="ico-ok">&#x2713;</span></td>
+            <td>Weekly_Update__c</td>
+            <td>Weekly Update</td>
+            <td>Pipeline_list__c</td>
+            <td>Pipeline list</td>
+            <td>List__c</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td style="text-align:center;"><span class="badge-rel badge-rel-lookup">Lookup</span></td>
+            <td style="text-align:center;"><span class="ico-ok">&#x2713;</span></td>
+            <td>FeedItem_Mailing__c</td>
+            <td>FeedItem Mailing</td>
+            <td>Vertical__c</td>
+            <td>Vertical</td>
+            <td>Vertical__c</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td style="text-align:center;"><span class="badge-rel badge-rel-lookup">Lookup</span></td>
+            <td style="text-align:center;"><span class="ico-ok">&#x2713;</span></td>
+            <td>FeedItem_Mailing__c</td>
+            <td>FeedItem Mailing</td>
+            <td>FeedItemCreator__c</td>
+            <td>FeedItem Creator</td>
+            <td>User</td>
+            <td></td>
+          </tr>
+
+          <!-- Master-Detail -->
+          <tr>
+            <td style="text-align:center;"><span class="badge-rel badge-rel-masterdetail">Master-Detail</span></td>
+            <td style="text-align:center;"><span class="ico-no">&#x2717;</span></td>
+            <td>Partner_Meeting__c</td>
+            <td>Partner Meeting</td>
+            <td>Strategic_Partner__c</td>
+            <td>Strategic Partner</td>
+            <td>Account</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td style="text-align:center;"><span class="badge-rel badge-rel-lookup">Lookup</span></td>
+            <td style="text-align:center;"><span class="ico-ok">&#x2713;</span></td>
+            <td>Partner_Meeting__c</td>
+            <td>Partner Meeting</td>
+            <td>List__c</td>
+            <td>List</td>
+            <td>List__c</td>
+            <td></td>
+          </tr>
+
+          <!-- Self-lookup / Hierarchy -->
+          <tr>
+            <td style="text-align:center;"><span class="badge-rel badge-rel-lookup">Lookup</span></td>
+            <td style="text-align:center;"><span class="ico-ok">&#x2713;</span></td>
+            <td>Report__c</td>
+            <td>Report</td>
+            <td>ParentReport__c</td>
+            <td>Parent Report</td>
+            <td>Report__c</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td style="text-align:center;"><span class="badge-rel badge-rel-lookup">Lookup</span></td>
+            <td style="text-align:center;"><span class="ico-ok">&#x2713;</span></td>
+            <td>Report__c</td>
+            <td>Report</td>
+            <td>Vertical__c</td>
+            <td>Vertical</td>
+            <td>Vertical__c</td>
+            <td></td>
+          </tr>
+
+          <!-- Junction rows -->
+          <tr>
+            <td style="text-align:center;"><span class="badge-rel badge-rel-junction">Junction</span></td>
+            <td style="text-align:center;"><span class="ico-no">&#x2717;</span></td>
+            <td>AccountVerticalRelation__c</td>
+            <td>Account-Vertical Relation</td>
+            <td>Account__c</td>
+            <td>Account</td>
+            <td>Account</td>
+            <td>Account.Nb_of_verticals__c</td>
+          </tr>
+          <tr>
+            <td style="text-align:center;"><span class="badge-rel badge-rel-junction">Junction</span></td>
+            <td style="text-align:center;"><span class="ico-no">&#x2717;</span></td>
+            <td>AccountVerticalRelation__c</td>
+            <td>Account-Vertical Relation</td>
+            <td>Vertical__c</td>
+            <td>Vertical</td>
+            <td>Vertical__c</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td style="text-align:center;"><span class="badge-rel badge-rel-lookup">Lookup</span></td>
+            <td style="text-align:center;"><span class="ico-ok">&#x2713;</span></td>
+            <td>AccountVerticalRelation__c</td>
+            <td>Account-Vertical Relation</td>
+            <td>Top_Vertical__c</td>
+            <td>Top level vertical</td>
+            <td>Vertical__c</td>
+            <td></td>
+          </tr>
+
+          <!-- Master-Detail complex -->
+          <tr>
+            <td style="text-align:center;"><span class="badge-rel badge-rel-masterdetail">Master-Detail</span></td>
+            <td style="text-align:center;"><span class="ico-no">&#x2717;</span></td>
+            <td>Fund_Entitlement_Report__c</td>
+            <td>Fund Entitlement Report</td>
+            <td>Fund_Partner_Entitlement__c</td>
+            <td>Fund-Partner Entitlement</td>
+            <td>Fund_Partner_Entitlement__c</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td style="text-align:center;"><span class="badge-rel badge-rel-lookup">Lookup</span></td>
+            <td style="text-align:center;"><span class="ico-no">&#x2717;</span></td>
+            <td>Fund_Entitlement_Report__c</td>
+            <td>Fund Entitlement Report</td>
+            <td>Fund_Report__c</td>
+            <td>Fund Report</td>
+            <td>Fund_Report__c</td>
+            <td></td>
+          </tr>
+
+          <!-- Standard objects -->
+          <tr>
+            <td style="text-align:center;"><span class="badge-rel badge-rel-lookup">Lookup</span></td>
+            <td style="text-align:center;"><span class="ico-no">&#x2717;</span></td>
+            <td>CampaignMember</td>
+            <td>Campaign Member</td>
+            <td>CampaignId</td>
+            <td>Campaign</td>
+            <td>Campaign</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td style="text-align:center;"><span class="badge-rel badge-rel-lookup">Lookup</span></td>
+            <td style="text-align:center;"><span class="ico-ok">&#x2713;</span></td>
+            <td>CampaignMember</td>
+            <td>Campaign Member</td>
+            <td>LeadId</td>
+            <td>Lead</td>
+            <td>Lead</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td style="text-align:center;"><span class="badge-rel badge-rel-lookup">Lookup</span></td>
+            <td style="text-align:center;"><span class="ico-ok">&#x2713;</span></td>
+            <td>CampaignMember</td>
+            <td>Campaign Member</td>
+            <td>ContactId</td>
+            <td>Contact</td>
+            <td>Contact</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td style="text-align:center;"><span class="badge-rel badge-rel-lookup">Lookup</span></td>
+            <td style="text-align:center;"><span class="ico-ok">&#x2713;</span></td>
+            <td>List_item__c</td>
+            <td>List item</td>
+            <td>Project__c</td>
+            <td>Project</td>
+            <td>Project__c</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td style="text-align:center;"><span class="badge-rel badge-rel-lookup">Lookup</span></td>
+            <td style="text-align:center;"><span class="ico-ok">&#x2713;</span></td>
+            <td>List_item__c</td>
+            <td>List item</td>
+            <td>Minute__c</td>
+            <td>Minute</td>
+            <td>Minute_Report__c</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td style="text-align:center;"><span class="badge-rel badge-rel-lookup">Lookup</span></td>
+            <td style="text-align:center;"><span class="ico-ok">&#x2713;</span></td>
+            <td>List_item__c</td>
+            <td>List item</td>
+            <td>Sourcing__c</td>
+            <td>Sourcing</td>
+            <td>Opportunity</td>
+            <td></td>
+          </tr>
+
+          <!-- Hierarchy -->
+          <tr>
+            <td style="text-align:center;"><span class="badge-rel badge-rel-hierarchy">Hierarchy</span></td>
+            <td style="text-align:center;"><span class="ico-ok">&#x2713;</span></td>
+            <td>User</td>
+            <td>User</td>
+            <td>ManagerId</td>
+            <td>Manager</td>
+            <td>User</td>
+            <td></td>
+          </tr>
+
+          <!-- More standard/custom -->
+          <tr>
+            <td style="text-align:center;"><span class="badge-rel badge-rel-lookup">Lookup</span></td>
+            <td style="text-align:center;"><span class="ico-ok">&#x2713;</span></td>
+            <td>Opportunity</td>
+            <td>Opportunity</td>
+            <td>AccountId</td>
+            <td>Account Name</td>
+            <td>Account</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td style="text-align:center;"><span class="badge-rel badge-rel-lookup">Lookup</span></td>
+            <td style="text-align:center;"><span class="ico-ok">&#x2713;</span></td>
+            <td>Opportunity</td>
+            <td>Opportunity</td>
+            <td>OwnerId</td>
+            <td>Owner</td>
+            <td>User</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td style="text-align:center;"><span class="badge-rel badge-rel-masterdetail">Master-Detail</span></td>
+            <td style="text-align:center;"><span class="ico-no">&#x2717;</span></td>
+            <td>OpportunityLineItem</td>
+            <td>Opportunity Product</td>
+            <td>OpportunityId</td>
+            <td>Opportunity</td>
+            <td>Opportunity</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td style="text-align:center;"><span class="badge-rel badge-rel-lookup">Lookup</span></td>
+            <td style="text-align:center;"><span class="ico-ok">&#x2713;</span></td>
+            <td>Contact</td>
+            <td>Contact</td>
+            <td>AccountId</td>
+            <td>Account Name</td>
+            <td>Account</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td style="text-align:center;"><span class="badge-rel badge-rel-lookup">Lookup</span></td>
+            <td style="text-align:center;"><span class="ico-ok">&#x2713;</span></td>
+            <td>Contact</td>
+            <td>Contact</td>
+            <td>ReportsToId</td>
+            <td>Reports To</td>
+            <td>Contact</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td style="text-align:center;"><span class="badge-rel badge-rel-lookup">Lookup</span></td>
+            <td style="text-align:center;"><span class="ico-ok">&#x2713;</span></td>
+            <td>Task</td>
+            <td>Activity</td>
+            <td>WhoId</td>
+            <td>Name</td>
+            <td>Contact, Lead</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td style="text-align:center;"><span class="badge-rel badge-rel-lookup">Lookup</span></td>
+            <td style="text-align:center;"><span class="ico-ok">&#x2713;</span></td>
+            <td>Task</td>
+            <td>Activity</td>
+            <td>WhatId</td>
+            <td>Related To</td>
+            <td>Account, Opportunity</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td style="text-align:center;"><span class="badge-rel badge-rel-junction">Junction</span></td>
+            <td style="text-align:center;"><span class="ico-no">&#x2717;</span></td>
+            <td>ProjectTeamMember__c</td>
+            <td>Project Team Member</td>
+            <td>Project__c</td>
+            <td>Project</td>
+            <td>Project__c</td>
+            <td>Project.Team_count__c</td>
+          </tr>
+          <tr>
+            <td style="text-align:center;"><span class="badge-rel badge-rel-junction">Junction</span></td>
+            <td style="text-align:center;"><span class="ico-no">&#x2717;</span></td>
+            <td>ProjectTeamMember__c</td>
+            <td>Project Team Member</td>
+            <td>Contact__c</td>
+            <td>Contact</td>
+            <td>Contact</td>
+            <td></td>
+          </tr>
+
+        </tbody>
+      </table>
+    </div><!-- /tbl-scroll -->
+
+  </div><!-- /mockup -->
+</div><!-- /mockup-wrap -->
+
+<script>
+function sw(id,idx){
+  var tp=document.getElementById(id);
+  tp.querySelectorAll('.m-tab').forEach(function(t,i){t.classList.toggle('act',i===idx)});
+  tp.querySelectorAll('.m-panel').forEach(function(p,i){p.classList.toggle('act',i===idx)});
+}
+</script>
+</body>
+</html>

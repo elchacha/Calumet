@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Audit — Calumet</title>
+<link rel="stylesheet" href="../shared.css">
+<style>
+.audit-action { font-weight:600; color:#2980b9; }
+.filter-bar { display:flex; flex-wrap:wrap; gap:8px; align-items:center; padding:6px 8px; background:#f0f4f8; border-radius:4px; border:1px solid #d0dae4; margin:4px 0; }
+.filter-lbl { font-size:12px; color:#555; font-weight:600; }
+.pill-section { display:inline-block; padding:1px 7px; border-radius:10px; font-size:11px; font-weight:600; }
+.sec-manage { background:#d6eaf8; color:#1a5276; }
+.sec-apex   { background:#d5f5e3; color:#1e8449; }
+.sec-page   { background:#fdebd0; color:#935116; }
+.sec-custom { background:#f9ebea; color:#922b21; }
+.sec-setup  { background:#e8daef; color:#6c3483; }
+</style>
+</head>
+<body class="tab-page">
+
+<div class="sum">
+  <div class="sum-title">
+    <h2>Audit</h2>
+    <span class="sum-badge">Tab 11</span>
+  </div>
+  <p class="sum-desc">
+    Query and browse the Salesforce Setup Audit Trail for any date range. Filter results by action, user, section or display text in real time, and export to Excel with one click.
+    <button class="cal-btn btn-d" style="margin-left:10px" onclick="document.getElementById('modal-kf').style.display='flex'">&#9733; Key features</button>
+  </p>
+</div>
+
+<div class="mockup-wrap">
+  <div class="mockup">
+
+    <!-- Row 1: date range + extract -->
+    <div class="hbox" style="gap:8px;align-items:center;padding:8px 8px 4px;">
+      <span class="cal-lbl">Start date</span>
+      <input class="cal-tf" style="width:120px" value="01/04/2026" readonly data-tip="Start date of the audit period">
+      <span class="cal-lbl">End date</span>
+      <input class="cal-tf" style="width:120px" value="30/04/2026" readonly data-tip="End date of the audit period">
+      <button class="cal-btn btn-b" data-tip="Extract audit trail from Salesforce for the selected date range">Extract</button>
+      <button class="cal-btn btn-d" data-tip="Open the extracted audit Excel file">Open audit</button>
+      <span class="cal-lbl" style="font-style:italic;color:#5b9bac;font-size:12px">E:\Tool\Calumet\orgs\ExampleOrg\audit\audit.xlsx</span>
+      <div class="spacer"></div>
+      <label class="cal-chk" data-tip="Apply saved exclusion filters when displaying results"><input type="checkbox" disabled> Apply Filters</label>
+      <button class="cal-btn btn-d" data-tip="Define exclusion filters for actions, sections and display values">Manage Filters</button>
+    </div>
+
+    <!-- Row 2: filter bar -->
+    <div class="filter-bar">
+      <span class="filter-lbl">Action</span>
+      <input class="cal-tf" style="width:140px" placeholder="filter..." readonly data-tip="Filter by action (contains)">
+      <div class="vsep" style="height:20px"></div>
+      <span class="filter-lbl">User</span>
+      <select class="cal-cb" style="width:170px" disabled data-tip="Filter by user">
+        <option></option>
+        <option>John Doe</option>
+        <option>Jane Smith</option>
+        <option>Admin User</option>
+      </select>
+      <div class="vsep" style="height:20px"></div>
+      <span class="filter-lbl">Section</span>
+      <select class="cal-cb" style="width:140px" disabled data-tip="Filter by section">
+        <option></option>
+        <option>Manage Users</option>
+        <option>Apex Class</option>
+        <option>Page</option>
+        <option>Custom Apps</option>
+      </select>
+      <div class="vsep" style="height:20px"></div>
+      <span class="filter-lbl">Display</span>
+      <input class="cal-tf" style="width:190px" placeholder="filter..." readonly data-tip="Filter by display value (contains)">
+      <div class="spacer"></div>
+      <button class="cal-btn btn-d" data-tip="Reset all column filters">Clear filters</button>
+    </div>
+
+    <!-- Audit table -->
+    <div class="tbl-wrap" style="max-height:440px;overflow-y:auto;">
+      <table class="cal-tbl">
+        <thead>
+          <tr>
+            <th style="width:170px">Action</th>
+            <th style="width:155px">User</th>
+            <th style="width:175px">Date</th>
+            <th style="width:145px">Section</th>
+            <th>Display</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="audit-action">changedpassword</td>
+            <td style="color:#2980b9">John Doe</td>
+            <td>2026-04-24 15:46:51</td>
+            <td><span class="pill-section sec-manage">Manage Users</span></td>
+            <td>Set new password for user John Doe</td>
+          </tr>
+          <tr>
+            <td class="audit-action">unlockeduser</td>
+            <td style="color:#2980b9">Jane Smith</td>
+            <td>2026-04-24 15:46:07</td>
+            <td><span class="pill-section sec-manage">Manage Users</span></td>
+            <td>Unlocked user john.doe@example.com (UserID: 005B0000GYRKq2)</td>
+          </tr>
+          <tr>
+            <td class="audit-action">value_PROV_SCRATCH_DAILY_LIMIT</td>
+            <td style="color:#888"></td>
+            <td>2026-04-23 04:25:03</td>
+            <td><span class="pill-section sec-setup">Setup</span></td>
+            <td>Changed Provisioned Daily Scratch Org Limit from 80 to 80</td>
+          </tr>
+          <tr>
+            <td class="audit-action">value_MAX_STREAMING_TOPICS_PROV</td>
+            <td style="color:#888"></td>
+            <td>2026-04-23 04:25:03</td>
+            <td><span class="pill-section sec-setup">Setup</span></td>
+            <td>Max number of streaming topics</td>
+          </tr>
+          <tr>
+            <td class="audit-action">deletedApexClass</td>
+            <td style="color:#2980b9">John Doe</td>
+            <td>2026-04-16 16:42:54</td>
+            <td><span class="pill-section sec-apex">Apex Class</span></td>
+            <td>Deleted Ctrl001_NewMinute_TEST Apex Class code</td>
+          </tr>
+          <tr>
+            <td class="audit-action">deletedApexClass</td>
+            <td style="color:#2980b9">John Doe</td>
+            <td>2026-04-16 16:42:53</td>
+            <td><span class="pill-section sec-apex">Apex Class</span></td>
+            <td>Deleted Ctrl001_NewMinute Apex Class code</td>
+          </tr>
+          <tr>
+            <td class="audit-action">deletedApexPage</td>
+            <td style="color:#2980b9">John Doe</td>
+            <td>2026-04-16 16:41:31</td>
+            <td><span class="pill-section sec-page">Page</span></td>
+            <td>Deleted Page VF_NewMinute</td>
+          </tr>
+          <tr>
+            <td class="audit-action">changedApexClass</td>
+            <td style="color:#2980b9">John Doe</td>
+            <td>2026-04-16 19:00:46</td>
+            <td><span class="pill-section sec-apex">Apex Class</span></td>
+            <td>Changed NewDeviceLoginPolicy Apex Class code</td>
+          </tr>
+          <tr>
+            <td class="audit-action">createdApexClass</td>
+            <td style="color:#2980b9">John Doe</td>
+            <td>2026-04-16 19:00:33</td>
+            <td><span class="pill-section sec-apex">Apex Class</span></td>
+            <td>Created NewDeviceLoginPolicy Apex Class code</td>
+          </tr>
+          <tr>
+            <td class="audit-action">changedApexPage</td>
+            <td style="color:#2980b9">John Doe</td>
+            <td>2026-04-16 18:47:07</td>
+            <td><span class="pill-section sec-page">Page</span></td>
+            <td>Changed Page screenFlow</td>
+          </tr>
+          <tr>
+            <td class="audit-action">suOrgAdminLogout</td>
+            <td style="color:#2980b9">Admin User</td>
+            <td>2026-04-10 17:29:13</td>
+            <td><span class="pill-section sec-manage">Manage Users</span></td>
+            <td>Logged out using Login-As access for Admin User</td>
+          </tr>
+          <tr>
+            <td class="audit-action">suOrgAdminLogin</td>
+            <td style="color:#2980b9">Jane Smith</td>
+            <td>2026-04-10 17:22:26</td>
+            <td><span class="pill-section sec-manage">Manage Users</span></td>
+            <td>Logged in using Login-As access for Admin User</td>
+          </tr>
+          <tr>
+            <td class="audit-action">changedpassword</td>
+            <td style="color:#2980b9">Jane Smith</td>
+            <td>2026-04-10 17:21:53</td>
+            <td><span class="pill-section sec-manage">Manage Users</span></td>
+            <td>Set new password for user Jane Smith</td>
+          </tr>
+          <tr>
+            <td class="audit-action">purged_uninstall_export</td>
+            <td style="color:#2980b9">John Doe</td>
+            <td>2026-03-30 04:20:01</td>
+            <td><span class="pill-section sec-custom">Custom Apps</span></td>
+            <td>Purged uninstall export for package CMS Content Type Manager (Version Name Spring 2020)</td>
+          </tr>
+          <tr>
+            <td class="audit-action">purged_uninstall_export</td>
+            <td style="color:#2980b9">John Doe</td>
+            <td>2026-03-30 04:20:01</td>
+            <td><span class="pill-section sec-custom">Custom Apps</span></td>
+            <td>Purged uninstall export for package Timeline (Version Name 2.66)</td>
+          </tr>
+          <tr>
+            <td class="audit-action">purged_uninstall_export</td>
+            <td style="color:#2980b9">John Doe</td>
+            <td>2026-03-30 04:20:01</td>
+            <td><span class="pill-section sec-custom">Custom Apps</span></td>
+            <td>Purged uninstall export for package Org Health (Version Name 1.3)</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+</div>
+
+<!-- Key features modal -->
+<div id="modal-kf" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:999;align-items:center;justify-content:center" onclick="if(event.target===this)this.style.display='none'">
+  <div style="background:#fff;border-radius:8px;padding:28px 32px;max-width:520px;width:90%;color:#1a2a35;box-shadow:0 8px 32px rgba(0,0,0,.3)">
+    <h3 style="margin:0 0 14px;color:#2980b9">&#9733; Key features</h3>
+    <ul style="margin:0;padding-left:20px;line-height:1.8">
+      <li>Extract the Salesforce Setup Audit Trail for any custom date range</li>
+      <li>Real-time filtering by action keyword, user, section and display text</li>
+      <li>Saved exclusion filters (managed via popup) to suppress recurring noise entries</li>
+      <li>Automatic Excel export to a configurable audit path</li>
+      <li>Double-click any row to open a full audit-detail popup</li>
+      <li>ComboBoxes for User and Section populate dynamically from extracted data</li>
+    </ul>
+    <div style="text-align:right;margin-top:18px">
+      <button class="cal-btn btn-d" onclick="document.getElementById('modal-kf').style.display='none'">Close</button>
+    </div>
+  </div>
+</div>
+
+<script>
+function sw(id,idx){
+  var tp=document.getElementById(id);
+  tp.querySelectorAll('.m-tab').forEach(function(t,i){t.classList.toggle('act',i===idx)});
+  tp.querySelectorAll('.m-panel').forEach(function(p,i){p.classList.toggle('act',i===idx)});
+}
+</script>
+</body>
+</html>

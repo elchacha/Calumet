@@ -1,0 +1,971 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>User Access Score — Interactive Tour — Calumet</title>
+<style>
+/* ════════════════════════════════════════════════════════════
+   User Access Score Interactive Tour — fully self-contained
+   Palette adapted from shared.css (Calumet doc pages)
+   ════════════════════════════════════════════════════════════ */
+*{box-sizing:border-box;margin:0;padding:0}
+
+:root{
+  --sbg:#142540;--sbg2:#1a3050;--sborder:#244568;
+  --stxt:#e2e8f0;--smut:#8892a4;--sacc:#2ea4c9;
+  --blue:#2980b9;--green:#27ae60;--orange:#e67e22;--red:#E74C3C;
+  --hdr:#1A5276;
+}
+
+body{
+  font-family:system-ui,-apple-system,"Segoe UI",sans-serif;
+  background:#0f1d33;color:var(--stxt);
+  min-height:100vh;display:flex;flex-direction:column;
+}
+
+/* ── Top bar ── */
+#topbar{
+  background:var(--sbg);border-bottom:1px solid var(--sborder);
+  padding:14px 28px 12px;flex-shrink:0;
+}
+#topbar h1{font-size:18px;font-weight:800;color:#fff;letter-spacing:.2px}
+#topbar h1 .badge{
+  font-size:10px;background:#1e3a5e;color:var(--smut);
+  padding:2px 8px;border-radius:12px;font-weight:400;margin-left:8px;vertical-align:middle}
+#topbar .sub{font-size:12px;color:#a8b4c8;margin-top:3px}
+
+/* ── Progress dots ── */
+#progress{
+  display:flex;align-items:center;gap:0;margin-top:14px;flex-wrap:wrap;
+}
+.dot{
+  display:flex;align-items:center;gap:7px;cursor:pointer;user-select:none;
+}
+.dot .circle{
+  width:26px;height:26px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:12px;font-weight:700;
+  background:var(--sbg2);border:1px solid var(--sborder);color:var(--smut);
+  transition:all .25s ease;
+}
+.dot .lbl{font-size:10.5px;color:var(--smut);white-space:nowrap;transition:color .25s}
+.dot.done .circle{background:var(--green);border-color:var(--green);color:#fff}
+.dot.active .circle{background:var(--sacc);border-color:var(--sacc);color:#fff;
+  box-shadow:0 0 0 4px rgba(46,164,201,.22)}
+.dot.active .lbl{color:#fff;font-weight:700}
+.dot:hover .circle{border-color:var(--sacc)}
+.connector{width:14px;height:2px;background:var(--sborder);margin:0 3px;flex-shrink:0}
+.connector.done{background:var(--green)}
+
+/* ── Stage (mockup area) ── */
+#stage{
+  flex:1;padding:26px 28px;display:flex;flex-direction:column;
+  align-items:center;position:relative;overflow:auto;
+}
+#scene-frame{
+  width:100%;max-width:1000px;background:#e8eef2;border-radius:8px;
+  padding:1px;box-shadow:0 8px 30px rgba(0,0,0,.4);position:relative;
+}
+#scene-body{position:relative}
+
+/* ════════════════════════════════════════════
+   APP MOCKUP STYLES  (light Calumet theme)
+   ════════════════════════════════════════════ */
+.mockup{font-family:"Segoe UI",sans-serif;font-size:12px;color:#1a2a35;background:#F8F8F8;border-radius:8px;overflow:hidden}
+.m-tabpane{display:flex;flex-direction:column;background:#F8F8F8}
+.m-tabbar{display:flex;background:#D8E6EE;border-bottom:1px solid #9AABBF;flex-shrink:0;overflow-x:auto}
+.m-tab{padding:6px 13px;cursor:default;font-weight:700;font-size:11px;color:#2C3E50;border-right:1px solid #b0c8d8;user-select:none;white-space:nowrap}
+.m-tab.done{background:#27ae60;color:#fff;border-right-color:#1e8a4a}
+.m-tab.act{background:#F8F8F8;color:#1A5276;border-bottom:2px solid #F8F8F8;margin-bottom:-1px}
+.m-body{background:#F8F8F8;padding:12px;min-height:430px}
+
+/* header block: title, active-config band, step chips */
+.m-title{padding:8px 12px 6px;background:#eef5fb;border-bottom:1px solid #c9d9e6}
+.m-title b{display:block;font-size:13px;color:#1A5276}
+.m-title span{font-size:11px;color:#33485c}
+.m-band{display:flex;flex-wrap:wrap;gap:8px;align-items:center;padding:6px 12px;background:#eef5fb;border-bottom:1px solid #c9d9e6}
+.m-stepper{display:flex;flex-wrap:wrap;align-items:center;gap:6px;padding:8px 12px 2px;background:#eef5fb}
+.st{display:flex;align-items:center;gap:6px}
+.st .c{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;background:#e3e7ea;color:#55687a;border:1px solid #cfd6db;flex-shrink:0}
+.st.done .c{background:#27ae60;border-color:#27ae60;color:#fff}
+.st.act .c{background:#2c6fd1;border-color:#2c6fd1;color:#fff}
+.st .t{font-weight:700;font-size:11px;color:#1a2a35;line-height:1.1}
+.st.done .t{color:#1e8a4a}
+.st.act .t{color:#2c6fd1}
+.st .s{font-size:9px;color:#55687a;line-height:1.2;white-space:nowrap}
+.st-sep{color:#9AABBF;font-size:11px;margin:0 2px}
+.st-opt{font-style:italic;font-size:10px;color:#7f8c8d;margin:0 4px 0 6px}
+.m-hint{padding:2px 12px 7px;background:#eef5fb;font-size:10.5px;color:#4a5f70;border-bottom:1px solid #c9d9e6}
+
+.vbox{display:flex;flex-direction:column}
+.hbox{display:flex;flex-direction:row;flex-wrap:wrap}
+.split-pane{display:flex;gap:4px}
+.split-panel{flex:1;min-width:0}
+.spacer{flex:1}
+.vsep{width:1px;background:#9AABBF;align-self:stretch;margin:0 4px}
+.hsep{border:none;border-top:1px solid #9AABBF;margin:4px 0}
+
+.cal-btn{padding:4px 11px;border-radius:3px;font-size:11px;font-weight:700;cursor:pointer;border:1px solid #9AABBF;font-family:inherit;white-space:nowrap;transition:opacity .2s,filter .2s}
+.cal-btn:hover{filter:brightness(1.06)}
+.btn-d{background:#E8EEF2;color:#2C3E50;border-color:#9AABBF}
+.btn-b{background:#2980b9;color:#fff;border-color:#1f6699}
+.btn-g{background:#27ae60;color:#fff;border-color:#1e8a4a}
+.btn-o{background:#e67e22;color:#fff;border-color:#b8621a}
+.btn-r{background:#E74C3C;color:#fff;border-color:#c03a2b}
+.cal-btn.dim{opacity:.5;pointer-events:none}
+.cal-btn[disabled]{opacity:.4;pointer-events:none}
+
+.cal-lbl{font-size:12px;color:#1a2a35}
+.cal-tf,.cal-ta,.cal-cb{padding:3px 7px;background:#fff;border:1px solid #9AABBF;border-radius:3px;font-size:11px;color:#1a2a35;font-family:inherit}
+.cal-tf{height:24px}
+.cal-ta{resize:none;width:100%}
+.cal-cb{height:24px}
+.cal-grow{flex:1;min-width:0}
+.cal-chk{display:flex;align-items:center;gap:4px;font-size:11px;white-space:nowrap}
+.cal-chk input{accent-color:var(--sacc)}
+
+.card{border:1px solid #c9d6df;background:#fbfdff;border-radius:4px;padding:8px 10px}
+.card-h{display:flex;align-items:center;gap:7px;font-weight:700;font-size:12px;color:#1a2a35;margin-bottom:7px}
+.sec-num{width:19px;height:19px;border-radius:50%;background:#2c6fd1;color:#fff;font-size:10.5px;font-weight:700;display:inline-flex;align-items:center;justify-content:center}
+.note-i{font-size:10.5px;font-style:italic;color:#3d7a8a}
+
+.tbl-wrap{overflow-x:auto;border:1px solid #9AABBF;border-radius:3px;margin:2px 0}
+.cal-tbl{border-collapse:collapse;width:100%;font-size:11px}
+.cal-tbl th{background:#b8d5e3;color:#1A5276;font-weight:700;padding:4px 8px;text-align:left;border-right:1px solid #9AABBF;white-space:nowrap}
+.cal-tbl th:last-child{border-right:none}
+.cal-tbl td{padding:3px 8px;border-top:1px solid #d8e8f0}
+.cal-tbl td.n,.cal-tbl th.n{text-align:center}
+.cal-tbl tr.flash-orange{background:#ffe3c4;transition:background .4s}
+.cal-tbl tr.ignored td{color:#9aa8b3}
+.cal-tbl .empty-row td{text-align:center;color:#55687a;padding:34px 8px}
+.lnk{color:#2980b9;text-decoration:underline;cursor:pointer}
+.lnk-red{color:#C0392B;font-weight:700;text-decoration:underline;cursor:pointer}
+
+.cal-listview{border:1px solid #9AABBF;background:#fff;min-height:80px;border-radius:3px;font-size:11px}
+
+.pill{display:inline-block;padding:1px 9px;border-radius:10px;color:#fff;font-size:10px;font-weight:700}
+.pill.p{background:#27ae60}
+.pill.pc{background:#2c7fb8}
+.pill.c{background:#e67e22}
+
+/* overlay windows (popups) */
+.backdrop{position:absolute;left:0;top:0;right:0;bottom:0;background:rgba(20,37,64,.18);z-index:4;border-radius:8px}
+.win{color:#1a2a35;font-family:"Segoe UI",sans-serif;font-size:12px;position:absolute;left:50%;transform:translateX(-50%);top:46px;z-index:5;background:#f6f6f6;border:1px solid #8a9aa8;border-radius:6px;box-shadow:0 12px 34px rgba(0,0,0,.45);overflow:hidden}
+.win-title{display:flex;align-items:center;gap:8px;padding:6px 10px;background:#eceff2;border-bottom:1px solid #cdd5db;font-size:11px;color:#33485c}
+.win-title .x{margin-left:auto;color:#55687a}
+.win-body{padding:10px 12px}
+.win-h{font-weight:800;font-size:13px;color:#1a2a35}
+.win-sub{font-size:10px;color:#7f8c8d;margin-left:8px}
+.mono{font-family:Consolas,"Courier New",monospace;font-size:11px}
+.fail-box{border:1px solid #9AABBF;background:#fff;border-radius:3px;padding:8px 10px;font-family:Consolas,"Courier New",monospace;font-size:10.5px;line-height:1.55;color:#1a2a35;min-height:230px}
+
+/* Row fade-in animation */
+.row-in{animation:rowIn .35s ease both}
+@keyframes rowIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+/* Spinner */
+.spin{display:inline-block;width:13px;height:13px;border:2px solid rgba(41,128,185,.25);border-top-color:#2980b9;border-radius:50%;animation:sp .7s linear infinite;vertical-align:middle}
+@keyframes sp{to{transform:rotate(360deg)}}
+
+/* Mockup progress bar */
+.pbar-track{flex:1;height:16px;background:#c8dae6;border-radius:3px;overflow:hidden}
+.pbar-fill{width:0;height:100%;background:#2980b9;transition:width .12s linear}
+
+/* ── Animated cursor ── */
+#cursor{
+  position:fixed;left:0;top:0;width:30px;height:30px;z-index:9999;
+  pointer-events:none;transform:translate(-100px,-100px);
+  transition:transform .6s cubic-bezier(.4,0,.2,1);
+  filter:drop-shadow(0 2px 3px rgba(0,0,0,.45));
+}
+#ripple{
+  position:fixed;left:0;top:0;width:14px;height:14px;border-radius:50%;
+  border:2px solid var(--sacc);background:rgba(46,164,201,.25);
+  z-index:9998;pointer-events:none;opacity:0;
+  transform:translate(-50%,-50%) scale(.3);
+}
+#ripple.go{animation:rip .65s ease-out}
+@keyframes rip{0%{opacity:.9;transform:translate(-50%,-50%) scale(.3)}100%{opacity:0;transform:translate(-50%,-50%) scale(3.4)}}
+
+/* ── Popup bubble ── */
+#popup{
+  position:fixed;z-index:10000;max-width:340px;
+  background:#fff;color:#1a2a35;border-radius:8px;
+  border-left:4px solid var(--sacc);
+  box-shadow:0 10px 36px rgba(0,0,0,.45);
+  padding:14px 16px 13px;opacity:0;pointer-events:none;
+  transform:translateY(8px) scale(.97);transition:opacity .3s,transform .3s;
+}
+#popup.show{opacity:1;pointer-events:auto;transform:none}
+#popup .p-title{font-size:13.5px;font-weight:800;color:var(--hdr);margin-bottom:6px}
+#popup .p-text{font-size:12.5px;line-height:1.55;color:#33485c}
+#popup .p-text em{color:#2980b9;font-style:normal;font-weight:700}
+#popup .p-text code{background:#eef3f7;padding:0 4px;border-radius:3px;font-size:11.5px}
+#popup .p-btn{
+  margin-top:11px;float:right;background:var(--sacc);color:#fff;border:none;
+  padding:5px 14px;border-radius:5px;font-size:12px;font-weight:700;cursor:pointer;
+  font-family:inherit;transition:filter .2s}
+#popup .p-btn:hover{filter:brightness(1.1)}
+#popup::after{clear:both;content:"";display:block}
+
+/* ── Bottom nav ── */
+#nav{
+  flex-shrink:0;background:var(--sbg);border-top:1px solid var(--sborder);
+  padding:11px 28px;display:flex;align-items:center;gap:12px;
+}
+.nav-btn{
+  background:var(--sbg2);color:var(--stxt);border:1px solid var(--sborder);
+  padding:7px 18px;border-radius:6px;font-size:13px;font-weight:700;cursor:pointer;
+  font-family:inherit;transition:all .2s}
+.nav-btn:hover:not(:disabled){background:#244568;border-color:var(--sacc)}
+.nav-btn:disabled{opacity:.35;cursor:not-allowed}
+.nav-btn.primary{background:var(--sacc);border-color:var(--sacc);color:#fff}
+.nav-btn.primary:hover{filter:brightness(1.1);background:var(--sacc)}
+#scene-counter{font-size:12px;color:var(--smut)}
+#nav .spacer{flex:1}
+#autoplay{background:transparent;border:1px solid var(--sborder);color:var(--stxt);
+  width:38px;height:38px;border-radius:8px;font-size:15px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;transition:all .2s}
+#autoplay:hover{border-color:var(--sacc);color:var(--sacc)}
+#autoplay.on{background:var(--sacc);border-color:var(--sacc);color:#fff}
+
+/* ── Recap scene ── */
+.recap{padding:30px 34px;color:#1a2a35;background:#F8F8F8;border-radius:8px}
+.recap h2{font-size:22px;color:var(--hdr);margin-bottom:4px;font-weight:800}
+.recap .lead{font-size:13px;color:#55687a;margin-bottom:20px}
+.recap-list{list-style:none;margin-bottom:24px}
+.recap-list li{
+  display:flex;align-items:center;gap:10px;font-size:13.5px;padding:6px 0;
+  color:#2c3e50;opacity:0;transform:translateX(-10px);transition:all .4s}
+.recap-list li.in{opacity:1;transform:none}
+.recap-list li .chk{
+  width:22px;height:22px;border-radius:50%;background:var(--green);color:#fff;
+  display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0}
+.recap-list li.opt .chk{background:#9aabbf}
+.recap-list li b{color:var(--hdr)}
+.tips{display:flex;gap:14px;flex-wrap:wrap}
+.tip{
+  flex:1;min-width:200px;background:#fff;border:1px solid #d4e2ec;border-radius:8px;
+  padding:14px 16px;font-size:12.5px;line-height:1.5;color:#3a4d5e;
+  border-top:3px solid var(--blue)}
+.tip.warn{border-top-color:var(--orange)}
+.tip.cycle{border-top-color:var(--green)}
+.tip .icon{font-size:20px;display:block;margin-bottom:6px}
+.tip b{color:var(--hdr)}
+
+/* status line inside mockups */
+.statusline{font-size:11px;font-style:italic;transition:opacity .3s}
+.back-site{display:inline-block;margin-bottom:6px;font-size:12px;color:#7fd4ec;text-decoration:none;opacity:.9}
+.back-site:hover{text-decoration:underline;opacity:1}
+/* ════ User Access Score specifics ════ */
+#scene-frame{zoom:1.2;width:calc(96% / 1.2);max-width:1150px}
+.cal-tbl td{white-space:nowrap}
+.m-tabbar{flex-wrap:wrap}
+.orgbar{display:flex;align-items:center;gap:12px;padding:6px 12px;background:#c0392b;color:#fff;font-size:12px}
+.orgsel{background:#cfe3ee;color:#1a2a35;border:1px solid #9AABBF;padding:2px 10px;border-radius:3px;min-width:130px}
+.cal-tbl tr.lv-crit td{background:#ffd3d3}
+.cal-tbl tr.lv-vhigh td{background:#ffe4e4}
+.cal-tbl tr.lv-high td{background:#ffeede}
+.cal-tbl tr.lv-mod td{background:#fff8dc}
+.cal-tbl tr.lv-min td{background:#fff}
+.cal-tbl tr.picked td{background:#d3d3d3}
+.cal-tbl td.red{color:#c0392b;font-weight:700}
+.cal-tbl td.dlt.up{color:#c0392b;font-weight:700}
+.cal-tbl td.dlt.dn{color:#27ae60;font-weight:700}
+.flag{display:inline-block;padding:0 7px;border-radius:9px;color:#fff;font-size:9.5px;font-weight:700;margin:0 1px}
+.flag.int{background:#805ad5}
+.flag.dor{background:#718096}
+.count-line{font-size:10.5px;color:#55687a;margin-top:3px}
+.rtabs{display:flex;gap:2px;border-bottom:1px solid #9AABBF;margin-bottom:4px}
+.rtab{padding:4px 10px;font-weight:700;font-size:11px;color:#2C3E50;background:#D8E6EE;border:1px solid #b0c8d8;border-bottom:none;cursor:default}
+.rtab.on{background:#F8F8F8;color:#1A5276}
+.empty-pane{padding:60px 14px;text-align:center;color:#55687a;font-size:12px;line-height:1.8}
+.typ{display:inline-block;min-width:34px;padding:1px 8px;border-radius:4px;color:#fff;font-size:10px;font-weight:700;text-align:center}
+.typ.pro{background:#2c3e50}
+.typ.ps{background:#718096}
+.redund{display:inline-block;padding:1px 9px;border-radius:9px;background:#e67e22;color:#fff;font-size:10px;font-weight:700}
+.cal-tbl td.xc.has{background:#fbd5d5;color:#1a2a35;font-weight:700}
+.cal-tbl td.xc.cell-sel{background:#3d7a8a !important;color:#fff}
+.sumline{padding:6px 8px;margin-bottom:6px;background:#eef5fb;border:1px solid #c9d9e6;border-radius:3px;font-size:11px;color:#33485c}
+.wgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px 28px}
+.wrow{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:12px}
+.cal-chk input[type=checkbox]{accent-color:#2980b9}
+
+</style>
+</head>
+<body>
+
+<div id="topbar">
+  <a class="back-site" id="backSite" href="../demos.html">&larr; All demos</a>
+  <h1>User Access Score <span class="badge">Tab 69 · Interactive Tour</span></h1>
+  <div class="sub">A guided walkthrough of the privilege ranking: who holds the most power in an org, why, and what to do about it. Fictional data.</div>
+  <div id="progress"></div>
+</div>
+
+<div id="stage">
+  <div id="scene-frame">
+    <div id="scene-body"></div>
+  </div>
+</div>
+
+<div id="nav">
+  <button class="nav-btn" id="btn-prev">&larr; Prev</button>
+  <span id="scene-counter">1 / 1</span>
+  <div class="spacer"></div>
+  <button id="autoplay" title="Auto-play">&#9654;</button>
+  <button class="nav-btn primary" id="btn-next">Next &rarr;</button>
+</div>
+
+<!-- floating elements -->
+<svg id="cursor" viewBox="0 0 28 28">
+  <path d="M5 2 L5 22 L10 17 L13 24 L16 23 L13 16 L20 16 Z"
+        fill="#fff" stroke="#1a2a35" stroke-width="1.4" stroke-linejoin="round"/>
+</svg>
+<div id="ripple"></div>
+
+<div id="popup">
+  <div class="p-title"></div>
+  <div class="p-text"></div>
+  <button class="p-btn">Got it &rarr;</button>
+</div>
+
+<script>
+"use strict";
+
+/* ───────────────────────── Helpers ───────────────────────── */
+var $ = function(sel,ctx){return (ctx||document).querySelector(sel);};
+var sceneBody = $("#scene-body");
+var sceneFrame = $("#scene-frame");
+var cursor = $("#cursor");
+var ripple = $("#ripple");
+var popup = $("#popup");
+
+
+/* timers we must clear on scene change */
+var pending = [];
+function after(ms, fn){ var id = setTimeout(fn, ms); pending.push(id); return id; }
+function clearPending(){ pending.forEach(clearTimeout); pending = []; if(typeInterval){clearInterval(typeInterval);typeInterval=null;} if(playTimer){/*keep autoplay*/} }
+var typeInterval = null;
+
+/* Move the animated cursor to viewport coords of an element, fire ripple + popup */
+function pointAt(targetEl, popupTitle, popupText, color, popupSide){
+  if(!targetEl) return;
+  var r = targetEl.getBoundingClientRect();
+  var x = r.left + r.width/2;
+  var y = r.top + r.height/2;
+  // cursor tip is roughly top-left of svg, offset so the point lands on target
+  cursor.style.transform = "translate(" + (x-3) + "px," + (y-2) + "px)";
+  // ripple after the move completes
+  after(620, function(){
+    ripple.style.left = x + "px";
+    ripple.style.top = y + "px";
+    ripple.classList.remove("go");
+    void ripple.offsetWidth; // reflow
+    ripple.classList.add("go");
+  });
+  // popup ~0.8s after click
+  after(620 + 800, function(){
+    showPopup(popupTitle, popupText, color, targetEl, popupSide);
+  });
+}
+
+function showPopup(title, text, color, anchorEl, side){
+  $(".p-title", popup).textContent = title;
+  $(".p-text", popup).innerHTML = text;
+  popup.style.borderLeftColor = color || "#2ea4c9";
+  $(".p-btn", popup).style.background = color || "#2ea4c9";
+  // position relative to anchor
+  popup.classList.add("show");
+  // need measured size -> position after it's visible
+  var pr = popup.getBoundingClientRect();
+  var ar = anchorEl ? anchorEl.getBoundingClientRect() : sceneFrame.getBoundingClientRect();
+  var left = ar.left + ar.width/2 - pr.width/2;
+  var top;
+  if(side === "above"){ top = ar.top - pr.height - 14; }
+  else { top = ar.bottom + 14; }
+  // clamp to viewport
+  var vw = window.innerWidth, vh = window.innerHeight;
+  if(left < 12) left = 12;
+  if(left + pr.width > vw - 12) left = vw - 12 - pr.width;
+  if(top < 12) top = ar.bottom + 14;
+  if(top + pr.height > vh - 12) top = ar.top - pr.height - 14;
+  if(top < 12) top = 12;
+  popup.style.left = left + "px";
+  popup.style.top = top + "px";
+}
+function hidePopup(){ popup.classList.remove("show"); }
+
+/* A scene often explains several things in a row. Each "Got it" moves to the next element of the
+   list; the last one moves on to the next scene. step = {sel,title,text,color,side,before}. */
+var popupNextFn = null;
+function popupChain(steps){
+  var i = 0;
+  var tries = 0;
+  function show(){
+    var s = steps[i];
+    var last = (i === steps.length-1);
+    var el = $(s.sel);
+    // The target may still be animating in (a row, a link): wait for it instead of skipping the step.
+    if(!el && tries++ < 20){ after(400, show); return; }
+    tries = 0;
+    if(s.before) s.before();
+    popupNextFn = last ? null : function(){ hidePopup(); i++; after(300, show); };
+    pointAt($(s.sel), s.title, s.text, s.color, s.side);
+  }
+  show();
+}
+
+/* type text into a textarea char by char */
+function typeInto(el, text, speed, done){
+  el.value = "";
+  var i = 0;
+  typeInterval = setInterval(function(){
+    el.value = text.slice(0, ++i);
+    el.scrollTop = el.scrollHeight;
+    if(i >= text.length){ clearInterval(typeInterval); typeInterval=null; if(done) done(); }
+  }, speed || 38);
+}
+
+/* append log lines progressively to a textarea */
+function streamLog(el, lines, speed, done){
+  var i = 0;
+  function step(){
+    if(i >= lines.length){ if(done) done(); return; }
+    el.value += (el.value ? "\n" : "") + lines[i++];
+    el.scrollTop = el.scrollHeight;
+    after(speed || 220, step);
+  }
+  step();
+}
+
+/* small builders */
+function btn(cls, label, id, extra){
+  return '<button class="cal-btn '+cls+'"'+(id?' id="'+id+'"':'')+(extra||'')+'>'+label+'</button>';
+}
+function card(num, title, inner, style){
+  return '<div class="card" style="'+(style||'')+'"><div class="card-h"><span class="sec-num">'+num+'</span>'+title+'</div>'+inner+'</div>';
+}
+/* in-scene popup window: a backdrop plus an absolutely positioned window */
+function overlay(title, width, top, body){
+  return '<div class="backdrop"></div>'+
+    '<div class="win" style="width:'+width+'px;top:'+top+'px">'+
+      '<div class="win-title"><span>'+title+'</span><span class="x">&#x2715;</span></div>'+
+      '<div class="win-body">'+body+'</div>'+
+    '</div>';
+}
+
+/* One colour per scene, by NAME (progress dots and counter are derived from the registry). */
+var COL = {
+  rank:"#2980b9", filter:"#e67e22", flags:"#8e44ad", weights:"#16a085",
+  detail:"#2c7fb8", compare:"#27ae60", breakdown:"#16a085", recap:"#27ae60"
+};
+
+/* ───────────────────────── Demo data (fictional) ───────────────────────── */
+/* [rank, username, profile, alias, flags, lastLogin, additive, effective, delta] */
+var USERS = [
+  [1,  "User 01", "Admin_Full",     "u001", [],            "2026-08-27", 60448, 45391, "+312"],
+  [2,  "User 02", "Admin_Full",     "u002", [],            "2026-08-27", 41036, 38845, ""],
+  [3,  "User 03", "Admin_Full",     "u003", ["INT"],       "2026-08-27", 37754, 37103, ""],
+  [4,  "User 04", "Admin_Full",     "u004", [],            "2026-08-05", 38212, 36629, "-120"],
+  [5,  "User 05", "Admin_Full",     "u005", [],            "2026-08-24", 34820, 34690, ""],
+  [6,  "User 06", "Admin_Full",     "u006", [],            "2026-08-27", 34905, 34661, ""],
+  [7,  "User 07", "Admin_Full",     "u007", ["INT","90d"], "2023-01-19", 34495, 34495, ""],
+  [8,  "User 08", "Admin_Full",     "u008", ["INT","90d"], "never",      34482, 34482, ""],
+  [9,  "User 09", "Partner_Plus",   "u009", [],            "2026-08-25", 25402, 24789, ""],
+  [10, "User 10", "Partner_Plus",   "u010", ["90d"],       "2025-10-27", 25402, 24789, ""],
+  [11, "User 11", "Ops_Manager",    "u011", [],            "2026-08-26", 28334, 16620, "+45"],
+  [12, "User 12", "Ops_Manager",    "u012", [],            "2026-08-27", 16777, 15582, ""],
+  [13, "User 13", "Ops_Manager",    "u013", ["90d"],       "2026-06-17", 17478, 13631, ""],
+  [14, "User 14", "Integration",    "u014", ["INT","90d"], "never",      13362, 13362, ""],
+  [15, "User 15", "Read_Only",      "u015", [],            "2026-08-27", 11918, 11918, ""],
+  [16, "User 16", "Read_Only",      "u016", [],            "2026-08-14", 4210,  4210,  ""]
+];
+function levelOf(eff){
+  var ratio = eff / 45391;
+  return ratio >= .95 ? "crit" : ratio >= .80 ? "vhigh" : ratio >= .50 ? "high" : ratio >= .20 ? "mod" : "min";
+}
+function isDormant(u){ return u[4].indexOf("90d") >= 0; }
+
+/* Permission sets of the first user (type, name, score, marginal) */
+var DETAIL = [
+  ["PRO","Admin_Full",              34481, null],
+  ["PS", "Geo_Access_Manager",       4592, 2],
+  ["PS", "Geo_Access",               4578, 10],
+  ["PS", "Geo_Access_Manager_Plus",  3754, 2],
+  ["PS", "Geo_Admin_Access",         3516, 73],
+  ["PS", "Partner_Admin_User",       3235, 2606],
+  ["PS", "Rollup_Helper_All_Access", 2868, 2128],
+  ["PS", "Pricing_Application",      2452, 1477],
+  ["PS", "Live_Chat_Supervision",     111, 0],
+  ["PS", "Client_Info_Read",          149, 90],
+  ["PS", "Voice_Parser_Admin",        120, 4],
+  ["PS", "Field_Access_Einstein",      91, 91],
+  ["PS", "Bank_Info_GDPR",             67, 67]
+];
+
+/* ───────────────────────── Chrome ───────────────────────── */
+var TAB_NAMES = ["Compare All Profiles","Permission Sets Browser","Metadata Bundle","Profile Changes",
+  "Field Security (FLS)","Unused Profiles","UserRoles","User Activity Analysis","User Access Score","Sharing Settings","RecordSharing"];
+
+var LEVELS = [
+  ["min","Minimal (0-20%)","#2980b9"], ["mod","Moderate (20-50%)","#e8a33d"], ["high","High (50-80%)","#e67e22"],
+  ["vhigh","Very High (80-95%)","#e74c3c"], ["crit","CRITICAL (95-100%)","#c0392b"]
+];
+
+function chrome69(inner, o){
+  o = o || {};
+  var on = o.levels || {min:1,mod:1,high:1,vhigh:1,crit:1};
+  var tabs = TAB_NAMES.map(function(t){
+    return '<div class="m-tab'+(t === "User Access Score" ? " act" : "")+'">'+t+'</div>';
+  }).join("");
+  var lv = LEVELS.map(function(l){
+    return '<label class="cal-chk" style="color:'+l[2]+'"><input type="checkbox" id="lv-'+l[0]+'"'+(on[l[0]] ? " checked" : "")+'> '+l[1]+'</label>';
+  }).join("");
+  return ''+
+  '<div class="mockup">'+
+    '<div class="orgbar"><b>Org :</b><span class="orgsel">DemoOrg &#9662;</span><span style="color:#7dff9b">&#10003;</span><span>api : 4.64%</span></div>'+
+    '<div class="m-tabbar">'+tabs+'</div>'+
+    '<div class="m-title"><b>User Access Score</b><span>Assess user privilege levels. Users are ranked by access score and color-coded from Minimal to CRITICAL.</span></div>'+
+    '<div class="m-body" style="min-height:0;padding:8px 10px">'+
+      '<div class="cal-lbl" style="margin-bottom:4px">Filter by privilege level:</div>'+
+      '<div class="hbox" id="f-levels" style="gap:12px;align-items:center;margin-bottom:6px">'+lv+
+        '<span class="vsep" style="height:16px"></span>'+
+        '<label class="cal-chk" style="color:#2980b9"><input type="checkbox" id="lv-dormant"'+(o.dormant ? " checked" : "")+'> Dormant only (90d+)</label>'+
+      '</div>'+
+      '<div class="hbox" style="gap:10px;align-items:center;margin-bottom:6px">'+
+        btn("btn-d","Refresh")+
+        '<span class="cal-lbl" style="color:#55687a">Cache: 27/08/2026 10:01</span>'+
+        '<span class="cal-lbl">Weighting:</span>'+
+        '<select class="cal-cb" id="weighting" style="width:140px"><option>'+(o.weighting || "Data Exposure")+'</option></select>'+
+        btn("btn-d","Edit weights","btn-weights")+
+        btn("btn-o","Export","btn-export")+
+        '<label class="cal-chk" id="relpower"><input type="checkbox" checked> Weight by relation power</label>'+
+      '</div>'+
+      '<div class="split-pane" style="gap:6px;position:relative">'+inner+'</div>'+
+    '</div>'+
+    (o.overlay || "")+
+  '</div>';
+}
+
+function userRow(u, o){
+  o = o || {};
+  var lvl = levelOf(u[7]);
+  var flags = u[4].map(function(f){ return '<span class="flag '+(f === "INT" ? "int" : "dor")+'">'+(f === "90d" ? "90d+" : f)+'</span>'; }).join("");
+  var old = (u[5] === "never" || u[5] < "2026-07-01");
+  return '<tr class="lv-'+lvl+(o.sel && o.sel.indexOf(u[0]) >= 0 ? " picked" : "")+'" data-r="'+u[0]+'" id="r'+u[0]+'">'+
+    '<td class="n"><input type="checkbox" class="rk" id="ck'+u[0]+'"'+(o.sel && o.sel.indexOf(u[0]) >= 0 ? " checked" : "")+'></td>'+
+    '<td class="n">'+u[0]+'</td><td>'+u[1]+'</td><td>'+u[2]+'</td><td>'+u[3]+'</td><td class="n">'+flags+'</td>'+
+    '<td class="n'+(old ? " red" : "")+'">'+u[5]+'</td><td class="n">'+u[6]+'</td><td class="n"><b>'+u[7]+'</b></td>'+
+    '<td class="n dlt'+(u[8].charAt(0) === "+" ? " up" : u[8].charAt(0) === "-" ? " dn" : "")+'">'+u[8]+'</td></tr>';
+}
+
+function usersTable(o){
+  o = o || {};
+  var levels = o.levels || {min:1,mod:1,high:1,vhigh:1,crit:1};
+  var rows = USERS.filter(function(u){
+    return levels[levelOf(u[7])] && (!o.dormant || isDormant(u));
+  }).map(function(u){ return userRow(u, o); }).join("");
+  return '<div class="split-panel" style="flex:1.55"><div class="tbl-wrap" style="max-height:'+(o.h || 360)+'px;overflow-y:auto">'+
+    '<table class="cal-tbl" id="users-tbl"><thead><tr>'+
+      '<th class="n"></th><th class="n">Rank</th><th>Username</th><th>Profil</th><th>Alias</th><th class="n">Flags</th>'+
+      '<th class="n">Last login</th><th class="n" id="th-add">Additive</th><th class="n" id="th-eff">Effective</th><th class="n" id="th-delta">&#916;</th>'+
+    '</tr></thead><tbody id="users-body">'+rows+'</tbody></table></div>'+
+    '<div class="count-line" id="count-line">'+USERS.filter(function(u){ return levels[levelOf(u[7])] && (!o.dormant || isDormant(u)); }).length+' users shown</div></div>';
+}
+function refreshUsers(o){
+  var levels = o.levels, rows = USERS.filter(function(u){ return levels[levelOf(u[7])] && (!o.dormant || isDormant(u)); });
+  $("#users-body").innerHTML = rows.map(function(u){ return userRow(u, o); }).join("");
+  $("#count-line").textContent = rows.length + " users shown";
+}
+
+/* Right pane: tabs + body */
+function rightPane(active, body){
+  return '<div class="split-panel" style="flex:1.1;border-left:1px solid #9AABBF;padding-left:6px">'+
+    '<div class="rtabs"><span class="rtab'+(active === "detail" ? " on" : "")+'" id="rt-detail">Access detail</span>'+
+    '<span class="rtab'+(active === "weights" ? " on" : "")+'" id="rt-weights">Weight breakdown</span></div>'+body+'</div>';
+}
+function emptyPane(){
+  return rightPane("detail", '<div class="empty-pane">Tick a user to see where the score comes from.<br>Tick 2 to 5 to compare them side by side.</div>');
+}
+
+/* Click helper: glide the cursor to an element, ripple, then run cb */
+function clickAt(el, cb){
+  if(!el) return;
+  var r = el.getBoundingClientRect();
+  var x = r.left + Math.min(r.width/2, 40), y = r.top + r.height/2;
+  cursor.style.transform = "translate(" + (x-3) + "px," + (y-2) + "px)";
+  after(640, function(){
+    ripple.style.left = x + "px"; ripple.style.top = y + "px";
+    ripple.classList.remove("go"); void ripple.offsetWidth; ripple.classList.add("go");
+    if(cb) cb();
+  });
+}
+
+/* ───────────────────────── Scene 1 — the ranking ───────────────────────── */
+function scene1(){
+  sceneBody.innerHTML = chrome69(usersTable() + emptyPane());
+}
+scene1.run = function(){
+  popupChain([
+    {sel:"#th-eff", title:"A ranking, not a list", color:COL.rank, side:"below",
+     text:"Every user of the org is scored from what their <em>profile and permission sets</em> allow: objects, fields, system permissions, setup entities. Users are sorted by the <b>Effective</b> score, highest first."},
+    {sel:"#r1", title:"Colour = privilege level", color:COL.rank, side:"below",
+     text:"The row colour is the user's position between the lowest and the highest score of the org: <em>Minimal</em>, <em>Moderate</em>, <em>High</em>, <em>Very High</em>, <em>CRITICAL</em>. The top of the list is where to look first."},
+    {sel:"#f-levels", title:"Nothing to run", color:COL.rank, side:"below",
+     text:"The scores come from a cache of the org's permissions (dated next to <b>Refresh</b>). Press <b>Refresh</b> to rebuild it when permissions have changed."}
+  ]);
+};
+
+/* ───────────────────────── Scene 2 — filters ───────────────────────── */
+function scene2(){
+  sceneBody.innerHTML = chrome69(usersTable() + emptyPane());
+}
+scene2.run = function(){
+  var st = {levels:{min:1,mod:1,high:1,vhigh:1,crit:1}, dormant:false};
+  popupChain([
+    {sel:"#f-levels", title:"Filter by privilege level", color:COL.filter, side:"below",
+     text:"Untick the levels you do not want to see. Watch the list shrink as <em>Minimal</em>, <em>Moderate</em> and <em>High</em> go away: what is left is the part of the org worth a review."}
+  ]);
+  after(1500, function(){ clickAt($("#lv-min"), function(){ $("#lv-min").checked = false; st.levels.min = 0; refreshUsers(st); }); });
+  after(2700, function(){ clickAt($("#lv-mod"), function(){ $("#lv-mod").checked = false; st.levels.mod = 0; refreshUsers(st); }); });
+  after(3900, function(){ clickAt($("#lv-high"), function(){ $("#lv-high").checked = false; st.levels.high = 0; refreshUsers(st); }); });
+  after(5200, function(){
+    $("#lv-min").checked = $("#lv-mod").checked = $("#lv-high").checked = true;
+    st.levels = {min:1,mod:1,high:1,vhigh:1,crit:1}; refreshUsers(st);
+    clickAt($("#lv-dormant"), function(){ $("#lv-dormant").checked = true; st.dormant = true; refreshUsers(st); });
+  });
+  after(6500, function(){
+    showPopup("Dormant only (90d+)", "Keeps only accounts that have <em>not logged in for 90 days</em> (or never). A powerful account nobody uses is the easiest risk to remove: deactivate it, or take its access away.", COL.filter, $("#lv-dormant"), "below");
+  });
+};
+
+/* ───────────────────────── Scene 3 — flags & dates ───────────────────────── */
+function scene3(){
+  sceneBody.innerHTML = chrome69(usersTable({sel:[]}) + emptyPane());
+}
+scene3.run = function(){
+  popupChain([
+    {sel:"#r3 .flag", title:"INT: an integration account", color:COL.flags, side:"below",
+     text:"<em>INT</em> marks accounts that are not people: integration users and API accounts. They are often legitimately powerful, but they should be few, known, and easy to explain."},
+    {sel:"#r7 .flag.dor", title:"90d+: dormant", color:COL.flags, side:"below",
+     text:"<em>90d+</em> means no login for 90 days. The <b>Last login</b> date turns red when it is old or <b>never</b>. An integration user that never logs in is normal; a dormant human administrator is not."},
+    {sel:"#th-add", title:"Additive vs Effective", color:COL.flags, side:"below",
+     text:"<b>Additive</b> is the sum of everything assigned. <b>Effective</b> counts a right only once, even when several permission sets grant it. The gap between the two is the <em>redundancy</em>: access stacked on top of access."},
+    {sel:"#th-delta", title:"Δ: what moved since the last refresh", color:COL.flags, side:"below",
+     text:"<b>&#916;</b> is the change of the Effective score compared with the previous refresh, with the same weighting. A user who gains points between two refreshes got new access: <em>privilege creep</em>, made visible."}
+  ]);
+};
+
+/* ───────────────────────── Scene 4 — weighting ───────────────────────── */
+function weightsWin(profile){
+  var presets = {
+    "Balanced":      [1,1,2,3,10,15,2,3,1,1,1],
+    "Data Exposure": [1,2,4,5,20,25,3,4,1,2,1],
+    "Admin Power":   [1,1,2,3,5,8,1,2,6,4,5]
+  };
+  var w = presets[profile];
+  var names = ["Object - Read","Object - Create","Object - Edit","Object - Delete","Object - View All","Object - Modify All",
+               "Field - Read","Field - Edit","System permission","Setup entity","Custom permission"];
+  var grid = names.map(function(n, i){
+    return '<div class="wrow"><span>'+n+'</span><input class="cal-tf wv" readonly value="'+w[i]+'" style="width:52px;text-align:center"></div>';
+  }).join("");
+  return overlay("Scoring weight profiles", 520, 40,
+    '<div class="win-h" style="margin-bottom:10px">Scoring weight profiles</div>'+
+    '<div class="hbox" style="gap:10px;align-items:center;margin-bottom:10px"><span class="cal-lbl">Profile:</span>'+
+      '<select class="cal-cb" id="w-profile" style="width:200px"><option>'+profile+'</option></select></div>'+
+    '<div class="wgrid" id="w-grid">'+grid+'</div>'+
+    '<div class="hbox" style="gap:8px;justify-content:flex-end;margin-top:12px;border-top:1px solid #cdd5db;padding-top:8px">'+
+      btn("btn-d","Delete",null," disabled")+btn("btn-d","Save as new")+btn("btn-d","Save",null," disabled")+btn("btn-d","Close","w-close")+
+    '</div>');
+}
+function scene4(){
+  sceneBody.innerHTML = chrome69(usersTable() + emptyPane());
+}
+scene4.run = function(){
+  pointAt($("#weighting"), "The score depends on a point of view", 
+    "<b>Balanced</b> is a general-purpose reading. <b>Data Exposure</b> insists on reading, editing and deleting data. <b>Admin Power</b> insists on system permissions and setup. The same org can rank differently under each.",
+    COL.weights, "below");
+  popupNextFn = function(){
+    hidePopup();
+    clickAt($("#btn-weights"), function(){
+      $(".mockup").insertAdjacentHTML("beforeend", weightsWin("Data Exposure"));
+      after(500, function(){
+        showPopup("Edit the weights", "Each kind of right has a number of points: <em>Object - Modify All</em> weighs 25, <em>Object - Read</em> weighs 1. Change a weight, <b>Save as new</b>, and the whole ranking is recomputed under your own definition of &laquo;powerful&raquo;. The three built-in profiles cannot be deleted.", COL.weights, $("#w-grid"), "below");
+        popupNextFn = null;
+      });
+    });
+  };
+};
+
+/* ───────────────────────── Scene 5 — access detail ───────────────────────── */
+function detailRows(extraCols, marginal){
+  return DETAIL.map(function(d){
+    var type = '<span class="typ '+(d[0] === "PRO" ? "pro" : "ps")+'">'+d[0]+'</span>';
+    var marg = "";
+    if(marginal){
+      if(d[3] === null) marg = "";
+      else if(d[3] === 0 && d[2] > 0) marg = '<span class="redund" id="redund">0 redundant</span>';
+      else marg = d[3];
+    }
+    return '<tr id="dt-'+d[1]+'"><td class="n">'+type+'</td><td>'+(d[0] === "PS" ? '<span class="lnk">'+d[1]+'</span>' : d[1])+'</td><td class="n">'+d[2]+'</td>'+
+      (marginal ? '<td class="n">'+marg+'</td>' : '')+(extraCols ? extraCols(d) : '')+'</tr>';
+  }).join("");
+}
+function detailPane(){
+  return rightPane("detail",
+    '<div class="hbox" style="gap:6px;margin:4px 0">'+btn("btn-r","Assign",null," disabled")+btn("btn-r","UnAssign",null," disabled")+'</div>'+
+    '<div class="tbl-wrap" style="max-height:330px;overflow-y:auto"><table class="cal-tbl"><thead><tr>'+
+      '<th class="n">Type</th><th>Name</th><th class="n" id="th-score">Score &#9662;</th><th class="n" id="th-marg">Marginal</th></tr></thead>'+
+      '<tbody id="detail-body">'+detailRows(null, true)+'</tbody></table></div>');
+}
+function scene5(){
+  sceneBody.innerHTML = chrome69(usersTable() + emptyPane());
+}
+scene5.run = function(){
+  after(900, function(){
+    clickAt($("#ck1"), function(){
+      $("#ck1").checked = true; $("#r1").classList.add("picked");
+      $(".split-pane").lastElementChild.outerHTML = detailPane();
+      popupChain([
+        {sel:"#detail-body tr:first-child", title:"Where the score comes from", color:COL.detail, side:"below",
+         text:"The right pane lists the user's <b>profile</b> (<em>PRO</em>) and each <b>permission set</b> (<em>PS</em>) with the points it contributes. In this example the profile alone brings most of the score."},
+        {sel:"#th-marg", title:"Marginal: what you would lose", color:COL.detail, side:"below",
+         text:"<b>Marginal</b> is the number of Effective points the user would <em>lose</em> if this permission set were taken away. A large number means the set grants things nothing else grants."},
+        {sel:"#redund", title:"0 redundant", color:COL.detail, side:"above",
+         text:"<em>0 redundant</em> flags a permission set that scores points but adds <b>nothing</b>: everything it grants is already granted elsewhere. These are the safest sets to unassign."}
+      ]);
+    });
+  });
+};
+
+/* ───────────────────────── Scene 6 — compare users ───────────────────────── */
+function comparePane(users, selectedCells){
+  var cols = users.map(function(u){ return '<th class="n">'+u+'</th>'; }).join("");
+  var has = {
+    "User 01": ["Geo_Access_Manager","Geo_Access","Geo_Access_Manager_Plus","Geo_Admin_Access","Partner_Admin_User","Rollup_Helper_All_Access","Pricing_Application","Client_Info_Read","Voice_Parser_Admin","Field_Access_Einstein","Bank_Info_GDPR"],
+    "User 02": ["Partner_Admin_User","Pricing_Application","Client_Info_Read"],
+    "User 06": ["Live_Chat_Supervision"]
+  };
+  var body = DETAIL.slice(1).map(function(d){
+    var cells = users.map(function(u){
+      var on = has[u].indexOf(d[1]) >= 0;
+      return '<td class="n xc'+(on ? " has" : "")+'" data-u="'+u+'" data-p="'+d[1]+'">'+(on ? "X" : "")+'</td>';
+    }).join("");
+    return '<tr><td class="n"><span class="typ ps">PS</span></td><td><span class="lnk">'+d[1]+'</span></td><td class="n">'+d[2]+'</td>'+cells+'</tr>';
+  }).join("");
+  return rightPane("detail",
+    '<div class="hbox" style="gap:6px;margin:4px 0">'+btn("btn-r","Assign","btn-assign",selectedCells ? "" : " disabled")+btn("btn-r","UnAssign","btn-unassign",selectedCells ? "" : " disabled")+'</div>'+
+    '<div class="tbl-wrap" style="max-height:330px;overflow-y:auto"><table class="cal-tbl"><thead><tr>'+
+      '<th class="n">Type</th><th>Name</th><th class="n">Score</th>'+cols+'</tr></thead><tbody id="cmp-body">'+body+'</tbody></table></div>');
+}
+function scene6(){
+  sceneBody.innerHTML = chrome69(usersTable({sel:[1]}) + detailPane());
+}
+scene6.run = function(){
+  after(800, function(){
+    clickAt($("#ck2"), function(){
+      $("#ck2").checked = true; $("#r2").classList.add("picked");
+      $(".split-pane").lastElementChild.outerHTML = comparePane(["User 01","User 02"], false);
+    });
+  });
+  after(2300, function(){
+    clickAt($("#ck6"), function(){
+      $("#ck6").checked = true; $("#r6").classList.add("picked");
+      $(".split-pane").lastElementChild.outerHTML = comparePane(["User 01","User 02","User 06"], false);
+      showPopup("Compare 2 to 5 users", "Each ticked user gets a column. An <b>X</b> means the permission set is assigned to that person. Permission sets nobody shares stand out immediately: this is how you find <em>who has what the others do not</em>.", COL.compare, $("#cmp-body"), "above");
+      popupNextFn = function(){
+        hidePopup();
+        var c = $('.xc[data-u="User 02"][data-p="Pricing_Application"]');
+        clickAt(c, function(){
+          c.classList.add("cell-sel");
+          var a = $("#btn-assign"); a.removeAttribute("disabled");
+          var ua = $("#btn-unassign"); ua.removeAttribute("disabled");
+          after(500, function(){
+            showPopup("Assign / UnAssign", "Select cells of the grid, then <b>Assign</b> gives that permission set to the user of the column, and <b>UnAssign</b> takes it away. <em>It is applied in the org immediately</em>, permission set assignments only: the profile row is never touched. On a <b>production</b> org, Calumet asks for a confirmation first.", COL.compare, $("#btn-assign"), "below");
+            popupNextFn = null;
+          });
+        });
+      };
+    });
+  });
+};
+
+/* ───────────────────────── Scene 7 — weight breakdown ───────────────────────── */
+function weightsPane(){
+  var rows = [
+    ["PRO","Admin_Full","Account","CRUD + View/Modify All","1 420","2 130","&times;1.5"],
+    ["PRO","Admin_Full","Contract","CRUD + View/Modify All","980","1 470","&times;1.5"],
+    ["PS","Partner_Admin_User","Case","Read, Create, Edit","620","620","&times;1.0"],
+    ["PS","Geo_Admin_Access","Region__c","Read, Edit","310","310","&times;1.0"],
+    ["PS","Pricing_Application","Price_Book__c","Read","90","90","&times;1.0"]
+  ];
+  var body = rows.map(function(r){
+    return '<tr><td class="n"><span class="typ '+(r[0] === "PRO" ? "pro" : "ps")+'">'+r[0]+'</span></td><td>'+r[1]+'</td><td>'+r[2]+'</td><td>'+r[3]+'</td>'+
+      '<td class="n">'+r[4]+'</td><td class="n"><b>'+r[5]+'</b></td><td class="n">'+r[6]+'</td></tr>';
+  }).join("");
+  return rightPane("weights",
+    '<div class="sumline" id="wsum">Two objects carry half of this score: <b>Account</b> and <b>Contract</b> from <b>Admin_Full</b> (&times;1.5, many other objects point to them).</div>'+
+    '<div class="tbl-wrap"><table class="cal-tbl"><thead><tr><th class="n">Type</th><th>Container</th><th>Object</th><th>Rights</th>'+
+      '<th class="n" id="th-base">Base</th><th class="n" id="th-wtd">Weighted</th><th class="n" id="th-mult">&times;</th></tr></thead><tbody>'+body+'</tbody></table></div>');
+}
+function scene7(){
+  sceneBody.innerHTML = chrome69(usersTable({sel:[1]}) + detailPane());
+}
+scene7.run = function(){
+  after(900, function(){
+    clickAt($("#rt-weights"), function(){
+      $(".split-pane").lastElementChild.outerHTML = weightsPane();
+      popupChain([
+        {sel:"#wsum", title:"A score you can explain", color:COL.breakdown, side:"below",
+         text:"Instead of a bare number, Calumet writes <em>one sentence</em> naming the few objects that make up half of the score. It is the answer to &laquo;why is this user ranked so high?&raquo;."},
+        {sel:"#th-base", title:"Base and Weighted", color:COL.breakdown, side:"below",
+         text:"<b>Base</b> is the plain points of the object under the chosen weighting. <b>Weighted</b> applies the <em>relation power</em>: an object that many others point to is worth more than an isolated one."},
+        {sel:"#th-mult", title:"The multiplier", color:COL.breakdown, side:"below",
+         text:"<b>&times;1.5</b> means the object is a hub of the data model. <b>&times;1.0</b> is neutral. Untick <em>Weight by relation power</em> and every multiplier goes back to 1.0."}
+      ]);
+    });
+  });
+};
+
+/* ───────────────────────── Scene 8 — export & recap ───────────────────────── */
+var recapItems = [
+  ["see who holds the most power in the org, colour-coded from Minimal to CRITICAL", "rank"],
+  ["narrow the list by level, or to dormant accounts only", "filter"],
+  ["spot integration accounts (INT), dormant accounts (90d+) and score changes (&#916;)", "flag"],
+  ["choose the weighting that matches your concern: data, admin power, or your own", "weights"],
+  ["open a user to see each profile and permission set, and which ones add nothing", "detail"],
+  ["compare 2 to 5 users, then assign or unassign permission sets", "compare"],
+  ["read a one-sentence explanation of a score in the Weight breakdown tab", "breakdown"],
+  ["export the ranking to Excel", "export"]
+];
+function scene8(){
+  sceneBody.innerHTML =
+  '<div class="recap">'+
+    '<h2>You can now audit who can do what</h2>'+
+    '<div class="lead">User Access Score turns the permissions of an org into a ranking you can act on. Start from the top of the list.</div>'+
+    '<ul class="recap-list" id="recap-list">'+
+      recapItems.map(function(it,i){
+        return '<li id="rl-'+i+'"><span class="chk">&#10003;</span> <span>'+it[0].charAt(0).toUpperCase()+it[0].slice(1)+'</span></li>';
+      }).join("")+
+    '</ul>'+
+    '<div class="tips">'+
+      '<div class="tip"><span class="icon">&#128161;</span><b>Start with the dormant ones.</b> Tick <b>Dormant only</b> and look at the top of the list: a powerful account nobody uses is the easiest risk to remove.</div>'+
+      '<div class="tip warn"><span class="icon">&#9888;&#65039;</span><b>Integration accounts are not wrong.</b> <b>INT</b> only says the account is not a person. Check that each one is known and that its power is explained.</div>'+
+      '<div class="tip cycle"><span class="icon">&#128260;</span><b>Refresh after changes.</b> The scores read a cache. After assigning or removing permission sets, press <b>Refresh</b> and watch the &#916; column.</div>'+
+    '</div>'+
+  '</div>';
+}
+scene8.run = function(){
+  for(var i=0;i<recapItems.length;i++){
+    (function(i){ after(250 + i*220, function(){ var li=$("#rl-"+i); if(li) li.classList.add("in"); }); })(i);
+  }
+};
+
+/* ───────────────────────── Scene registry ───────────────────────── */
+var scenes = [
+  {fn:scene1, run:scene1.run},   // ranking
+  {fn:scene2, run:scene2.run},   // filters
+  {fn:scene3, run:scene3.run},   // flags, additive/effective, delta
+  {fn:scene4, run:scene4.run},   // weighting profiles
+  {fn:scene5, run:scene5.run},   // access detail
+  {fn:scene6, run:scene6.run},   // compare + assign
+  {fn:scene7, run:scene7.run},   // weight breakdown
+  {fn:scene8, run:scene8.run}    // recap
+];
+
+
+/* ───────────────────────── Engine ───────────────────────── */
+var current = 0;
+
+function buildProgress(){
+  var p = $("#progress");
+  var html = "";
+  for(var i=0;i<scenes.length;i++){
+    html += '<div class="dot" data-i="'+i+'"><span class="circle">'+(i+1)+'</span></div>';
+    if(i<scenes.length-1) html += '<div class="connector" data-c="'+i+'"></div>';
+  }
+  p.innerHTML = html;
+  p.querySelectorAll(".dot").forEach(function(d){
+    d.addEventListener("click", function(){ goTo(parseInt(d.getAttribute("data-i"),10)); });
+  });
+}
+
+function updateProgress(){
+  var dots = $("#progress").querySelectorAll(".dot");
+  var conns = $("#progress").querySelectorAll(".connector");
+  dots.forEach(function(d,i){
+    d.classList.toggle("active", i===current);
+    d.classList.toggle("done", i<current);
+  });
+  conns.forEach(function(c,i){ c.classList.toggle("done", i<current); });
+}
+
+function goTo(i){
+  if(i<0 || i>=scenes.length) return;
+  clearPending();
+  hidePopup();
+  popupNextFn = null;   // a chain left over from the previous scene must not answer this scene's "Got it"
+  // park cursor off-screen during transition
+  cursor.style.transition = "none";
+  cursor.style.transform = "translate(-120px,-120px)";
+  void cursor.offsetWidth;
+  current = i;
+  scenes[i].fn();
+  updateProgress();
+  $("#scene-counter").textContent = (i+1) + " / " + scenes.length;
+  $("#btn-prev").disabled = (i===0);
+  $("#btn-next").textContent = (i===scenes.length-1) ? "Restart ↺" : "Next →";
+  // restore transition then run the scene animation
+  after(60, function(){
+    cursor.style.transition = "transform .6s cubic-bezier(.4,0,.2,1)";
+    scenes[i].run();
+  });
+}
+
+function goNext(){
+  if(current === scenes.length-1){ goTo(0); }
+  else goTo(current+1);
+}
+function goPrev(){ goTo(current-1); }
+
+/* ── Controls ── */
+$("#btn-next").addEventListener("click", goNext);
+$("#btn-prev").addEventListener("click", goPrev);
+$(".p-btn", popup).addEventListener("click", function(){ (popupNextFn || goNext)(); });
+
+document.addEventListener("keydown", function(e){
+  if(e.key === "ArrowRight" || e.key === " "){ e.preventDefault(); goNext(); }
+  else if(e.key === "ArrowLeft"){ e.preventDefault(); goPrev(); }
+});
+
+/* ── Auto-play ── */
+var playTimer = null;
+var autoBtn = $("#autoplay");
+function startAuto(){
+  autoBtn.classList.add("on");
+  autoBtn.innerHTML = "&#10073;&#10073;"; // pause
+  playTimer = setInterval(goNext, 5000);
+}
+function stopAuto(){
+  autoBtn.classList.remove("on");
+  autoBtn.innerHTML = "&#9654;";
+  if(playTimer){ clearInterval(playTimer); playTimer = null; }
+}
+autoBtn.addEventListener("click", function(){
+  if(playTimer) stopAuto(); else startAuto();
+});
+
+/* reposition popup on resize */
+window.addEventListener("resize", function(){
+  if(popup.classList.contains("show")) hidePopup();
+});
+
+/* ── Init ── */
+buildProgress();
+goTo(0);
+</script>
+<script>/* Back link: website only, hidden in the application help (JavaFX WebView) */
+if(navigator.userAgent.indexOf('JavaFX')>=0){var b=document.getElementById('backSite');if(b)b.style.display='none';}</script>
+</body>
+</html>

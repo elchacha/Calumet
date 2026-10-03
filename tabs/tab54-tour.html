@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Permission Sets Browser — Interactive Tour — Calumet</title>
+<style>
+/* ════════════════════════════════════════════════════════════
+   Permission Sets Browser Interactive Tour — fully self-contained
+   Same engine and palette as the other Calumet tours.
+   All names, users and numbers are invented.
+   ════════════════════════════════════════════════════════════ */
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --sbg:#142540;--sbg2:#1a3050;--sborder:#244568;
+  --stxt:#e2e8f0;--smut:#8892a4;--sacc:#2ea4c9;
+  --blue:#2980b9;--green:#27ae60;--orange:#e67e22;--red:#E74C3C;
+  --hdr:#1A5276;
+}
+body{font-family:system-ui,-apple-system,"Segoe UI",sans-serif;background:#0f1d33;color:var(--stxt);min-height:100vh;display:flex;flex-direction:column}
+
+#topbar{background:var(--sbg);border-bottom:1px solid var(--sborder);padding:14px 28px 12px;flex-shrink:0}
+#topbar h1{font-size:18px;font-weight:800;color:#fff;letter-spacing:.2px}
+#topbar h1 .badge{font-size:10px;background:#1e3a5e;color:var(--smut);padding:2px 8px;border-radius:12px;font-weight:400;margin-left:8px;vertical-align:middle}
+#topbar .sub{font-size:12px;color:#a8b4c8;margin-top:3px}
+#progress{display:flex;align-items:center;margin-top:14px;flex-wrap:wrap}
+.dot{display:flex;align-items:center;gap:7px;cursor:pointer;user-select:none}
+.dot .circle{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;
+  background:var(--sbg2);border:1px solid var(--sborder);color:var(--smut);transition:all .25s ease}
+.dot.done .circle{background:var(--green);border-color:var(--green);color:#fff}
+.dot.active .circle{background:var(--sacc);border-color:var(--sacc);color:#fff;box-shadow:0 0 0 4px rgba(46,164,201,.22)}
+.dot:hover .circle{border-color:var(--sacc)}
+.connector{width:18px;height:2px;background:var(--sborder);margin:0 4px;flex-shrink:0}
+.connector.done{background:var(--green)}
+
+#stage{flex:1;padding:26px 28px;display:flex;flex-direction:column;align-items:center;position:relative;overflow:auto}
+#scene-frame{width:100%;max-width:1040px;background:#e8eef2;border-radius:8px;padding:1px;box-shadow:0 8px 30px rgba(0,0,0,.4);position:relative}
+#scene-body{position:relative}
+
+/* ── app mockup ── */
+.mockup{font-family:"Segoe UI",sans-serif;font-size:12px;color:#1a2a35;background:#F8F8F8;border-radius:8px;overflow:hidden}
+.app-top{display:flex;align-items:center;gap:10px;padding:6px 12px;background:#c0392b;color:#fff;font-size:11px;font-weight:700}
+.app-top select{background:#fff;color:#1a2a35;border:1px solid #9AABBF;border-radius:3px;font-size:11px;padding:1px 6px}
+.m-tabbar{display:flex;background:#D8E6EE;border-bottom:1px solid #9AABBF;overflow-x:auto}
+.m-tab{padding:5px 11px;font-weight:700;font-size:10.5px;color:#2C3E50;border-right:1px solid #b0c8d8;white-space:nowrap}
+.m-tab.act{background:#F8F8F8;color:#1A5276}
+.m-title{padding:8px 12px 6px;background:#eef5fb;border-bottom:1px solid #c9d9e6}
+.m-title b{display:block;font-size:13px;color:#1A5276}
+.m-title span{font-size:11px;color:#33485c}
+.m-body{background:#F8F8F8;padding:10px 12px;min-height:420px}
+.hbox{display:flex;flex-direction:row;flex-wrap:wrap}
+.spacer{flex:1}
+.cal-btn{padding:4px 11px;border-radius:3px;font-size:11px;font-weight:700;cursor:pointer;border:1px solid #9AABBF;font-family:inherit;white-space:nowrap;transition:opacity .2s}
+.btn-d{background:#E8EEF2;color:#2C3E50}
+.btn-b{background:#2980b9;color:#fff;border-color:#1f6699}
+.btn-o{background:#e67e22;color:#fff;border-color:#b8621a}
+.cal-btn[disabled]{opacity:.5}
+.cal-tf{padding:3px 7px;background:#fff;border:1px solid #9AABBF;border-radius:3px;font-size:11px;color:#1a2a35;font-family:inherit;height:24px}
+.cal-chk{display:flex;align-items:center;gap:4px;font-size:11px;white-space:nowrap}
+.cal-chk input{accent-color:var(--sacc)}
+.facts{font-size:10.5px;color:#55687a}
+.rng{width:170px;accent-color:#2ea4c9}
+
+.tbl-wrap{overflow-x:auto;border:1px solid #9AABBF;border-radius:3px;margin-top:8px}
+.cal-tbl{border-collapse:collapse;width:100%;font-size:10.5px}
+.cal-tbl th{background:#b8d5e3;color:#1A5276;font-weight:700;padding:4px 7px;text-align:left;border-right:1px solid #9AABBF;white-space:nowrap}
+.cal-tbl th.c,.cal-tbl td.c{text-align:center}
+.cal-tbl td{padding:3px 7px;border-top:1px solid #d8e8f0;vertical-align:middle}
+.cal-tbl tr.hit{animation:hit 1.2s ease}
+@keyframes hit{from{background:#ffe9c9}to{background:transparent}}
+.lnk{color:#2980b9;text-decoration:underline;cursor:pointer}
+.ty{display:inline-block;min-width:34px;text-align:center;padding:2px 8px;border-radius:4px;color:#fff;font-weight:700;font-size:10px}
+.ty.ps{background:#8a9bb0}.ty.psg{background:#2f6f7e}
+.bdg{display:inline-block;min-width:24px;text-align:center;padding:1px 7px;border-radius:3px;color:#fff;font-weight:700;font-size:10px}
+.bdg.bl{background:#2c7fb8}.bdg.gr{background:#27ae60}
+.pill{display:inline-block;padding:1px 8px;border-radius:5px;color:#fff;font-weight:700;font-size:10px}
+.pill.g{background:#8a9bb0}.pill.b{background:#2c7fb8}.pill.o{background:#e67e22}
+.ok{color:#27ae60;font-weight:700}
+
+/* in-scene windows */
+.backdrop{position:absolute;left:0;top:0;right:0;bottom:0;background:rgba(20,37,64,.16);z-index:4;border-radius:8px}
+.win{position:absolute;left:50%;transform:translateX(-50%);z-index:5;background:#f6f6f6;border:1px solid #8a9aa8;border-radius:6px;box-shadow:0 12px 34px rgba(0,0,0,.45);overflow:hidden;font-family:"Segoe UI",sans-serif;font-size:12px;color:#1a2a35}
+.win-title{display:flex;align-items:center;gap:8px;padding:6px 10px;background:#eceff2;border-bottom:1px solid #cdd5db;font-size:11px;color:#33485c}
+.win-title .x{margin-left:auto;color:#55687a}
+.win-body{padding:10px 12px}
+.win-h{font-weight:800;font-size:13px}
+.win-sub{font-size:10.5px;font-style:italic;color:#7f8c8d;margin-left:8px}
+.wtabs{display:flex;gap:3px;background:#d6d9dc;padding:5px 8px 0;margin:8px -12px 0}
+.wtab{padding:3px 10px;font-size:11px;border:1px solid #aab4bc;border-bottom:none;background:#e9ecee;border-radius:3px 3px 0 0}
+.wtab.act{background:#fff;font-weight:700}
+.wpanel{display:none}
+.wpanel.on{display:block}
+.tag{display:inline-block;padding:1px 9px;border-radius:4px;color:#fff;font-weight:700;font-size:10px}
+.tag.field{background:#8e44ad}.tag.created{background:#7f8c8d}.tag.assign{background:#27ae60}
+.cell-ok{color:#27ae60;font-weight:700;font-size:13px}
+.pl2{display:inline-block;padding:1px 9px;border-radius:5px;color:#fff;font-weight:700;font-size:10.5px;margin-right:5px}
+.pl2.a{background:#c0392b}.pl2.g{background:#8a9bb0}.pl2.b{background:#27ae60}
+.cat-sys{display:inline-block;padding:1px 10px;border-radius:5px;background:#d35400;color:#fff;font-weight:700;font-size:10px}
+.fbar{border:1px solid #c5d6e3;background:#eef5fb;border-radius:3px;padding:7px 9px;margin-top:8px;font-size:11px}
+.fbar .lbl{display:inline-block;min-width:54px;color:#33485c}
+.hint-r{font-size:10.5px;font-style:italic;color:#33485c;margin-left:auto}
+
+/* cursor / ripple / popup / nav */
+#cursor{position:fixed;left:0;top:0;width:30px;height:30px;z-index:9999;pointer-events:none;transform:translate(-100px,-100px);
+  transition:transform .6s cubic-bezier(.4,0,.2,1);filter:drop-shadow(0 2px 3px rgba(0,0,0,.45))}
+#ripple{position:fixed;left:0;top:0;width:14px;height:14px;border-radius:50%;border:2px solid var(--sacc);background:rgba(46,164,201,.25);
+  z-index:9998;pointer-events:none;opacity:0;transform:translate(-50%,-50%) scale(.3)}
+#ripple.go{animation:rip .65s ease-out}
+@keyframes rip{0%{opacity:.9;transform:translate(-50%,-50%) scale(.3)}100%{opacity:0;transform:translate(-50%,-50%) scale(3.4)}}
+#popup{position:fixed;z-index:10000;max-width:340px;background:#fff;color:#1a2a35;border-radius:8px;border-left:4px solid var(--sacc);
+  box-shadow:0 10px 36px rgba(0,0,0,.45);padding:14px 16px 13px;opacity:0;pointer-events:none;transform:translateY(8px) scale(.97);transition:opacity .3s,transform .3s}
+#popup.show{opacity:1;pointer-events:auto;transform:none}
+#popup .p-title{font-size:13.5px;font-weight:800;color:var(--hdr);margin-bottom:6px}
+#popup .p-text{font-size:12.5px;line-height:1.55;color:#33485c}
+#popup .p-text em{color:#2980b9;font-style:normal;font-weight:700}
+#popup .p-text code{background:#eef3f7;padding:0 4px;border-radius:3px;font-size:11.5px}
+#popup .p-btn{margin-top:11px;float:right;background:var(--sacc);color:#fff;border:none;padding:5px 14px;border-radius:5px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit}
+#popup::after{clear:both;content:"";display:block}
+#nav{flex-shrink:0;background:var(--sbg);border-top:1px solid var(--sborder);padding:11px 28px;display:flex;align-items:center;gap:12px}
+.nav-btn{background:var(--sbg2);color:var(--stxt);border:1px solid var(--sborder);padding:7px 18px;border-radius:6px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit}
+.nav-btn:hover:not(:disabled){background:#244568;border-color:var(--sacc)}
+.nav-btn:disabled{opacity:.35;cursor:not-allowed}
+.nav-btn.primary{background:var(--sacc);border-color:var(--sacc);color:#fff}
+#scene-counter{font-size:12px;color:var(--smut)}
+#nav .spacer{flex:1}
+#autoplay{background:transparent;border:1px solid var(--sborder);color:var(--stxt);width:38px;height:38px;border-radius:8px;font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+#autoplay.on{background:var(--sacc);border-color:var(--sacc);color:#fff}
+
+.recap{padding:30px 34px;color:#1a2a35;background:#F8F8F8;border-radius:8px}
+.recap h2{font-size:22px;color:var(--hdr);margin-bottom:4px;font-weight:800}
+.recap .lead{font-size:13px;color:#55687a;margin-bottom:20px}
+.recap-list{list-style:none;margin-bottom:24px}
+.recap-list li{display:flex;align-items:center;gap:10px;font-size:13.5px;padding:6px 0;color:#2c3e50;opacity:0;transform:translateX(-10px);transition:all .4s}
+.recap-list li.in{opacity:1;transform:none}
+.recap-list li .chk{width:22px;height:22px;border-radius:50%;background:var(--green);color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0}
+.recap-list li b{color:var(--hdr)}
+.tips{display:flex;gap:14px;flex-wrap:wrap}
+.tip{flex:1;min-width:200px;background:#fff;border:1px solid #d4e2ec;border-radius:8px;padding:14px 16px;font-size:12.5px;line-height:1.5;color:#3a4d5e;border-top:3px solid var(--blue)}
+.tip.warn{border-top-color:var(--orange)}
+.tip.cycle{border-top-color:var(--green)}
+.tip .icon{font-size:20px;display:block;margin-bottom:6px}
+.tip b{color:var(--hdr)}
+.back-site{display:inline-block;margin-bottom:6px;font-size:12px;color:#7fd4ec;text-decoration:none;opacity:.9}
+.back-site:hover{text-decoration:underline;opacity:1}
+</style>
+</head>
+<body>
+
+<div id="topbar">
+  <a class="back-site" id="backSite" href="../demos.html">&larr; All demos</a>
+  <h1>Permission Sets Browser <span class="badge">Tab 54 · Interactive Tour</span></h1>
+  <div class="sub">A guided walkthrough: who has which permission set, what it grants, and what changed lately.</div>
+  <div id="progress"></div>
+</div>
+
+<div id="stage">
+  <div id="scene-frame"><div id="scene-body"></div></div>
+</div>
+
+<div id="nav">
+  <button class="nav-btn" id="btn-prev">&larr; Prev</button>
+  <span id="scene-counter">1 / 1</span>
+  <div class="spacer"></div>
+  <button id="autoplay" title="Auto-play">&#9654;</button>
+  <button class="nav-btn primary" id="btn-next">Next &rarr;</button>
+</div>
+
+<svg id="cursor" viewBox="0 0 28 28"><path d="M5 2 L5 22 L10 17 L13 24 L16 23 L13 16 L20 16 Z" fill="#fff" stroke="#1a2a35" stroke-width="1.4" stroke-linejoin="round"/></svg>
+<div id="ripple"></div>
+<div id="popup"><div class="p-title"></div><div class="p-text"></div><button class="p-btn">Got it &rarr;</button></div>
+
+<script>
+"use strict";
+
+/* ───────────────────────── Helpers ───────────────────────── */
+var $ = function(sel,ctx){return (ctx||document).querySelector(sel);};
+var sceneBody = $("#scene-body");
+var sceneFrame = $("#scene-frame");
+var cursor = $("#cursor"), ripple = $("#ripple"), popup = $("#popup");
+
+/* One colour per scene, by NAME: dots and counter are derived from the scene registry. */
+var COL = {list:"#2980b9", search:"#8e44ad", badges:"#27ae60", changes:"#8e44ad", assigns:"#27ae60", overlap:"#e67e22", detail:"#16a085", recap:"#27ae60"};
+
+var pending = [];
+function after(ms, fn){ var id = setTimeout(fn, ms); pending.push(id); return id; }
+var typeInterval = null;
+function clearPending(){ pending.forEach(clearTimeout); pending = []; if(typeInterval){clearInterval(typeInterval);typeInterval=null;} }
+
+function pointAt(targetEl, title, text, color, side){
+  if(!targetEl) return;
+  var r = targetEl.getBoundingClientRect();
+  var x = r.left + r.width/2, y = r.top + r.height/2;
+  cursor.style.transform = "translate(" + (x-3) + "px," + (y-2) + "px)";
+  after(620, function(){
+    ripple.style.left = x + "px"; ripple.style.top = y + "px";
+    ripple.classList.remove("go"); void ripple.offsetWidth; ripple.classList.add("go");
+  });
+  after(1420, function(){ showPopup(title, text, color, targetEl, side); });
+}
+function showPopup(title, text, color, anchorEl, side){
+  $(".p-title", popup).textContent = title;
+  $(".p-text", popup).innerHTML = text;
+  popup.style.borderLeftColor = color || "#2ea4c9";
+  $(".p-btn", popup).style.background = color || "#2ea4c9";
+  popup.classList.add("show");
+  var pr = popup.getBoundingClientRect();
+  var ar = anchorEl ? anchorEl.getBoundingClientRect() : sceneFrame.getBoundingClientRect();
+  var left = ar.left + ar.width/2 - pr.width/2, top;
+  if(side === "above"){ top = ar.top - pr.height - 14; } else { top = ar.bottom + 14; }
+  var vw = window.innerWidth, vh = window.innerHeight;
+  if(left < 12) left = 12;
+  if(left + pr.width > vw - 12) left = vw - 12 - pr.width;
+  if(top < 12) top = ar.bottom + 14;
+  if(top + pr.height > vh - 12) top = ar.top - pr.height - 14;
+  if(top < 12) top = 12;
+  popup.style.left = left + "px"; popup.style.top = top + "px";
+}
+function hidePopup(){ popup.classList.remove("show"); }
+
+/* Several explanations in a row: each "Got it" moves to the next element, the last one to the next scene.
+   step = {sel,title,text,color,side,before}. Waits (up to ~8 s) for a target that is still animating in. */
+var popupNextFn = null;
+function popupChain(steps){
+  var i = 0, tries = 0, prepared = false;
+  function show(){
+    var s = steps[i], last = (i === steps.length-1);
+    popupNextFn = null;   // nothing to answer while the next step is being prepared
+    // The step's own action runs FIRST (it may open the window that holds its target) ...
+    if(!prepared){ prepared = true; if(s.before) s.before(); }
+    // ... then wait (up to ~8 s) for a target that is still animating in.
+    if(!$(s.sel) && tries++ < 20){ after(400, show); return; }
+    tries = 0; prepared = false;
+    popupNextFn = last ? null : function(){ hidePopup(); i++; after(300, show); };
+    after(s.before ? 450 : 0, function(){ pointAt($(s.sel), s.title, s.text, s.color, s.side); });
+  }
+  show();
+}
+function typeInto(el, text, speed, done){
+  el.value = ""; var i = 0;
+  typeInterval = setInterval(function(){
+    el.value = text.slice(0, ++i);
+    if(i >= text.length){ clearInterval(typeInterval); typeInterval = null; if(done) done(); }
+  }, speed || 38);
+}
+function btn(cls, label, id, extra){ return '<button class="cal-btn '+cls+'"'+(id?' id="'+id+'"':'')+(extra||'')+'>'+label+'</button>'; }
+function overlay(title, width, top, body){
+  return '<div class="backdrop"></div><div class="win" style="width:'+width+'px;top:'+top+'px">'+
+    '<div class="win-title"><span>'+title+'</span><span class="x">&#x2715;</span></div><div class="win-body">'+body+'</div></div>';
+}
+
+function openWin(title, width, top, body){
+  closeWin();
+  var d = document.createElement('div'); d.id = 'win-wrap';
+  d.innerHTML = overlay(title, width, top, body);
+  sceneBody.appendChild(d);
+}
+function closeWin(){ var w = $('#win-wrap'); if(w) w.parentNode.removeChild(w); }
+
+/* ───────────────────────── Fictional data ───────────────────────── */
+var ROWS = [
+  {id:"psg1", t:"PSG", name:"Sales_Ops_Group",     desc:"", mod:"2026-05-12 09:25", asg:"", users:0,  rights:"&mdash;", children:"Sales_Base_Access<br>Report_Viewer"},
+  {id:"psg2", t:"PSG", name:"Support_Lead_Group",  desc:"", mod:"2026-04-02 14:10", asg:"", users:0,  rights:"&mdash;", children:"Case_Escalation<br>Support_Desk_Access"},
+  {id:"ps1",  t:"PS",  name:"Masked_Data_Reader",  desc:"Read-only access to masked sensitive data.", mod:"2026-09-29 08:42", asg:"", users:0, rights:6, changes:7},
+  {id:"ps2",  t:"PS",  name:"Invoice_Approver",    desc:"", mod:"2026-09-28 16:22", asg:"2026-09-28 16:25", users:5,  rights:4, assign:7, changes:5},
+  {id:"ps3",  t:"PS",  name:"User_Management",     desc:"Create, edit, activate and deactivate users.", mod:"2026-09-21 10:37", asg:"2026-07-21 15:19", users:22, rights:9, ov:["o","94% (1)"]},
+  {id:"ps4",  t:"PS",  name:"Report_Admin",        desc:"Edit My Reports<br>Create and Customize Reports<br>Run Reports<br>Subscribe to Report", mod:"2026-09-18 14:31", asg:"2026-10-01 09:28", users:16, rights:10, assign:1, ov:["o","50% (2)"]},
+  {id:"ps5",  t:"PS",  name:"Support_Desk_Access", desc:"Manage support requests after a case is created.", mod:"2026-08-20 09:25", asg:"", users:14, rights:1407, ov:["g","0% (1)"]}
+];
+var BY_ID = {}; ROWS.forEach(function(r){ BY_ID[r.id] = r; });
+
+function rowHtml(r, o){
+  o = o || {};
+  var assign = (o.assign !== undefined ? o.assign : r.assign);
+  var changes = (o.changes !== undefined ? o.changes : r.changes);
+  return '<tr id="row-'+r.id+'">'+
+    '<td class="c ok">&#10003;</td>'+
+    '<td class="c"><span class="ty '+(r.t==="PSG"?"psg":"ps")+'">'+r.t+'</span></td>'+
+    '<td><span class="lnk">'+r.name+'</span></td>'+
+    '<td style="max-width:230px">'+r.desc+'</td>'+
+    '<td>'+r.mod+'</td><td>'+r.asg+'</td>'+
+    '<td class="c"><b>'+r.users+'</b></td><td class="c"><b>'+r.rights+'</b></td>'+
+    '<td class="c">'+(assign ? '<span class="bdg bl" id="asg-'+r.id+'">'+assign+'</span>' : '')+'</td>'+
+    '<td class="c">'+(changes ? '<span class="bdg gr" id="chg-'+r.id+'">'+changes+'</span>' : '')+'</td>'+
+    '<td class="c">'+(r.ov ? '<span class="pill '+r.ov[0]+'" id="ov-'+r.id+'">'+r.ov[1]+'</span>' : '')+'</td>'+
+    '<td style="font-size:10px">'+(r.children||"")+'</td></tr>';
+}
+function tableHead(){
+  return '<tr><th class="c">Custom</th><th class="c">Type</th><th>Name</th><th>desc</th><th>modified</th><th>assigned</th>'+
+         '<th class="c">users</th><th class="c" id="th-rights">rights &#9660;</th><th class="c">assign</th><th class="c">changes</th>'+
+         '<th class="c">overlap</th><th>Children</th></tr>';
+}
+function tableHtml(rows, o){
+  return '<div class="tbl-wrap"><table class="cal-tbl"><thead>'+tableHead()+'</thead><tbody id="tb">'+
+    rows.map(function(r){ return rowHtml(r, o && o[r.id]); }).join("")+'</tbody></table></div>';
+}
+function renderRows(rows, o){
+  $("#tb").innerHTML = rows.map(function(r){ return rowHtml(r, o && o[r.id]); }).join("");
+  [].forEach.call($("#tb").querySelectorAll("tr"), function(tr){ tr.classList.add("hit"); });
+}
+
+/* ───────────────────────── Shared chrome ───────────────────────── */
+function toolbar(o){
+  o = o || {};
+  return '<div class="hbox" style="gap:8px;align-items:center">'+
+      '<input class="cal-tf" id="filter" placeholder="filter" style="width:230px" readonly value="'+(o.filter||"")+'">'+
+      btn("btn-d","export","t-export")+btn("btn-b","update Cache","t-update")+btn("btn-b","Clear Cache")+btn("btn-b","Overlap","t-overlap")+
+      '<span class="facts">Facts: 27/08/2026 10:01</span>'+
+    '</div>'+
+    '<div class="hbox" style="gap:14px;align-items:center;margin-top:7px">'+
+      '<label class="cal-chk"><input type="checkbox" id="cb-content"> search content</label>'+
+      '<label class="cal-chk"><input type="checkbox"> search Strict content</label>'+
+      '<label class="cal-chk"><input type="checkbox" id="cb-user"> search user</label>'+
+      '<span style="width:10px"></span>'+
+      '<label class="cal-chk" id="cb-standard"><input type="checkbox" checked> hide standard permSet</label>'+
+      '<label class="cal-chk" id="cb-managed"><input type="checkbox"> hide managed permSet</label>'+
+      '<span style="width:6px"></span>'+
+      '<span class="cal-chk">assign / changes since</span>'+
+      '<input class="rng" id="slider" type="range" min="7" max="84" step="7" value="'+(o.days||21)+'">'+
+      '<span class="cal-chk" id="days">'+(o.days||21)+' days</span>'+
+    '</div>';
+}
+function chrome(inner, overlayHtml){
+  var tabs = ["Compare All Profiles","Permission Sets Browser","Profile Changes","Field Security (FLS)","Unused Profiles","User Access Comparison","PermSet Overlap"];
+  return '<div class="mockup">'+
+    '<div class="app-top"><span>Org :</span><select><option>Prod-Main</option></select><span>&#10003;</span><span style="margin-left:14px;font-weight:400">api : 4.81%</span></div>'+
+    '<div class="m-tabbar">'+tabs.map(function(t){ return '<div class="m-tab'+(t==="Permission Sets Browser"?" act":"")+'">'+t+'</div>'; }).join("")+'</div>'+
+    '<div class="m-title"><b>Permission Sets Browser</b><span>List all Permission Sets and Permission Set Groups &mdash; browse object/field permissions per PS, filter, and export to Excel.</span></div>'+
+    '<div class="m-body">'+inner+'</div></div>' + (overlayHtml || "");
+}
+function listScene(o, overlayHtml){
+  return chrome(toolbar(o) + tableHtml(ROWS, o && o.over), overlayHtml);
+}
+
+/* ───────────────────────── Scenes ───────────────────────── */
+
+/* 1 — The list */
+function sceneList(){ sceneBody.innerHTML = listScene(); }
+sceneList.run = function(){
+  popupChain([
+    {sel:"#t-update", title:"Permission Sets Browser", color:COL.list, side:"below",
+     text:"Every <b>permission set</b> and <b>permission set group</b> of the org on one screen: who has it, what it grants, when it changed. Calumet works from a local <em>cache</em>: <b>update Cache</b> refreshes it, <b>Clear Cache</b> empties it. <em>Facts</em> shows when the user-access data behind the Overlap column was collected."},
+    {sel:"#row-psg1", title:"PS and PSG", color:COL.list, side:"below",
+     text:"<code>PS</code> is a permission set, <code>PSG</code> a permission set <b>group</b>. A group lists its <em>Children</em> (the sets it bundles); a set that belongs to groups shows them in <em>In Group</em>."},
+    {sel:"#th-rights", title:"users and rights", color:COL.list, side:"below",
+     text:"<b>users</b> is how many people hold the set, <b>rights</b> how many rights it grants. Click a column header to sort &mdash; sorting by <em>rights</em> puts the most powerful sets first, and a set with <b>0 users</b> is a clean-up candidate."},
+    {sel:"#cb-standard", title:"hide standard / hide managed", color:COL.list, side:"above",
+     text:"<b>hide standard permSet</b> keeps only the <em>custom</em> sets (it is ticked by default). <b>hide managed permSet</b> also removes the sets that come from an installed package, those with a namespace."},
+    {sel:"#t-export", title:"export", color:COL.list, side:"below",
+     text:"Writes the table to an <b>Excel file</b> (.xlsx), to share a permission review or keep a snapshot."}
+  ]);
+};
+
+/* 2 — Search: name, content, user */
+function sceneSearch(){ sceneBody.innerHTML = listScene(); }
+sceneSearch.run = function(){
+  var content = {ps5: true};                 // the set whose content mentions "chatter"
+  var userSets = {ps2: true, ps4: true};     // the sets the user "Jane Smith" holds
+  popupChain([
+    {sel:"#filter", title:"Filter by name", color:COL.search, side:"below",
+     text:"Type in the box to keep the sets whose <b>name or description</b> contain the text. Here, <code>report</code> leaves <em>Report_Admin</em>.",
+     before:function(){ typeInto($("#filter"), "report", 90, function(){
+        renderRows(ROWS.filter(function(r){ return r.t==="PS" && (r.name+r.desc).toLowerCase().indexOf("report")>=0; })); }); }},
+    {sel:"#cb-content", title:"search content", color:COL.search, side:"below",
+     text:"Tick <b>search content</b> to look <em>inside</em> the sets: their object, field and system permissions. <code>chatter</code> finds the set that grants a Chatter right, even though its name says nothing about it. The three search modes are exclusive.",
+     before:function(){ $("#cb-content").checked = true; $("#filter").value = ""; renderRows(ROWS); typeInto($("#filter"), "chatter", 90, function(){
+        renderRows(ROWS.filter(function(r){ return content[r.id]; })); }); }},
+    {sel:"#cb-user", title:"search user", color:COL.search, side:"below",
+     text:"Tick <b>search user</b> and type a person: you get <em>the permission sets that person holds</em>. The quickest way to answer &laquo; what does Jane Smith have? &raquo;.",
+     before:function(){ $("#cb-content").checked = false; $("#cb-user").checked = true; $("#filter").value = ""; renderRows(ROWS);
+        typeInto($("#filter"), "Jane Smith", 80, function(){ renderRows(ROWS.filter(function(r){ return userSets[r.id]; })); }); }}
+  ]);
+};
+
+/* 3 — Badges: what they count, and what a click opens */
+function assignsWinBody(){
+  var users = ["Jane Smith","Marc Dupont","Alice Martin","Bob Johnson","Sarah Connor","Laura Brown","Paul Wilson"];
+  return '<div><span class="win-h">Invoice_Approver - assignments</span><span class="win-sub">7 changes found (cached audit trail)</span></div>'+
+    '<div class="tbl-wrap"><table class="cal-tbl"><thead><tr><th>Date</th><th>User</th><th class="c">Type</th><th>Name</th><th>Change</th></tr></thead><tbody>'+
+    users.map(function(u,i){ return '<tr><td>2026-09-28 16:25:12</td><td>J. Doe</td><td class="c"><span class="tag assign"'+(i===0?' id="au-assign"':'')+'>Assign</span></td><td>'+u+'</td>'+
+      '<td style="font-size:10px">Permission set Invoice_Approver: assigned to user '+u+' (UserId: [005000000000'+(100+i)+'AAA])</td></tr>'; }).join("")+
+    '</tbody></table></div><div class="hbox" style="margin-top:8px"><span class="spacer"></span>'+btn("btn-d","Close")+'</div>';
+}
+function changesWinBody(){
+  var rows = [
+    ["2026-09-29 08:42:35","field","Account: Tax_Id__c","Changed permission set Masked_Data_Reader: field-level security for Account: Tax_Id__c was changed from No Access to Read Only"],
+    ["2026-09-29 08:42:35","field","Account: Bank_Account__c","Changed permission set Masked_Data_Reader: field-level security for Account: Bank_Account__c was changed from No Access to Read Only"],
+    ["2026-09-29 08:42:35","field","Contract__c: Iban__c","Changed permission set Masked_Data_Reader: field-level security for Contract__c: Iban__c was changed from No Access to Read Only"],
+    ["2026-09-29 08:42:34","created","","Created permission set Masked_Data_Reader: with no license"]
+  ];
+  return '<div><span class="win-h">Masked_Data_Reader - changes</span><span class="win-sub">4 changes found (cached audit trail)</span></div>'+
+    '<div class="tbl-wrap"><table class="cal-tbl"><thead><tr><th>Date</th><th>User</th><th class="c">Type</th><th>Name</th><th>Change</th></tr></thead><tbody>'+
+    rows.map(function(r,i){ return '<tr><td>'+r[0]+'</td><td>J. Doe</td><td class="c"><span class="tag '+r[1]+'"'+(i===0?' id="au-tag"':'')+'>'+(r[1]==="field"?"Field":"Created")+'</span></td><td>'+r[2]+'</td><td style="font-size:10px">'+r[3]+'</td></tr>'; }).join("")+
+    '</tbody></table></div><div class="hbox" style="margin-top:8px"><span class="spacer"></span>'+btn("btn-d","Close")+'</div>';
+}
+function sceneBadges(){ sceneBody.innerHTML = listScene(); }
+sceneBadges.run = function(){
+  popupChain([
+    {sel:"#asg-ps2", title:"assign (blue badge)", color:COL.badges, side:"below",
+     text:"How many times the set was <b>assigned to a user</b> recently, read from the Salesforce <em>Setup Audit Trail</em>. Let&rsquo;s click it."},
+    {sel:"#au-assign", title:"Click: the history of assignments", color:COL.assigns, side:"below",
+     before:function(){ openWin("Audit history : Invoice_Approver - assignments", 760, 150, assignsWinBody()); },
+     text:"The history opens: each line says <b>when</b>, <b>who</b> assigned the set, and to <b>which user</b>. It answers &laquo; since when does this person have it, and who gave it? &raquo;. The window always lists everything and states the total."},
+    {sel:"#chg-ps1", title:"changes (green badge)", color:COL.badges, side:"below",
+     before:function(){ closeWin(); },
+     text:"How many times the <b>content of the set changed</b> recently: a field made readable, a permission added. Let&rsquo;s click it too."},
+    {sel:"#au-tag", title:"Click: the history of changes", color:COL.changes, side:"below",
+     before:function(){ openWin("Audit history : Masked_Data_Reader - changes", 760, 150, changesWinBody()); },
+     text:"One line per change: <b>when</b>, <b>who</b>, the <b>kind</b> (<em>Field</em> for field-level security, <em>Created</em> when the set appeared), the item concerned and a plain sentence."},
+    {sel:"#slider", title:"assign / changes since", color:COL.badges, side:"above",
+     text:"Limits the badge counts to the last <b>N days</b> (7-day steps, up to about three months). The history windows always show everything.",
+     before:function(){
+       closeWin();
+       var s = $("#slider"), d = $("#days"), v = 21;
+       function set(n){
+         s.value = n; d.textContent = n + " days";
+         var more = n > 21;
+         renderRows(ROWS, {ps2:{assign: more ? 12 : 7, changes: more ? 8 : 5}, ps3:{assign: more ? 3 : ""}, ps4:{assign: more ? 2 : 1}, ps1:{changes: more ? 9 : 7}});
+       }
+       (function step(){ v += 7; set(v); if(v < 84) after(220, step); })();
+     }}
+  ]);
+};
+
+/* 4 — Overlap: the column, and the comparison a click opens */
+function overlapWinBody(){
+  var rights = [["AssignPermissionSets"],["DelegatedTwoFactor"],["FreezeUsers"],["ManageInternalUsers"],["ManageIpAddresses"],["ManageLoginAccessPolicies"],
+                ["ManagePasswordPolicies"],["ManageProfilesPermissionsets"],["ManageRoles"],["ManageSharing"],["ManageTwoFactor","b"],["ManageUsers"],["MonitorLoginHistory"],
+                ["ResetPasswords"],["ViewAllUsers"]];
+  return '<div class="hbox" style="align-items:center;gap:8px"><span class="win-h" id="ovp-head" style="font-size:14px">User_Management</span><span>vs B</span>'+
+      '<select class="cal-tf" style="min-width:210px"><option>Identity_Admin &middot; 94%</option></select>'+
+      btn("btn-b","Show users","ovp-users")+btn("btn-o","Merge","ovp-merge")+'</div>'+
+    '<div class="hbox" style="align-items:center;gap:6px;margin-top:7px"><span style="color:#33485c">Users</span>'+
+      '<span class="pl2 a">9 A only (9)</span><span class="pl2 g">13 shared</span><span class="pl2 b">2 B only (2)</span>'+
+      '<span style="color:#33485c;margin-left:8px">Rights</span>'+
+      '<span class="pl2 a">0 A only (0)</span><span class="pl2 g" id="ovp-common">16 common</span><span class="pl2 b" id="ovp-bonly">1 B only (1)</span></div>'+
+    '<div class="fbar"><div><span class="lbl">Show</span><span class="pl2 a">A only (0)</span><span class="pl2 g">both (16)</span><span class="pl2 b">B only (1)</span></div>'+
+      '<div style="margin-top:5px"><span class="lbl">Category</span><span class="cat-sys">SYSTEM (17)</span></div>'+
+      '<div class="hbox" style="margin-top:5px;align-items:center;gap:10px"><span class="lbl">Filter</span><input class="cal-tf" placeholder="right label&hellip;" readonly style="width:190px">'+
+      '<label class="cal-chk"><input type="checkbox"> Hide common rights</label></div></div>'+
+    '<div class="tbl-wrap" style="max-height:200px;overflow:auto"><table class="cal-tbl"><thead><tr><th>Category</th><th style="width:60%">Right</th><th class="c">In</th></tr></thead><tbody>'+
+      rights.map(function(r){ var bo = r[1]==="b";
+        return '<tr'+(bo?' id="ovp-row" style="background:#d6f0d8"':'')+'><td><span class="cat-sys">SYSTEM</span></td><td>'+r[0]+'</td><td class="c"><span class="pl2 '+(bo?'b':'g')+'" style="margin:0">'+(bo?'B only':'both')+'</span></td></tr>'; }).join("")+
+    '</tbody></table></div><div class="hbox" style="margin-top:8px"><span class="spacer"></span>'+btn("btn-d","Close")+'</div>';
+}
+function sceneOverlap(){ sceneBody.innerHTML = listScene(); }
+sceneOverlap.run = function(){
+  popupChain([
+    {sel:"#t-overlap", title:"Overlap", color:COL.overlap, side:"below",
+     text:"Computes the <em>overlap</em> column. It reuses the <b>User Access Score</b> data (the same as the <em>PermSet Overlap</em> tab) and never queries the org on its own: click <b>Overlap</b> to build it from the org if it is missing."},
+    {sel:"#ov-ps3", title:"Reading the overlap", color:COL.overlap, side:"below",
+     text:"The pill shows the <b>highest overlap</b> with another set, and, in brackets, how many sets overlap it strongly. <em>94% (1)</em>: almost everything <em>User_Management</em> grants is already granted by another set. Let&rsquo;s click it."},
+    {sel:"#ovp-head", title:"Click: the two sets, right by right", color:COL.overlap, side:"below",
+     before:function(){ openWin("PermSet overlap \u2014 User_Management  (Prod-Main)", 800, 90, overlapWinBody()); },
+     text:"<b>A</b> is the set you clicked, <b>B</b> the set that overlaps it most (the list offers the other overlapping sets, best first). The pills count <b>users</b> and <b>rights</b>: only in A, shared, only in B."},
+    {sel:"#ovp-row", title:"What differs", color:COL.overlap, side:"above",
+     text:"Each right is tagged <em>both</em> or <em>only in one</em>. Here A has <b>nothing that B lacks</b> and B adds a single right, <code>ManageTwoFactor</code> (green line): A is almost redundant. <em>Hide common rights</em> keeps only the differences."},
+    {sel:"#ovp-merge", title:"Show users, and Merge", color:COL.overlap, side:"above",
+     text:"<b>Show users</b> lists the users of A and B (only in A, both, only in B). <b>Merge</b> goes further and <b>writes to the org</b>: it copies the missing rights onto the set you keep, reassigns the direct users of the other, and empties it. Use it only once you have checked the two lists."}
+  ]);
+};
+
+/* 7 — Detail window */
+function sceneDetail(){
+  var assignees = [["Jane Smith","Support Agent"],["Marc Dupont","Support Agent"],["Alice Martin","Standard User"],["Bob Johnson","Support Agent"],["Sarah Connor","Standard User"],
+                   ["Laura Brown","Support Agent"],["Paul Wilson","Standard User"],["Emma Davis","Support Agent"]];
+  var system = [["ChatterEnabledForUser","Enable Chatter"],["ChatterOwnGroups","Create and Own New Chatter Groups"],["ManageChatterMessages","Manage Chatter Messages and Direct Messages"],
+                ["RunFlow","Run Flows"],["TransferAnyEntity","Transfer Record"]];
+  var objects = [["Account",1,0,0,0,1,0],["Contact",1,0,0,0,1,0],["Case",1,0,1,0,0,0],["Opportunity",1,0,0,0,1,0],["Invoice__c",1,0,0,0,1,0],["Claim__c",1,0,0,0,0,0]];
+  var others = [["Support_Console","Assigned Apps"],["AccountWidget","Visualforce Page Access"],["Claim__c","Tab Settings"],["Invoice__c","Tab Settings"],["Account.Prospect","Record type visibilities"],["Claim__c.Standard","Record type visibilities"]];
+  var ck = '<span class="cell-ok">&#9989;</span>';
+  var body =
+    '<div class="hbox" style="align-items:center;gap:10px"><span class="win-h" style="font-size:15px">Support_Desk_Access</span>'+btn("btn-d","open","d-open")+'<span class="hint-r"><b>you can double click an element to open it in Salesforce</b></span></div>'+
+    '<div style="font-size:10.5px;font-style:italic;color:#33485c;margin-top:2px">Manage support requests after a case is created.</div>'+
+    '<div class="wtabs"><div class="wtab act" id="wt-assignees">assignees(14)</div><div class="wtab" id="wt-system">system(5)</div><div class="wtab" id="wt-objects">objects(6)</div>'+
+      '<div class="wtab" id="wt-fields">fields(1345)</div><div class="wtab" id="wt-others">others(47)</div></div>'+
+    '<div style="background:#fff;border:1px solid #cdd5db;border-top:none;padding:8px;min-height:230px">'+
+      '<div class="wpanel on" id="wp-assignees"><table class="cal-tbl" style="width:auto"><thead><tr><th style="min-width:150px">UserName</th><th style="min-width:110px">Profile</th><th>Active</th><th>PsGroup</th></tr></thead><tbody>'+
+        assignees.map(function(a){ return '<tr><td><span class="lnk">'+a[0]+'</span></td><td>'+a[1]+'</td><td>true</td><td></td></tr>'; }).join("")+'</tbody></table></div>'+
+      '<div class="wpanel" id="wp-system"><table class="cal-tbl" style="width:auto"><thead><tr><th>Permission</th><th>Label</th><th>PermSetName</th></tr></thead><tbody>'+
+        system.map(function(a){ return '<tr><td>'+a[0]+'</td><td>'+a[1]+'</td><td>Support_Desk_Access</td></tr>'; }).join("")+'</tbody></table></div>'+
+      '<div class="wpanel" id="wp-objects"><table class="cal-tbl" style="width:auto"><thead><tr><th style="min-width:130px">ObjectName</th><th class="c">Read</th><th class="c">Create</th><th class="c">Edit</th><th class="c">Delete</th><th class="c">View all</th><th class="c">Modify all</th><th>permSet</th></tr></thead><tbody>'+
+        objects.map(function(o){ return '<tr><td><span class="lnk">'+o[0]+'</span></td>'+[1,2,3,4,5,6].map(function(i){ return '<td class="c">'+(o[i]?ck:'')+'</td>'; }).join("")+'<td>Support_Desk_Access</td></tr>'; }).join("")+'</tbody></table></div>'+
+      '<div class="wpanel" id="wp-fields"><table class="cal-tbl" style="width:auto"><thead><tr><th style="min-width:200px">Field</th><th class="c">Read</th><th class="c">Edit</th><th>permSet</th></tr></thead><tbody>'+
+        [["Case.Priority",1,1],["Case.Reason",1,1],["Invoice__c.Amount__c",1,0],["Claim__c.Status__c",1,0]].map(function(f){ return '<tr><td>'+f[0]+'</td><td class="c">'+ck+'</td><td class="c">'+(f[2]?ck:'')+'</td><td>Support_Desk_Access</td></tr>'; }).join("")+'</tbody></table></div>'+
+      '<div class="wpanel" id="wp-others"><table class="cal-tbl" style="width:auto"><thead><tr><th style="min-width:160px">Permission</th><th style="min-width:170px">Type</th><th>PermSetName</th></tr></thead><tbody>'+
+        others.map(function(a){ return '<tr><td><span class="lnk">'+a[0]+'</span></td><td>'+a[1]+'</td><td>Support_Desk_Access</td></tr>'; }).join("")+'</tbody></table></div>'+
+    '</div>'+
+    '<div class="hbox" style="margin-top:8px"><span class="spacer"></span>'+btn("btn-d","Close")+'</div>';
+  sceneBody.innerHTML = listScene({}, overlay("PermissionSet : Support_Desk_Access", 800, 120, body));
+}
+function showTab(name){
+  ["assignees","system","objects","fields","others"].forEach(function(n){
+    $("#wt-"+n).classList.toggle("act", n===name); $("#wp-"+n).classList.toggle("on", n===name);
+  });
+}
+sceneDetail.run = function(){
+  popupChain([
+    {sel:"#d-open", title:"The detail window", color:COL.detail, side:"below",
+     text:"Click a name in the list to open its detail: everything the set contains, in five tabs. <b>open</b> jumps to the set in Salesforce, and a double-click on any element opens <em>that</em> element in Salesforce."},
+    {sel:"#wt-assignees", title:"assignees", color:COL.detail, side:"below",
+     text:"The <b>users</b> who hold the set, with their profile and whether they are active. Useful before removing a set: you see exactly who would lose it.",
+     before:function(){ showTab("assignees"); }},
+    {sel:"#wt-system", title:"system", color:COL.detail, side:"below",
+     text:"The <b>system permissions</b> the set grants (the ones of Setup &rarr; System Permissions), with their label.",
+     before:function(){ showTab("system"); }},
+    {sel:"#wt-objects", title:"objects", color:COL.detail, side:"below",
+     text:"The <b>object permissions</b>: one line per object, with <em>Read, Create, Edit, Delete, View all, Modify all</em> ticked where granted. <em>fields</em> does the same at field level.",
+     before:function(){ showTab("objects"); }},
+    {sel:"#wt-others", title:"others", color:COL.detail, side:"below",
+     text:"Everything else the set carries: <b>assigned apps</b>, <b>tab settings</b>, <b>Visualforce page access</b>, <b>record type visibilities</b>&hellip; Click a name to open it in Salesforce.",
+     before:function(){ showTab("others"); }}
+  ]);
+};
+
+/* 8 — Recap */
+var recapItems = [
+  "Listed every permission set and group, and sorted by users and rights",
+  "Searched by name, by content and by user",
+  "Read the assign / changes badges, opened their history, and chose the period",
+  "Spotted overlapping sets, and compared two of them right by right",
+  "Opened the detail of a set: assignees, system, objects, fields, others"
+];
+function sceneRecap(){
+  sceneBody.innerHTML =
+  '<div class="recap"><h2>You can now answer the three questions</h2>'+
+  '<div class="lead">Who has this set? What does it grant? What changed lately? &mdash; without opening Setup.</div>'+
+  '<ul class="recap-list" id="recap-list">'+recapItems.map(function(t,i){ return '<li id="rl-'+i+'"><span class="chk">&#10003;</span><span>'+t+'</span></li>'; }).join("")+'</ul>'+
+  '<div class="tips">'+
+    '<div class="tip"><span class="icon">&#128161;</span><b>Start from the clean-up.</b> Sort by <b>users</b>: a set nobody holds, or one that overlaps another at 50% or more, is a candidate to remove.</div>'+
+    '<div class="tip warn"><span class="icon">&#9888;&#65039;</span><b>Check before removing.</b> Open the <b>assignees</b> tab to see who would lose the set.</div>'+
+    '<div class="tip cycle"><span class="icon">&#128196;</span><b>Keep a trace.</b> <b>export</b> writes the table to Excel for a review or an audit.</div>'+
+  '</div></div>';
+}
+sceneRecap.run = function(){
+  for(var i=0;i<recapItems.length;i++){ (function(i){ after(250+i*220, function(){ var li=$("#rl-"+i); if(li) li.classList.add("in"); }); })(i); }
+};
+
+/* ───────────────────────── Registry & engine ───────────────────────── */
+var scenes = [
+  {fn:sceneList,    run:sceneList.run},
+  {fn:sceneSearch,  run:sceneSearch.run},
+  {fn:sceneBadges,  run:sceneBadges.run},
+  {fn:sceneOverlap, run:sceneOverlap.run},
+  {fn:sceneDetail,  run:sceneDetail.run},
+  {fn:sceneRecap,   run:sceneRecap.run}
+];
+var current = 0;
+function buildProgress(){
+  var html = "";
+  for(var i=0;i<scenes.length;i++){
+    html += '<div class="dot" data-i="'+i+'"><span class="circle">'+(i+1)+'</span></div>';
+    if(i<scenes.length-1) html += '<div class="connector"></div>';
+  }
+  $("#progress").innerHTML = html;
+  [].forEach.call($("#progress").querySelectorAll(".dot"), function(d){
+    d.addEventListener("click", function(){ goTo(parseInt(d.getAttribute("data-i"),10)); });
+  });
+}
+function updateProgress(){
+  [].forEach.call($("#progress").querySelectorAll(".dot"), function(d,i){ d.classList.toggle("active", i===current); d.classList.toggle("done", i<current); });
+  [].forEach.call($("#progress").querySelectorAll(".connector"), function(c,i){ c.classList.toggle("done", i<current); });
+}
+function goTo(i){
+  if(i<0 || i>=scenes.length) return;
+  clearPending(); hidePopup(); popupNextFn = null;
+  cursor.style.transition = "none"; cursor.style.transform = "translate(-120px,-120px)"; void cursor.offsetWidth;
+  current = i; scenes[i].fn(); updateProgress();
+  $("#scene-counter").textContent = (i+1) + " / " + scenes.length;
+  $("#btn-prev").disabled = (i===0);
+  $("#btn-next").textContent = (i===scenes.length-1) ? "Restart ↺" : "Next →";
+  after(60, function(){ cursor.style.transition = "transform .6s cubic-bezier(.4,0,.2,1)"; scenes[i].run(); });
+}
+function goNext(){ if(current === scenes.length-1){ goTo(0); } else goTo(current+1); }
+function goPrev(){ goTo(current-1); }
+$("#btn-next").addEventListener("click", goNext);
+$("#btn-prev").addEventListener("click", goPrev);
+$(".p-btn", popup).addEventListener("click", function(){ (popupNextFn || goNext)(); });
+document.addEventListener("keydown", function(e){
+  if(e.key === "ArrowRight" || e.key === " "){ e.preventDefault(); goNext(); }
+  else if(e.key === "ArrowLeft"){ e.preventDefault(); goPrev(); }
+});
+var playTimer = null, autoBtn = $("#autoplay");
+autoBtn.addEventListener("click", function(){
+  if(playTimer){ autoBtn.classList.remove("on"); autoBtn.innerHTML = "&#9654;"; clearInterval(playTimer); playTimer = null; }
+  else { autoBtn.classList.add("on"); autoBtn.innerHTML = "&#10073;&#10073;"; playTimer = setInterval(goNext, 6000); }
+});
+window.addEventListener("resize", function(){ if(popup.classList.contains("show")) hidePopup(); });
+buildProgress();
+goTo(0);
+</script>
+<script>/* Back link: website only, hidden in the application help (JavaFX WebView) */
+if(navigator.userAgent.indexOf('JavaFX')>=0){var b=document.getElementById('backSite');if(b)b.style.display='none';}</script>
+</body>
+</html>

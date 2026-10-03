@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Calumet &mdash; The Salesforce workbench that runs on your machine</title>
+<meta name="description" content="Calumet is a desktop workbench for Salesforce admins, developers and architects. Nothing to install, its own Java runtime, no Calumet server, tokens encrypted on your machine.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Calumet &mdash; The Salesforce workbench that runs on your machine">
+<meta property="og:description" content="Deploy, audit, migrate data. No install, no server, no account. Your tokens never leave your machine.">
+<meta property="og:image" content="https://elchacha.github.io/Calumet/littlechaman.png">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#142540;--bg2:#1a3050;--bg3:#0f1d33;--border:#244568;--txt:#e2e8f0;--muted:#8892a4;--acc:#2ea4c9;
+      --ok:#4caf50;--warn:#e6a23c}
+html{scroll-behavior:smooth}
+body{font-family:"Segoe UI",system-ui,sans-serif;background:var(--bg);color:var(--txt);line-height:1.6}
+a{color:var(--acc);text-decoration:none}
+a:hover{text-decoration:underline}
+.wrap{max-width:1040px;margin:0 auto;padding:0 22px}
+
+.version-pill{display:inline-block;background:#1e3a5e;color:var(--acc);padding:3px 14px;border-radius:20px;font-size:12px;font-weight:600}
+
+/* top nav */
+.nav{display:flex;align-items:center;gap:22px;padding:16px 0;font-size:13px}
+.nav .brand{font-weight:800;font-size:16px;color:#fff;letter-spacing:-.3px;margin-right:auto}
+.nav a{color:#a8b4c8}
+.nav a.btn{padding:7px 16px;border-radius:7px;background:var(--acc);color:#fff;font-weight:700}
+
+/* hero */
+.hero{display:grid;grid-template-columns:1.15fr .85fr;gap:36px;align-items:center;padding:42px 0 54px}
+.hero h1{font-size:44px;line-height:1.12;font-weight:800;color:#fff;letter-spacing:-1.5px;margin-bottom:16px}
+.hero h1 em{font-style:normal;color:var(--acc)}
+.hero p.lead{font-size:16.5px;color:#b8c4d6;max-width:520px;margin-bottom:24px}
+.cta{display:flex;gap:12px;flex-wrap:wrap}
+.b{display:inline-flex;align-items:center;gap:8px;padding:13px 24px;border-radius:9px;font-weight:700;font-size:14px;border:1px solid}
+.b.p{background:var(--acc);border-color:var(--acc);color:#fff}
+.b.p:hover{filter:brightness(1.1);text-decoration:none}
+.b.s{background:transparent;border-color:var(--border);color:var(--txt)}
+.b.s:hover{border-color:var(--acc);text-decoration:none}
+.hero .meta{margin-top:14px;font-size:12px;color:var(--muted)}
+.shot{background:#f6f8fa;border-radius:10px;box-shadow:0 18px 50px rgba(0,0,0,.5);overflow:hidden;border:1px solid #2c4a6c}
+.shot .bar{height:22px;background:#d8e6ee;display:flex;gap:6px;align-items:center;padding:0 10px}
+.shot .bar i{width:9px;height:9px;border-radius:50%;background:#9aabbf;display:block}
+.shot .body{padding:12px;font-size:10.5px;color:#1a2a35}
+.shot .row{display:flex;gap:6px;margin-bottom:7px;align-items:center}
+.shot .chip{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border-radius:50%;background:#27ae60;color:#fff;font-size:10px;font-weight:700}
+.shot .chip.a{background:#2c6fd1}
+.shot .t{font-weight:700;font-size:10px}
+.shot table{width:100%;border-collapse:collapse;font-size:10px;margin-top:6px}
+.shot th{background:#b8d5e3;color:#1A5276;padding:3px 6px;text-align:left}
+.shot td{padding:2px 6px;border-top:1px solid #d8e8f0}
+.shot .bx{background:#2980b9;color:#fff;border-radius:3px;padding:2px 8px;font-weight:700;font-size:10px}
+.shot .or{background:#e67e22}
+
+
+/* deck de mini-ecrans */
+.deck{position:relative}
+.shot .cap{margin-left:8px;font-size:10px;color:#2c3e50;font-weight:700}
+.slides{position:relative;min-height:204px}
+.slide{display:none;padding:12px;font-size:10.5px;color:#1a2a35;animation:fade .4s ease}
+.slide.on{display:block}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+.shot .c{text-align:center}
+.shot .chip.g{background:#e3e7ea;color:#55687a}
+.shot .bx.g2{background:#27ae60}
+.pl{display:inline-block;padding:0 8px;border-radius:9px;color:#fff;font-size:9px;font-weight:700}
+.pl.ok{background:#27ae60}.pl.wn{background:#e67e22}
+.shot td.x{color:#c0392b;font-weight:700}
+.shot .sp{flex:1}
+.shot .cf{border:1px solid #9aabbf;background:#fff;border-radius:3px;padding:1px 8px;font-size:10px}
+.shot .bx.rd{background:#e74c3c}
+.pl.bad{background:#e74c3c}
+.mb{display:inline-block;width:64px;height:7px;background:#dde7ee;border-radius:4px;overflow:hidden;vertical-align:middle}
+.mb i{display:block;height:100%}
+.lg{display:inline-flex;align-items:center;gap:4px;font-size:9.5px;margin-right:10px}
+.lg i{width:14px;height:3px;display:block}
+.pb{flex:1;max-width:120px;height:9px;background:#c8dae6;border-radius:3px;overflow:hidden;display:inline-block}
+.pb i{display:block;width:100%;height:100%;background:#2980b9}
+.shot .note-i{font-size:9.5px;font-style:italic;color:#3d7a8a;margin-left:6px}
+.pf{display:inline-block;border:1px solid currentColor;border-radius:9px;padding:0 8px;font-size:9px;font-weight:700;margin:0 4px 4px 0;background:#fff}
+.ls{flex:1;border:1px solid #9aabbf;background:#fff;border-radius:3px;min-height:64px;padding:3px 6px;font-size:10px}
+.ls.sel{background:#eaf3fa}
+.deck-note{text-align:center;font-size:11px;color:var(--muted);margin-top:8px}
+.dots{display:flex;gap:7px;justify-content:center;margin-top:12px}
+.dots i{width:7px;height:7px;border-radius:50%;background:#3a587a;cursor:pointer;display:block}
+.dots i.on{background:var(--acc)}
+
+/* sections */
+section{padding:46px 0;border-top:1px solid var(--border)}
+.kicker{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1.6px;color:var(--acc);margin-bottom:10px}
+h2{font-size:28px;line-height:1.2;color:#fff;font-weight:800;letter-spacing:-.6px;margin-bottom:10px}
+.sub{font-size:15px;color:#a8b4c8;max-width:640px;margin-bottom:28px}
+
+/* trust cards */
+.trust{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:11px;padding:20px 18px}
+.card .ico{font-size:26px;margin-bottom:10px}
+.card h3{font-size:15px;color:#fff;margin-bottom:6px}
+.card p{font-size:13px;color:#a8b4c8;line-height:1.55}
+
+/* diagram */
+.diagram{background:var(--bg3);border:1px solid var(--border);border-radius:12px;padding:26px 18px}
+.diagram svg{width:100%;height:auto;display:block}
+.legend{display:flex;flex-wrap:wrap;gap:18px;margin-top:14px;font-size:12px;color:var(--muted)}
+.legend span::before{content:"";display:inline-block;width:18px;height:0;border-top:2px solid var(--acc);vertical-align:middle;margin-right:7px}
+.legend span.d::before{border-top-style:dashed;border-color:var(--muted)}
+
+/* how it connects */
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;counter-reset:s}
+.step{background:var(--bg2);border:1px solid var(--border);border-radius:11px;padding:18px;position:relative}
+.step::before{counter-increment:s;content:counter(s);position:absolute;top:-12px;left:16px;width:26px;height:26px;border-radius:50%;
+  background:var(--acc);color:#fff;font-weight:800;font-size:13px;display:flex;align-items:center;justify-content:center}
+.step h3{font-size:14px;color:#fff;margin:6px 0 6px}
+.step p{font-size:13px;color:#a8b4c8}
+.note{margin-top:20px;padding:14px 18px;background:#13283f;border-left:3px solid var(--acc);border-radius:0 9px 9px 0;font-size:13px;color:#b8c4d6}
+.note b{color:#fff}
+
+/* demos */
+.demos{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px}
+.demo{display:block;background:var(--bg2);border:1px solid var(--border);border-radius:11px;padding:20px;color:inherit;transition:border-color .15s}
+.demo:hover{border-color:var(--acc);text-decoration:none}
+.demo h3{font-size:15px;color:#fff;margin-bottom:5px}
+.demo p{font-size:13px;color:#a8b4c8}
+.demo .go{margin-top:10px;font-size:12px;font-weight:700;color:var(--acc)}
+
+/* inside */
+.feat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.feat-card{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:14px 16px}
+.feat-ico{font-size:20px;margin-bottom:4px}
+.feat-t{color:#fff;font-size:14px;font-weight:700;margin-bottom:3px}
+.feat-d{font-size:12.5px;color:#a8b4c8}
+
+/* download */
+.dl{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.dlb{display:block;border-radius:10px;padding:16px 16px;border:1px solid;color:inherit}
+.dlb:hover{text-decoration:none;filter:brightness(1.12)}
+.dlb b{display:block;color:#fff;font-size:14px}
+.dlb span{font-size:11.5px;color:var(--muted)}
+.dlb.w{background:rgba(46,164,201,.14);border-color:var(--acc)}
+.dlb.m{background:rgba(170,172,182,.12);border-color:#aaacb6}
+.dlb.l{background:rgba(80,180,80,.1);border-color:#4caf50}
+details{margin-top:18px;background:#2a2417;border:1px solid #7a5a2a;border-radius:10px;padding:14px 18px;font-size:13.5px;color:#e7dcc8}
+details summary{cursor:pointer;font-weight:700;color:#ffd58a}
+details p{margin-top:10px}
+details code{background:#1f1a10;border:1px solid #5a4a28;border-radius:4px;padding:1px 6px;font-family:Consolas,monospace;font-size:12px;color:#ffcf8a}
+
+/* cta */
+.cta-row{display:flex;gap:12px;flex-wrap:wrap;margin-top:22px}
+.cta{display:flex;align-items:center;gap:14px;flex:1;min-width:220px;padding:18px 22px;border-radius:10px;border:1px solid var(--border);
+  background:var(--bg2);color:inherit}
+.cta:hover{text-decoration:none;border-color:var(--acc)}
+.cta.primary{background:linear-gradient(135deg,rgba(46,164,201,.2),rgba(46,164,201,.05));border-color:var(--acc)}
+.cta-ico{font-size:26px;flex-shrink:0}
+.cta-body{flex:1}
+.cta-t{font-size:14px;font-weight:700;color:#fff;margin-bottom:3px}
+.cta-d{font-size:11.5px;color:#a8b4c8;line-height:1.5}
+.cta-arr{margin-left:auto;font-size:22px;color:var(--acc);font-weight:700}
+
+/* faq */
+.faq details{background:var(--bg2);border:1px solid var(--border);color:var(--txt);margin-top:10px}
+.faq summary{color:#fff}
+.faq p{color:#a8b4c8}
+
+footer{padding:34px 0 60px;border-top:1px solid var(--border);font-size:12.5px;color:var(--muted);display:flex;gap:18px;flex-wrap:wrap}
+
+@media(max-width:860px){
+  .hero{grid-template-columns:1fr}.hero h1{font-size:34px}
+  .trust,.dl{grid-template-columns:repeat(2,1fr)}
+  .steps,.demos,.feat-grid{grid-template-columns:1fr}
+}
+@media(max-width:520px){.trust,.dl{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="nav">
+    <span class="brand">Calumet</span>
+    <a href="#trust">Why it&rsquo;s safe</a>
+    <a href="#demos">Demos</a>
+    <a href="#inside">What&rsquo;s inside</a>
+    <a href="docs.html">Docs</a>
+    <a class="btn" href="#download">Download</a>
+  </div>
+
+  <!-- ═══════════ 1. HERO ═══════════ -->
+  <div class="hero">
+    <div>
+      <h1>The Salesforce workbench <em>that runs on your machine.</em></h1>
+      <p class="lead">Deploy, compare, audit, migrate data. Calumet is one desktop application for Salesforce
+        admins, developers and architects &mdash; with <b style="color:#fff">nothing to install</b>,
+        <b style="color:#fff">no server</b> and <b style="color:#fff">no account</b>.</p>
+      <div class="cta">
+        <a class="b p" href="#download" data-goatcounter-click="cta-download" data-goatcounter-title="Hero: Download button">&#8595; Download &mdash; free</a>
+        <a class="b s" href="demos.html" data-goatcounter-click="cta-demos" data-goatcounter-title="Hero: Interactive demos button">&#9654; Try the interactive demos</a>
+      </div>
+      <div class="meta"><span class="version-pill">v13.1 &mdash; Latest</span> &nbsp;Windows, macOS, Linux &middot; Java included</div>
+    </div>
+    <!-- plusieurs mini-ecrans redessines en HTML, donnees fictives ; defilement automatique, pause au survol -->
+    <div class="deck" id="deck" aria-label="A few Calumet screens">
+      <div class="shot" aria-hidden="true">
+        <div class="bar"><i></i><i></i><i></i><span class="cap" id="cap">Profiles &mdash; who changed what, and when</span></div>
+        <div class="slides">
+          <div class="slide on">
+            <div class="row"><span class="t">Profiles Modification</span><span class="sp"></span><span class="bx">Search</span><span class="bx or">Add to Retrieve</span></div>
+            <table><tr><th>Profile</th><th>Object</th><th>Type</th><th>Modified by</th><th class="c">Old</th><th class="c">New</th></tr>
+              <tr><td>Sales</td><td>Invoice__c</td><td>Field</td><td>J. Doe</td><td class="c">Read</td><td class="c"><b>Edit</b></td></tr>
+              <tr><td>Support</td><td>Case</td><td>Object</td><td>A. Martin</td><td class="c">&mdash;</td><td class="c"><b>Delete</b></td></tr>
+              <tr><td>Support</td><td>System</td><td>Permission</td><td>M. Dupont</td><td class="c">Off</td><td class="c"><b>On</b></td></tr>
+              <tr><td>Sales</td><td>Claim__c</td><td>Field</td><td>J. Doe</td><td class="c">Edit</td><td class="c"><b>Read</b></td></tr></table>
+          </div>
+          <div class="slide">
+            <div class="row"><span class="t">Permission Sets</span><span class="sp"></span><span class="bx">Extract</span><span class="bx or">Export CSV</span></div>
+            <table><tr><th>Type</th><th>Name</th><th class="c">Users</th><th class="c">Custom</th></tr>
+              <tr><td>Group</td><td>Sales_Ops</td><td class="c">82</td><td class="c">&#10003;</td></tr>
+              <tr><td>Set</td><td>Invoice_Approver</td><td class="c">14</td><td class="c">&#10003;</td></tr>
+              <tr><td>Set</td><td>Report_Exporter</td><td class="c">31</td><td class="c">&#10003;</td></tr>
+              <tr><td>Set</td><td>View_All_Cases</td><td class="c">6</td><td class="c">&#10003;</td></tr></table>
+            <div class="row" style="margin-top:6px"><span class="pf" style="color:#2c6fd1">assignees (82)</span><span class="pf" style="color:#2c6fd1">objects (8)</span><span class="pf" style="color:#2c6fd1">fields (85)</span><span class="pf" style="color:#2c6fd1">system (3)</span></div>
+          </div>
+          <div class="slide">
+            <div class="row"><span class="t">User Access Comparison</span><span class="sp"></span><span class="bx">Add</span><span class="bx or">Compare</span></div>
+            <div class="row"><span class="pf" style="color:#2c6fd1">John Doe &times;</span><span class="pf" style="color:#2c6fd1">Bob Johnson &times;</span><span class="pf" style="color:#2c6fd1">J. Smith &times;</span></div>
+            <table><tr><th>Type</th><th>Name</th><th class="c">John</th><th class="c">Bob</th><th class="c">J.</th></tr>
+              <tr><td>PermSet</td><td>Dataloader_Access</td><td class="c">&#10003;</td><td class="c x">&#10007;</td><td class="c x">&#10007;</td></tr>
+              <tr><td>PermSet</td><td>Security_Update</td><td class="c">&#10003;</td><td class="c x">&#10007;</td><td class="c">&#10003;</td></tr>
+              <tr><td>Profile</td><td>Sales</td><td class="c">&#10003;</td><td class="c">&#10003;</td><td class="c x">&#10007;</td></tr>
+              <tr><td>Role</td><td>Regional_Manager</td><td class="c x">&#10007;</td><td class="c">&#10003;</td><td class="c">&#10003;</td></tr></table>
+          </div>
+          <div class="slide">
+            <div class="row"><span class="t">CustomFields Usage</span><span class="sp"></span><span class="cf">Invoice__c</span><span class="bx">Analyse</span><span class="bx or">Export</span></div>
+            <table><tr><th>Field</th><th>Type</th><th class="c">Used</th><th>Percent</th><th class="c">Score</th></tr>
+              <tr><td>Stage__c</td><td>Picklist</td><td class="c">12,480</td><td><span class="mb"><i style="width:98%;background:#27ae60"></i></span></td><td class="c"><span class="pl ok">98</span></td></tr>
+              <tr><td>Due_Date__c</td><td>Date</td><td class="c">9,120</td><td><span class="mb"><i style="width:71%;background:#27ae60"></i></span></td><td class="c"><span class="pl ok">71</span></td></tr>
+              <tr><td>Notes__c</td><td>Text</td><td class="c">310</td><td><span class="mb"><i style="width:3%;background:#e67e22"></i></span></td><td class="c"><span class="pl wn">3</span></td></tr>
+              <tr><td>Legacy_Ref__c</td><td>Text</td><td class="c">14</td><td><span class="mb"><i style="width:1%;background:#e74c3c"></i></span></td><td class="c"><span class="pl bad">0</span></td></tr></table>
+          </div>
+          <div class="slide">
+            <div class="row"><span class="t">Storage &mdash; evolution</span><span class="sp"></span><span class="cf">Group by 7 day(s)</span><span class="bx">Display evolution</span></div>
+            <svg viewBox="0 0 330 120" width="100%" style="display:block;margin-top:4px;background:#fff;border:1px solid #9aabbf;border-radius:3px">
+              <g stroke="#e3ebf1" stroke-width="1"><line x1="30" y1="20" x2="322" y2="20"/><line x1="30" y1="50" x2="322" y2="50"/><line x1="30" y1="80" x2="322" y2="80"/><line x1="30" y1="108" x2="322" y2="108" stroke="#9aabbf"/></g>
+              <polyline fill="none" stroke="#2980b9" stroke-width="2" points="30,92 80,86 130,80 180,70 230,58 280,44 322,32"/>
+              <polyline fill="none" stroke="#e74c3c" stroke-width="2" points="30,100 80,98 130,92 180,88 230,80 280,74 322,66"/>
+              <polyline fill="none" stroke="#27ae60" stroke-width="2" points="30,104 80,103 130,101 180,99 230,96 280,92 322,88"/>
+              <text x="4" y="23" font-size="8" fill="#55687a">60k</text><text x="4" y="53" font-size="8" fill="#55687a">30k</text><text x="4" y="111" font-size="8" fill="#55687a">0</text>
+            </svg>
+            <div class="row" style="margin-top:6px"><span class="lg"><i style="background:#2980b9"></i>EmailMessage</span><span class="lg"><i style="background:#e74c3c"></i>Case</span><span class="lg"><i style="background:#27ae60"></i>Account</span></div>
+          </div>
+          <div class="slide">
+            <div class="row"><span class="t">LastRecords</span><span class="sp"></span><span class="cf">Last 50 records</span><span class="bx">Search</span><span class="bx or">Extract</span></div>
+            <table><tr><th>Id</th><th>Object</th><th>Modified by</th><th>Modified</th></tr>
+              <tr><td>006000000000001</td><td>Opportunity</td><td>J. Doe</td><td>2026-04-25 12:59</td></tr>
+              <tr><td>006000000000002</td><td>Opportunity</td><td>J. Doe</td><td>2026-04-25 12:59</td></tr>
+              <tr><td>001000000000003</td><td>Account</td><td>J. Smith</td><td>2026-04-25 11:34</td></tr>
+              <tr><td>500000000000004</td><td>Case</td><td>A. Martin</td><td>2026-04-25 10:02</td></tr></table>
+          </div>
+          <div class="slide">
+            <div class="row"><span class="bx rd">Run Import</span><span class="bx or">Retry Failed</span><span class="sp"></span><span class="t" style="color:#27ae60">&rarr; sandbox-dev1</span></div>
+            <div class="row"><span class="t">Progress</span><span class="pb"><i></i></span><span class="t">5 / 5</span><span class="note-i">Import complete.</span></div>
+            <table><tr><th class="c">#</th><th>Object</th><th class="c">Records</th><th class="c">Errors</th><th>Error file</th></tr>
+              <tr><td class="c">1</td><td>Account</td><td class="c">65</td><td class="c">&#9989;</td><td></td></tr>
+              <tr><td class="c">2</td><td>Contact</td><td class="c">30/31</td><td class="c"><b style="color:#e74c3c">1</b></td><td><u style="color:#2980b9">ContactErrors.txt</u></td></tr>
+              <tr><td class="c">3</td><td>Case</td><td class="c">80</td><td class="c">&#9989;</td><td></td></tr>
+              <tr><td class="c">4</td><td>Invoice__c</td><td class="c">40</td><td class="c">&#9989;</td><td></td></tr></table>
+          </div>
+        </div>
+      </div>
+      <div class="dots" id="dots" role="tablist"><i class="on"></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+      <p class="deck-note">Screens shown in a simplified form.</p>
+    </div>
+  </div>
+
+  <!-- ═══════════ 2. CONFIANCE : 4 cartes ═══════════ -->
+  <section id="trust">
+    <div class="kicker">Built to be trusted</div>
+    <h2>Autonomous by design.</h2>
+    <p class="sub">Calumet is a program you run, not a service you sign up for. Here is what that means.</p>
+    <div class="trust">
+      <div class="card"><div class="ico">&#128230;</div><h3>Nothing to install</h3>
+        <p>Unzip and run. Calumet ships with its own Java runtime, so there is no Java to set up and no admin rights to ask for.</p></div>
+      <div class="card"><div class="ico">&#128273;</div><h3>Your rights, nothing more</h3>
+        <p>You sign in with your own Salesforce user, like the <code style="color:#7fd4ec">sf</code> CLI. Calumet can do what that user can do &mdash; and nothing else.</p></div>
+      <div class="card"><div class="ico">&#127968;</div><h3>No Calumet server</h3>
+        <p>Everything runs locally on your computer, like the <code style="color:#7fd4ec">sf</code> CLI. No account, no cloud, no telemetry: Calumet talks to your Salesforce orgs, and to GitHub to look for updates.</p>
+      </div>
+      <div class="card"><div class="ico">&#128274;</div><h3>Tokens stay on your PC</h3>
+        <p>Connections use a Connected App / External Client App. Tokens are encrypted on your machine with a master password that is never sent anywhere.</p></div>
+    </div>
+  </section>
+
+  <!-- ═══════════ 3. SCHEMA : qui parle a qui ═══════════ -->
+  <section id="how">
+    <div class="kicker">Who talks to whom</div>
+    <h2>Your machine, your orgs. That&rsquo;s it.</h2>
+    <p class="sub">There is no Calumet cloud in the middle. Your data goes from your Salesforce org to your computer, and nowhere else.</p>
+    <div class="diagram">
+      <svg viewBox="0 0 900 250" role="img" aria-label="Calumet runs on your computer and talks directly to your Salesforce orgs. It only contacts GitHub to check for updates. There is no Calumet server.">
+        <defs><marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#2ea4c9"/></marker>
+              <marker id="ard" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#8892a4"/></marker></defs>
+        <!-- votre machine -->
+        <rect x="30" y="40" width="330" height="170" rx="14" fill="#1a3050" stroke="#2ea4c9" stroke-width="2"/>
+        <text x="50" y="68" fill="#2ea4c9" font-size="12" font-weight="700" letter-spacing="1.5">YOUR COMPUTER</text>
+        <rect x="55" y="84" width="160" height="46" rx="8" fill="#142540" stroke="#244568"/>
+        <text x="135" y="112" fill="#fff" font-size="15" font-weight="700" text-anchor="middle">Calumet</text>
+        <rect x="225" y="84" width="110" height="46" rx="8" fill="#142540" stroke="#244568"/>
+        <text x="280" y="105" fill="#a8b4c8" font-size="11" text-anchor="middle">its own</text>
+        <text x="280" y="120" fill="#a8b4c8" font-size="11" text-anchor="middle">Java runtime</text>
+        <rect x="55" y="144" width="280" height="44" rx="8" fill="#142540" stroke="#244568"/>
+        <text x="75" y="171" fill="#4caf50" font-size="16">&#128274;</text>
+        <text x="100" y="171" fill="#e2e8f0" font-size="12.5">Encrypted tokens &middot; master password</text>
+        <!-- salesforce -->
+        <rect x="560" y="40" width="310" height="80" rx="14" fill="#1a3050" stroke="#244568" stroke-width="2"/>
+        <text x="580" y="68" fill="#8892a4" font-size="12" font-weight="700" letter-spacing="1.5">YOUR SALESFORCE ORGS</text>
+        <text x="580" y="98" fill="#e2e8f0" font-size="13">Production &middot; sandboxes</text>
+        <!-- github -->
+        <rect x="560" y="150" width="310" height="60" rx="14" fill="none" stroke="#244568" stroke-width="2" stroke-dasharray="7 6"/>
+        <text x="580" y="176" fill="#8892a4" font-size="12" font-weight="700" letter-spacing="1.5">GITHUB</text>
+        <text x="580" y="196" fill="#a8b4c8" font-size="12.5">Update check only</text>
+        <!-- fleches -->
+        <line x1="362" y1="86" x2="556" y2="86" stroke="#2ea4c9" stroke-width="2.5" marker-end="url(#ar)" marker-start="url(#ar)"/>
+        <text x="459" y="76" fill="#2ea4c9" font-size="11.5" text-anchor="middle">HTTPS &middot; OAuth</text>
+        <line x1="362" y1="180" x2="556" y2="180" stroke="#8892a4" stroke-width="2" stroke-dasharray="6 5" marker-end="url(#ard)"/>
+        <text x="459" y="170" fill="#8892a4" font-size="11.5" text-anchor="middle">new version?</text>
+        <!-- pas de serveur calumet -->
+        <text x="450" y="236" fill="#8892a4" font-size="12" text-anchor="middle">&#9729;&#65039;&#10060; No Calumet server, no account, no telemetry</text>
+      </svg>
+    </div>
+    <div class="legend"><span>Your data and credentials</span><span class="d">Update check only</span></div>
+  </section>
+
+  <!-- ═══════════ 4. CONNEXION : 3 etapes ═══════════ -->
+  <section id="connect">
+    <div class="kicker">How it connects</div>
+    <h2>The same login you already use.</h2>
+    <p class="sub">Calumet never asks for your Salesforce password. It uses the standard OAuth flow, through a Connected App / External Client App in your org.</p>
+    <div class="steps">
+      <div class="step"><h3>You sign in</h3><p>Calumet opens your browser on the usual Salesforce login page. Your password and MFA stay between you and Salesforce.</p></div>
+      <div class="step"><h3>Salesforce hands back a token</h3><p>The token carries your own permissions. If your user cannot delete a field, neither can Calumet.</p></div>
+      <div class="step"><h3>The token is locked on your PC</h3><p>It is encrypted with a master password you choose. There is no recovery and nothing is sent anywhere.</p></div>
+    </div>
+    <div class="note"><b>You stay in control.</b> Revoke Calumet&rsquo;s access at any time from Salesforce
+      (<em>Setup &rarr; Connected Apps OAuth Usage</em>), or remove the org in Calumet.</div>
+  </section>
+
+  <!-- ═══════════ 5. DEMOS ═══════════ -->
+  <section id="demos">
+    <div class="kicker">See it in action</div>
+    <h2>Walk through it in your browser.</h2>
+    <p class="sub">Interactive demos redrawn from the real application. Nothing to install, no org to connect, no real data.</p>
+    <div class="demos">
+      <a class="demo" href="tabs/tab77-tour.html" target="_blank" rel="noopener" data-goatcounter-click="demo-dataseeding" data-goatcounter-title="Demo DataSeeding"><h3>&#127793; DataSeeding &mdash; copy data between orgs</h3>
+        <p>Pick a few seed records and let Calumet follow their relations: parents, children, import order. See how failures are reported and retried.</p><div class="go">Start the demo &rarr;</div></a>
+      <a class="demo" href="tabs/tab4-tour.html" target="_blank" rel="noopener" data-goatcounter-click="demo-deployment" data-goatcounter-title="Demo Deployment pipeline"><h3>&#128230; Deployment pipeline</h3>
+        <p>Track what changed, retrieve it, control it, deploy it, and keep a history of every deployment.</p><div class="go">Start the demo &rarr;</div></a>
+      <a class="demo" href="tabs/tab69-tour.html" target="_blank" rel="noopener" data-goatcounter-click="demo-access-score" data-goatcounter-title="Demo User Access Score"><h3>&#128737;&#65039; User Access Score &mdash; who holds the power</h3>
+        <p>Rank users by the privileges they hold, see where a score comes from, compare users and find permission sets that add nothing.</p><div class="go">Start the demo &rarr;</div></a>
+      <a class="demo" href="tabs/tab75-tour.html" target="_blank" rel="noopener" data-goatcounter-click="demo-flexipage-diff" data-goatcounter-title="Demo FlexiPage Diff"><h3>&#129513; FlexiPage Diff &mdash; compare two Lightning pages</h3>
+        <p>Compare the same page in two orgs and see what was added, deleted, modified or moved, region by region.</p><div class="go">Start the demo &rarr;</div></a>
+      <a class="demo" href="tabs/tab54-tour.html" target="_blank" rel="noopener" data-goatcounter-click="demo-permsets" data-goatcounter-title="Demo Permission Sets"><h3>&#128273; Permission Sets &mdash; who can do what</h3>
+        <p>Browse every permission set, search by name, content or user, see what changed and who got what, and open the detail of any set.</p><div class="go">Start the demo &rarr;</div></a>
+    </div>
+  </section>
+
+  <!-- ═══════════ 6. CONTENU : 9 categories ═══════════ -->
+  <section id="inside">
+    <div class="kicker">What&rsquo;s inside</div>
+    <h2>Nine families, one workbench.</h2>
+    <p class="sub">Pick the screens you use; hide the rest. Each family is a ready-made tab layout.</p>
+    <div class="feat-grid">
+    <div class="feat-card">
+      <div class="feat-ico">&#x1F5C4;&#xFE0F;</div>
+      <div class="feat-t">Data</div>
+      <div class="feat-d">SOQL explorer, records, limits, activity analysis</div>
+    </div>
+    <div class="feat-card">
+      <div class="feat-ico">&#x1F4E6;</div>
+      <div class="feat-t">Deployment</div>
+      <div class="feat-d">Retrieve, deploy, compare and roll back metadata</div>
+    </div>
+    <div class="feat-card">
+      <div class="feat-ico">&#x1F4BB;</div>
+      <div class="feat-t">Dev</div>
+      <div class="feat-d">Apex, test coverage, logs, dead code detection</div>
+    </div>
+    <div class="feat-card">
+      <div class="feat-ico">&#x1F517;</div>
+      <div class="feat-t">Model</div>
+      <div class="feat-d">Picklists, flows, FlexiPages, field relations</div>
+    </div>
+    <div class="feat-card">
+      <div class="feat-ico">&#x1F6E1;&#xFE0F;</div>
+      <div class="feat-t">Security</div>
+      <div class="feat-d">Profiles, permission sets, sharing rules, user access</div>
+    </div>
+    <div class="feat-card">
+      <div class="feat-ico">&#x1F331;</div>
+      <div class="feat-t">Seeding</div>
+      <div class="feat-d">Copy records from one org to another, relations included</div>
+    </div>
+    <div class="feat-card">
+      <div class="feat-ico">&#x1F4BE;</div>
+      <div class="feat-t">Storage</div>
+      <div class="feat-d">Org storage monitoring and history tracking</div>
+    </div>
+    <div class="feat-card">
+      <div class="feat-ico">&#x1F527;</div>
+      <div class="feat-t">Tech Debt</div>
+      <div class="feat-d">Unused fields, layouts, profiles and more</div>
+    </div>
+    <div class="feat-card">
+      <div class="feat-ico">&#x1F464;</div>
+      <div class="feat-t">User</div>
+      <div class="feat-d">Login, licenses, frozen users, app assignments</div>
+    </div>
+  </div>
+  </section>
+
+  <!-- ═══════════ 7. TELECHARGEMENT ═══════════ -->
+  <section id="download">
+    <div class="kicker">Get Calumet</div>
+    <h2>Free to download. Ready in a minute.</h2>
+    <p class="sub">Java is included. Unzip (or open the DMG) and start Calumet.</p>
+    <div class="dl">
+      <a class="dlb w" href="https://github.com/elchacha/Calumet/releases/latest/download/Calumet-windows.zip" data-goatcounter-click="download-windows" data-goatcounter-title="Download Windows"><b>&#8595; Windows</b><span>ZIP &middot; 64-bit</span></a>
+      <a class="dlb m" href="https://github.com/elchacha/Calumet/releases/latest/download/Calumet-mac-arm64.dmg" data-goatcounter-click="download-mac-arm64" data-goatcounter-title="Download macOS Apple Silicon"><b>&#8595; macOS &middot; Apple Silicon</b><span>DMG &middot; M1 and later</span></a>
+      <a class="dlb m" href="https://github.com/elchacha/Calumet/releases/latest/download/Calumet-mac-intel.dmg" data-goatcounter-click="download-mac-intel" data-goatcounter-title="Download macOS Intel"><b>&#8595; macOS &middot; Intel</b><span>DMG &middot; x86-64</span></a>
+      <a class="dlb l" href="https://github.com/elchacha/Calumet/releases/latest/download/Calumet-linux.zip" data-goatcounter-click="download-linux" data-goatcounter-title="Download Linux"><b>&#8595; Linux</b><span>ZIP &middot; 64-bit</span></a>
+    </div>
+    <details>
+      <summary>&#9888; macOS &mdash; first launch</summary>
+      <p>Calumet is not signed with an Apple developer certificate yet, so macOS blocks it the first time.
+         Move <em>CalumetTool</em> to <em>Applications</em>, then <b>right-click it (or Control-click) and choose Open</b>,
+         and confirm <em>Open</em>. You only need to do this once.</p>
+      <p>On macOS 15 (Sequoia) and later: double-click Calumet once, then open
+         <em>System Settings &rarr; Privacy &amp; Security</em>, scroll to <em>Security</em> and click <em>Open Anyway</em>.
+         Terminal alternative: <code>xattr -dr com.apple.quarantine /Applications/CalumetTool.app</code></p>
+    </details>
+    <div class="cta-row">
+      <a class="cta primary" href="starting/">
+        <span class="cta-ico">&#x1F680;</span>
+        <div class="cta-body"><div class="cta-t">Getting Started</div><div class="cta-d">Connect your first org in 5 steps</div></div>
+        <span class="cta-arr">&rarr;</span>
+      </a>
+      <a class="cta secondary" href="demos.html">
+        <span class="cta-ico">&#x25B6;&#xFE0F;</span>
+        <div class="cta-body"><div class="cta-t">Interactive demos</div><div class="cta-d">Walk through the screens in your browser</div></div>
+        <span class="cta-arr">&rarr;</span>
+      </a>
+      <a class="cta secondary" href="docs.html">
+        <span class="cta-ico">&#x1F4D6;</span>
+        <div class="cta-body"><div class="cta-t">Full Documentation</div><div class="cta-d">65 screens &mdash; all features explained</div></div>
+        <span class="cta-arr">&rarr;</span>
+      </a>
+    </div>
+  </section>
+
+  <!-- ═══════════ 8. FAQ CONFIANCE ═══════════ -->
+  <section class="faq" id="faq">
+    <div class="kicker">Questions</div>
+    <h2>Is it safe?</h2>
+    <details><summary>Does Calumet send my data anywhere?</summary>
+      <p>No. Your data goes from your Salesforce org to your computer. Calumet has no server of its own and
+         collects no usage data. The only other contact is GitHub, to check whether a new version exists.
+         (This website, which is separate from the application, counts visits without cookies.)</p></details>
+    <details><summary>What can Calumet do in my org?</summary>
+      <p>Exactly what the user you sign in with can do &mdash; the same as the Salesforce CLI. Use a user with the
+         permissions you want Calumet to have.</p></details>
+    <details><summary>How are my credentials stored?</summary>
+      <p>Salesforce tokens are encrypted on your machine, under a master password you choose on first launch.
+         The password is never sent anywhere; there is no recovery, only a reset that wipes the stored secrets.</p></details>
+    <details><summary>Do I need to create something in Salesforce?</summary>
+      <p>Sign-in goes through a Connected App / External Client App. Your Salesforce admin can register and control
+         their own, and Calumet keeps it in a local vault on your machine.</p>
+    </details>
+    <details><summary>Is it really free?</summary>
+      <p>Yes. Everything you can use in Calumet today is free, and what is free today will stay free.</p>
+      <p>One limit exists today: DataSeeding imports up to <b>10,000 records per run</b>. If you need more, ask for a <b>free license</b> by opening an issue on <a href="https://github.com/elchacha/Calumet/issues" target="_blank">GitHub</a>.</p>
+      <p>We are studying a few new, paid features for the future. The dependency graph is an example. They are
+         not part of the free version, and they will be offered as additions: nothing you already use will be taken away.</p></details>
+  </section>
+
+  <footer>
+    <span>Built for Salesforce professionals</span>
+    <span>This website counts visits, without cookies. The application collects nothing.</span>
+    <a href="https://github.com/elchacha/Calumet" target="_blank">GitHub</a>
+    <a href="docs.html">Documentation</a>
+    <a href="demos.html">Demos</a>
+  </footer>
+</div>
+
+<script>
+/* defilement des mini-ecrans : sans JS, le premier reste affiche */
+(function(){
+  var deck=document.getElementById('deck'); if(!deck) return;
+  var slides=deck.querySelectorAll('.slide'), dots=deck.querySelectorAll('.dots i'), cap=document.getElementById('cap');
+  var names=['Profiles \u2014 who changed what, and when','Permission Sets \u2014 who has which rights','User Access Comparison \u2014 compare users side by side','CustomFields Usage \u2014 find the unused fields','Storage \u2014 growth of your data over time','LastRecords \u2014 audit what changed last','DataSeeding \u2014 import with error files'];
+  var cur=0, timer=null;
+  function show(i){cur=i;slides.forEach(function(s,k){s.classList.toggle('on',k===i)});dots.forEach(function(d,k){d.classList.toggle('on',k===i)});cap.textContent=names[i];}
+  function start(){stop();timer=setInterval(function(){show((cur+1)%slides.length)},4200);}
+  function stop(){if(timer){clearInterval(timer);timer=null;}}
+  dots.forEach(function(d,k){d.addEventListener('click',function(){show(k);start();});});
+  deck.addEventListener('mouseenter',stop); deck.addEventListener('mouseleave',start);
+  start();
+})();
+</script>
+<script>
+/* Comptage des visites du SITE (jamais de l'application) avec GoatCounter : sans cookie, sans IP stockee.
+   Renseigner GC_SITE avec le code du site (https://<code>.goatcounter.com) pour l'activer.
+   Vide = aucun script n'est charge et aucune requete n'est envoyee. */
+(function(){
+  var GC_SITE = 'littlec';
+  if (!GC_SITE) return;
+  var s = document.createElement('script');
+  s.async = true;
+  s.src = '//gc.zgo.at/count.js';
+  s.setAttribute('data-goatcounter', 'https://' + GC_SITE + '.goatcounter.com/count');
+  document.head.appendChild(s);
+})();
+</script>
+</body>
+</html>

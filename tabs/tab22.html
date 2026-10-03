@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Apex — Calumet</title>
+<link rel="stylesheet" href="../shared.css">
+<style>
+  /* Code editor mockup */
+  .apex-editor {
+    background: #000;
+    color: #d4d4d4;
+    font-family: "Consolas", "Courier New", monospace;
+    font-size: 12px;
+    padding: 8px 0;
+    border-radius: 3px;
+    min-height: 160px;
+    overflow: auto;
+    border: 1px solid #333;
+  }
+  .apex-editor .line {
+    display: flex;
+    min-height: 18px;
+  }
+  .apex-editor .ln {
+    min-width: 32px;
+    text-align: right;
+    padding-right: 8px;
+    color: #555;
+    user-select: none;
+    border-right: 1px solid #222;
+    margin-right: 8px;
+  }
+  .apex-editor .kw  { color: #569cd6; }
+  .apex-editor .cls { color: #4ec9b0; }
+  .apex-editor .str { color: #ce9178; }
+  .apex-editor .cmt { color: #6a9955; }
+  .apex-editor .num { color: #b5cea8; }
+  /* Debug log panel */
+  .debug-log {
+    background: #000;
+    color: #22ee22;
+    font-family: "Consolas", "Courier New", monospace;
+    font-size: 11px;
+    padding: 8px;
+    border-radius: 3px;
+    min-height: 120px;
+    border: 1px solid #1a3a1a;
+    overflow: auto;
+  }
+  .debug-log .dl-line {
+    line-height: 1.6;
+    white-space: pre;
+  }
+  .debug-log .dl-sep  { color: #888; }
+  .debug-log .dl-info { color: #22ee22; }
+  .debug-log .dl-warn { color: #e6c84a; }
+  .debug-log .dl-err  { color: #e74c3c; }
+  /* Log controls row */
+  .log-controls {
+    background: #dce8f0;
+    border-bottom: 1px solid #9ab;
+    padding: 4px 10px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 11px;
+    color: #1a2a35;
+  }
+  .log-controls label { display: flex; align-items: center; gap: 4px; cursor: default; }
+  .radio-group { display: flex; align-items: center; gap: 8px; }
+  /* Comparison diff colors */
+  .diff-older { color: #e67e22; }
+  .diff-newer { color: #27ae60; }
+  .diff-same  { color: #888; }
+  </style>
+</head>
+<body class="tab-page">
+
+<div class="sum">
+  <div class="sum-title">
+    <h2>Apex</h2>
+    <span class="sum-badge">Tab 22</span>
+  </div>
+  <p class="sum-desc">
+    Multi-purpose Apex developer workbench. Execute anonymous Apex code against any connected org and
+    inspect the resulting debug log in a built-in log viewer. Compare Apex classes and triggers
+    between two orgs side-by-side, filter by modifier or class name, and generate a
+    <code style="background:#1f2438;color:#8ad;padding:1px 5px;border-radius:3px">package.xml</code>
+    retrieval manifest from the diff. Additional tools: a
+    <strong>LWC wire adapter tester</strong> that executes a wire call and returns its JSON payload,
+    a <strong>LWC URL generator</strong> for building <code style="background:#1f2438;color:#8ad;padding:1px 5px;border-radius:3px">/one/one.app#</code>
+    deep-links with component attributes, an <strong>Apex Class Analyser</strong> popup for
+    inspecting class structure and dependencies, and a lightweight <strong>REST API client</strong>
+    for calling any Salesforce REST endpoint directly from the tool.
+  </p>
+</div>
+
+</div>
+
+<div class="mockup-wrap">
+  <div class="mockup">
+
+    <div class="m-tabpane" id="tp22">
+      <div class="m-tabbar">
+        <div class="m-tab act" onclick="sw('tp22',0)">ExecuteAnonymous</div>
+        <div class="m-tab" onclick="sw('tp22',1)">ApexOrgComparator</div>
+        <div class="m-tab" onclick="sw('tp22',2)">LWC</div>
+        <div class="m-tab" onclick="sw('tp22',3)">Url lwc generator</div>
+        <div class="m-tab" onclick="sw('tp22',4)">ApexClassAnalyser</div>
+        <div class="m-tab" onclick="sw('tp22',5)">Rest Api</div>
+      </div>
+
+      <div class="m-body">
+
+        <!-- ══════════════════════════════════════════
+             TAB 0 — Execute Anonymous
+             ══════════════════════════════════════════ -->
+        <div class="m-panel act" id="tp22-0">
+          <div class="vbox" style="gap:0">
+
+            <!-- Code editor area -->
+            <div style="padding:8px 10px 4px;">
+              <div class="apex-editor">
+                <div class="line"><span class="ln">1</span><span><span class="cmt">// Reassign all open Cases with priority = Critical to a dedicated queue</span></span></div>
+                <div class="line"><span class="ln">2</span><span><span class="kw">List</span>&lt;<span class="cls">Case</span>&gt; cases = [<span class="kw">SELECT</span> Id, OwnerId, Priority <span class="kw">FROM</span> <span class="cls">Case</span></span></div>
+                <div class="line"><span class="ln">3</span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">WHERE</span> Status != <span class="str">'Closed'</span> <span class="kw">AND</span> Priority = <span class="str">'Critical'</span>];</span></div>
+                <div class="line"><span class="ln">4</span><span><span class="cls">Group</span> criticalQueue = [<span class="kw">SELECT</span> Id <span class="kw">FROM</span> <span class="cls">Group</span> <span class="kw">WHERE</span> Type=<span class="str">'Queue'</span> <span class="kw">AND</span> Name=<span class="str">'Critical Support'</span> <span class="kw">LIMIT</span> <span class="num">1</span>];</span></div>
+                <div class="line"><span class="ln">5</span><span><span class="kw">for</span>(<span class="cls">Case</span> c : cases){ c.OwnerId = criticalQueue.Id; }</span></div>
+                <div class="line"><span class="ln">6</span><span><span class="kw">update</span> cases;</span></div>
+                <div class="line"><span class="ln">7</span><span><span class="cls">System</span>.debug(<span class="str">'Updated '</span> + cases.size() + <span class="str">' cases'</span>);</span></div>
+                <div class="line"><span class="ln">8</span><span>&nbsp;</span></div>
+              </div>
+            </div>
+
+            <!-- Toolbar row -->
+            <div class="hbox" style="gap:10px;align-items:center;padding:6px 10px;background:#dce8f0;border-top:1px solid #9ab;border-bottom:1px solid #9ab;">
+              <button class="cal-btn btn-b" data-tip="Execute the Apex code (or the current selection) anonymously on the connected org">execute</button>
+              <label class="cal-chk"><input type="checkbox" disabled> Test mode (prevent all async operation like @future ...)</label>
+              <div class="spacer"></div>
+              <select class="cal-cb" style="width:160px;">
+                <option>CleanupCriticalCases</option>
+              </select>
+              <button class="cal-btn btn-d" data-tip="Save current code as a named snippet (stored in apexSaved/ folder)">Save apex</button>
+            </div>
+
+            <!-- Debug log sub-panel -->
+            <div class="log-controls">
+              <span style="font-weight:600;">display mode</span>
+              <div class="radio-group">
+                <label><input type="radio" name="dm22" checked disabled> text</label>
+                <label><input type="radio" name="dm22" disabled> detail</label>
+              </div>
+              <span style="margin-left:auto;">filter :</span>
+              <input class="cal-tf" style="width:180px;" placeholder="filter log lines..." readonly>
+            </div>
+            <div style="padding:6px 10px 10px;">
+              <div class="debug-log">
+                <div class="dl-line"><span class="dl-sep">==========================&gt;</span> <span class="dl-info">Execute Anonymous: 7 line(s)</span></div>
+                <div class="dl-line"><span class="dl-sep">==========================&gt;</span> <span class="dl-info">SOQL_EXECUTE_BEGIN [2] Rows:12 SELECT Id, OwnerId, Priority FROM Case WHERE ...</span></div>
+                <div class="dl-line"><span class="dl-sep">==========================&gt;</span> <span class="dl-info">SOQL_EXECUTE_END [2]|Rows:12</span></div>
+                <div class="dl-line"><span class="dl-sep">==========================&gt;</span> <span class="dl-info">SOQL_EXECUTE_BEGIN [4] Rows:1 SELECT Id FROM Group WHERE Type='Queue' ...</span></div>
+                <div class="dl-line"><span class="dl-sep">==========================&gt;</span> <span class="dl-info">DML_BEGIN [6]|Op:Update|Type:Case|Rows:12</span></div>
+                <div class="dl-line"><span class="dl-sep">==========================&gt;</span> <span class="dl-info">DML_END [6]</span></div>
+                <div class="dl-line"><span class="dl-sep">==========================&gt;</span> <span class="dl-info">USER_DEBUG [7]|DEBUG|Updated 12 cases</span></div>
+                <div class="dl-line"><span class="dl-sep">==========================&gt;</span> <span class="dl-info">EXECUTION_FINISHED</span></div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- ══════════════════════════════════════════
+             TAB 1 — Apex Org Comparator
+             ══════════════════════════════════════════ -->
+        <div class="m-panel" id="tp22-1">
+          <div class="vbox" style="gap:8px;padding:10px;">
+
+            <div class="hbox" style="gap:8px;align-items:center;">
+              <span class="cal-lbl" style="color:#888;font-size:11px;">Quickly display the difference you have in class/apex between 2 orgs</span>
+            </div>
+
+            <div class="hbox" style="gap:10px;align-items:center;">
+              <span class="cal-lbl">Target :</span>
+              <select class="cal-cb" style="width:160px;">
+                <option>UAT — uat.salesforce.com</option>
+              </select>
+              <button class="cal-btn btn-b" data-tip="Compare Apex classes and triggers between source org and selected target org">compare</button>
+              <div class="spacer"></div>
+              <span class="cal-lbl" style="color:#27ae60;font-weight:600;">diff found : 7</span>
+            </div>
+
+            <div class="hbox" style="gap:8px;align-items:center;">
+              <span class="cal-lbl">Filter class name:</span>
+              <input class="cal-tf cal-grow" placeholder="e.g. Account..." readonly>
+              <span class="cal-lbl" style="margin-left:20px;">filter srcModifier</span>
+              <input class="cal-tf" style="width:140px;" placeholder="e.g. john.doe" readonly>
+              <span class="cal-lbl">filter tgt Modifier</span>
+              <input class="cal-tf" style="width:140px;" placeholder="e.g. jane.smith" readonly>
+            </div>
+
+            <div class="tbl-wrap">
+              <table class="cal-tbl">
+                <thead>
+                  <tr>
+                    <th style="width:240px">Name</th>
+                    <th style="width:80px">Type</th>
+                    <th colspan="2" style="width:300px;text-align:center">PROD — src</th>
+                    <th colspan="2" style="width:300px;text-align:center">UAT — tgt</th>
+                  </tr>
+                  <tr>
+                    <th></th><th></th>
+                    <th style="width:150px">SrcModified</th>
+                    <th style="width:160px">SrcModifier</th>
+                    <th style="width:150px">TgtModified</th>
+                    <th style="width:160px">TgtModifier</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>AccountTriggerHandler</td>
+                    <td>ApexClass</td>
+                    <td class="diff-newer">2026-04-22 14:37</td>
+                    <td>john.doe@example.com</td>
+                    <td class="diff-older">2026-03-15 09:10</td>
+                    <td>jane.smith@example.com</td>
+                  </tr>
+                  <tr>
+                    <td>CaseEscalationService</td>
+                    <td>ApexClass</td>
+                    <td class="diff-newer">2026-04-20 11:05</td>
+                    <td>john.doe@example.com</td>
+                    <td class="diff-older">2026-03-28 16:42</td>
+                    <td>john.doe@example.com</td>
+                  </tr>
+                  <tr>
+                    <td>OpportunityLineItemTrigger</td>
+                    <td>ApexTrigger</td>
+                    <td class="diff-newer">2026-04-18 08:55</td>
+                    <td>alice.martin@example.com</td>
+                    <td style="color:#888">—</td>
+                    <td style="color:#888">not deployed</td>
+                  </tr>
+                  <tr>
+                    <td>LeadScoringBatch</td>
+                    <td>ApexClass</td>
+                    <td class="diff-newer">2026-04-15 17:20</td>
+                    <td>alice.martin@example.com</td>
+                    <td class="diff-older">2026-02-10 10:00</td>
+                    <td>bob.johnson@example.com</td>
+                  </tr>
+                  <tr>
+                    <td>ContactMergeHelper</td>
+                    <td>ApexClass</td>
+                    <td class="diff-newer">2026-04-12 13:15</td>
+                    <td>bob.johnson@example.com</td>
+                    <td class="diff-older">2026-03-30 09:44</td>
+                    <td>bob.johnson@example.com</td>
+                  </tr>
+                  <tr>
+                    <td>QuoteDocumentController</td>
+                    <td>ApexClass</td>
+                    <td class="diff-newer">2026-04-10 09:00</td>
+                    <td>john.doe@example.com</td>
+                    <td class="diff-older">2026-01-20 14:30</td>
+                    <td>jane.smith@example.com</td>
+                  </tr>
+                  <tr>
+                    <td>PricingRuleEngine</td>
+                    <td>ApexClass</td>
+                    <td style="color:#888">—</td>
+                    <td style="color:#888">not in src</td>
+                    <td class="diff-older">2025-11-05 11:18</td>
+                    <td>admin.user@example.com</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div style="font-size:11px;color:#888;">Double-click a row to open the side-by-side diff viewer. Right-click to generate a package.xml retrieval manifest.</div>
+          </div>
+        </div>
+
+        <!-- ══════════════════════════════════════════
+             TAB 2 — LWC (wire adapter tester)
+             ══════════════════════════════════════════ -->
+        <div class="m-panel" id="tp22-2">
+          <div class="vbox" style="gap:8px;padding:10px;">
+
+            <div class="hbox" style="gap:8px;align-items:center;">
+              <span class="cal-lbl">wire</span>
+              <input class="cal-tf cal-grow"
+                     value="@wire(getRecord, { recordId: '$recordId', fields: [ACCOUNT_FIELDS] })"
+                     readonly style="font-family:monospace;font-size:11px;">
+            </div>
+
+            <div class="hbox" style="gap:8px;align-items:center;">
+              <span class="cal-lbl">variable name</span>
+              <input class="cal-tf" value="accountRecord" readonly style="width:200px;font-family:monospace;">
+              <label class="cal-chk"><input type="checkbox" checked disabled> PrettyFormat</label>
+              <label class="cal-chk"><input type="checkbox" checked disabled> RemoveNullValue</label>
+              <button class="cal-btn btn-b" data-tip="Execute the wire adapter call against the connected org and display the JSON result">search</button>
+            </div>
+
+            <textarea class="cal-ta" rows="18" readonly style="font-family:monospace;font-size:11px;">{
+  "data": {
+    "apiName": "Account",
+    "id": "0011t00000AbCdEfA",
+    "fields": {
+      "Name": {
+        "displayValue": "Acme Corporation",
+        "value": "Acme Corporation"
+      },
+      "Industry": {
+        "displayValue": "Technology",
+        "value": "Technology"
+      },
+      "AnnualRevenue": {
+        "displayValue": "$4,200,000",
+        "value": 4200000
+      },
+      "BillingCity": {
+        "displayValue": "San Francisco",
+        "value": "San Francisco"
+      },
+      "Phone": {
+        "displayValue": "+1 (415) 555-0192",
+        "value": "+1 (415) 555-0192"
+      }
+    }
+  },
+  "error": null
+}</textarea>
+
+          </div>
+        </div>
+
+        <!-- ══════════════════════════════════════════
+             TAB 3 — URL LWC Generator
+             ══════════════════════════════════════════ -->
+        <div class="m-panel" id="tp22-3">
+          <div class="vbox" style="gap:10px;padding:12px;">
+
+            <div class="hbox" style="gap:8px;align-items:center;">
+              <span class="cal-lbl">Lwc Name</span>
+              <input class="cal-tf" value="accountDashboard" readonly style="width:260px;">
+            </div>
+
+            <div class="vbox" style="gap:6px;">
+              <div class="hbox" style="gap:10px;align-items:center;">
+                <span class="cal-lbl">param 1 :</span>
+                <input class="cal-tf" value="recordId" readonly style="width:130px;">
+                <span class="cal-lbl">value 1 :</span>
+                <input class="cal-tf" value="0011t00000AbCdEfA" readonly style="width:160px;">
+              </div>
+              <div class="hbox" style="gap:10px;align-items:center;">
+                <span class="cal-lbl">param 2 :</span>
+                <input class="cal-tf" value="mode" readonly style="width:130px;">
+                <span class="cal-lbl">value 2 :</span>
+                <input class="cal-tf" value="readOnly" readonly style="width:160px;">
+              </div>
+              <div class="hbox" style="gap:10px;align-items:center;">
+                <span class="cal-lbl">param 3 :</span>
+                <input class="cal-tf" value="tab" readonly style="width:130px;">
+                <span class="cal-lbl">value 3 :</span>
+                <input class="cal-tf" value="summary" readonly style="width:160px;">
+              </div>
+              <div class="hbox" style="gap:10px;align-items:center;">
+                <span class="cal-lbl">param 4 :</span>
+                <input class="cal-tf" placeholder="(optional)" readonly style="width:130px;">
+                <span class="cal-lbl">value 4 :</span>
+                <input class="cal-tf" placeholder="" readonly style="width:160px;">
+              </div>
+              <div class="hbox" style="gap:10px;align-items:center;">
+                <span class="cal-lbl">param 5 :</span>
+                <input class="cal-tf" placeholder="(optional)" readonly style="width:130px;">
+                <span class="cal-lbl">value 5 :</span>
+                <input class="cal-tf" placeholder="" readonly style="width:160px;">
+              </div>
+              <div class="hbox" style="gap:10px;align-items:center;">
+                <span class="cal-lbl">param 6 :</span>
+                <input class="cal-tf" placeholder="(optional)" readonly style="width:130px;">
+                <span class="cal-lbl">value 6 :</span>
+                <input class="cal-tf" placeholder="" readonly style="width:160px;">
+              </div>
+            </div>
+
+            <div class="hbox" style="gap:10px;align-items:center;">
+              <button class="cal-btn btn-b" data-tip="Build the Base64-encoded /one/one.app# URL for this LWC component with the given attributes">Generate Url</button>
+              <label class="cal-chk"><input type="checkbox" disabled> openUrl</label>
+            </div>
+
+            <input class="cal-tf" readonly
+                   value="/one/one.app#eyJjb21wb25lbnREZWYiOiJjOmFjY291bnREYXNoYm9hcmQiLCJhdHRyaWJ1dGVzIjp7InJlY29yZElkIjoiMDAxMXQwMDAwMEFiQ2RFZkEiLCJtb2RlIjoicmVhZE9ubHkiLCJ0YWIiOiJzdW1tYXJ5In19"
+                   style="font-family:monospace;font-size:10px;">
+
+          </div>
+        </div>
+
+        <!-- ══════════════════════════════════════════
+             TAB 4 — Apex Class Analyser
+             ══════════════════════════════════════════ -->
+        <div class="m-panel" id="tp22-4">
+          <div class="vbox" style="gap:10px;padding:14px;">
+
+            <div style="font-size:11px;color:#556;margin-bottom:4px;">
+              Type an Apex class or trigger name to open a detailed analysis popup showing dependencies,
+              method list, inner classes, test coverage, and SOQL usage.
+            </div>
+
+            <div class="hbox" style="gap:10px;align-items:center;">
+              <input class="cal-tf" value="AccountTriggerHandler" readonly style="width:320px;"
+                     data-tip="Start typing to autocomplete from the class/trigger list of the connected org">
+              <button class="cal-btn btn-d" data-tip="Open the Class Analyser popup for this class">Execute</button>
+              <label class="cal-chk"><input type="checkbox" disabled> recompile (must be disable on Prod org)</label>
+            </div>
+
+            <div style="background:#f0f4f8;border:1px solid #c0cdd8;border-radius:4px;padding:10px 14px;font-size:11px;color:#334;">
+              <div style="font-weight:600;margin-bottom:6px;">Last analysis: AccountTriggerHandler</div>
+              <div class="hbox" style="gap:24px;flex-wrap:wrap;">
+                <div><span style="color:#888;">Lines of code:</span> <strong>387</strong></div>
+                <div><span style="color:#888;">Methods:</span> <strong>14</strong></div>
+                <div><span style="color:#888;">Inner classes:</span> <strong>2</strong></div>
+                <div><span style="color:#888;">SOQL queries:</span> <strong>6</strong></div>
+                <div><span style="color:#888;">DML statements:</span> <strong>4</strong></div>
+                <div><span style="color:#888;">Test coverage:</span> <strong style="color:#27ae60;">89%</strong></div>
+              </div>
+              <div style="margin-top:8px;">
+                <span style="color:#888;">Referenced by:</span>
+                AccountTrigger, AccountService, AccountBatchScheduler
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- ══════════════════════════════════════════
+             TAB 5 — Rest API
+             ══════════════════════════════════════════ -->
+        <div class="m-panel" id="tp22-5">
+          <div class="vbox" style="gap:8px;padding:10px;">
+
+            <div class="hbox" style="gap:8px;align-items:center;">
+              <span class="cal-lbl">Query to execute :</span>
+              <input class="cal-tf cal-grow"
+                     value="/services/data/v64.0/sobjects/Account/0011t00000AbCdEfA"
+                     readonly style="font-family:monospace;font-size:11px;">
+            </div>
+
+            <div class="hbox" style="gap:8px;align-items:flex-start;">
+              <span class="cal-lbl" style="margin-top:4px;">Body</span>
+              <textarea class="cal-ta cal-grow" rows="3" readonly
+                        style="font-family:monospace;font-size:11px;">{
+  "BillingCity": "New York",
+  "Description": "Updated via Calumet REST client"
+}</textarea>
+            </div>
+
+            <div>
+              <button class="cal-btn btn-d" data-tip="Execute the REST call against the connected org (GET if body is empty, PATCH if body is provided)">Execute</button>
+            </div>
+
+            <textarea class="cal-ta" rows="14" readonly style="font-family:monospace;font-size:11px;">{
+  "attributes": {
+    "type": "Account",
+    "url": "/services/data/v64.0/sobjects/Account/0011t00000AbCdEfA"
+  },
+  "Id": "0011t00000AbCdEfA",
+  "Name": "Acme Corporation",
+  "BillingCity": "New York",
+  "BillingCountry": "United States",
+  "Industry": "Technology",
+  "AnnualRevenue": 4200000,
+  "NumberOfEmployees": 850,
+  "Phone": "+1 (415) 555-0192",
+  "Description": "Updated via Calumet REST client",
+  "LastModifiedDate": "2026-04-29T09:14:33.000+0000",
+  "LastModifiedById": "0051t000005XzAbAAK"
+}</textarea>
+
+          </div>
+        </div>
+
+      </div><!-- /.m-body -->
+    </div><!-- /.m-tabpane -->
+
+  </div><!-- /.mockup -->
+</div><!-- /.mockup-wrap -->
+
+<script>
+function sw(id,idx){
+  var tp=document.getElementById(id);
+  tp.querySelectorAll('.m-tab').forEach(function(t,i){t.classList.toggle('act',i===idx)});
+  tp.querySelectorAll('.m-panel').forEach(function(p,i){p.classList.toggle('act',i===idx)});
+}
+</script>
+</body>
+</html>

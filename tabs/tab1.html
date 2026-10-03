@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Project — Calumet</title>
+<link rel="stylesheet" href="../shared.css">
+</head>
+<body class="tab-page">
+<div class="sum">
+  <div class="sum-title">
+    <h2>Project</h2>
+    <span class="sum-badge">Tab 1</span>
+  </div>
+  <p class="sum-desc">Manage deployment projects. Select or create a project to organise your Salesforce metadata changes before deploying.</p>
+</div>
+<div class="mockup-wrap">
+  <div class="mockup"><div class="vbox" style="gap:0px"><div class="anchor"><span class="cal-lbl">project :</span><span class="cal-lbl">subject :</span><input class="cal-tf" placeholder="" style="width:335.0px;" readonly><span class="cal-lbl">type :</span><select class="cal-cb" style="width:150.0px;"><option class="ph">Select...</option></select><span class="cal-lbl">priority :</span><select class="cal-cb" style="width:150.0px;"><option class="ph">Select...</option></select><span class="cal-lbl">status :</span><select class="cal-cb" style="width:150.0px;"><option class="ph">Select...</option></select><input class="cal-tf" placeholder="Date..." readonly><span class="cal-lbl">expected delivery PROD :</span><textarea class="cal-ta" placeholder="" rows="9" readonly></textarea><span class="cal-lbl">description</span><button class="cal-btn btn-d">create</button></div></div></div>
+</div>
+<script>
+function sw(id,idx){
+  var tp=document.getElementById(id);
+  tp.querySelectorAll('.m-tab').forEach(function(t,i){t.classList.toggle('act',i===idx)});
+  tp.querySelectorAll('.m-panel').forEach(function(p,i){p.classList.toggle('act',i===idx)});
+}
+</script>
+</body>
+</html>

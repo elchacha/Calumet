@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Empty Roles — Calumet</title>
+<link rel="stylesheet" href="../shared.css">
+<style>
+  .badge-yes { background:#27ae60; color:#fff; border-radius:50%; width:22px; height:22px; display:inline-flex; align-items:center; justify-content:center; font-size:13px; font-weight:700; }
+  .badge-no  { background:#e74c3c; color:#fff; border-radius:50%; width:22px; height:22px; display:inline-flex; align-items:center; justify-content:center; font-size:13px; font-weight:700; }
+  .pill { display:inline-block; border-radius:10px; padding:1px 9px; font-size:12px; font-weight:600; color:#fff; }
+  .ref-link { color:#2980b9; text-decoration:underline; cursor:pointer; }
+  .num { text-align:center; }
+  .dlg { background:#f4f6f8; border:1px solid #c9d1d9; border-radius:6px; padding:14px 18px; color:#1a2a35; max-width:720px; }
+  .dlg h4 { margin:0 0 10px; font-size:14px; }
+  .dlg ul { margin:6px 0 10px; padding-left:20px; line-height:1.6; font-size:13px; }
+  .dlg p { margin:6px 0; font-size:13px; }
+  .modal-box { background:#fff; border-radius:8px; padding:28px 32px; max-width:620px; width:90%; color:#1a2a35; box-shadow:0 8px 32px rgba(0,0,0,.3); max-height:85vh; overflow:auto; }
+  .modal-box h4 { margin:16px 0 6px; color:#1a2a35; }
+  .modal-box p, .modal-box li { line-height:1.6; font-size:14px; }
+</style>
+</head>
+<body class="tab-page">
+
+<div class="sum">
+  <div class="sum-title">
+    <h2>Empty Roles</h2>
+    <span class="sum-badge">Tab 66</span>
+  </div>
+  <p class="sum-desc">
+    Lists the roles of the hierarchy with their users, when they were emptied, and what still names them, so that roles nobody uses any more can be deleted safely.
+    Typical use: after a reorganisation, find the roles left without active users, check what still references them, and delete the ones that are truly abandoned.
+    <button class="cal-btn btn-d" style="margin-left:10px" onclick="document.getElementById('modal-kf').style.display='flex'">&#9733; Key features</button>
+    <button class="cal-btn btn-d" style="margin-left:6px" onclick="document.getElementById('modal-how').style.display='flex'">How it works</button>
+  </p>
+</div>
+
+<div class="mockup-wrap">
+  <div class="mockup">
+    <div class="m-tabpane" id="tp66">
+      <div class="m-tabbar">
+        <div class="m-tab act" onclick="sw('tp66',0)">Roles</div>
+        <div class="m-tab" onclick="sw('tp66',1)">Referenced by popup</div>
+        <div class="m-tab" onclick="sw('tp66',2)">Delete warnings</div>
+      </div>
+      <div class="m-body">
+
+        <!-- Panel 0 : main screen -->
+        <div class="m-panel act" id="tp66-0">
+          <div class="vbox" style="gap:8px">
+            <div class="hbox" style="gap:8px;align-items:center">
+              <button class="cal-btn btn-b" data-tip="Reload the roles, their users and the Setup Audit Trail">Refresh</button>
+              <button class="cal-btn btn-r" data-tip="Delete selected role(s)">Delete</button>
+              <button class="cal-btn btn-b" data-tip="Looks up what still names each role: sharing rules, queues, public groups, approval processes">Check references</button>
+              <label class="cal-chk"><input type="checkbox" disabled> hide non deletable roles</label>
+              <span class="cal-lbl">records : 8</span>
+              <span class="cal-lbl" style="font-size:12px;color:#2980b9;font-style:italic">cached at 02/10 09:14 - audit trail since 2026-04-05 - references: dependency graph 02/10 09:15</span>
+            </div>
+
+            <div class="tbl-wrap">
+              <table class="cal-tbl">
+                <thead>
+                  <tr>
+                    <th style="width:190px">Name</th>
+                    <th style="width:160px">Parent</th>
+                    <th style="width:58px">Active</th>
+                    <th style="width:62px">Inactive</th>
+                    <th style="width:150px">LastModified</th>
+                    <th style="width:120px">Emptied</th>
+                    <th style="width:95px">Created</th>
+                    <th style="width:52px">Depth</th>
+                    <th style="width:65px">Children</th>
+                    <th style="width:100px">Description</th>
+                    <th style="width:130px">Referenced by</th>
+                    <th style="width:90px">Can Delete</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Sales EMEA</td><td>VP Sales</td>
+                    <td class="num">0</td><td class="num">2</td>
+                    <td class="num">2024-11-18 10:12:44</td>
+                    <td class="num">2026-06-03 (4)</td><td class="num"></td>
+                    <td class="num">2</td><td class="num">0</td><td></td>
+                    <td class="num">0</td>
+                    <td class="num"><span class="badge-yes">&#10003;</span></td>
+                  </tr>
+                  <tr>
+                    <td>Regional Director North</td><td>Regional Director</td>
+                    <td class="num">0</td><td class="num">1</td>
+                    <td class="num">2026-09-22 16:40:05</td>
+                    <td class="num" style="color:#e67e22">2026-09-22 (3)</td><td class="num"></td>
+                    <td class="num">2</td><td class="num">0</td><td></td>
+                    <td class="num">0</td>
+                    <td class="num"><span class="badge-yes">&#10003;</span></td>
+                  </tr>
+                  <tr>
+                    <td>Channel Partner Manager</td><td>VP Sales</td>
+                    <td class="num">0</td><td class="num">0</td>
+                    <td class="num">2021-05-10 08:55:31</td>
+                    <td class="num"></td><td class="num"></td>
+                    <td class="num">2</td><td class="num">0</td><td></td>
+                    <td class="num"><span class="ref-link" data-tip="Click to see what names this role">0 (+1 inactive)</span></td>
+                    <td class="num"><span class="badge-yes">&#10003;</span></td>
+                  </tr>
+                  <tr>
+                    <td>Field Marketing APAC</td><td>Marketing Director</td>
+                    <td class="num">0</td><td class="num">0</td>
+                    <td class="num">2026-08-14 11:02:18</td>
+                    <td class="num"></td><td class="num">2026-08-14</td>
+                    <td class="num">2</td><td class="num">0</td><td></td>
+                    <td class="num">0</td>
+                    <td class="num"><span class="badge-yes">&#10003;</span></td>
+                  </tr>
+                  <tr>
+                    <td>Support Tier 1</td><td>Support Manager</td>
+                    <td class="num">0</td><td class="num">0</td>
+                    <td class="num">2023-02-07 14:21:50</td>
+                    <td class="num">2026-05-19 (6)</td><td class="num"></td>
+                    <td class="num">3</td><td class="num">0</td><td></td>
+                    <td class="num"><span class="ref-link" data-tip="Click to see what names this role">2 (+1 inactive)</span></td>
+                    <td class="num"><span class="badge-no">&#10007;</span></td>
+                  </tr>
+                  <tr>
+                    <td>Legacy Distributors</td><td>VP Sales</td>
+                    <td class="num">0</td><td class="num">5</td>
+                    <td class="num">2019-09-03 09:47:12</td>
+                    <td class="num"></td><td class="num"></td>
+                    <td class="num">2</td><td class="num">0</td><td></td>
+                    <td class="num"><span class="ref-link" data-tip="Click to see what names this role">1</span></td>
+                    <td class="num"><span class="badge-no">&#10007;</span></td>
+                  </tr>
+                  <tr>
+                    <td>Inside Sales</td><td>Sales Manager</td>
+                    <td class="num">6</td><td class="num">1</td>
+                    <td class="num">2022-10-28 17:15:09</td>
+                    <td class="num"></td><td class="num"></td>
+                    <td class="num">3</td><td class="num">0</td><td></td>
+                    <td class="num"><span class="ref-link" data-tip="Click to see what names this role">1</span></td>
+                    <td class="num"><span class="badge-no">&#10007;</span></td>
+                  </tr>
+                  <tr>
+                    <td>Support Manager</td><td>VP Customer Service</td>
+                    <td class="num">3</td><td class="num">0</td>
+                    <td class="num">2020-03-16 10:30:00</td>
+                    <td class="num"></td><td class="num"></td>
+                    <td class="num">2</td><td class="num">1</td><td></td>
+                    <td class="num"><span class="ref-link" data-tip="Click to see what names this role">3</span></td>
+                    <td class="num"><span class="badge-no">&#10007;</span></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <p style="margin:2px 0;font-size:12px;color:#888">
+              Empty Emptied / Created cells mean "nothing in the ~180-day audit trail window", not "never". Before references are checked, the Referenced by column shows <b>?</b> (or <b>1+?</b> when workflow email alerts are already known): nobody has looked yet, which is not the same as "nothing".
+            </p>
+          </div>
+        </div>
+
+        <!-- Panel 1 : Referenced by popup -->
+        <div class="m-panel" id="tp66-1">
+          <div class="vbox" style="gap:8px">
+            <span class="cal-lbl" style="font-weight:700">Referenced by - Support Tier 1</span>
+            <div class="tbl-wrap">
+              <table class="cal-tbl">
+                <thead>
+                  <tr>
+                    <th style="width:150px">Type</th>
+                    <th style="width:300px">Name</th>
+                    <th style="width:200px">Usage</th>
+                    <th style="width:70px">Active</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><span class="pill" style="background:#2980b9">Sharing Rule</span></td>
+                    <td class="num">Case.Tier1_Open_Cases</td>
+                    <td><span class="pill" style="background:#8e44ad">shares to, with subordinates</span></td>
+                    <td class="num"><span class="pill" style="background:#27ae60">yes</span></td>
+                  </tr>
+                  <tr>
+                    <td><span class="pill" style="background:#16a085">Queue</span></td>
+                    <td class="num">Tier1_Inbox</td>
+                    <td><span class="pill" style="background:#8e44ad">has member</span></td>
+                    <td class="num"><span class="pill" style="background:#27ae60">yes</span></td>
+                  </tr>
+                  <tr>
+                    <td><span class="pill" style="background:#d35400">Approval Process</span></td>
+                    <td class="num">Case.Refund_Over_500</td>
+                    <td><span class="pill" style="background:#8e44ad">submitter</span></td>
+                    <td class="num"><span class="pill" style="background:#e67e22">no</span></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <p style="margin:2px 0;font-size:12px;color:#888">
+              The Active column appears only when at least one referrer is switched off. The inactive approval process is listed, but it does not make the role non-deletable; the sharing rule and the queue do.
+            </p>
+            <span class="cal-lbl" style="font-weight:700;margin-top:8px">Referenced by - Legacy Distributors</span>
+            <div class="tbl-wrap">
+              <table class="cal-tbl">
+                <thead>
+                  <tr><th style="width:150px">Type</th><th style="width:300px">Name</th><th style="width:200px">Usage</th></tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><span class="pill" style="background:#7f8c8d">Email Alert</span></td>
+                    <td class="num">Order_Shipped_Distributor_Notice</td>
+                    <td><span class="pill" style="background:#8e44ad">mails the role</span></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Panel 2 : Delete warnings -->
+        <div class="m-panel" id="tp66-2">
+          <div class="vbox" style="gap:12px">
+            <span class="cal-lbl">Selected: <b>Channel Partner Manager</b>, <b>Regional Director North</b></span>
+
+            <div class="dlg">
+              <h4>Roles still referenced</h4>
+              <p>These roles (or roles below a selected role, which are deleted with it) are still named by:</p>
+              <ul>
+                <li>Channel Partner Manager : Approval Process Opportunity.Discount_Over_20 (inactive) (submitter)</li>
+              </ul>
+              <p>(checked by dependency graph.) Salesforce may refuse the deletion, or the rule that names a role may stop working as intended once it is gone. Delete anyway?</p>
+              <div class="hbox" style="gap:8px;justify-content:flex-end">
+                <button class="cal-btn btn-r">Delete anyway</button>
+                <button class="cal-btn btn-b" data-tip="Default button">Cancel</button>
+              </div>
+            </div>
+
+            <div class="dlg">
+              <h4>Recently changed roles</h4>
+              <p>The audit trail saw these roles change in the last 30 days (roles below a deleted role are deleted with it):</p>
+              <ul>
+                <li>Regional Director North : last user left 2026-09-22 (3 in all), changed 2026-09-22</li>
+              </ul>
+              <p>A role created or emptied recently may belong to a reorganisation in progress. Delete anyway?</p>
+              <div class="hbox" style="gap:8px;justify-content:flex-end">
+                <button class="cal-btn btn-r">Delete anyway</button>
+                <button class="cal-btn btn-b" data-tip="Default button">Cancel</button>
+              </div>
+            </div>
+            <p style="margin:2px 0;font-size:12px;color:#888">
+              Cancel is the default button in both dialogs. If the references were never checked, Delete looks them up first; if that look-up fails, a third dialog asks whether to delete without knowing (Cancel again by default).
+            </p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Key features modal -->
+<div id="modal-kf" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:999;align-items:center;justify-content:center" onclick="if(event.target===this)this.style.display='none'">
+  <div class="modal-box">
+    <h3 style="margin:0 0 14px;color:#2980b9">&#9733; Key features</h3>
+    <ul style="margin:0;padding-left:20px;line-height:1.8">
+      <li>Role hierarchy with parent, depth, child count and active / inactive user counts</li>
+      <li><b>Emptied</b>: date the last user left the role and how many users left, read from the Setup Audit Trail</li>
+      <li><b>Created</b>: creation date, when it falls inside the audit trail window</li>
+      <li><b>Referenced by</b>: sharing rules, queues, public groups, approval processes and workflow email alerts that still name the role; click the number for the list</li>
+      <li>References from the dependency graph (instant) or from a live metadata retrieve (free, about 2 minutes on a large org)</li>
+      <li><b>Can Delete</b> takes both active users and live references into account</li>
+      <li>Delete never runs blind: references are checked first, then two warnings (still referenced, changed in the last 30 days) with Cancel as default</li>
+    </ul>
+    <div style="text-align:right;margin-top:18px">
+      <button class="cal-btn btn-d" onclick="document.getElementById('modal-kf').style.display='none'">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- How it works modal -->
+<div id="modal-how" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:999;align-items:center;justify-content:center" onclick="if(event.target===this)this.style.display='none'">
+  <div class="modal-box">
+    <h3 style="margin:0 0 6px;color:#2980b9">How it works</h3>
+
+    <h4>The status line</h4>
+    <p><i>cached at 02/10 09:14 - audit trail since 2026-04-05 - references: dependency graph 02/10 09:15</i> says when the roles were loaded, how far back the Setup Audit Trail goes, and where the references came from and when. If the audit trail cannot be read (it needs the user's language set to English), the line says so instead of showing a date.</p>
+
+    <h4>Emptied and Created: a 180-day window</h4>
+    <p>Salesforce keeps the Setup Audit Trail for about 180 days. An empty Emptied or Created cell means nothing happened <b>in that window</b>, not that it never happened. The audit trail names roles by their label only, so two roles sharing the same name get no audit trail data.</p>
+
+    <h4>Referenced by</h4>
+    <ul>
+      <li>Counts what still names the role: sharing rules, queues, public groups, approval processes, plus workflow email alerts that mail the role.</li>
+      <li><b>?</b> means nobody has looked yet. It is not "nothing".</li>
+      <li><b>(+N inactive)</b> counts approval processes that are switched off. They are shown, but they do not block deletion.</li>
+      <li>Clicking the number opens a popup: type, name, how it names the role, and an Active column only when one referrer is inactive.</li>
+    </ul>
+
+    <h4>Two ways to get the references</h4>
+    <ul>
+      <li><b>Dependency graph</b> (licensed feature): instant, if the graph was built recently enough to know roles. A graph built before roles were supported is <b>not</b> used, because it would wrongly say that nothing names any role.</li>
+      <li><b>Live check</b> (free): otherwise, Check references retrieves the approval processes, sharing rules, queues and public groups from the org, read-only. It takes about 2 minutes on a large org.</li>
+    </ul>
+
+    <h4>Can Delete</h4>
+    <p>A role is deletable when it has no active user and, once the references are known, nothing live still names it. A role referenced only by inactive approval processes stays deletable.</p>
+
+    <h4>Deleting</h4>
+    <ul>
+      <li>If the references are unknown, the screen looks them up first.</li>
+      <li>It then warns about roles still referenced, then about roles changed in the last 30 days according to the audit trail. Cancel is the default each time.</li>
+      <li>Deleting a role also deletes the roles below it; the warnings cover those too.</li>
+    </ul>
+
+    <h4>A note on reorganisations</h4>
+    <p>A role left empty after a reorganisation may be very recent: users may be moving back, or the new structure may not be finished. Look at the Emptied date before deleting.</p>
+
+    <div style="text-align:right;margin-top:18px">
+      <button class="cal-btn btn-d" onclick="document.getElementById('modal-how').style.display='none'">Close</button>
+    </div>
+  </div>
+</div>
+
+<script>
+function sw(id,idx){
+  var tp=document.getElementById(id);
+  tp.querySelectorAll('.m-tab').forEach(function(t,i){t.classList.toggle('act',i===idx)});
+  tp.querySelectorAll('.m-panel').forEach(function(p,i){p.classList.toggle('act',i===idx)});
+}
+</script>
+</body>
+</html>

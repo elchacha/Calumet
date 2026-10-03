@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Object Relations Usage — Calumet</title>
+<link rel="stylesheet" href="../shared.css">
+<style>
+  .badge-rel-formula        { background:#2980b9; color:#fff; border-radius:6px; padding:1px 8px; font-size:11px; font-weight:600; display:inline-block; }
+  .badge-rel-validationrule { background:#e74c3c; color:#fff; border-radius:6px; padding:1px 8px; font-size:11px; font-weight:600; display:inline-block; }
+  .badge-rel-workflowrule   { background:#e67e22; color:#fff; border-radius:6px; padding:1px 8px; font-size:11px; font-weight:600; display:inline-block; }
+  .badge-rel-default        { background:#7f8c8d; color:#fff; border-radius:6px; padding:1px 8px; font-size:11px; font-weight:600; display:inline-block; }
+  .rel-count { background:#e67e22; color:#fff; border-radius:4px; padding:1px 7px; font-size:12px; font-weight:700; display:inline-block; min-width:24px; text-align:center; }
+  .obj-selected td { background:#d0e8f0 !important; }
+  .split-tables { display:flex; gap:16px; align-items:flex-start; }
+  .split-tables .tbl-wrap { flex:1; min-width:0; overflow-x:auto; }
+  .split-tables .tbl-wrap:first-child { max-width:320px; }
+</style>
+</head>
+<body class="tab-page">
+
+<div class="sum">
+  <div class="sum-title">
+    <h2>Object Relations Usage</h2>
+    <span class="sum-badge">Tab 52</span>
+  </div>
+  <p class="sum-desc">
+    Maps all lookup and master-detail relationships for every SObject across the org, showing which fields, formulas, validation rules and workflow rules reference each object.
+    Click any object to explore its full relationship usage in the right-hand panel.
+    <button class="cal-btn btn-d" style="margin-left:10px" onclick="document.getElementById('modal-kf').style.display='flex'">&#9733; Key features</button>
+  </p>
+</div>
+
+<div class="mockup-wrap">
+  <div class="mockup">
+    <div class="vbox" style="gap:8px;padding:6px 0 0 0">
+
+      <!-- Toolbar -->
+      <div class="hbox" style="gap:12px;align-items:center">
+        <button class="cal-btn btn-b" data-tip="Load all object relationship data from the org">Search</button>
+        <label class="cal-chk"><input type="checkbox" checked disabled> Display single relations only</label>
+      </div>
+
+      <!-- Two-panel split -->
+      <div class="split-tables">
+
+        <!-- Left: Objects + relation count -->
+        <div class="tbl-wrap" style="max-width:320px">
+          <table class="cal-tbl">
+            <thead>
+              <tr>
+                <th style="width:220px">Object</th>
+                <th style="width:60px;text-align:center">Rel</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>Account</td><td style="text-align:center"><span class="rel-count">16</span></td></tr>
+              <tr><td>Case</td><td style="text-align:center"><span class="rel-count">14</span></td></tr>
+              <tr><td>Opportunity</td><td style="text-align:center"><span class="rel-count">13</span></td></tr>
+              <tr><td>Project__c</td><td style="text-align:center"><span class="rel-count">12</span></td></tr>
+              <tr><td>Contract__c</td><td style="text-align:center"><span class="rel-count">11</span></td></tr>
+              <tr class="obj-selected"><td><strong>Order__c</strong></td><td style="text-align:center"><span class="rel-count">11</span></td></tr>
+              <tr><td>Invoice__c</td><td style="text-align:center"><span class="rel-count">10</span></td></tr>
+              <tr><td>Asset__c</td><td style="text-align:center"><span class="rel-count">10</span></td></tr>
+              <tr><td>Report__c</td><td style="text-align:center"><span class="rel-count">10</span></td></tr>
+              <tr><td>Ticket__c</td><td style="text-align:center"><span class="rel-count">9</span></td></tr>
+              <tr><td>Task__c</td><td style="text-align:center"><span class="rel-count">8</span></td></tr>
+              <tr><td>BillingEvent__c</td><td style="text-align:center"><span class="rel-count">7</span></td></tr>
+              <tr><td>Reimbursement__c</td><td style="text-align:center"><span class="rel-count">7</span></td></tr>
+              <tr><td>Lead</td><td style="text-align:center"><span class="rel-count">7</span></td></tr>
+              <tr><td>OrderLine__c</td><td style="text-align:center"><span class="rel-count">7</span></td></tr>
+              <tr><td>Actions__c</td><td style="text-align:center"><span class="rel-count">6</span></td></tr>
+              <tr><td>LineItem__c</td><td style="text-align:center"><span class="rel-count">6</span></td></tr>
+              <tr><td>Contact</td><td style="text-align:center"><span class="rel-count">4</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Right: Field / Relation / RelationType for selected object -->
+        <div class="tbl-wrap">
+          <table class="cal-tbl">
+            <thead>
+              <tr>
+                <th style="width:280px">Field</th>
+                <th style="width:250px">Relation</th>
+                <th style="width:140px">RelationType</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>accRecordtype__c</td><td>Client__r</td><td><span class="badge-rel-formula">formula</span></td></tr>
+              <tr><td>IDUT__c</td><td>Client__r</td><td><span class="badge-rel-formula">formula</span></td></tr>
+              <tr><td>resp_groupe__c</td><td>Client__r</td><td><span class="badge-rel-formula">formula</span></td></tr>
+              <tr><td>Order__c.ContractClosed_LS</td><td>Client__r</td><td><span class="badge-rel-validationrule">ValidationRule</span></td></tr>
+              <tr><td>Order__c.ContractTerminatedNonEditable</td><td>Client__r</td><td><span class="badge-rel-validationrule">ValidationRule</span></td></tr>
+              <tr><td>Order__c.contractVerifyEstab</td><td>Client__r</td><td><span class="badge-rel-validationrule">ValidationRule</span></td></tr>
+              <tr><td>Order__c.TerminationDate_LowerThanToday</td><td>Client__r</td><td><span class="badge-rel-validationrule">ValidationRule</span></td></tr>
+              <tr><td>Soc__c</td><td>Client__r</td><td><span class="badge-rel-formula">formula</span></td></tr>
+              <tr><td>GroupOwner__c</td><td>Client__r.Owner</td><td><span class="badge-rel-formula">formula</span></td></tr>
+              <tr><td>Order__c.contractVerifyEstab</td><td>Client__r.Owner__r</td><td><span class="badge-rel-validationrule">ValidationRule</span></td></tr>
+              <tr><td>GroupOwner__c</td><td>Client__r.RecordType</td><td><span class="badge-rel-formula">formula</span></td></tr>
+              <tr><td>MasterContractLabel__c</td><td>MasterContract__r</td><td><span class="badge-rel-formula">formula</span></td></tr>
+              <tr><td>SupplierCode__c</td><td>Opportunity__r</td><td><span class="badge-rel-formula">formula</span></td></tr>
+              <tr><td>AgreementDate__c</td><td>Opportunity__r</td><td><span class="badge-rel-formula">formula</span></td></tr>
+              <tr><td>Order__c.PricingFreeze</td><td>Opportunity__r</td><td><span class="badge-rel-validationrule">ValidationRule</span></td></tr>
+              <tr><td>Order__c.VR_Contract_emails_mandatory</td><td>Opportunity__r</td><td><span class="badge-rel-validationrule">ValidationRule</span></td></tr>
+              <tr><td>Order__c.Notification_on_withdraw_CAP_Air</td><td>PreviousAmendment__r</td><td><span class="badge-rel-workflowrule">WorkflowRule</span></td></tr>
+              <tr><td>Order__c.Notification_on_withdraw_CAP_Road</td><td>PreviousAmendment__r</td><td><span class="badge-rel-workflowrule">WorkflowRule</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Key features modal -->
+<div id="modal-kf" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:999;align-items:center;justify-content:center" onclick="if(event.target===this)this.style.display='none'">
+  <div style="background:#fff;border-radius:8px;padding:28px 32px;max-width:520px;width:90%;color:#1a2a35;box-shadow:0 8px 32px rgba(0,0,0,.3)">
+    <h3 style="margin:0 0 14px;color:#2980b9">&#9733; Key features</h3>
+    <ul style="margin:0;padding-left:20px;line-height:1.8">
+      <li>Scans all SObjects and counts the number of distinct relationship references</li>
+      <li>Click any object in the left panel to see the full breakdown in the right panel</li>
+      <li>Distinguishes formula fields, validation rules, and workflow rules via colored badges</li>
+      <li>"Display single relations only" filter deduplicates entries by relation name</li>
+      <li>Double-click a row in the usage panel to open the field/rule in the Salesforce Setup</li>
+      <li>Relation count badge (orange pill) sorts objects from most-referenced to least</li>
+    </ul>
+    <div style="text-align:right;margin-top:18px">
+      <button class="cal-btn btn-d" onclick="document.getElementById('modal-kf').style.display='none'">Close</button>
+    </div>
+  </div>
+</div>
+
+<script>
+function sw(id,idx){
+  var tp=document.getElementById(id);
+  tp.querySelectorAll('.m-tab').forEach(function(t,i){t.classList.toggle('act',i===idx)});
+  tp.querySelectorAll('.m-panel').forEach(function(p,i){p.classList.toggle('act',i===idx)});
+}
+</script>
+</body>
+</html>
