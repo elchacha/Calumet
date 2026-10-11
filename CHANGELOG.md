@@ -1,5 +1,62 @@
 # Calumet — Changelog
 
+## v14.0 — 2026-10-11
+
+### New screens
+
+- Omni-Channel
+
+### Improvements
+
+**Omni-Channel (new screen)**
+- A new audit screen checks whether Omni-Channel routing really serves your production requests: skill combinations no available agent covers, requests waiting on a status their record no longer has, presence configuration gaps. You only record decisions here; the analysis is shared with the assistant tool.
+
+**Picklists**
+- The value matrix is now a single page with the fields on the left and a search box.
+- Each picklist value shows who cites it (code, flows, formulas, validation rules, reports, list views, Lightning components) and whether that citation actually runs; click the cell to see why.
+- Inactive record types no longer count in any verdict, and person-account record types are taken into account.
+- An Analyze with AI button prepares a review of the values that look deletable, and the JSON export now carries the signals behind each verdict.
+
+**Automation Radar**
+- The Async and Retrigger Risk views show one tile per object with the detail in a side panel, instead of a long scroll.
+- The execution order of automations has been corrected (after-save flows run after workflow rules and processes), and the retrigger analysis now looks at the conditions that guard each trigger call.
+- The conclusion of an AI review comes back on screen, on the tile and at the top of the panel.
+
+**License Right-Sizing**
+- An Analyze with AI button reviews proposed downgrades user by user, and verdicts are refreshed with what happened since the licence snapshot.
+
+**Access & Provenance**
+- An Analyze with AI button reviews the whole org, and a new signal flags users who logged in after being deactivated.
+
+**Audit**
+- A Sync history button keeps a monthly history of the audit trail and logins in sync with production; Extract does it automatically once an org has been synced, with a reminder at the start of each month.
+- The audit trail cache never deletes history any more, and the toolbar and columns are lighter.
+
+**Dep Graph**
+- The graph can be built from your own metadata folder (MDAPI or SFDX) instead of a retrieve, and says where it comes from and what that folder cannot prove.
+- Many more references are understood: picklist values, Omni-Channel skill rules, emails sent by Apex, published events, record types named by Id, and the value written by each Apex update.
+- Calumet now keeps what it produces (graph, audits, decisions, descriptions, client report) in one output folder of your choice, and migrates existing orgs to it.
+- End-of-build messages are written in plain language.
+
+**Screens moved to a single web page**
+- Search results, List Views, PermSet Overlap, Sharing Settings, All Relations, CustomApp Diff, profile comparisons, Orgs Fields Compare, Profile Permissions and Picklist Dependent are now readable single pages instead of stacked lists and tabs.
+- The Relations screen has been merged into All Relations, which hides managed-package objects by default and sorts by name or number of relations.
+
+**Analytics**
+- User and dashboard names are shown, cards are numbered and collapsible, and Analyse only recomputes what changed.
+
+**Dead Metadata**
+- The deletion cockpit removes the workflow rules, field updates, alerts and triggers of a first-wave object before the object itself.
+
+**General**
+- Filters across many screens are now exclusive colored pills with counters, with readable hover help.
+- Button colors now say what the button does (read, save, export, destroy), consistently across screens and web pages.
+- Every table supports Ctrl+C copy, empty tables say why they are empty, and long messages wrap instead of being cut off.
+- Loading now shows a bar with a label next to the button instead of a spinner in the middle of the window.
+- SFDX commands no longer freeze Calumet while they run.
+
+---
+
 ## v13.1 — 2026-10-03
 
 ### New screens
