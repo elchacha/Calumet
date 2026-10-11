@@ -37,6 +37,7 @@
 - Many more references are understood: picklist values, Omni-Channel skill rules, emails sent by Apex, published events, record types named by Id, and the value written by each Apex update.
 - Calumet now keeps what it produces (graph, audits, decisions, descriptions, client report) in one output folder of your choice, and migrates existing orgs to it.
 - End-of-build messages are written in plain language.
+- The dependency graph shared through the org, or copied from production to a sandbox, now carries every file its screens read (picklist value citations, dead-metadata verdict, integration links, cross-checks, source coverage...), and a test guards against forgetting one again.
 
 **Screens moved to a single web page**
 - Search results, List Views, PermSet Overlap, Sharing Settings, All Relations, CustomApp Diff, profile comparisons, Orgs Fields Compare, Profile Permissions and Picklist Dependent are now readable single pages instead of stacked lists and tabs.
