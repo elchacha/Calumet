@@ -48,6 +48,9 @@
 **Dead Metadata**
 - The deletion cockpit removes the workflow rules, field updates, alerts and triggers of a first-wave object before the object itself.
 
+**CustomFields Usage**
+- Publishing or loading the field usage analysis to the org now merges object by object, keeping the most recent analysis of each object, instead of replacing everything.
+
 **General**
 - Filters across many screens are now exclusive colored pills with counters, with readable hover help.
 - Button colors now say what the button does (read, save, export, destroy), consistently across screens and web pages.
