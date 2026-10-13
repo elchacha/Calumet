@@ -1,5 +1,51 @@
 # Calumet — Changelog
 
+## v14.1 — 2026-10-13
+
+### New screens
+
+- Business Map
+
+### Improvements
+
+**Business Map (new screen)**
+- A new screen shows your org as functional zones and lets you give each zone a business name: validate the names your AI assistant proposes, rename a zone, choose between old names after a rebuild, and confirm subject areas; each zone opens on an overview, its technical details and what to review.
+
+**Analytics**
+- Archiving a folder of reports no longer needs a prior download of every report: the reports are read from the org when the batch is built, up to 200 at a time.
+- "Download reports" is now "Index report usage": it opens a window that explains what the files are used for, keeps running while you work, and can be stopped and resumed where it left off.
+- Reports whose definition is obsolete are now recognised and flagged; report types still in development show their age and the reports that still use them.
+- Groups and references are tabs instead of collapsible sections, and an Ask AI button, active only when something is ticked, replaces the instructions; subscriptions load faster and each step shows how long it took.
+
+**Deploy**
+- A "Purge deleted components (sandbox)" option, shown only on a sandbox when the package deletes something, empties the recycle bin so a deleted object can be deployed again right away.
+- The post-deployment security check no longer flags fields that the same deployment deletes.
+- An error while reading the deployment details no longer stops the deployment, and the screen says what was run; deployment status is read correctly on every org.
+
+**Object Activity**
+- A deletion work package now only delivers the fields its package lists for an object being deleted, so the deployment no longer fails with "Not in package.xml".
+- A test class is only proposed for deletion together with what it tests, and never when it would leave a remaining class without a test.
+
+**Sandboxes**
+- You can create, refresh and delete a sandbox from the screen.
+
+**Access & Provenance**
+- The daily monitor rebuilds its report when a day is archived, warns you when an Analyse would repeat what it already has, and reminds you to sync.
+
+**Dep Graph**
+- Custom metadata records are now read, in an optional layer: the classes, objects and fields they name become links, and picklist values they cite are shown as cited, or as "unsure" when the match is only partial.
+- Omni-Channel queues, routing and channels are now part of the graph.
+- Building from an SFDX folder is much faster: documents and content assets are no longer converted.
+
+**Orgs Configuration / Calumet Config**
+- The "AI & sources" tab now starts with its two choices, the metadata folder and the AI work folder, then a ready-to-copy sentence for your assistant, and shows how much each folder weighs on disk.
+- A default AI work folder is set in the AI tab of Calumet Config and can be overridden per org; a page explains how it differs from the output folder.
+
+**AI assistant sessions**
+- A window guides you when you start a session; Codex and Antigravity sessions stay inside their own folder, and Claude sessions can edit their folder without asking each time.
+
+---
+
 ## v14.0 — 2026-10-11
 
 ### New screens
