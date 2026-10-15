@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Profile Diff — Calumet</title>
+<link rel="stylesheet" href="../shared.css">
+</head>
+<body class="tab-page">
+<div class="sum">
+  <div class="sum-title">
+    <h2>Profile Diff</h2>
+    <span class="sum-badge">Tab 64</span>
+  </div>
+  <p class="sum-desc">Diff two profiles or permission sets attribute by attribute and export differences to Excel.</p>
+</div>
+<div class="mockup-wrap">
+  <div class="mockup"><div class="vbox" style="gap:0px"><div class="anchor"><div class="m-tabpane" id="tp27"><div class="m-tabbar"><div class="m-tab act" onclick="sw('tp27',0)">Diff</div><div class="m-tab" onclick="sw('tp27',1)">Profile 1</div><div class="m-tab" onclick="sw('tp27',2)">Profile 2</div></div><div class="m-body"><div class="m-panel act" id="tp27-0"><div class="anchor"><div class="tbl-wrap"><table class="cal-tbl"><thead><tr><th>Type</th><th>Name</th><th>profile1</th><th>profile2</th></tr></thead><tbody><tr><td colspan="20" class="tbl-empty"></td></tr></tbody></table></div><input class="cal-tf" placeholder="" style="width:208.0px;" readonly></div></div><div class="m-panel" id="tp27-1"><div class="anchor"><div class="tbl-wrap"><table class="cal-tbl"><thead><tr><th>Type</th><th>Name</th><th>value</th></tr></thead><tbody><tr><td colspan="20" class="tbl-empty"></td></tr></tbody></table></div></div></div><div class="m-panel" id="tp27-2"><div class="anchor"><div class="tbl-wrap"><table class="cal-tbl"><thead><tr><th>Type</th><th>Name</th><th>value</th></tr></thead><tbody><tr><td colspan="20" class="tbl-empty"></td></tr></tbody></table></div></div></div></div></div><input class="cal-tf" placeholder="" style="" readonly><select class="cal-cb" style="width:150.0px;"><option class="ph">Select...</option></select><input class="cal-tf" placeholder="" style="" readonly><button class="cal-btn btn-d">Compare</button><span class="cal-lbl">first profile</span><span class="cal-lbl">second profile</span><span class="cal-lbl">org for second profile</span><label class="cal-chk"><input type="checkbox" disabled> reuse cached files</label></div></div></div>
+</div>
+<script>
+function sw(id,idx){
+  var tp=document.getElementById(id);
+  tp.querySelectorAll('.m-tab').forEach(function(t,i){t.classList.toggle('act',i===idx)});
+  tp.querySelectorAll('.m-panel').forEach(function(p,i){p.classList.toggle('act',i===idx)});
+}
+</script>
+</body>
+</html>

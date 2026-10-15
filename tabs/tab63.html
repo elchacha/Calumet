@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Relation Extractor — Calumet</title>
+<link rel="stylesheet" href="../shared.css">
+</head>
+<body class="tab-page">
+<div class="sum">
+  <div class="sum-title">
+    <h2>Relation Extractor</h2>
+    <span class="sum-badge">Tab 63</span>
+  </div>
+  <p class="sum-desc">Extract and export the full relationship graph of a selected SObject to Excel.</p>
+</div>
+<div class="mockup-wrap">
+  <div class="mockup"><div class="vbox" style="gap:0px"><div class="anchor"><button class="cal-btn btn-b">Extract</button><div class="tbl-wrap"><table class="cal-tbl"><thead><tr><th>Relation</th><th>Object type</th><th>Relation name</th><th>Field name</th><th>type</th><th>nb</th></tr></thead><tbody><tr><td colspan="20" class="tbl-empty"></td></tr></tbody></table></div><input class="cal-tf" placeholder="" style="width:231.0px;" readonly><span class="cal-lbl">reoord Id</span><span class="cal-lbl">Object type :</span><span class="cal-lbl">Not searched yet</span></div></div></div>
+</div>
+<script>
+function sw(id,idx){
+  var tp=document.getElementById(id);
+  tp.querySelectorAll('.m-tab').forEach(function(t,i){t.classList.toggle('act',i===idx)});
+  tp.querySelectorAll('.m-panel').forEach(function(p,i){p.classList.toggle('act',i===idx)});
+}
+</script>
+</body>
+</html>

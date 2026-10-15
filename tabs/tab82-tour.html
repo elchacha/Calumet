@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Dep Graph &mdash; Interactive Tour</title>
+<style>
+/* ════════════════════════════════════════════════════════════
+   Permission Sets Browser Interactive Tour — fully self-contained
+   Same engine and palette as the other Calumet tours.
+   All names, users and numbers are invented.
+   ════════════════════════════════════════════════════════════ */
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --sbg:#142540;--sbg2:#1a3050;--sborder:#244568;
+  --stxt:#e2e8f0;--smut:#8892a4;--sacc:#2ea4c9;
+  --blue:#2980b9;--green:#27ae60;--orange:#e67e22;--red:#E74C3C;
+  --hdr:#1A5276;
+}
+body{font-family:system-ui,-apple-system,"Segoe UI",sans-serif;background:#0f1d33;color:var(--stxt);min-height:100vh;display:flex;flex-direction:column}
+
+#topbar{background:var(--sbg);border-bottom:1px solid var(--sborder);padding:14px 28px 12px;flex-shrink:0}
+#topbar h1{font-size:18px;font-weight:800;color:#fff;letter-spacing:.2px}
+#topbar h1 .badge{font-size:10px;background:#1e3a5e;color:var(--smut);padding:2px 8px;border-radius:12px;font-weight:400;margin-left:8px;vertical-align:middle}
+#topbar .sub{font-size:12px;color:#a8b4c8;margin-top:3px}
+#progress{display:flex;align-items:center;margin-top:14px;flex-wrap:wrap}
+.dot{display:flex;align-items:center;gap:7px;cursor:pointer;user-select:none}
+.dot .circle{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;
+  background:var(--sbg2);border:1px solid var(--sborder);color:var(--smut);transition:all .25s ease}
+.dot.done .circle{background:var(--green);border-color:var(--green);color:#fff}
+.dot.active .circle{background:var(--sacc);border-color:var(--sacc);color:#fff;box-shadow:0 0 0 4px rgba(46,164,201,.22)}
+.dot:hover .circle{border-color:var(--sacc)}
+.connector{width:18px;height:2px;background:var(--sborder);margin:0 4px;flex-shrink:0}
+.connector.done{background:var(--green)}
+
+#stage{flex:1;padding:26px 28px;display:flex;flex-direction:column;align-items:center;position:relative;overflow:auto}
+#scene-frame{width:100%;max-width:1040px;background:#e8eef2;border-radius:8px;padding:1px;box-shadow:0 8px 30px rgba(0,0,0,.4);position:relative}
+#scene-body{position:relative}
+
+/* ── app mockup ── */
+.mockup{font-family:"Segoe UI",sans-serif;font-size:12px;color:#1a2a35;background:#F8F8F8;border-radius:8px;overflow:hidden}
+.app-top{display:flex;align-items:center;gap:10px;padding:6px 12px;background:#c0392b;color:#fff;font-size:11px;font-weight:700}
+.app-top select{background:#fff;color:#1a2a35;border:1px solid #9AABBF;border-radius:3px;font-size:11px;padding:1px 6px}
+.m-tabbar{display:flex;background:#D8E6EE;border-bottom:1px solid #9AABBF;overflow-x:auto}
+.m-tab{padding:5px 11px;font-weight:700;font-size:10.5px;color:#2C3E50;border-right:1px solid #b0c8d8;white-space:nowrap}
+.m-tab.act{background:#F8F8F8;color:#1A5276}
+.m-title{padding:8px 12px 6px;background:#eef5fb;border-bottom:1px solid #c9d9e6}
+.m-title b{display:block;font-size:13px;color:#1A5276}
+.m-title span{font-size:11px;color:#33485c}
+.m-body{background:#F8F8F8;padding:10px 12px;min-height:420px}
+.hbox{display:flex;flex-direction:row;flex-wrap:wrap}
+.spacer{flex:1}
+.cal-btn{padding:4px 11px;border-radius:3px;font-size:11px;font-weight:700;cursor:pointer;border:1px solid #9AABBF;font-family:inherit;white-space:nowrap;transition:opacity .2s}
+.btn-d{background:#E8EEF2;color:#2C3E50}
+.btn-b{background:#2980b9;color:#fff;border-color:#1f6699}
+.btn-o{background:#e67e22;color:#fff;border-color:#b8621a}
+.cal-btn[disabled]{opacity:.5}
+.cal-tf{padding:3px 7px;background:#fff;border:1px solid #9AABBF;border-radius:3px;font-size:11px;color:#1a2a35;font-family:inherit;height:24px}
+.cal-chk{display:flex;align-items:center;gap:4px;font-size:11px;white-space:nowrap}
+.cal-chk input{accent-color:var(--sacc)}
+.facts{font-size:10.5px;color:#55687a}
+.rng{width:170px;accent-color:#2ea4c9}
+
+.tbl-wrap{overflow-x:auto;border:1px solid #9AABBF;border-radius:3px;margin-top:8px}
+.cal-tbl{border-collapse:collapse;width:100%;font-size:10.5px}
+.cal-tbl th{background:#b8d5e3;color:#1A5276;font-weight:700;padding:4px 7px;text-align:left;border-right:1px solid #9AABBF;white-space:nowrap}
+.cal-tbl th.c,.cal-tbl td.c{text-align:center}
+.cal-tbl td{padding:3px 7px;border-top:1px solid #d8e8f0;vertical-align:middle}
+.cal-tbl tr.hit{animation:hit 1.2s ease}
+@keyframes hit{from{background:#ffe9c9}to{background:transparent}}
+.lnk{color:#2980b9;text-decoration:underline;cursor:pointer}
+.ty{display:inline-block;min-width:34px;text-align:center;padding:2px 8px;border-radius:4px;color:#fff;font-weight:700;font-size:10px}
+.ty.ps{background:#8a9bb0}.ty.psg{background:#2f6f7e}
+.bdg{display:inline-block;min-width:24px;text-align:center;padding:1px 7px;border-radius:3px;color:#fff;font-weight:700;font-size:10px}
+.bdg.bl{background:#2c7fb8}.bdg.gr{background:#27ae60}
+.pill{display:inline-block;padding:1px 8px;border-radius:5px;color:#fff;font-weight:700;font-size:10px}
+.pill.g{background:#8a9bb0}.pill.b{background:#2c7fb8}.pill.o{background:#e67e22}
+.ok{color:#27ae60;font-weight:700}
+
+/* in-scene windows */
+.backdrop{position:absolute;left:0;top:0;right:0;bottom:0;background:rgba(20,37,64,.16);z-index:4;border-radius:8px}
+.win{position:absolute;left:50%;transform:translateX(-50%);z-index:5;background:#f6f6f6;border:1px solid #8a9aa8;border-radius:6px;box-shadow:0 12px 34px rgba(0,0,0,.45);overflow:hidden;font-family:"Segoe UI",sans-serif;font-size:12px;color:#1a2a35}
+.win-title{display:flex;align-items:center;gap:8px;padding:6px 10px;background:#eceff2;border-bottom:1px solid #cdd5db;font-size:11px;color:#33485c}
+.win-title .x{margin-left:auto;color:#55687a}
+.win-body{padding:10px 12px}
+.win-h{font-weight:800;font-size:13px}
+.win-sub{font-size:10.5px;font-style:italic;color:#7f8c8d;margin-left:8px}
+.wtabs{display:flex;gap:3px;background:#d6d9dc;padding:5px 8px 0;margin:8px -12px 0}
+.wtab{padding:3px 10px;font-size:11px;border:1px solid #aab4bc;border-bottom:none;background:#e9ecee;border-radius:3px 3px 0 0}
+.wtab.act{background:#fff;font-weight:700}
+.wpanel{display:none}
+.wpanel.on{display:block}
+.tag{display:inline-block;padding:1px 9px;border-radius:4px;color:#fff;font-weight:700;font-size:10px}
+.tag.field{background:#8e44ad}.tag.created{background:#7f8c8d}.tag.assign{background:#27ae60}
+.cell-ok{color:#27ae60;font-weight:700;font-size:13px}
+.pl2{display:inline-block;padding:1px 9px;border-radius:5px;color:#fff;font-weight:700;font-size:10.5px;margin-right:5px}
+.pl2.a{background:#c0392b}.pl2.g{background:#8a9bb0}.pl2.b{background:#27ae60}
+.cat-sys{display:inline-block;padding:1px 10px;border-radius:5px;background:#d35400;color:#fff;font-weight:700;font-size:10px}
+.fbar{border:1px solid #c5d6e3;background:#eef5fb;border-radius:3px;padding:7px 9px;margin-top:8px;font-size:11px}
+.fbar .lbl{display:inline-block;min-width:54px;color:#33485c}
+.hint-r{font-size:10.5px;font-style:italic;color:#33485c;margin-left:auto}
+
+/* cursor / ripple / popup / nav */
+#cursor{position:fixed;left:0;top:0;width:30px;height:30px;z-index:9999;pointer-events:none;transform:translate(-100px,-100px);
+  transition:transform .6s cubic-bezier(.4,0,.2,1);filter:drop-shadow(0 2px 3px rgba(0,0,0,.45))}
+#ripple{position:fixed;left:0;top:0;width:14px;height:14px;border-radius:50%;border:2px solid var(--sacc);background:rgba(46,164,201,.25);
+  z-index:9998;pointer-events:none;opacity:0;transform:translate(-50%,-50%) scale(.3)}
+#ripple.go{animation:rip .65s ease-out}
+@keyframes rip{0%{opacity:.9;transform:translate(-50%,-50%) scale(.3)}100%{opacity:0;transform:translate(-50%,-50%) scale(3.4)}}
+#popup{position:fixed;z-index:10000;max-width:340px;background:#fff;color:#1a2a35;border-radius:8px;border-left:4px solid var(--sacc);
+  box-shadow:0 10px 36px rgba(0,0,0,.45);padding:14px 16px 13px;opacity:0;pointer-events:none;transform:translateY(8px) scale(.97);transition:opacity .3s,transform .3s}
+#popup.show{opacity:1;pointer-events:auto;transform:none}
+#popup .p-title{font-size:13.5px;font-weight:800;color:var(--hdr);margin-bottom:6px}
+#popup .p-text{font-size:12.5px;line-height:1.55;color:#33485c}
+#popup .p-text em{color:#2980b9;font-style:normal;font-weight:700}
+#popup .p-text code{background:#eef3f7;padding:0 4px;border-radius:3px;font-size:11.5px}
+#popup .p-btn{margin-top:11px;float:right;background:var(--sacc);color:#fff;border:none;padding:5px 14px;border-radius:5px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit}
+#popup::after{clear:both;content:"";display:block}
+#nav{flex-shrink:0;background:var(--sbg);border-top:1px solid var(--sborder);padding:11px 28px;display:flex;align-items:center;gap:12px}
+.nav-btn{background:var(--sbg2);color:var(--stxt);border:1px solid var(--sborder);padding:7px 18px;border-radius:6px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit}
+.nav-btn:hover:not(:disabled){background:#244568;border-color:var(--sacc)}
+.nav-btn:disabled{opacity:.35;cursor:not-allowed}
+.nav-btn.primary{background:var(--sacc);border-color:var(--sacc);color:#fff}
+#scene-counter{font-size:12px;color:var(--smut)}
+#nav .spacer{flex:1}
+#autoplay{background:transparent;border:1px solid var(--sborder);color:var(--stxt);width:38px;height:38px;border-radius:8px;font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+#autoplay.on{background:var(--sacc);border-color:var(--sacc);color:#fff}
+
+.recap{padding:30px 34px;color:#1a2a35;background:#F8F8F8;border-radius:8px}
+.recap h2{font-size:22px;color:var(--hdr);margin-bottom:4px;font-weight:800}
+.recap .lead{font-size:13px;color:#55687a;margin-bottom:20px}
+.recap-list{list-style:none;margin-bottom:24px}
+.recap-list li{display:flex;align-items:center;gap:10px;font-size:13.5px;padding:6px 0;color:#2c3e50;opacity:0;transform:translateX(-10px);transition:all .4s}
+.recap-list li.in{opacity:1;transform:none}
+.recap-list li .chk{width:22px;height:22px;border-radius:50%;background:var(--green);color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0}
+.recap-list li b{color:var(--hdr)}
+.tips{display:flex;gap:14px;flex-wrap:wrap}
+.tip{flex:1;min-width:200px;background:#fff;border:1px solid #d4e2ec;border-radius:8px;padding:14px 16px;font-size:12.5px;line-height:1.5;color:#3a4d5e;border-top:3px solid var(--blue)}
+.tip.warn{border-top-color:var(--orange)}
+.tip.cycle{border-top-color:var(--green)}
+.tip .icon{font-size:20px;display:block;margin-bottom:6px}
+.tip b{color:var(--hdr)}
+.back-site{display:inline-block;margin-bottom:6px;font-size:12px;color:#7fd4ec;text-decoration:none;opacity:.9}
+.back-site:hover{text-decoration:underline;opacity:1}
+/* ── additions for the audit-suite tours ── */
+.m-tabbar .m-tab{font-size:10px;padding:5px 9px}
+.vtabs{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 8px}
+.vt{padding:3px 11px;border:1px solid #b9c7d3;border-radius:4px;background:#fff;font-size:10.5px;color:#4a5d6e;font-family:Georgia,serif}
+.vt.act{background:#2c6aa8;color:#fff;border-color:#2c6aa8}
+.vt.sub{font-family:inherit}
+.lvl{display:inline-flex;border:1px solid #9AABBF;border-radius:4px;overflow:hidden;margin-left:6px}
+.lvl span{padding:3px 12px;font-size:11px;font-weight:700;color:#2C3E50;background:#fff}
+.lvl span.act{background:#3e7a8c;color:#fff}
+.note{font-size:10.5px;color:#55687a;padding:5px 2px}
+.kpis{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0}
+.kpi{flex:1;min-width:110px;background:#fff;border:1px solid #d4e2ec;border-radius:6px;padding:9px 12px}
+.kpi b{display:block;font-size:22px;line-height:1.1;color:#1a2a35}
+.kpi b.o{color:#c0561a}.kpi b.p{color:#7d3cd1}.kpi b.r{color:#c0392b}.kpi b.g{color:#27ae60}
+.kpi span{font-size:10px;color:#6b7c8c}
+.info{border-left:3px solid #2c6aa8;background:#eaf2fa;padding:7px 10px;font-size:10.5px;color:#2c3e50;margin:6px 0;line-height:1.45}
+.card{background:#fff;border:1px solid #d4e2ec;border-radius:6px;padding:8px 10px;margin-top:8px}
+.card h4{font-size:10.5px;letter-spacing:.4px;text-transform:uppercase;color:#4a5d6e;margin-bottom:6px}
+.split{display:flex;gap:10px;align-items:stretch}
+.lcol{width:300px;flex-shrink:0;background:#fff;border:1px solid #d4e2ec;border-radius:6px;padding:8px}
+.rcol{flex:1;min-width:0;background:#fff;border:1px solid #d4e2ec;border-radius:6px;padding:9px 11px}
+.nrow{display:flex;align-items:center;gap:7px;padding:4px 2px;border-top:1px solid #eef2f5;font-size:11px}
+.nrow.sel{background:#eaf2fa}
+.nrow .cnt{margin-left:auto;color:#8393a3;font-size:10px}
+.nt{display:inline-block;padding:1px 8px;border-radius:10px;color:#fff;font-weight:700;font-size:9.5px;white-space:nowrap}
+.nt.field{background:#3e8e96}.nt.class{background:#25477b}.nt.flow{background:#2e7d4f}.nt.rt{background:#9b4fa0}
+.nt.layout{background:#b9651b}.nt.flexi{background:#7b4a1e}.nt.wl{background:#d9822b}.nt.vr{background:#4f9a66}
+.nt.trig{background:#1f3b63}.nt.lwc{background:#2f7fd0}.nt.obj{background:#6b7c8c}.nt.apex{background:#25477b}
+.nt.fup{background:#4aa56d}.nt.vf{background:#3f7fc4}.nt.static{background:#2d5a9c}
+.ch{display:inline-block;padding:0 7px;border:1px solid #c5d6e3;border-radius:10px;font-size:10px;color:#4a5d6e;margin-right:3px}
+.ch.rd{border-color:#27ae60;color:#1e8449}.ch.wr{border-color:#d9534f;color:#c0392b}.ch.o{border-color:#e67e22;color:#c0561a}
+.hsec{font-size:9.5px;font-weight:800;letter-spacing:.5px;color:#6b7c8c;margin:8px 0 4px}
+.grp{display:flex;align-items:center;gap:8px;padding:6px 4px;border-top:1px solid #e6eef4;font-size:11px}
+.grp .n{display:inline-block;min-width:24px;text-align:center;border-radius:3px;color:#fff;font-weight:700;font-size:10px;padding:1px 5px}
+.grp .tri{color:#55687a;font-size:9px}
+.names{display:flex;flex-wrap:wrap;gap:4px 18px;padding:2px 4px 8px 26px;font-size:10.5px}
+.names i{font-style:normal;color:#8393a3;font-size:9.5px;margin-left:4px}
+.red{display:inline-block;min-width:22px;text-align:center;background:#d8352a;color:#fff;font-weight:700;border-radius:4px;font-size:10px;padding:1px 6px}
+.sq{display:inline-block;width:9px;height:9px;border-radius:2px;background:#25477b}
+.hl{outline:2px solid #e67e22;outline-offset:1px;border-radius:3px}
+.tag-ref{display:inline-block;background:#e67e22;color:#fff;font-size:9px;font-weight:700;padding:0 6px;border-radius:8px}
+.bar{height:11px;background:#e7edf2;border-radius:6px;overflow:hidden}
+.bar i{display:block;height:100%}
+.chip-row{display:flex;gap:6px;flex-wrap:wrap;margin:4px 0}
+.dep-dark{background:#1f2a3a;color:#fff;padding:10px 14px;margin:0 -12px}
+.dep-dark b{font-size:15px}.dep-dark span{display:block;font-size:10px;color:#a8b8c8;margin-top:2px}
+.steps{display:flex;gap:7px;align-items:center;flex-wrap:wrap;margin:8px 0}
+.stp{padding:3px 12px;border-radius:12px;font-size:10.5px;font-weight:700;color:#fff;background:#1d8a4d}
+.stp.cur{background:#1d5fd0}
+.audit{display:inline-block;vertical-align:top;width:31%;min-width:150px;margin:0 1% 8px 0;background:#fff;border:1px solid #d4e2ec;border-radius:6px;padding:7px 9px;font-size:10px;color:#6b7c8c;min-height:78px}
+.audit b{display:block;font-size:11px;color:#1a2a35;margin-bottom:3px}
+.audit u{display:block;text-decoration:none;color:#1e8449;font-weight:600;margin-top:3px}
+.pick{outline:2px solid #2c6aa8}
+.grade{display:inline-flex;width:24px;height:24px;border-radius:50%;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:11px}
+.gA,.gB{background:#2ecc71}.gC{background:#f39c12}.gD{background:#e67e22}.gF{background:#c0392b}
+.dimrow{display:flex;align-items:center;gap:8px;margin:7px 0;font-size:11px}
+.dimrow .nm{width:190px;flex-shrink:0}.dimrow .w{width:34px;color:#8393a3;font-size:10px}
+.dimrow .bar{flex:1}.dimrow .sc{width:40px;text-align:right;font-weight:700}
+.sev{display:inline-block;min-width:66px;text-align:center;padding:1px 6px;border-radius:4px;color:#fff;font-weight:700;font-size:9.5px}
+.sev.ex{background:#8e1f17}.sev.cr{background:#c0392b}.sev.hi{background:#e67e22}.sev.mo{background:#d4ac0d}
+.frow{display:flex;gap:10px;align-items:flex-start;padding:6px 2px;border-top:1px solid #eef2f5;font-size:10.5px;line-height:1.4}
+.frow .src{margin-left:auto;flex-shrink:0;border:1px solid #d4e2ec;background:#f3f6f9;border-radius:4px;padding:0 6px;font-size:9.5px;color:#6b7c8c}
+.gl{display:flex;gap:12px;align-items:center}
+.ring{width:84px;height:84px;border-radius:50%;border:7px solid #e67e22;display:flex;flex-direction:column;align-items:center;justify-content:center;flex-shrink:0}
+.ring b{font-size:30px;color:#e67e22;line-height:1}.ring span{font-size:10px;color:#55687a}
+.ctab{display:inline-flex;gap:2px;background:#e6ebef;padding:3px;border-radius:6px;margin:8px 0 4px}
+.ctab span{padding:3px 12px;font-size:10.5px;color:#55687a;border-radius:4px}
+.ctab span.act{background:#fff;color:#2c6aa8;font-weight:700}
+.st{border:1px solid #c5d6e3;border-radius:3px;padding:1px 8px;font-size:10px;background:#fff}
+.sgrade{font-size:26px;font-weight:800}
+.cyc{border-left:3px solid #c0392b;background:#fdf1f0;padding:5px 9px;margin:5px 0;font-size:10.5px}
+.code{font-family:Consolas,monospace;font-size:10px}
+.dlg-x{margin-left:auto;color:#55687a}
+
+</style>
+</head>
+<body>
+
+<div id="topbar">
+  <a class="back-site" id="backSite" href="../demos.html">&larr; All demos</a>
+  <h1>Dep Graph &mdash; Interactive Tour <span class="badge">Tab 82 &middot; Interactive Tour</span></h1>
+  <div class="sub">A guided walkthrough: compute the dependency graph once, then explore who uses what, what is dead and where a change ripples.</div>
+  <div id="progress"></div>
+</div>
+
+<div id="stage">
+  <div id="scene-frame"><div id="scene-body"></div></div>
+</div>
+
+<div id="nav">
+  <button class="nav-btn" id="btn-prev">&larr; Prev</button>
+  <span id="scene-counter">1 / 1</span>
+  <div class="spacer"></div>
+  <button id="autoplay" title="Auto-play">&#9654;</button>
+  <button class="nav-btn primary" id="btn-next">Next &rarr;</button>
+</div>
+
+<svg id="cursor" viewBox="0 0 28 28"><path d="M5 2 L5 22 L10 17 L13 24 L16 23 L13 16 L20 16 Z" fill="#fff" stroke="#1a2a35" stroke-width="1.4" stroke-linejoin="round"/></svg>
+<div id="ripple"></div>
+<div id="popup"><div class="p-title"></div><div class="p-text"></div><button class="p-btn">Got it &rarr;</button></div>
+
+<script>
+"use strict";
+
+/* ───────────────────────── Helpers ───────────────────────── */
+var $ = function(sel,ctx){return (ctx||document).querySelector(sel);};
+var sceneBody = $("#scene-body");
+var sceneFrame = $("#scene-frame");
+var cursor = $("#cursor"), ripple = $("#ripple"), popup = $("#popup");
+
+/* One colour per scene, by NAME: dots and counter are derived from the scene registry. */
+var COL = {list:"#2980b9", search:"#8e44ad", badges:"#27ae60", changes:"#8e44ad", assigns:"#27ae60", overlap:"#e67e22", detail:"#16a085", recap:"#27ae60"};
+
+var pending = [];
+function after(ms, fn){ var id = setTimeout(fn, ms); pending.push(id); return id; }
+var typeInterval = null;
+function clearPending(){ pending.forEach(clearTimeout); pending = []; if(typeInterval){clearInterval(typeInterval);typeInterval=null;} }
+
+function pointAt(targetEl, title, text, color, side){
+  if(!targetEl) return;
+  var r = targetEl.getBoundingClientRect();
+  var x = r.left + r.width/2, y = r.top + r.height/2;
+  cursor.style.transform = "translate(" + (x-3) + "px," + (y-2) + "px)";
+  after(620, function(){
+    ripple.style.left = x + "px"; ripple.style.top = y + "px";
+    ripple.classList.remove("go"); void ripple.offsetWidth; ripple.classList.add("go");
+  });
+  after(1420, function(){ showPopup(title, text, color, targetEl, side); });
+}
+function showPopup(title, text, color, anchorEl, side){
+  $(".p-title", popup).textContent = title;
+  $(".p-text", popup).innerHTML = text;
+  popup.style.borderLeftColor = color || "#2ea4c9";
+  $(".p-btn", popup).style.background = color || "#2ea4c9";
+  popup.classList.add("show");
+  var pr = popup.getBoundingClientRect();
+  var ar = anchorEl ? anchorEl.getBoundingClientRect() : sceneFrame.getBoundingClientRect();
+  var left = ar.left + ar.width/2 - pr.width/2, top;
+  if(side === "above"){ top = ar.top - pr.height - 14; } else { top = ar.bottom + 14; }
+  var vw = window.innerWidth, vh = window.innerHeight;
+  if(left < 12) left = 12;
+  if(left + pr.width > vw - 12) left = vw - 12 - pr.width;
+  if(top < 12) top = ar.bottom + 14;
+  if(top + pr.height > vh - 12) top = ar.top - pr.height - 14;
+  if(top < 12) top = 12;
+  popup.style.left = left + "px"; popup.style.top = top + "px";
+}
+function hidePopup(){ popup.classList.remove("show"); }
+
+/* Several explanations in a row: each "Got it" moves to the next element, the last one to the next scene.
+   step = {sel,title,text,color,side,before}. Waits (up to ~8 s) for a target that is still animating in. */
+var popupNextFn = null;
+function popupChain(steps){
+  var i = 0, tries = 0, prepared = false;
+  function show(){
+    var s = steps[i], last = (i === steps.length-1);
+    popupNextFn = null;   // nothing to answer while the next step is being prepared
+    // The step's own action runs FIRST (it may open the window that holds its target) ...
+    if(!prepared){ prepared = true; if(s.before) s.before(); }
+    // ... then wait (up to ~8 s) for a target that is still animating in.
+    if(!$(s.sel) && tries++ < 20){ after(400, show); return; }
+    tries = 0; prepared = false;
+    popupNextFn = last ? null : function(){ hidePopup(); i++; after(300, show); };
+    after(s.before ? 450 : 0, function(){ pointAt($(s.sel), s.title, s.text, s.color, s.side); });
+  }
+  show();
+}
+function typeInto(el, text, speed, done){
+  el.value = ""; var i = 0;
+  typeInterval = setInterval(function(){
+    el.value = text.slice(0, ++i);
+    if(i >= text.length){ clearInterval(typeInterval); typeInterval = null; if(done) done(); }
+  }, speed || 38);
+}
+function btn(cls, label, id, extra){ return '<button class="cal-btn '+cls+'"'+(id?' id="'+id+'"':'')+(extra||'')+'>'+label+'</button>'; }
+function overlay(title, width, top, body){
+  return '<div class="backdrop"></div><div class="win" style="width:'+width+'px;top:'+top+'px">'+
+    '<div class="win-title"><span>'+title+'</span><span class="x">&#x2715;</span></div><div class="win-body">'+body+'</div></div>';
+}
+
+function openWin(title, width, top, body){
+  closeWin();
+  var d = document.createElement('div'); d.id = 'win-wrap';
+  d.innerHTML = overlay(title, width, top, body);
+  sceneBody.appendChild(d);
+}
+function closeWin(){ var w = $('#win-wrap'); if(w) w.parentNode.removeChild(w); }
+
+/* ───────────────────────── Scenes: Dep Graph (Tab 82) ───────────────────────── */
+var COL = {start:"#2980b9", explorer:"#8e44ad", dead:"#c0392b", clusters:"#e67e22", mcd:"#16a085", tests:"#27ae60", gaps:"#7f8c8d", recap:"#27ae60"};
+
+var AUDIT_TABS = ["Dep Graph","Org Discovery","Dead Metadata","Description Debt","Value Sets & Record Types","Automation Radar","Flow Migration","Access & Provenance","License Right-Sizing","Permission Blast","Object Activity","Metadata Search"];
+
+function pill(cls, label){ return '<span class="nt '+cls+'">'+label+'</span>'; }
+
+/* The frame shared by every scene: org bar, tabs, description, toolbar, level switch, view tabs. */
+function frame(level, view, inner, overlayHtml, opt){
+  opt = opt || {};
+  var fieldsViews = ["Overview","Explorer","Clusters","Extractor gaps"];
+  var mcdViews = ["Overview","Explorer","Dead metadata (42)","Clusters","MCD risk","Orphan tests","Extractor gaps"];
+  var views = level === "fields" ? fieldsViews : mcdViews;
+  return '<div class="mockup">'+
+    '<div class="app-top"><span>Org :</span><select><option>Acme-Prod</option></select><span>&#10003;</span><span style="margin-left:14px;font-weight:400">api : 0.41%</span></div>'+
+    '<div class="m-tabbar">'+AUDIT_TABS.map(function(t){ return '<div class="m-tab'+(t==="Dep Graph"?" act":"")+'">'+t+'</div>'; }).join("")+'</div>'+
+    '<div class="m-title"><b>Dep Graph</b><span>Dependency graph of the org: who uses what, dead metadata, clusters and impact analysis, built from a metadata retrieve.</span></div>'+
+    '<div class="m-body">'+
+      '<div class="hbox" style="gap:8px;align-items:center">'+
+        btn("btn-b","Recompute from org","g-recompute")+btn("btn-g","Org sharing &#9662;","g-share")+btn("btn-o","Tools &#9662;","g-tools")+
+        '<span style="margin-left:8px;font-size:11px">Level:</span>'+
+        '<span class="lvl" id="g-level"><span class="'+(level==="fields"?"act":"")+'" id="lv-fields">Fields</span><span class="'+(level==="mcd"?"act":"")+'" id="lv-mcd">Component + MCD</span></span>'+
+      '</div>'+
+      '<div class="note" id="g-note">Production org &mdash; the graph&#39;s source of truth. Linked sandboxes display it live.</div>'+
+      (opt.busy || '')+
+      '<div class="vtabs" id="g-views"><b style="font-size:13px;margin-right:6px">Dep Graph</b>'+
+        views.map(function(v){ var on = (v === view) || (view === "Dead" && v.indexOf("Dead")===0); return '<span class="vt'+(on?" act":"")+'" data-v="'+v+'">'+v+'</span>'; }).join("")+
+        '<span style="margin-left:auto;display:flex;gap:10px;align-items:center;font-size:10.5px">'+
+          (level==="mcd" ? '<label class="cal-chk"><input type="checkbox" checked> hide test classes</label>' : '')+
+          '<label class="cal-chk"><input type="checkbox"> hide switched-off</label></span>'+
+      '</div>'+
+      inner+
+    '</div></div>' + (overlayHtml || "");
+}
+
+/* ───────── 1 — Computing the graph (the only real "action") ───────── */
+function sceneStart(){
+  sceneBody.innerHTML = frame("fields", "Explorer",
+    '<div class="card" id="g-empty" style="text-align:center;padding:34px 10px"><div style="font-size:14px;font-weight:700;color:#1A5276">No graph for this org yet</div>'+
+    '<div style="color:#6b7c8c;margin-top:5px;font-size:11px">Press <b>Recompute from org</b> to build it.</div></div>');
+}
+sceneStart.run = function(){
+  popupChain([
+    {sel:"#g-recompute", title:"The only step: compute the graph", color:COL.start, side:"below",
+     text:"Everything on this tab is read from a <b>dependency graph</b> of your org. <b>Recompute from org</b> retrieves the metadata and builds it: it takes a few minutes the first time, and later runs only redo what changed. Until it has run, the views stay empty."},
+    {sel:"#g-note", title:"Production is the source of truth", color:COL.start, side:"below",
+     text:"Build the graph on <b>production</b>. A sandbox linked to it simply <em>displays</em> the production graph, so you never have to compute it twice. <b>Org sharing</b> publishes the graph for colleagues, or loads the one of the linked production org."},
+    {sel:"#g-level", title:"Two levels", color:COL.start, side:"below",
+     text:"<b>Fields</b> is the field-level view: which components read or write each field. <b>Component + MCD</b> adds the component graph (classes, flows, pages&hellip;) and the <em>MCD</em>, the data model between objects. Same graph, two zoom levels.",
+     before:function(){
+       var d = $("#g-empty");
+       if(d) d.innerHTML = '<div style="font-size:13px;font-weight:700;color:#1d8a4d">&#10003; Graph built</div>'+
+         '<div style="color:#55687a;margin-top:5px;font-size:11px">1,820 nodes &middot; 9,460 edges &middot; 72 objects</div>';
+     }}
+  ]);
+};
+
+/* ───────── 2 — Explorer ───────── */
+var NODES = [
+  ["field","Invoice__c.Status__c","142 / 0"],["field","Account.Name","118 / 0"],["field","Invoice__c.Amount__c","96 / 0"],
+  ["field","Account.Id","90 / 0"],["field","Opportunity.StageName","88 / 0"],["field","Subscription__c.Plan__c","61 / 0"],
+  ["field","Contract__c.EndDate__c","44 / 0"],["field","Case.Priority","39 / 0"]
+];
+function nodeRows(sel){
+  return NODES.map(function(n,i){
+    return '<div class="nrow'+(i===sel?" sel":"")+'" id="nr-'+i+'">'+pill(n[0],n[0])+'<span>'+n[1]+'</span><span class="cnt">'+n[2]+'</span></div>';
+  }).join("");
+}
+function explorerDetail(open){
+  var usedBy = [["61","class","class"],["34","flow","flow"],["18","ReportType","rt"],["12","layout","layout"],["6","flexipage","flexi"],["5","validationRule","vr"],["4","WebLink","wl"],["2","trigger","trig"]];
+  var groups = usedBy.map(function(g,i){
+    var head = '<div class="grp" id="gr-'+i+'"><span class="tri">'+(open===i?"&#9660;":"&#9654;")+'</span><span class="n" style="background:#25477b">'+g[0]+'</span>'+pill(g[2],g[1])+'</div>';
+    if(open===i && i===0){
+      head += '<div class="names">'+
+        [["InvoiceService","reads"],["InvoiceService_Test","writes"],["BillingBatch","writes"],["DunningScheduler","reads"],["RenewalHandler","reads"],["InvoiceTriggerHandler","writes"]]
+        .map(function(c){ return '<span>&bull; '+c[0]+' <span class="ch '+(c[1]==="reads"?"rd":"wr")+'">'+c[1]+'</span><i>&lt;/&gt;</i></span>'; }).join("")+'</div>';
+    }
+    return head;
+  }).join("");
+  return '<div id="ex-detail" style="display:flex;align-items:center;gap:8px">'+pill("field","field")+'<b style="font-size:13px">Invoice__c.Status__c</b>'+
+      '<span style="margin-left:auto">'+btn("btn-o","Transitive impact","ex-impact")+' '+btn("btn-g","Extract package","ex-extract")+'</span></div>'+
+    '<div style="font-size:10.5px;color:#55687a;margin:3px 0 6px">used by <b>142</b> components &middot; uses <b>0</b> &middot; created 2022-03-14 by A. Martin &middot; modified 2026-08-02 by J. Lee &middot; <span class="lnk">Open in Salesforce &#8599;</span></div>'+
+    '<div class="hsec">TYPES</div><div class="chip-row" id="ex-types">'+
+      usedBy.map(function(g){ return pill(g[2],g[1])+' <b style="font-size:10.5px;margin-right:6px">'+g[0]+'</b>'; }).join("")+'</div>'+
+    '<div class="hsec">HOW USED</div><div class="chip-row" id="ex-how">'+
+      '<span class="ch o">criteria <b>9</b></span><span class="ch">displays <b>18</b></span><span class="ch">exposes <b>18</b></span>'+
+      '<span class="ch rd">reads <b>71</b> <span style="color:#8393a3">in 48</span></span><span class="ch">formula_depends_on <b>6</b></span>'+
+      '<span class="ch o">validates <b>5</b></span><span class="ch wr">writes <b>15</b></span>'+
+      '<input class="cal-tf" placeholder="Filter names..." style="width:190px;margin-left:8px" readonly></div>'+
+    '<div class="hsec" id="ex-usedby">USED BY &mdash; 142</div>'+groups+
+    '<div class="hsec">USES &mdash; 0</div><div style="font-size:10.5px;color:#8393a3;font-style:italic">none</div>';
+}
+function explorerScene(open, overlay){
+  var types = ["EmailTemplate","Flow","Object","ReportType","WebLink","class","field","flexipage","layout","lwc","trigger","validationRule"];
+  var tcls = {EmailTemplate:"rt",Flow:"flow",Object:"obj",ReportType:"rt",WebLink:"wl",class:"class",field:"field",flexipage:"flexi",layout:"layout",lwc:"lwc",trigger:"trig",validationRule:"vr"};
+  sceneBody.innerHTML = frame("fields","Explorer",
+    '<div class="split">'+
+      '<div class="lcol"><input class="cal-tf" id="ex-search" placeholder="Search a node..." style="width:100%" readonly>'+
+        '<div class="chip-row" id="ex-chips" style="margin-top:7px">'+types.map(function(t){ return pill(tcls[t],t); }).join("")+'</div>'+
+        '<div style="font-size:10px;color:#6b7c8c;margin:6px 0 3px">Link confidence</div>'+
+        '<div class="chip-row" id="ex-conf"><span class="ch">&#9679; deterministic &#9733;&#9733;&#9733;&#9733;</span><span class="ch">&#9679; tooling &#9733;&#9733;&#9733;&#9733;</span><span class="ch">&#9679; inferred &#9733;&#9733;&#9733;</span><span class="ch">&#9679; dynamic &#9733;&#9733;</span></div>'+
+        '<div id="ex-list" style="margin-top:6px">'+nodeRows(0)+'</div></div>'+
+      '<div class="rcol">'+explorerDetail(open)+'</div>'+
+    '</div>', overlay);
+}
+function sceneExplorer(){ explorerScene(-1); }
+sceneExplorer.run = function(){
+  popupChain([
+    {sel:"#ex-search", title:"Find any node", color:COL.explorer, side:"below",
+     text:"A <b>node</b> is a piece of metadata: a field, a class, a flow, a layout&hellip; Type a name to find it, or click a <em>type chip</em> to keep only that type. Each row ends with <b>used by / uses</b>: how many components depend on it, and how many it depends on."},
+    {sel:"#ex-conf", title:"Link confidence", color:COL.explorer, side:"below",
+     text:"Not every link is equally certain. <b>deterministic</b> and <b>tooling</b> links come straight from Salesforce; <b>inferred</b> ones are read from code; <b>dynamic</b> ones (a name built at run time) can be missed. The stars tell you how far to trust the answer."},
+    {sel:"#ex-detail", title:"One node, one page", color:COL.explorer, side:"below",
+     text:"Select a node to see everything around it. <b>Transitive impact</b> lists what is hit if you change it, and <b>Extract package</b> prepares a package holding the node and what depends on it."},
+    {sel:"#ex-how", title:"How it is used", color:COL.explorer, side:"above",
+     text:"The <b>HOW USED</b> chips say <em>what</em> the components do with the field: <code>reads</code>, <code>writes</code>, <code>validates</code>, <code>displays</code>&hellip; &laquo;<b>71 in 48</b>&raquo; means 71 usages spread over 48 components. Click a chip to filter the list below."},
+    {sel:"#gr-0", title:"Who uses it", color:COL.explorer, side:"above",
+     text:"<b>USED BY</b> groups the dependents by type. Open a group to see each component, whether it reads or writes the field, and a <code>&lt;/&gt;</code> button to see the source line. Click a name to jump to that node.",
+     before:function(){ explorerScene(0); }}
+  ]);
+};
+
+/* ───────── 3 — Dead metadata ───────── */
+function deadScene(altTests){
+  var groups = [["3","ApexClass","apex"],["25","LWC","lwc"],["9","VisualforcePage","vf"],["2","VFComponent","vf"],["14","FlexiPage","flexi"],["8","StaticResource","static"]];
+  var list = groups.map(function(g,i){
+    var r = '<div class="grp" id="dg-'+i+'"><span class="tri">'+(i===0?"&#9660;":"&#9654;")+'</span><span class="n" style="background:#25477b">'+g[0]+'</span>'+pill(g[2],g[1])+'</div>';
+    if(i===0) r += '<div class="names" id="dg-names"><span><span class="sq"></span> LegacyQuoteHelper <i>2016-05-10</i> <span class="ch">&lt;/&gt;</span></span>'+
+      '<span><span class="sq"></span> OldInvoiceTrigger_H <i>2019-11-02</i> <span class="ch">&lt;/&gt;</span></span>'+
+      '<span><span class="sq"></span> GenericTableCtrl <i>2023-01-18</i> <span class="ch">&lt;/&gt;</span> <span class="tag-ref" id="dg-ref">ref &#9888;</span></span></div>';
+    return r;
+  }).join("");
+  sceneBody.innerHTML = frame("mcd","Dead",
+    '<div class="kpis" id="dd-kpis">'+
+      '<div class="kpi"><b class="o">42</b><span>dead metadata (direct + cascade)</span></div>'+
+      '<div class="kpi"><b class="o">6</b><span>dead by cascade (used only by dead metadata)</span></div>'+
+      '<div class="kpi"><b>5</b><span>clusters (see the Clusters tab)</span></div>'+
+      '<div class="kpi"><b>1,610</b><span>alive (1,760 declared)</span></div>'+
+      '<div class="kpi"><b class="o">1</b><span>false dead (native references missed by the graph)</span></div>'+
+      '<div class="kpi"><b class="p">9</b><span>alive only through tests</span></div>'+
+      '<div class="kpi"><b>31</b><span>not observable (managed package)</span></div></div>'+
+    '<div class="info" id="dd-info">This screen covers the <b>whole org</b>, custom fields included. A node is <b>dead</b> if it is not reachable from any entry point (trigger, flow, tab, app, object&hellip;) through usage edges &mdash; directly an orphan, or by <b>cascade</b>. <b>Dynamic</b> references can create <b>false positives</b>: check before any deletion. <b>Managed packages</b> are counted as <b>not observable</b> rather than dead.</div>'+
+    '<div class="card"><div class="hbox" style="gap:8px"><span class="vt sub act" id="dd-t1">Dead metadata by type 42</span><span class="vt sub" id="dd-t2">Alive only through tests 9</span></div>'+
+    '<div class="hbox" style="gap:8px;margin:8px 0"><input class="cal-tf" id="dd-search" placeholder="Search an orphan..." style="flex:1" readonly><input class="cal-tf" value="Sort: name" style="width:120px" readonly></div>'+
+    list+'</div>');
+}
+function sceneDead(){ deadScene(); }
+sceneDead.run = function(){
+  popupChain([
+    {sel:"#dd-kpis", title:"The headline figures", color:COL.dead, side:"below",
+     text:"<b>Dead metadata</b> is anything no entry point can reach. <em>Direct</em> means nothing points at it; <em>cascade</em> means the only things that use it are dead themselves. <b>Alive only through tests</b> is code that exists solely because a test calls it."},
+    {sel:"#dd-info", title:"Read this before deleting", color:COL.dead, side:"below",
+     text:"The graph cannot see a name built at run time (<code>Type.forName</code>, dynamic SOQL). A dead node may therefore be a <b>false positive</b>. Components of a <b>managed package</b> are never called dead &mdash; they are <em>not observable</em>. Deleting is decided in the Deletion cockpit, never here."},
+    {sel:"#dg-names", title:"By type, oldest first to check", color:COL.dead, side:"above",
+     text:"Dead nodes are grouped by type, each with its last modification date and a <code>&lt;/&gt;</code> source button. An <b>old</b> orphan is a priority candidate. Click a name to open it in the <em>Explorer</em>."},
+    {sel:"#dg-ref", title:"The Salesforce cross-check", color:COL.dead, side:"above",
+     text:"A <b>ref &#9888;</b> badge means the graph declares the node dead, <em>but Salesforce itself reports a reference</em> to it: an edge the extractors missed. <b>Do not delete these.</b> The <em>Extractor gaps</em> view groups them."},
+    {sel:"#dd-t2", title:"Alive only through tests", color:COL.dead, side:"below",
+     text:"The second list shows code kept alive <em>only</em> by test classes. Remove the code and its tests together, or keep both on purpose."}
+  ]);
+};
+
+/* ───────── 4 — Clusters ───────── */
+function sceneClusters(){
+  sceneBody.innerHTML = frame("mcd","Clusters",
+    '<div class="kpis"><div class="kpi"><b>5</b><span>clusters (parent + children)</span></div><div class="kpi"><b class="o">13</b><span>dead nodes grouped in clusters</span></div>'+
+    '<div class="kpi"><b class="p">2</b><span>test-only clusters</span></div><div class="kpi"><b class="p">4</b><span>nodes alive only through tests, grouped</span></div></div>'+
+    '<div class="info" id="cl-info">A <b>cluster</b> groups a dead parent and all of its dead descendants (children, grandchildren, cycles). The number in the red badge = total cluster size. <b>Deleting the parent frees the whole cluster</b>; check <b>dynamic</b> references first. Click a row to open it in the Explorer.</div>'+
+    '<div class="card"><h4>Dead-metadata clusters (deleting the parent frees the whole cluster)</h4>'+
+      '<div class="grp" id="cl-1"><span class="tri">&#9660;</span><span class="red">3</span><b>quoteWizard</b></div>'+
+      '<div class="names" id="cl-tree" style="flex-direction:column;gap:3px"><span><span class="sq" style="background:#2f7fd0"></span> quoteWizard '+pill("lwc","LWC")+'</span>'+
+      '<span style="padding-left:14px">&#8627; <span class="sq" style="background:#2f7fd0"></span> multiSelectBox '+pill("lwc","LWC")+'</span>'+
+      '<span style="padding-left:28px">&#8627; <span class="sq" style="background:#2f7fd0"></span> multiSelectBoxItem '+pill("lwc","LWC")+'</span></div>'+
+      '<div class="grp"><span class="tri">&#9654;</span><span class="red">2</span>invoiceCard</div>'+
+      '<div class="grp"><span class="tri">&#9654;</span><span class="red">2</span>dashboardTable</div>'+
+      '<div class="grp"><span class="tri">&#9654;</span><span class="red">2</span>Contract__c.Legacy_Notes__c</div></div>'+
+    '<div class="card" id="cl-tests"><h4>Test-only clusters (chains kept alive by a test)</h4><div style="font-size:10.5px;color:#6b7c8c">Two chains that exist only because a test class references them.</div></div>');
+}
+sceneClusters.run = function(){
+  popupChain([
+    {sel:"#cl-info", title:"Why clusters matter", color:COL.clusters, side:"below",
+     text:"Deleting a dead component often leaves <em>its</em> dead children behind. A <b>cluster</b> shows the whole chain at once, so you delete the <b>parent</b> and free everything under it in one go &mdash; instead of discovering the children one deployment at a time."},
+    {sel:"#cl-tree", title:"Parent, children, grandchildren", color:COL.clusters, side:"above",
+     text:"Here <code>quoteWizard</code> is the parent and two Lightning components hang below it. The red badge (<b>3</b>) is the size of the cluster. Click a row to open it in the Explorer and verify who still references it."},
+    {sel:"#cl-tests", title:"Test-only clusters", color:COL.clusters, side:"above",
+     text:"The same idea for code kept alive <em>only by a test</em>. Delete the cluster together with its test, otherwise the test keeps a dead chain on life support."}
+  ]);
+};
+
+/* ───────── 5 — MCD risk ───────── */
+function sceneMcd(){
+  var rows = [
+    ["Account","73,090","805,992","depth 9","2","541,432","615,470 (23)","Private","Private"],
+    ["Invoice__c","24,751","408,541","depth 9","2","46,777","282,988 (8)","Private","Private"],
+    ["Opportunity","47,227","351,913","depth 10+","0","0","0","Private","Private"],
+    ["Contact","142,850","348,157","depth 9","1","867","27,136 (6)","Private","Private"],
+    ["Project_Line__c","707","341,439","depth 10+","1","3,132","3,132 (1)","ControlledByParent","ControlledByParent"]
+  ];
+  sceneBody.innerHTML = frame("mcd","MCD risk",
+    '<div class="kpis"><div class="kpi"><b>72</b><span>objects in the MCD graph</span></div><div class="kpi"><b>186</b><span>object-to-object relationships</span></div>'+
+    '<div class="kpi"><b class="o">10</b><span>lookup cycles</span></div><div class="kpi"><b style="font-size:15px">sidecar</b><span>field attributes source (sidecar/describe)</span></div></div>'+
+    '<div class="card"><div class="hbox" style="gap:8px"><span class="vt sub act" id="mc-t1">Relationship power ranking</span><span class="vt sub" id="mc-t2">Lookup cycles 10</span></div>'+
+    '<div class="hbox" style="gap:8px;align-items:center;margin:8px 0"><span style="font-size:10.5px">Sort by</span><input class="cal-tf" value="Power score" style="width:140px" readonly></div>'+
+    '<div class="info" id="mc-info">Blast radius first: combines descendant volume and coupling strength (master-detail counts more than an optional lookup) &mdash; where a mistake ripples widest.</div>'+
+    '<div class="tbl-wrap"><table class="cal-tbl"><thead><tr><th>OBJECT</th><th class="c">RECORDS</th><th class="c" id="mc-power">POWER</th><th class="c">DEPTH</th><th class="c">MD DEPTH</th><th class="c">CASCADE DEL.</th><th class="c" id="mc-lock">LOCK PRESSURE</th><th>SHARING (INT/EXT)</th></tr></thead><tbody>'+
+    rows.map(function(r){
+      var sh = function(v){ return '<span class="nt '+(v==="Private"?"obj":"wl")+'" style="'+(v==="ControlledByParent"?"background:#f3d4d1;color:#c0392b":"")+'">'+v+'</span>'; };
+      return '<tr><td><b>'+r[0]+'</b></td><td class="c">'+r[1]+'</td><td class="c"><b>'+r[2]+'</b></td><td class="c">'+r[3]+'</td><td class="c"><b>'+r[4]+'</b></td><td class="c">'+r[5]+'</td><td class="c"><b>'+r[6]+'</b></td><td>'+sh(r[7])+' '+sh(r[8])+'</td></tr>';
+    }).join("")+'</tbody></table></div></div>');
+}
+sceneMcd.run = function(){
+  popupChain([
+    {sel:"#mc-info", title:"Where a mistake ripples widest", color:COL.mcd, side:"below",
+     text:"The <b>MCD</b> (the data model between objects) ranks every object by its <b>power</b>: how many records sit below it and how tightly they are bound. A master-detail weighs more than an optional lookup. Start with the top rows before touching the model."},
+    {sel:"#mc-power", title:"Power, depth, cascade", color:COL.mcd, side:"below",
+     text:"<b>Power</b> is the score used to sort. <b>Depth</b> is how many levels of children hang below the object; <b>Cascade del.</b> is how many child records a delete would take with it."},
+    {sel:"#mc-lock", title:"Lock pressure and sharing", color:COL.mcd, side:"below",
+     text:"<b>Lock pressure</b> estimates the risk of row-lock contention on a parent that has many children. <b>Sharing (int/ext)</b> shows the internal and external model: <em>ControlledByParent</em> children inherit the parent&#39;s access."},
+    {sel:"#mc-t2", title:"Lookup cycles", color:COL.mcd, side:"below",
+     text:"The second list shows <b>lookup cycles</b> (A &rarr; B &rarr; A). They complicate data loads, deletions and deployments: you cannot order them cleanly."}
+  ]);
+};
+
+/* ───────── 6 — Orphan tests ───────── */
+function sceneTests(){
+  var names = ["AccountTriggerHandlerTest","InvoiceBatchTest","LegacyQuoteTest","ContactSyncTest","DunningSchedulerTest","OrderTriggerTest","RenewalHelperTest","TestDataFactoryExtra","SubscriptionTest","PricingTest"];
+  sceneBody.innerHTML = frame("mcd","Orphan tests",
+    '<div class="kpis"><div class="kpi"><b class="o">32</b><span>orphan tests (of 156)</span></div><div class="kpi"><b>32</b><span>cover nothing (empty / stub)</span></div><div class="kpi"><b>0</b><span>cover only dead code</span></div></div>'+
+    '<div class="info" id="ot-info">A test class is an <b>entry point</b>: nothing references it, so it never shows up in &laquo;Dead metadata&raquo;. It becomes worthless from the other end &mdash; when it <b>covers nothing live</b>. <b>Covers nothing</b> = no edge to any production component. <b>Covers only dead code</b> = everything it touches is itself dead: delete that cluster and the test goes with it.</div>'+
+    '<div class="card" id="ot-list"><h4>Orphan test classes</h4><div class="grp"><span class="tri">&#9660;</span><span class="red">32</span>covers nothing</div>'+
+    '<div class="names" style="padding-left:6px">'+names.map(function(n){ return '<span><span class="sq"></span> '+n+' <span class="ch">&lt;/&gt;</span></span>'; }).join("")+'</div></div>');
+}
+sceneTests.run = function(){
+  popupChain([
+    {sel:"#ot-info", title:"Tests that protect nothing", color:COL.tests, side:"below",
+     text:"A test is never &laquo;dead&raquo; &mdash; nothing calls it by design. So Calumet looks at it the other way round: <b>what does it cover?</b> A test that touches no production component protects nothing."},
+    {sel:"#ot-list", title:"Covers nothing / covers only dead code", color:COL.tests, side:"above",
+     text:"<b>Covers nothing</b>: an empty or stub test, safe to review for removal. <b>Covers only dead code</b>: it goes away with the dead cluster it tests. Coverage here is <em>static</em> (what the code references): a test that drives code dynamically is invisible, so review before deleting."}
+  ]);
+};
+
+/* ───────── 7 — Extractor gaps ───────── */
+function sceneGaps(){
+  sceneBody.innerHTML = frame("mcd","Extractor gaps",
+    '<div class="kpis"><div class="kpi"><b class="o">2</b><span>false dead (edges missed by an extractor)</span></div><div class="kpi"><b>2</b><span>gap families (dead type &larr; referrer type)</span></div></div>'+
+    '<div class="info" id="eg-info">Each group = a probable <b>extractor gap family</b>: same dead metadata type, same dominant referrer type according to Salesforce. A group with several nodes is worth investigating first (the same fix will often fix all its members). Hover the list of referrers for the detail provided by Salesforce.</div>'+
+    '<div class="card" id="eg-list"><h4>Extractor gaps by family (dead type &larr; dominant referrer type)</h4>'+
+    '<div class="grp"><span class="tri">&#9660;</span><span class="red">1</span>'+pill("field","field")+' &larr; '+pill("flow","Flow")+'</div>'+
+    '<div class="names" style="padding-left:6px"><span><span class="sq" style="background:#3e8e96"></span> Task.DueInNext7Days__c <span class="nt flow" style="margin-left:6px">9 ref</span></span></div>'+
+    '<div class="grp"><span class="tri">&#9660;</span><span class="red">1</span>'+pill("flexi","flexipage")+' &larr; '+pill("obj","CustomObject")+'</div>'+
+    '<div class="names" style="padding-left:6px"><span><span class="sq" style="background:#7b4a1e"></span> quote_record_page <span class="nt obj" style="margin-left:6px">1 ref</span></span></div></div>');
+}
+sceneGaps.run = function(){
+  popupChain([
+    {sel:"#eg-info", title:"Where the graph is blind", color:COL.gaps, side:"below",
+     text:"Salesforce says something references these nodes, yet the graph found <em>no</em> edge to them. They look dead but may not be. They are listed apart, <b>never counted as alive</b>, so you can see exactly where an extractor needs to be improved."},
+    {sel:"#eg-list", title:"Read it as a to-do list for the tool", color:COL.gaps, side:"above",
+     text:"Each family names the dead type and who references it (here a <em>field</em> referenced by a <em>flow</em>). Fixing one extractor usually clears the whole family. Until then: <b>do not delete</b> these nodes."}
+  ]);
+};
+
+/* ───────── 8 — Recap ───────── */
+var recapItems = [
+  "Computed the graph once from production (<b>Recompute from org</b>) &mdash; sandboxes just display it",
+  "Found any node in the <b>Explorer</b> and read who uses it, and how",
+  "Listed the <b>dead metadata</b>, grouped by type, with the <em>ref</em> cross-check",
+  "Freed whole chains at once with the <b>clusters</b>",
+  "Ranked objects by blast radius in <b>MCD risk</b>, and spotted tests that cover nothing"
+];
+function sceneRecap(){
+  sceneBody.innerHTML =
+  '<div class="recap"><h2>You can now read the graph</h2>'+
+  '<div class="lead">One computation, then every question &mdash; who uses this? what is dead? what breaks if I change it? &mdash; answered offline.</div>'+
+  '<ul class="recap-list" id="recap-list">'+recapItems.map(function(t,i){ return '<li id="rl-'+i+'"><span class="chk">&#10003;</span><span>'+t+'</span></li>'; }).join("")+'</ul>'+
+  '<div class="tips">'+
+    '<div class="tip"><span class="icon">&#128161;</span><b>Recompute after changes.</b> The graph is a snapshot: rebuild it after a deployment or a big clean-up, so the views match the org.</div>'+
+    '<div class="tip warn"><span class="icon">&#9888;&#65039;</span><b>Dead is a question, not a verdict.</b> Dynamic references, managed packages and <em>ref</em> badges all call for a check before any deletion.</div>'+
+    '<div class="tip cycle"><span class="icon">&#129517;</span><b>Next step.</b> The other audit tabs (Org Discovery, Dead Metadata, Automation Radar&hellip;) read this same graph &mdash; build it first.</div>'+
+  '</div></div>';
+}
+sceneRecap.run = function(){
+  for(var i=0;i<recapItems.length;i++){ (function(i){ after(250+i*220, function(){ var li=$("#rl-"+i); if(li) li.classList.add("in"); }); })(i); }
+};
+
+var SCENE_LIST = [
+  {fn:sceneStart,    run:sceneStart.run},
+  {fn:sceneExplorer, run:sceneExplorer.run},
+  {fn:sceneDead,     run:sceneDead.run},
+  {fn:sceneClusters, run:sceneClusters.run},
+  {fn:sceneMcd,      run:sceneMcd.run},
+  {fn:sceneTests,    run:sceneTests.run},
+  {fn:sceneGaps,     run:sceneGaps.run},
+  {fn:sceneRecap,    run:sceneRecap.run}
+];
+
+/* ───────────────────────── Registry & engine ───────────────────────── */
+var scenes = SCENE_LIST;
+var current = 0;
+function buildProgress(){
+  var html = "";
+  for(var i=0;i<scenes.length;i++){
+    html += '<div class="dot" data-i="'+i+'"><span class="circle">'+(i+1)+'</span></div>';
+    if(i<scenes.length-1) html += '<div class="connector"></div>';
+  }
+  $("#progress").innerHTML = html;
+  [].forEach.call($("#progress").querySelectorAll(".dot"), function(d){
+    d.addEventListener("click", function(){ goTo(parseInt(d.getAttribute("data-i"),10)); });
+  });
+}
+function updateProgress(){
+  [].forEach.call($("#progress").querySelectorAll(".dot"), function(d,i){ d.classList.toggle("active", i===current); d.classList.toggle("done", i<current); });
+  [].forEach.call($("#progress").querySelectorAll(".connector"), function(c,i){ c.classList.toggle("done", i<current); });
+}
+function goTo(i){
+  if(i<0 || i>=scenes.length) return;
+  clearPending(); hidePopup(); popupNextFn = null;
+  cursor.style.transition = "none"; cursor.style.transform = "translate(-120px,-120px)"; void cursor.offsetWidth;
+  current = i; scenes[i].fn(); updateProgress();
+  $("#scene-counter").textContent = (i+1) + " / " + scenes.length;
+  $("#btn-prev").disabled = (i===0);
+  $("#btn-next").textContent = (i===scenes.length-1) ? "Restart ↺" : "Next →";
+  after(60, function(){ cursor.style.transition = "transform .6s cubic-bezier(.4,0,.2,1)"; scenes[i].run(); });
+}
+function goNext(){ if(current === scenes.length-1){ goTo(0); } else goTo(current+1); }
+function goPrev(){ goTo(current-1); }
+$("#btn-next").addEventListener("click", goNext);
+$("#btn-prev").addEventListener("click", goPrev);
+$(".p-btn", popup).addEventListener("click", function(){ (popupNextFn || goNext)(); });
+document.addEventListener("keydown", function(e){
+  if(e.key === "ArrowRight" || e.key === " "){ e.preventDefault(); goNext(); }
+  else if(e.key === "ArrowLeft"){ e.preventDefault(); goPrev(); }
+});
+var playTimer = null, autoBtn = $("#autoplay");
+autoBtn.addEventListener("click", function(){
+  if(playTimer){ autoBtn.classList.remove("on"); autoBtn.innerHTML = "&#9654;"; clearInterval(playTimer); playTimer = null; }
+  else { autoBtn.classList.add("on"); autoBtn.innerHTML = "&#10073;&#10073;"; playTimer = setInterval(goNext, 6000); }
+});
+window.addEventListener("resize", function(){ if(popup.classList.contains("show")) hidePopup(); });
+buildProgress();
+goTo(0);
+</script>
+<script>/* Back link: website only, hidden in the application help (JavaFX WebView) */
+if(navigator.userAgent.indexOf('JavaFX')>=0){var b=document.getElementById('backSite');if(b)b.style.display='none';}</script>
+</body>
+</html>
