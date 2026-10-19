@@ -1,5 +1,52 @@
-[version]v14.1[/version]
+[version]v14.2[/version]
 [history]
+v14.2 — 2026-10-19
+Description Debt
+- Writing descriptions is now one Ask AI card: a single AI session handles the whole campaign, heaviest fields first, with a trial on 10 fields before the full run.
+- The review of the AI's texts is built into the screen instead of a popup: "Read these" first, then "The rest" (ticked, accepted in one click) and what is already settled, with a column saying why a text deserves a read, and Excel export and import.
+- Families, Sensitive and Domains move to a fourth "Classification" view, out of the 1-2-3 route; the Sensitive page no longer fails before showing its AI reviews.
+- Glossary: a single Ask AI button opens the shared AI session window; acronyms are sent sorted by impact, the model scores each answer, and the review opens on the model's answers ("Not an acronym" first).
+- Glossary: acronyms seen only once are set aside and left out of the counts; "Not an acronym" verdicts from the model are accepted on import.
+- Glossary: switching org, re-scanning, pulling or loading an answer no longer loses unsaved decisions silently; you are asked to save or discard them.
+- Glossary: the Org sharing footer says when this computer last published and pulled, and the answer language comes from your preferences.
+Business Map
+- Ask AI opens the AI session window; the AI's answer is written in the session folder and a "Load the AI answer" button imports it as proposals.
+- The glossary is passed to the AI as advice (no blocking window), with figures taken from the live glossary, and titles spell out meanings instead of acronyms.
+- Technical details are split into sub-tabs by type, and names are shown as tiles.
+Org Discovery
+- A single confirmation page before running the audits says what will run, how long it takes, and whether to reuse or rebuild the dependency graph.
+- AI brief opens the AI session window; "Load AI answer" brings the enrichment back and refreshes State of play.
+- Architecture is clickable: cards open their tab, each class or object expands the names behind its figures, each async type lists its classes; object cycles get an Ask AI per cycle and the Migration view becomes Architecture tabs.
+- The score page shows readable audit names, findings per dimension in tabs with their grade, and a wider layout.
+- Page titles no longer show a square next to an emoji.
+AI assistant sessions
+- The session window opens before any folder choice (the folder is picked inside it), explains in four steps who does what, and carries the "Load the AI answer" button.
+- The proposed session name starts with the org name, a progress bar shows while Calumet prepares the session, and Calumet offers to make the chosen folder the default for all orgs.
+- Only one "Move AI workspaces" window opens at a time per org and folder.
+Analytics
+- The Copy and Open terminal buttons of the AI steps now work.
+Dep Graph
+- The Profiles snapshot line only appears when the audit trail shows a profile change since the snapshot; the Apex clones button and menu are hidden for now.
+Object Activity
+- The blocker filter is visible (banner, tinted source row, Clear filter) and Via shows the number of candidates; classes, triggers and pages with a lowercase prefix can now be promoted.
+- The Ask AI report separates manifest changes from source edits.
+CustomFields Usage
+- An "include managed fields" option analyses the fields of installed packages, and "Show managed objects" adds their objects to the selector.
+Picklists
+- Dependent fields show a "dependent on X" badge, in the list and in the field header.
+DataSeeding
+- A configuration form, a safeguard on Prepare, an Error types column and a popup to resume an import.
+- Filters are split to stay under the SOQL limit, audit dates are left out, record locks are retried and errors are readable.
+Deploy
+- A warning appears when a class or trigger is deployed with an API version above 66.
+- "Deactivate before deploy" now sends only what a workflow rule needs, so the deactivation no longer fails.
+Sandboxes
+- Deleting a sandbox offers to delete its Calumet org configuration too, instead of blocking.
+ChangeTracker
+- The Parent column of a Lightning page shows its object.
+General
+- Building a package no longer fails on a component without a name.
+
 v14.1 — 2026-10-13
 Business Map (new screen)
 - A new screen shows your org as functional zones and lets you give each zone a business name: validate the names your AI assistant proposes, rename a zone, choose between old names after a rebuild, and confirm subject areas; each zone opens on an overview, its technical details and what to review.
@@ -441,5 +488,5 @@ General
 - New OAuth 2.0 authentication flow available alongside the classic SOAP login.
 [/history]
 [update]dist/Calumet.jar[/update]
-[exe]dist/Calumet-14.1.exe[/exe]
+[exe]dist/Calumet-14.2.exe[/exe]
 [updaterVersion]4.0[/updaterVersion]
