@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Fields Not Used — Calumet</title>
+<link rel="stylesheet" href="../shared.css">
+</head>
+<body class="tab-page">
+
+<div class="sum">
+  <div class="sum-title">
+    <h2>Fields Not Used</h2>
+    <span class="sum-badge">Tab 51</span>
+  </div>
+  <p class="sum-desc">
+    Scans all custom fields across every Salesforce object and reports how many records actually populate each field, expressed as both a raw count (Usage) and a percentage of total records. Fields with zero or near-zero usage are prime candidates for cleanup.
+    <button class="cal-btn btn-d" style="margin-left:10px" onclick="document.getElementById('modal-kf').style.display='flex'">&#9733; Key features</button>
+  </p>
+</div>
+
+<div class="mockup-wrap">
+  <div class="mockup">
+
+    <!-- Toolbar row -->
+    <div class="hbox" style="gap:8px;align-items:center;padding:8px 10px;background:#F0F4F7;border-bottom:1px solid #9AABBF;">
+      <button class="cal-btn btn-b" data-tip="Query Salesforce Tooling API to retrieve all custom fields and their usage statistics">Search</button>
+      <span class="cal-lbl" style="min-width:28px;font-weight:700">174</span>
+      <input class="cal-tf" style="width:280px" readonly placeholder="Filter by object, name, type… (use ; for multi-filter)" value="">
+      <label class="cal-chk" data-tip="When checked, Formula fields are excluded from the result list">
+        <input type="checkbox" checked disabled> hide formulaFields
+      </label>
+    </div>
+
+    <!-- Main table -->
+    <div style="overflow-x:auto;border-top:none;">
+      <table class="cal-tbl" style="min-width:1400px">
+        <thead>
+          <tr>
+            <th style="width:140px">Object</th>
+            <th style="width:220px">Name</th>
+            <th style="width:200px">Label</th>
+            <th style="width:90px">Type</th>
+            <th style="width:60px">Usage</th>
+            <th style="width:65px">Percent</th>
+            <th style="width:130px">CreatedDate</th>
+            <th style="width:160px">Created By</th>
+            <th style="width:130px">LastModifyDate</th>
+            <th style="width:160px">LastModifyBy</th>
+            <th style="width:200px">Id</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Account</td>
+            <td>Account.Legacy_CRM_Id__c</td>
+            <td>Legacy CRM Id</td>
+            <td>string</td>
+            <td style="color:#27ae60;font-weight:700">0</td>
+            <td style="color:#27ae60"></td>
+            <td>2018-03-12 17:34:44</td>
+            <td>Bob Johnson</td>
+            <td>2019-02-14 09:37:28</td>
+            <td>Bob Johnson</td>
+            <td>00N5Y000003jZ4KUAU</td>
+          </tr>
+          <tr style="background:#f9fafb">
+            <td>Account</td>
+            <td>Account.NPS_Score__c</td>
+            <td>NPS Score</td>
+            <td>double</td>
+            <td style="color:#27ae60;font-weight:700">0</td>
+            <td style="color:#27ae60"></td>
+            <td>2019-07-22 10:18:07</td>
+            <td>John Doe (Tech Team)</td>
+            <td>2021-01-10 08:57:55</td>
+            <td>Admin User (Tech Team)</td>
+            <td>00N5Y000005mRp2UAC</td>
+          </tr>
+          <tr>
+            <td>Account</td>
+            <td>Account.Rating_Score__c</td>
+            <td>Rating Score</td>
+            <td>double</td>
+            <td style="color:#e67e22;font-weight:700">3</td>
+            <td style="color:#e67e22">2.5</td>
+            <td>2020-07-09 08:57:25</td>
+            <td>John Doe (Tech Team)</td>
+            <td>2023-11-05 08:32:57</td>
+            <td>Admin User (Tech Team)</td>
+            <td>00N5Y000006bQp3XAG</td>
+          </tr>
+          <tr style="background:#f9fafb">
+            <td>Opportunity</td>
+            <td>Opportunity.Expected_Close_Reason__c</td>
+            <td>Expected Close Reason</td>
+            <td>string</td>
+            <td style="color:#27ae60;font-weight:700">0</td>
+            <td style="color:#27ae60"></td>
+            <td>2019-04-30 08:01:13</td>
+            <td>Bob Johnson</td>
+            <td>2019-04-30 08:01:13</td>
+            <td>Bob Johnson</td>
+            <td>00N5Y000004kTq8UAE</td>
+          </tr>
+          <tr>
+            <td>Opportunity</td>
+            <td>Opportunity.Employee__c</td>
+            <td>Employee</td>
+            <td>double</td>
+            <td style="color:#27ae60;font-weight:700">0</td>
+            <td style="color:#27ae60"></td>
+            <td>2019-08-06 08:11:35</td>
+            <td>Bob Johnson</td>
+            <td>2019-08-08 09:17:41</td>
+            <td>John Doe (Tech Team)</td>
+            <td>00N5Y000005nRq1XAF</td>
+          </tr>
+          <tr style="background:#f9fafb">
+            <td>Opportunity</td>
+            <td>Opportunity.Entity_Focus_Flag__c</td>
+            <td>Entity Focus Flag</td>
+            <td>string</td>
+            <td style="color:#27ae60;font-weight:700">0</td>
+            <td style="color:#27ae60"></td>
+            <td>2020-08-06 08:11:23</td>
+            <td>John Doe (Tech Team)</td>
+            <td>2020-08-06 08:11:23</td>
+            <td>John Doe (Tech Team)</td>
+            <td>00N5Y000006bSr0XAC</td>
+          </tr>
+          <tr>
+            <td>Project__c</td>
+            <td>Project__c.Project_Chat_ID__c</td>
+            <td>Project Chat ID</td>
+            <td>string</td>
+            <td style="color:#27ae60;font-weight:700">0</td>
+            <td style="color:#27ae60"></td>
+            <td>2022-03-04 08:09:04</td>
+            <td>Admin User (Tech Team)</td>
+            <td>2022-03-19 10:42:41</td>
+            <td>Admin User (Tech Team)</td>
+            <td>00N5Y000008cZq2UAG</td>
+          </tr>
+          <tr style="background:#f9fafb">
+            <td>Project__c</td>
+            <td>Project__c.FundRef_ID__c</td>
+            <td>Fund Reference ID</td>
+            <td>string</td>
+            <td style="color:#27ae60;font-weight:700">0</td>
+            <td style="color:#27ae60"></td>
+            <td>2022-03-04 08:09:32</td>
+            <td>Admin User (Tech Team)</td>
+            <td>2023-06-28 08:09:32</td>
+            <td>Admin User (Tech Team)</td>
+            <td>00N5Y000008cZq3UAF</td>
+          </tr>
+          <tr>
+            <td>Contract__c</td>
+            <td>Contract__c.TeamName__c</td>
+            <td>Team Name</td>
+            <td>string</td>
+            <td style="color:#e67e22;font-weight:700">4</td>
+            <td style="color:#e67e22">3.0</td>
+            <td>2022-03-04 08:09:53</td>
+            <td>Admin User (Tech Team)</td>
+            <td>2022-03-19 10:41:30</td>
+            <td>Admin User (Tech Team)</td>
+            <td>00N5Y000008cZq8UAH</td>
+          </tr>
+          <tr style="background:#f9fafb">
+            <td>Contact</td>
+            <td>Contact.Market_Region_Code__c</td>
+            <td>Market Region Code</td>
+            <td>string</td>
+            <td style="color:#27ae60;font-weight:700">0</td>
+            <td style="color:#27ae60"></td>
+            <td>2020-10-19 09:28:00</td>
+            <td>Admin User (Tech Team)</td>
+            <td>2023-10-25 08:28:00</td>
+            <td>John Doe (Tech Team)</td>
+            <td>00N5Y000006nTm2XAF</td>
+          </tr>
+          <tr>
+            <td>Contact</td>
+            <td>Contact.Content_Marketing_Region_Code__c</td>
+            <td>Content-Marketing/Region/Code</td>
+            <td>string</td>
+            <td style="color:#27ae60;font-weight:700">0</td>
+            <td style="color:#27ae60"></td>
+            <td>2020-10-19 09:30:02</td>
+            <td>Admin User (Tech Team)</td>
+            <td>2020-10-19 09:30:02</td>
+            <td>Admin User (Tech Team)</td>
+            <td>00N5Y000006nTm4UAH</td>
+          </tr>
+          <tr style="background:#f9fafb">
+            <td>Lead</td>
+            <td>Lead.Account_Documents_Website__c</td>
+            <td>Account Documents Website</td>
+            <td>url</td>
+            <td style="color:#27ae60;font-weight:700">0</td>
+            <td style="color:#27ae60"></td>
+            <td>2021-12-13 09:44:00</td>
+            <td>John Doe</td>
+            <td>2023-12-13 09:44:00</td>
+            <td>John Doe</td>
+            <td>00N5Y000007jXn1UAG</td>
+          </tr>
+          <tr>
+            <td>Lead</td>
+            <td>Lead.SocialNetwork__c</td>
+            <td>Social Network</td>
+            <td>boolean</td>
+            <td style="color:#27ae60;font-weight:700">785</td>
+            <td style="color:#e67e22;font-weight:600">13.1</td>
+            <td>2021-05-06 10:07:31</td>
+            <td>John Doe</td>
+            <td>2024-02-14 11:09:44</td>
+            <td>John Doe</td>
+            <td>00N5Y000007cMp0UAG</td>
+          </tr>
+          <tr style="background:#f9fafb">
+            <td>Account</td>
+            <td>Account.Account_Currencies__c</td>
+            <td>Account Currencies</td>
+            <td>string</td>
+            <td style="color:#27ae60;font-weight:700">0</td>
+            <td style="color:#27ae60"></td>
+            <td>2021-12-13 09:49:23</td>
+            <td>John Doe</td>
+            <td>2023-07-22 09:44:25</td>
+            <td>Admin User (Tech Team)</td>
+            <td>00N5Y000007jXm9UAG</td>
+          </tr>
+          <tr>
+            <td>Account</td>
+            <td>Account.Sourcing_LinkedIn__c</td>
+            <td>Sourcing LinkedIn</td>
+            <td>string</td>
+            <td style="color:#27ae60;font-weight:700">0</td>
+            <td style="color:#27ae60"></td>
+            <td>2022-01-18 10:03:24</td>
+            <td>John Doe (Tech Team)</td>
+            <td>2022-01-18 10:03:24</td>
+            <td>John Doe (Tech Team)</td>
+            <td>00N5Y000008bRq7UAC</td>
+          </tr>
+          <tr style="background:#f9fafb">
+            <td>Asset__c</td>
+            <td>Asset__c.AssetType__c</td>
+            <td>Asset Type</td>
+            <td>picklist</td>
+            <td style="color:#27ae60;font-weight:700">0</td>
+            <td style="color:#27ae60"></td>
+            <td>2023-04-05 08:17:09</td>
+            <td>Admin User (Tech Team)</td>
+            <td>2023-04-05 08:17:09</td>
+            <td>Admin User (Tech Team)</td>
+            <td>00N5Y000009dWq6UAH</td>
+          </tr>
+          <tr>
+            <td>Asset__c</td>
+            <td>Asset__c.EventType__c</td>
+            <td>Event Type</td>
+            <td>string</td>
+            <td style="color:#27ae60;font-weight:700">0</td>
+            <td style="color:#27ae60"></td>
+            <td>2023-04-07 11:02:38</td>
+            <td>Admin User (Tech Team)</td>
+            <td>2023-04-07 11:02:38</td>
+            <td>Admin User (Tech Team)</td>
+            <td>00N5Y000009dWq9UAJ</td>
+          </tr>
+          <tr style="background:#f9fafb">
+            <td>Report__c</td>
+            <td>Report__c.JournalRef__c</td>
+            <td>Journal Reference</td>
+            <td>reference</td>
+            <td style="color:#27ae60;font-weight:700">0</td>
+            <td style="color:#27ae60"></td>
+            <td>2021-09-14 09:23:45</td>
+            <td>John Doe</td>
+            <td>2021-09-14 09:23:45</td>
+            <td>John Doe</td>
+            <td>00N5Y000007mYp1UAF</td>
+          </tr>
+          <tr>
+            <td>Account</td>
+            <td>Account.Account_Documents_Website__c</td>
+            <td>Account Documents Website</td>
+            <td>url</td>
+            <td style="color:#27ae60;font-weight:700">0</td>
+            <td style="color:#27ae60"></td>
+            <td>2021-12-14 09:44:18</td>
+            <td>John Doe</td>
+            <td>2023-12-14 09:44:18</td>
+            <td>John Doe</td>
+            <td>00N5Y000007jXm8UAF</td>
+          </tr>
+          <tr style="background:#f9fafb">
+            <td>Ticket__c</td>
+            <td>Ticket__c.InvoiceRequest__c</td>
+            <td>Invoice Request</td>
+            <td>string</td>
+            <td style="color:#27ae60;font-weight:700">0</td>
+            <td style="color:#27ae60"></td>
+            <td>2023-05-10 08:49:00</td>
+            <td>Admin User (Tech Team)</td>
+            <td>2023-05-10 08:49:00</td>
+            <td>Admin User (Tech Team)</td>
+            <td>00N5Y000009fZp2UAH</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Status bar -->
+    <div class="hbox" style="gap:6px;align-items:center;padding:4px 10px;background:#E8EEF2;border-top:1px solid #9AABBF;font-size:11px;color:#555">
+      <span>174 fields displayed</span>
+      <span class="vsep"></span>
+      <span style="color:#888">Double-click a row to open the field setup page in Salesforce</span>
+    </div>
+
+  </div><!-- /.mockup -->
+</div><!-- /.mockup-wrap -->
+
+<script>
+function sw(id,idx){
+  var tp=document.getElementById(id);
+  tp.querySelectorAll('.m-tab').forEach(function(t,i){t.classList.toggle('act',i===idx)});
+  tp.querySelectorAll('.m-panel').forEach(function(p,i){p.classList.toggle('act',i===idx)});
+}
+</script>
+
+<!-- Key features modal -->
+<div id="modal-kf" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:999;align-items:center;justify-content:center" onclick="if(event.target===this)this.style.display='none'">
+  <div style="background:#fff;border-radius:8px;padding:28px 32px;max-width:520px;width:90%;color:#1a2a35;box-shadow:0 8px 32px rgba(0,0,0,.3)">
+    <h3 style="margin:0 0 14px;color:#2980b9">&#9733; Key features</h3>
+    <ul style="margin:0;padding-left:20px;line-height:1.8">
+      <li>Queries the Salesforce Tooling API to retrieve every custom field definition along with its populated-record count.</li>
+      <li>Displays Usage (raw count of records with a non-null value) and Percent (relative to total records of that object).</li>
+      <li>Formula fields can be hidden with one checkbox click, keeping the list focused on data fields only.</li>
+      <li>Live filter field accepts plain text or multiple keywords separated by semicolons (;) to narrow results instantly.</li>
+      <li>Double-clicking any row opens the corresponding field's setup page directly in the Salesforce browser.</li>
+      <li>Zero-usage fields are immediately identifiable, making them prime candidates for technical debt cleanup and org simplification.</li>
+      <li>Auto-resizes all columns after search to fit the longest value in each column.</li>
+    </ul>
+    <div style="text-align:right;margin-top:18px">
+      <button class="cal-btn btn-d" onclick="document.getElementById('modal-kf').style.display='none'">Close</button>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

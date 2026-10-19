@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>VS Code — Calumet</title>
+<link rel="stylesheet" href="../shared.css">
+</head>
+<body class="tab-page">
+<div class="sum">
+  <div class="sum-title">
+    <h2>VS Code</h2>
+    <span class="sum-badge">Tab 35</span>
+  </div>
+  <p class="sum-desc">Open metadata files directly in VS Code. Sync local project files with the connected org.</p>
+</div>
+<div class="mockup-wrap">
+  <div class="mockup"><div class="vbox" style="gap:0px"><div class="anchor"><div class="m-tabpane" id="tp16"><div class="m-tabbar"><div class="m-tab act" onclick="sw('tp16',0)">Fields Difference</div><div class="m-tab" onclick="sw('tp16',1)">Fields Potential Duplicates</div></div><div class="m-body"><div class="m-panel act" id="tp16-0"><div class="anchor"><div class="tbl-wrap"><table class="cal-tbl"><thead><tr><th>Object</th><th>Name</th><th>Label</th><th>Differences</th></tr></thead><tbody><tr><td colspan="20" class="tbl-empty"></td></tr></tbody></table></div><button class="cal-btn btn-b">Display</button><input class="cal-tf" placeholder="" style="width:237.0px;" readonly><span class="cal-lbl">nb Results</span><input class="cal-tf" placeholder="" style="width:291.0px;" readonly><span class="cal-lbl">set the name of the org to compare to</span></div></div><div class="m-panel" id="tp16-1"><div class="anchor"><div class="tbl-wrap"><table class="cal-tbl"><thead><tr><th>Object</th><th>Name</th><th>Label env1</th><th>Type env1</th><th>Description env1</th><th>Name</th><th>Label env2</th><th>Type env2</th><th>Description env2</th></tr></thead><tbody><tr><td colspan="20" class="tbl-empty"></td></tr></tbody></table></div><input class="cal-tf" placeholder="" style="width:237.0px;" readonly><span class="cal-lbl">nb Results</span></div></div></div></div></div></div></div>
+</div>
+<script>
+function sw(id,idx){
+  var tp=document.getElementById(id);
+  tp.querySelectorAll('.m-tab').forEach(function(t,i){t.classList.toggle('act',i===idx)});
+  tp.querySelectorAll('.m-panel').forEach(function(p,i){p.classList.toggle('act',i===idx)});
+}
+</script>
+</body>
+</html>
