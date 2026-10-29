@@ -1,5 +1,9 @@
-[version]v14.3[/version]
+[version]v14.3.1[/version]
 [history]
+v14.3.1 — 2026-10-29
+Connection
+- The OAuth app choice "Calumet connected App" is always shown when you configure an org, instead of being hidden behind a global setting.
+
 v14.3 — 2026-10-29
 Connection
 - Org configuration: the generic "External Client App" option is gone (an External Client App belongs to one Salesforce org, so a shared one could never work). The default is now called "Calumet connected App", and the "OAuth app" block sits above the OAuth "init" button, where you choose it before connecting. An org that still had the old option falls back to "Calumet connected App".
@@ -513,5 +517,5 @@ General
 - New OAuth 2.0 authentication flow available alongside the classic SOAP login.
 [/history]
 [update]dist/Calumet.jar[/update]
-[exe]dist/Calumet-14.3.exe[/exe]
+[exe]dist/Calumet-14.3.1.exe[/exe]
 [updaterVersion]4.1[/updaterVersion]

@@ -1,5 +1,18 @@
 # Calumet — Changelog
 
+## v14.3.1 — 2026-10-29
+
+### New screens
+
+No new screens in this release.
+
+### Improvements
+
+**Connection**
+- The OAuth app choice "Calumet connected App" is always shown when you configure an org, instead of being hidden behind a global setting.
+
+---
+
 ## v14.3 — 2026-10-29
 
 ### New screens
