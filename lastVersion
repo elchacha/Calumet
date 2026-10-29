@@ -1,30 +1,5 @@
-[version]v14.3[/version]
+[version]v14.2[/version]
 [history]
-v14.3 — 2026-10-29
-Connection
-- Org configuration: the generic "External Client App" option is gone (an External Client App belongs to one Salesforce org, so a shared one could never work). The default is now called "Calumet connected App", and the "OAuth app" block sits above the OAuth "init" button, where you choose it before connecting. An org that still had the old option falls back to "Calumet connected App".
-- Sign-in with your own External Client App now works: the authorization request carries PKCE (S256), which Salesforce requires for these apps.
-- Calumet config > OAuth apps: the column and the introduction text that wrongly suggested one app could serve several orgs are removed for now.
-Logs
-- A log can now be followed as a chain: four views, the list first, with the names of flows, triggers and classes instead of Ids, and where in the code and who re-triggered each finding.
-- New Execution chain page, opened directly from the Logs menu, which is now split into four blocks with short labels and icons.
-- New Impact view: what a log wrote, and what it could have written, with the flows linked to the dependency graph.
-- "Copy for AI" copies the findings as Markdown, with their definition and blind spots.
-- The log content is escaped before it is displayed, and a 16-17 character token that is not an Id no longer breaks the name resolution.
-Field Catalog
-- Usage detection keeps only references that prove a use, shows the date the fill rate was measured and the last observed write; a multipicklist no longer has all its values flagged as orphans.
-- The export for the coming "Ask AI" arbitration (selection by track, size budget, one file per object) is in place; the screen follows in a later release.
-General
-- Preferences menu: grouped in blocks (Cache, Profiles, Theme) with readable labels and icons.
-- New "Text size" setting (Calumet config > Page display) for the generated pages.
-- Generated pages (Radar, Execution chain, Migration, Readiness, Stories, License, cockpits and the small pages) share one palette, one scale of text sizes and one set of fonts; white text on coloured badges is now readable.
-- Changing the screen list on a multi-DPI setup recreates the window, so drop-down lists no longer open 400 px off.
-- Access & Provenance: more room between the badges of the cards.
-- Dependency graph: reading it now needs a license, like building it. Screens that can work without it (Package builder, unused FlexiPages, WebLinks and Layouts, the field tabs) keep working, without the graph-based columns and verdicts. Licenses are on request for now, free subject to acceptance.
-- The MCP tools graph_health, object_deletion_plan, field_change_cost and org_zones answer "needs a Calumet license" instead of an empty result when no graph license is present.
-- A license that expires during a session now warns once and leaves a reminder badge; licensed features stay on until restart.
-- The updater now remembers the highest release installed and refuses an older signed release, even when the installed version cannot be read.
-
 v14.2 — 2026-10-19
 Description Debt
 - Writing descriptions is now one Ask AI card: a single AI session handles the whole campaign, heaviest fields first, with a trial on 10 fields before the full run.
@@ -513,5 +488,5 @@ General
 - New OAuth 2.0 authentication flow available alongside the classic SOAP login.
 [/history]
 [update]dist/Calumet.jar[/update]
-[exe]dist/Calumet-14.3.exe[/exe]
-[updaterVersion]4.1[/updaterVersion]
+[exe]dist/Calumet-14.2.exe[/exe]
+[updaterVersion]4.0[/updaterVersion]
