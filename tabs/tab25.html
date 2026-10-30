@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Storage — Calumet</title>
+<link rel="stylesheet" href="../shared.css">
+</head>
+<body class="tab-page">
+<div class="sum">
+  <div class="sum-title">
+    <h2>Storage</h2>
+    <span class="sum-badge">Tab 25</span>
+  </div>
+  <p class="sum-desc">
+    Track and visualize Salesforce org storage evolution over time. Extract daily record counts per object across a chosen date range, then chart their growth trends with interactive filtering and grouping.
+    <button class="cal-btn btn-d" style="margin-left:10px" onclick="document.getElementById('modal-kf').style.display='flex'">&#9733; Key features</button>
+  </p>
+</div>
+
+<div class="mockup-wrap">
+  <div class="mockup">
+
+    <!-- Top TabPane -->
+    <div class="m-tabpane" id="tp25">
+      <div class="m-tabbar">
+        <div class="m-tab act" onclick="sw('tp25',0)">Extract</div>
+        <div class="m-tab" onclick="sw('tp25',1)">Display</div>
+      </div>
+      <div class="m-body">
+
+        <!-- ══ Extract panel ══ -->
+        <div class="m-panel act" id="tp25-0">
+          <div class="anchor">
+
+            <!-- Row 1: available data range -->
+            <div class="hbox" style="gap:8px;align-items:center">
+              <span class="cal-lbl">Available data &mdash;</span>
+              <span class="cal-lbl" style="color:#1A5276;font-weight:700">start date : 2024-01-01</span>
+              <span class="cal-lbl">/</span>
+              <span class="cal-lbl" style="color:#1A5276;font-weight:700">end date : 2026-05-04</span>
+            </div>
+
+            <!-- Row 2: default object selection -->
+            <div class="hbox" style="gap:8px;align-items:center">
+              <span class="cal-lbl">Selected by default</span>
+              <input class="cal-tf cal-grow"
+                     value="Account,Contact,Case,Opportunity,Task"
+                     data-tip="Objects pre-checked when the chart opens in the Display tab"
+                     readonly>
+              <button class="cal-btn btn-d" data-tip="Edit the list of tracked objects">Edit selection</button>
+              <div class="vsep"></div>
+              <button class="cal-btn btn-d" data-tip="Choose which Salesforce objects to track">Choose objects</button>
+              <span class="cal-lbl" style="color:#1A5276;font-weight:700">126</span>
+            </div>
+
+            <!-- Row 3: extraction date range + Extract button -->
+            <div class="hbox" style="gap:8px;align-items:center">
+              <span class="cal-lbl">Extract from</span>
+              <input class="cal-tf" value="03/05/2026" style="width:110px"
+                     data-tip="Start date for the storage extraction" readonly>
+              <span class="cal-lbl">to</span>
+              <input class="cal-tf" value="04/05/2026" style="width:110px"
+                     data-tip="End date for the storage extraction" readonly>
+              <button class="cal-btn btn-b" data-tip="Run storage extraction for the selected period and objects">Extract</button>
+              <span style="color:#27ae60;font-size:11px;font-weight:700">Extraction complete</span>
+            </div>
+
+            <!-- Tracked objects ListView -->
+            <div style="border:1px solid #9AABBF;background:#fff;border-radius:3px;font-size:11px;flex:1;min-height:340px;overflow-y:auto"
+                 data-tip="Salesforce objects currently tracked for storage evolution">
+              <div style="padding:3px 8px;border-bottom:1px solid #e8f0f5;background:#f0f7fb">Account</div>
+              <div style="padding:3px 8px;border-bottom:1px solid #e8f0f5">Actions__c</div>
+              <div style="padding:3px 8px;border-bottom:1px solid #e8f0f5">AgentWork</div>
+              <div style="padding:3px 8px;border-bottom:1px solid #e8f0f5">AgentWorkSkill</div>
+              <div style="padding:3px 8px;border-bottom:1px solid #e8f0f5">AsyncFrontIssue__c</div>
+              <div style="padding:3px 8px;border-bottom:1px solid #e8f0f5">BonCommande__c</div>
+              <div style="padding:3px 8px;border-bottom:1px solid #e8f0f5">CS24__Claim_Interaction_Answer__c</div>
+              <div style="padding:3px 8px;border-bottom:1px solid #e8f0f5">CS24__Claim_Interaction_Request__c</div>
+              <div style="padding:3px 8px;border-bottom:1px solid #e8f0f5">CS24__Geocase__c</div>
+              <div style="padding:3px 8px;border-bottom:1px solid #e8f0f5">CS24__Interaction_Answer__c</div>
+              <div style="padding:3px 8px;border-bottom:1px solid #e8f0f5">CS24__Interaction_Request__c</div>
+              <div style="padding:3px 8px;border-bottom:1px solid #e8f0f5">CS24__Track_API__c</div>
+              <div style="padding:3px 8px;border-bottom:1px solid #e8f0f5">CS24__Vault_Attachment__c</div>
+              <div style="padding:3px 8px;border-bottom:1px solid #e8f0f5">Calendar</div>
+              <div style="padding:3px 8px;border-bottom:1px solid #e8f0f5">Case</div>
+              <div style="padding:3px 8px;border-bottom:1px solid #e8f0f5">CaseMilestone</div>
+              <div style="padding:3px 8px;border-bottom:1px solid #e8f0f5">CaseTeamMember</div>
+              <div style="padding:3px 8px;border-bottom:1px solid #e8f0f5;background:#dce8f0">ClosEtab__c</div>
+              <div style="padding:3px 8px;border-bottom:1px solid #e8f0f5">Code_secteur__c</div>
+              <div style="padding:3px 8px;border-bottom:1px solid #e8f0f5">Compte_Demat_Docusign__c</div>
+              <div style="padding:3px 8px;border-bottom:1px solid #e8f0f5">Contact</div>
+              <div style="padding:3px 8px;border-bottom:1px solid #e8f0f5">ContactValideur__c</div>
+              <div style="padding:3px 8px;border-bottom:1px solid #e8f0f5">Courrier__c</div>
+              <div style="padding:3px 8px;border-bottom:1px solid #e8f0f5">EmailMessage</div>
+              <div style="padding:3px 8px;border-bottom:1px solid #e8f0f5">Event</div>
+              <div style="padding:3px 8px;border-bottom:1px solid #e8f0f5">FeedComment</div>
+              <div style="padding:3px 8px;border-bottom:1px solid #e8f0f5">FeedItem</div>
+              <div style="padding:3px 8px;border-bottom:1px solid #e8f0f5">Opportunity</div>
+              <div style="padding:3px 8px;border-bottom:1px solid #e8f0f5">OpportunityLineItem</div>
+              <div style="padding:3px 8px;border-bottom:1px solid #e8f0f5">Task</div>
+              <div style="padding:3px 8px;border-bottom:1px solid #e8f0f5">User</div>
+              <div style="padding:3px 8px">WorkOrder</div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- ══ Display panel ══ -->
+        <div class="m-panel" id="tp25-1">
+          <div class="anchor">
+
+            <!-- Row 1: chart date range + Display evolution button -->
+            <div class="hbox" style="gap:8px;align-items:center">
+              <span class="cal-lbl">From</span>
+              <input class="cal-tf" value="01/01/2024" style="width:110px"
+                     data-tip="Start of the date range shown on the chart" readonly>
+              <span class="cal-lbl">to</span>
+              <input class="cal-tf" value="04/05/2026" style="width:110px"
+                     data-tip="End of the date range shown on the chart" readonly>
+              <div class="spacer"></div>
+              <button class="cal-btn btn-b" data-tip="Render the storage evolution chart for the selected date range">Display evolution</button>
+            </div>
+
+            <!-- Chart area mockup -->
+            <div style="display:flex;gap:10px;border:1px solid #9AABBF;border-radius:3px;background:#F8F8F8;min-height:420px;overflow:hidden">
+
+              <!-- Sidebar: object checkboxes -->
+              <div style="width:210px;flex-shrink:0;border-right:1px solid #9AABBF;padding:8px;overflow-y:auto;background:#fff">
+                <div style="font-size:12px;font-weight:700;color:#3d7a8a;margin-bottom:6px">Objects</div>
+                <div style="display:flex;gap:4px;margin-bottom:8px">
+                  <button class="cal-btn btn-d" style="font-size:10px;padding:2px 7px">Name &#8593;</button>
+                  <button class="cal-btn btn-d" style="font-size:10px;padding:2px 7px">Total &#8595;</button>
+                </div>
+                <!-- Checked objects (top by total) -->
+                <label style="display:flex;align-items:center;gap:4px;margin:2px 0;font-size:11px;cursor:default">
+                  <span style="width:10px;height:10px;border-radius:2px;background:#3d7a8a;flex-shrink:0;display:inline-block"></span>
+                  <input type="checkbox" checked disabled> EmailMessage (487,234)
+                </label>
+                <label style="display:flex;align-items:center;gap:4px;margin:2px 0;font-size:11px;cursor:default">
+                  <span style="width:10px;height:10px;border-radius:2px;background:#e74c3c;flex-shrink:0;display:inline-block"></span>
+                  <input type="checkbox" checked disabled> Task (352,108)
+                </label>
+                <label style="display:flex;align-items:center;gap:4px;margin:2px 0;font-size:11px;cursor:default">
+                  <span style="width:10px;height:10px;border-radius:2px;background:#2ecc71;flex-shrink:0;display:inline-block"></span>
+                  <input type="checkbox" checked disabled> Case (241,890)
+                </label>
+                <label style="display:flex;align-items:center;gap:4px;margin:2px 0;font-size:11px;cursor:default">
+                  <span style="width:10px;height:10px;border-radius:2px;background:#9b59b6;flex-shrink:0;display:inline-block"></span>
+                  <input type="checkbox" checked disabled> FeedItem (198,445)
+                </label>
+                <label style="display:flex;align-items:center;gap:4px;margin:2px 0;font-size:11px;cursor:default">
+                  <span style="width:10px;height:10px;border-radius:2px;background:#f39c12;flex-shrink:0;display:inline-block"></span>
+                  <input type="checkbox" checked disabled> Account (142,317)
+                </label>
+                <label style="display:flex;align-items:center;gap:4px;margin:2px 0;font-size:11px;cursor:default">
+                  <span style="width:10px;height:10px;border-radius:2px;background:#ddd;flex-shrink:0;display:inline-block"></span>
+                  <input type="checkbox" disabled> Contact (98,765)
+                </label>
+                <label style="display:flex;align-items:center;gap:4px;margin:2px 0;font-size:11px;cursor:default">
+                  <span style="width:10px;height:10px;border-radius:2px;background:#ddd;flex-shrink:0;display:inline-block"></span>
+                  <input type="checkbox" disabled> FeedComment (87,412)
+                </label>
+                <label style="display:flex;align-items:center;gap:4px;margin:2px 0;font-size:11px;cursor:default">
+                  <span style="width:10px;height:10px;border-radius:2px;background:#ddd;flex-shrink:0;display:inline-block"></span>
+                  <input type="checkbox" disabled> Opportunity (61,204)
+                </label>
+                <label style="display:flex;align-items:center;gap:4px;margin:2px 0;font-size:11px;cursor:default">
+                  <span style="width:10px;height:10px;border-radius:2px;background:#ddd;flex-shrink:0;display:inline-block"></span>
+                  <input type="checkbox" disabled> CS24__Claim_Interaction_Request__c (54,980)
+                </label>
+                <label style="display:flex;align-items:center;gap:4px;margin:2px 0;font-size:11px;cursor:default">
+                  <span style="width:10px;height:10px;border-radius:2px;background:#ddd;flex-shrink:0;display:inline-block"></span>
+                  <input type="checkbox" disabled> Courrier__c (48,331)
+                </label>
+                <label style="display:flex;align-items:center;gap:4px;margin:2px 0;font-size:11px;cursor:default">
+                  <span style="width:10px;height:10px;border-radius:2px;background:#ddd;flex-shrink:0;display:inline-block"></span>
+                  <input type="checkbox" disabled> WorkOrder (37,890)
+                </label>
+                <label style="display:flex;align-items:center;gap:4px;margin:2px 0;font-size:11px;cursor:default">
+                  <span style="width:10px;height:10px;border-radius:2px;background:#ddd;flex-shrink:0;display:inline-block"></span>
+                  <input type="checkbox" disabled> Event (29,115)
+                </label>
+                <label style="display:flex;align-items:center;gap:4px;margin:2px 0;font-size:11px;cursor:default">
+                  <span style="width:10px;height:10px;border-radius:2px;background:#ddd;flex-shrink:0;display:inline-block"></span>
+                  <input type="checkbox" disabled> BonCommande__c (18,742)
+                </label>
+                <label style="display:flex;align-items:center;gap:4px;margin:2px 0;font-size:11px;cursor:default">
+                  <span style="width:10px;height:10px;border-radius:2px;background:#ddd;flex-shrink:0;display:inline-block"></span>
+                  <input type="checkbox" disabled> CaseMilestone (12,607)
+                </label>
+                <label style="display:flex;align-items:center;gap:4px;margin:2px 0;font-size:11px;cursor:default">
+                  <span style="width:10px;height:10px;border-radius:2px;background:#ddd;flex-shrink:0;display:inline-block"></span>
+                  <input type="checkbox" disabled> User (8,492)
+                </label>
+              </div>
+
+              <!-- Chart area -->
+              <div style="flex:1;display:flex;flex-direction:column;padding:8px;min-width:0">
+                <!-- Toolbar -->
+                <div style="display:flex;align-items:center;gap:12px;padding-bottom:6px;margin-bottom:6px;border-bottom:1px solid #ddd;font-size:11px;flex-shrink:0">
+                  <span>Group by&nbsp;</span>
+                  <input type="number" value="7" style="width:46px;padding:1px 4px;font-size:11px;border:1px solid #9AABBF;border-radius:2px;text-align:center" readonly>
+                  <span>&nbsp;day(s)</span>
+                </div>
+
+                <!-- SVG line chart mockup -->
+                <div style="flex:1;position:relative;background:#fff;border:1px solid #e8f0f5;border-radius:2px;overflow:hidden;min-height:360px">
+                  <svg width="100%" height="100%" viewBox="0 0 700 360" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" style="display:block">
+
+                    <!-- Grid lines -->
+                    <g stroke="#e8eef2" stroke-width="1">
+                      <line x1="60" y1="20" x2="690" y2="20"/>
+                      <line x1="60" y1="72" x2="690" y2="72"/>
+                      <line x1="60" y1="124" x2="690" y2="124"/>
+                      <line x1="60" y1="176" x2="690" y2="176"/>
+                      <line x1="60" y1="228" x2="690" y2="228"/>
+                      <line x1="60" y1="280" x2="690" y2="280"/>
+                      <line x1="60" y1="332" x2="690" y2="332"/>
+                    </g>
+
+                    <!-- Y-axis labels -->
+                    <g font-size="9" fill="#888" text-anchor="end">
+                      <text x="56" y="24">500k</text>
+                      <text x="56" y="76">420k</text>
+                      <text x="56" y="128">340k</text>
+                      <text x="56" y="180">260k</text>
+                      <text x="56" y="232">180k</text>
+                      <text x="56" y="284">100k</text>
+                      <text x="56" y="336">20k</text>
+                    </g>
+
+                    <!-- X-axis labels -->
+                    <g font-size="9" fill="#888" text-anchor="middle" transform="translate(0,346)">
+                      <text x="90">Jan 24</text>
+                      <text x="170">Apr 24</text>
+                      <text x="250">Jul 24</text>
+                      <text x="330">Oct 24</text>
+                      <text x="410">Jan 25</text>
+                      <text x="490">Apr 25</text>
+                      <text x="570">Jul 25</text>
+                      <text x="650">Jan 26</text>
+                    </g>
+
+                    <!-- Axes -->
+                    <line x1="60" y1="332" x2="690" y2="332" stroke="#9AABBF" stroke-width="1"/>
+                    <line x1="60" y1="20" x2="60" y2="332" stroke="#9AABBF" stroke-width="1"/>
+
+                    <!-- EmailMessage — teal, highest -->
+                    <polyline fill="none" stroke="#3d7a8a" stroke-width="1.5"
+                      points="90,310 130,295 170,275 210,255 250,235 290,220 330,210 370,198 410,185 450,172 490,160 530,148 570,138 610,128 650,122 680,118"/>
+
+                    <!-- Task — red, second -->
+                    <polyline fill="none" stroke="#e74c3c" stroke-width="1.5"
+                      points="90,318 130,308 170,295 210,278 250,262 290,248 330,236 370,225 410,215 450,205 490,195 530,186 570,178 610,170 650,164 680,160"/>
+
+                    <!-- Case — green, third -->
+                    <polyline fill="none" stroke="#2ecc71" stroke-width="1.5"
+                      points="90,325 130,320 170,312 210,300 250,288 290,276 330,265 370,254 410,244 450,236 490,228 530,220 570,212 610,206 650,200 680,197"/>
+
+                    <!-- FeedItem — purple -->
+                    <polyline fill="none" stroke="#9b59b6" stroke-width="1.5"
+                      points="90,327 130,323 170,317 210,308 250,298 290,287 330,276 370,266 410,257 450,249 490,241 530,234 570,228 610,222 650,218 680,215"/>
+
+                    <!-- Account — orange -->
+                    <polyline fill="none" stroke="#f39c12" stroke-width="1.5"
+                      points="90,329 130,326 170,322 210,316 250,309 290,302 330,294 370,287 410,280 450,274 490,268 530,262 570,257 610,253 650,250 680,248"/>
+
+                    <!-- Tooltip popup mockup (static) -->
+                    <rect x="420" y="155" width="180" height="98" rx="4" fill="#fff" stroke="#9AABBF" stroke-width="1" filter="url(#shadow)"/>
+                    <defs>
+                      <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+                        <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#0003"/>
+                      </filter>
+                    </defs>
+                    <text x="428" y="171" font-size="9" fill="#555" font-weight="700">2026-03-13</text>
+                    <circle cx="428" cy="183" r="4" fill="#3d7a8a"/>
+                    <text x="436" y="186" font-size="9" fill="#3d7a8a">EmailMessage : 451,102</text>
+                    <circle cx="428" cy="198" r="4" fill="#e74c3c"/>
+                    <text x="436" y="201" font-size="9" fill="#e74c3c">Task : 341,780</text>
+                    <circle cx="428" cy="213" r="4" fill="#2ecc71"/>
+                    <text x="436" y="216" font-size="9" fill="#2ecc71">Case : 237,450</text>
+                    <circle cx="428" cy="228" r="4" fill="#9b59b6"/>
+                    <text x="436" y="231" font-size="9" fill="#9b59b6">FeedItem : 191,330</text>
+                    <circle cx="428" cy="243" r="4" fill="#f39c12"/>
+                    <text x="436" y="246" font-size="9" fill="#f39c12">Account : 139,870</text>
+                  </svg>
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div><!-- .mockup -->
+</div><!-- .mockup-wrap -->
+
+<script>
+function sw(id,idx){
+  var tp=document.getElementById(id);
+  tp.querySelectorAll('.m-tab').forEach(function(t,i){t.classList.toggle('act',i===idx)});
+  tp.querySelectorAll('.m-panel').forEach(function(p,i){p.classList.toggle('act',i===idx)});
+}
+</script>
+
+<!-- Key features modal -->
+<div id="modal-kf" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:999;align-items:center;justify-content:center" onclick="if(event.target===this)this.style.display='none'">
+  <div style="background:#fff;border-radius:8px;padding:28px 32px;max-width:540px;width:90%;color:#1a2a35;box-shadow:0 8px 32px rgba(0,0,0,.3)">
+    <h3 style="margin:0 0 14px;color:#2980b9">&#9733; Key features</h3>
+    <ul style="margin:0;padding-left:20px;line-height:1.8">
+      <li>Daily record-count extraction for up to 126+ Salesforce objects simultaneously</li>
+      <li>Date-range picker to extract only the days needed, avoiding full re-extraction</li>
+      <li>Persistent CSV storage per day: <code>evolStorage/YYYY-MM-DD.csv</code></li>
+      <li>Interactive Chart.js line chart with per-object toggle in the sidebar</li>
+      <li>"Group by N days" smoothing to reduce noise on long date ranges</li>
+      <li>Sidebar sorted by record total (highest first) or alphabetically</li>
+      <li>Pre-selected default objects saved per org, restored on next chart load</li>
+      <li>Progress feedback during extraction: remaining object count shown live</li>
+    </ul>
+    <div style="text-align:right;margin-top:18px">
+      <button class="cal-btn btn-d" onclick="document.getElementById('modal-kf').style.display='none'">Close</button>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

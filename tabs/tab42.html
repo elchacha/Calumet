@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>FlexiPages &amp; Profile Overrides — Calumet</title>
+<link rel="stylesheet" href="../shared.css">
+<style>
+  .legend-row { display:flex; flex-wrap:wrap; align-items:center; gap:6px; font-size:12px; color:#555; margin-bottom:4px; }
+  .legend-sep { color:#bbb; padding:0 4px; }
+  .dep-panel { min-width:170px; max-width:260px; border:1px solid #ddd; border-radius:6px; background:#fafafa; padding:10px 12px; display:flex; flex-direction:column; gap:6px; }
+  .dep-panel-title { font-weight:700; font-size:13px; color:#2c3e50; word-break:break-word; margin-bottom:4px; }
+  .dep-list { list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:4px; }
+  .dep-list li { font-size:12px; color:#34495e; background:#fff; border:1px solid #e0e0e0; border-radius:4px; padding:3px 8px; }
+  .dep-hint { font-style:italic; font-size:11px; color:#888; margin-top:6px; }
+  .flexi-split { display:flex; gap:8px; align-items:flex-start; }
+  .flexi-split .tbl-wrap { flex:1; min-width:0; overflow-x:auto; }
+</style>
+</head>
+<body class="tab-page">
+
+<!-- ───── Summary card ───── -->
+<div class="sum">
+  <div class="sum-title">
+    <h2>FlexiPages &amp; Profile Overrides</h2>
+    <span class="sum-badge">Tab 42</span>
+  </div>
+  <p class="sum-desc">
+    Audit Lightning pages (FlexiPages) and profile-level action overrides across your Salesforce org.
+    Color-coded FD and CL badges instantly reveal which pages carry legacy (non-LWC) components,
+    and unused FlexiPages are surfaced for safe cleanup.
+    <button class="cal-btn btn-d" style="margin-left:10px" onclick="document.getElementById('modal-kf').style.display='flex'">&#9733; Key features</button>
+  </p>
+</div>
+
+<!-- ───── Mockup ───── -->
+<div class="mockup-wrap">
+  <div class="mockup">
+
+    <div class="m-tabpane" id="tp42">
+      <div class="m-tabbar">
+        <div class="m-tab act"  onclick="sw('tp42',0)">Profile overrides</div>
+        <div class="m-tab"      onclick="sw('tp42',1)">FlexiPages</div>
+        <div class="m-tab"      onclick="sw('tp42',2)">Flexi Unused</div>
+      </div>
+      <div class="m-body">
+
+        <!-- ══════════════════════════════════════════════════════════
+             Tab 0 — Profile overrides
+             ══════════════════════════════════════════════════════════ -->
+        <div class="m-panel act" id="tp42-0">
+          <div class="vbox" style="gap:8px;padding:6px 0 0 0">
+
+            <!-- Toolbar row 1 -->
+            <div class="hbox" style="gap:8px;align-items:center">
+              <button class="cal-btn btn-b" data-tip="Load profile action overrides from cache or API">Extract</button>
+              <button class="cal-btn btn-d" data-tip="Clear cached data and re-fetch from Salesforce">ClearCache</button>
+              <span class="vsep"></span>
+              <span class="cal-lbl" style="font-size:12px;color:#888">Cache was last updated: 2026-04-22 09:14</span>
+            </div>
+
+            <!-- Toolbar row 2 — filters -->
+            <div class="hbox" style="gap:6px;align-items:center">
+              <span class="cal-lbl">AppLabel:</span>
+              <input class="cal-tf" style="width:120px" placeholder="filter&hellip;" readonly>
+              <span class="cal-lbl">Name:</span>
+              <input class="cal-tf" style="width:120px" placeholder="filter&hellip;" readonly>
+              <span class="cal-lbl">Object:</span>
+              <input class="cal-tf" style="width:120px" placeholder="filter&hellip;" readonly>
+              <span class="cal-lbl">Profile:</span>
+              <input class="cal-tf" style="width:120px" placeholder="filter&hellip;" readonly>
+            </div>
+
+            <!-- Legend -->
+            <div class="legend-row">
+              <span>FD : Full Dynamic &#8212;</span>
+              <span style="background:#e8f5e9;color:#2e7d32;border-radius:12px;padding:2px 8px;font-size:12px;font-weight:600">FD</span>
+              <span>= no legacy component</span>
+              <span style="background:#c8e6c9;color:#1b5e20;border-radius:12px;padding:2px 8px;font-size:12px;font-weight:600">1&#8211;3</span>
+              <span>= low</span>
+              <span style="background:#fff3e0;color:#e65100;border-radius:12px;padding:2px 8px;font-size:12px;font-weight:600">4&#8211;6</span>
+              <span>= medium</span>
+              <span style="background:#ffebee;color:#c62828;border-radius:12px;padding:2px 8px;font-size:12px;font-weight:600">&#8805;7</span>
+              <span>= high &nbsp;(number = non-Full-Dynamic components)</span>
+            </div>
+
+            <!-- Table -->
+            <div class="tbl-wrap">
+              <table class="cal-tbl">
+                <thead>
+                  <tr>
+                    <th style="width:90px">AppLabel</th>
+                    <th style="width:60px">FD</th>
+                    <th style="width:110px">Action</th>
+                    <th style="width:190px">Name</th>
+                    <th style="width:160px">Label</th>
+                    <th style="width:100px">Object</th>
+                    <th style="width:110px">RecordType</th>
+                    <th style="width:130px">Profile</th>
+                    <th>Layout</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Sales</td>
+                    <td><span style="background:#e8f5e9;color:#2e7d32;border-radius:12px;padding:2px 8px;font-size:12px;font-weight:600">FD</span></td>
+                    <td><span style="background:#e3f2fd;color:#1565c0;border-radius:12px;padding:2px 8px;font-size:12px">View</span></td>
+                    <td>Account_Sales_View</td>
+                    <td>Account Sales View</td>
+                    <td>Account</td>
+                    <td></td>
+                    <td>Sales_Rep</td>
+                    <td style="color:#888">&#8212;</td>
+                  </tr>
+                  <tr>
+                    <td>Sales</td>
+                    <td><span style="background:#c8e6c9;color:#1b5e20;border-radius:12px;padding:2px 8px;font-size:12px;font-weight:600">2</span></td>
+                    <td><span style="background:#fff3e0;color:#e65100;border-radius:12px;padding:2px 8px;font-size:12px">Edit</span></td>
+                    <td>Account_Sales_Edit</td>
+                    <td>Account Edit Form</td>
+                    <td>Account</td>
+                    <td></td>
+                    <td>Sales_Rep</td>
+                    <td>AccountLayout</td>
+                  </tr>
+                  <tr>
+                    <td>Service</td>
+                    <td><span style="background:#e8f5e9;color:#2e7d32;border-radius:12px;padding:2px 8px;font-size:12px;font-weight:600">FD</span></td>
+                    <td><span style="background:#e3f2fd;color:#1565c0;border-radius:12px;padding:2px 8px;font-size:12px">View</span></td>
+                    <td>Case_Service_View</td>
+                    <td>Case View</td>
+                    <td>Case</td>
+                    <td></td>
+                    <td>Service_Agent</td>
+                    <td style="color:#888">&#8212;</td>
+                  </tr>
+                  <tr>
+                    <td>Service</td>
+                    <td><span style="background:#fff3e0;color:#e65100;border-radius:12px;padding:2px 8px;font-size:12px;font-weight:600">5</span></td>
+                    <td><span style="background:#fff3e0;color:#e65100;border-radius:12px;padding:2px 8px;font-size:12px">Edit</span></td>
+                    <td>Case_Edit_Advanced</td>
+                    <td>Case Edit</td>
+                    <td>Case</td>
+                    <td></td>
+                    <td>Service_Manager</td>
+                    <td>CaseLayout</td>
+                  </tr>
+                  <tr>
+                    <td>Marketing</td>
+                    <td><span style="background:#c8e6c9;color:#1b5e20;border-radius:12px;padding:2px 8px;font-size:12px;font-weight:600">1</span></td>
+                    <td><span style="background:#e8f5e9;color:#2e7d32;border-radius:12px;padding:2px 8px;font-size:12px">New</span></td>
+                    <td>Lead_Marketing</td>
+                    <td>Lead Capture</td>
+                    <td>Lead</td>
+                    <td></td>
+                    <td>Marketing_User</td>
+                    <td style="color:#888">&#8212;</td>
+                  </tr>
+                  <tr>
+                    <td>HR</td>
+                    <td><span style="background:#e8f5e9;color:#2e7d32;border-radius:12px;padding:2px 8px;font-size:12px;font-weight:600">FD</span></td>
+                    <td><span style="background:#f5f5f5;color:#616161;border-radius:12px;padding:2px 8px;font-size:12px">Tab</span></td>
+                    <td>HR_HomePage</td>
+                    <td>HR Home</td>
+                    <td></td>
+                    <td></td>
+                    <td>HR_Admin</td>
+                    <td style="color:#888">&#8212;</td>
+                  </tr>
+                  <tr>
+                    <td>Finance</td>
+                    <td><span style="background:#ffebee;color:#c62828;border-radius:12px;padding:2px 8px;font-size:12px;font-weight:600">8</span></td>
+                    <td><span style="background:#ede7f6;color:#4527a0;border-radius:12px;padding:2px 8px;font-size:12px">Default</span></td>
+                    <td>Opportunity_Finance</td>
+                    <td>Opp Finance</td>
+                    <td>Opportunity</td>
+                    <td></td>
+                    <td>Finance_User</td>
+                    <td>OppLayout</td>
+                  </tr>
+                  <tr>
+                    <td>Admin</td>
+                    <td><span style="background:#e8f5e9;color:#2e7d32;border-radius:12px;padding:2px 8px;font-size:12px;font-weight:600">FD</span></td>
+                    <td><span style="background:#ede7f6;color:#4527a0;border-radius:12px;padding:2px 8px;font-size:12px">DefaultApp</span></td>
+                    <td>Admin_Dashboard</td>
+                    <td>Admin Panel</td>
+                    <td></td>
+                    <td></td>
+                    <td>System_Admin</td>
+                    <td style="color:#888">&#8212;</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <p class="dep-hint" style="margin:2px 0 0 0">Double-click a row to open in Salesforce</p>
+
+          </div>
+        </div><!-- /tab 0 -->
+
+        <!-- ══════════════════════════════════════════════════════════
+             Tab 1 — FlexiPages
+             ══════════════════════════════════════════════════════════ -->
+        <div class="m-panel" id="tp42-1">
+          <div class="vbox" style="gap:8px;padding:6px 0 0 0">
+
+            <!-- Toolbar row 1 -->
+            <div class="hbox" style="gap:8px;align-items:center">
+              <button class="cal-btn btn-b" data-tip="Load all FlexiPages from org">Extract</button>
+              <label class="cal-chk"><input type="checkbox" disabled> clearCache</label>
+              <span class="vsep"></span>
+              <span class="cal-lbl" style="font-size:12px;color:#888">Cache was last updated: 2026-04-22 09:14</span>
+            </div>
+
+            <!-- Toolbar row 2 — filter -->
+            <div class="hbox" style="gap:6px;align-items:center">
+              <span class="cal-lbl">Object:</span>
+              <input class="cal-tf" style="width:150px" placeholder="filter&hellip;" readonly>
+            </div>
+
+            <!-- Legend: FD | CL -->
+            <div class="legend-row">
+              <span>FD : FullDynamic &#8212;</span>
+              <span style="background:#e8f5e9;color:#2e7d32;border-radius:12px;padding:2px 8px;font-size:12px;font-weight:600">FD</span>
+              <span>= no legacy</span>
+              <span style="background:#c8e6c9;color:#1b5e20;border-radius:12px;padding:2px 8px;font-size:12px;font-weight:600">1&#8211;3</span>
+              <span>= low</span>
+              <span style="background:#fff3e0;color:#e65100;border-radius:12px;padding:2px 8px;font-size:12px;font-weight:600">4&#8211;6</span>
+              <span>= medium</span>
+              <span style="background:#ffebee;color:#c62828;border-radius:12px;padding:2px 8px;font-size:12px;font-weight:600">&#8805;7</span>
+              <span>= high</span>
+              <span class="legend-sep">|</span>
+              <span>CL : Classic Layout &#8212;</span>
+              <span style="background:#e8f5e9;color:#2e7d32;border-radius:12px;padding:2px 8px;font-size:12px;font-weight:600">&#8212;</span>
+              <span>= none</span>
+              <span style="background:#c8e6c9;color:#1b5e20;border-radius:12px;padding:2px 8px;font-size:12px;font-weight:600">1&#8211;3</span>
+              <span>= few</span>
+              <span style="background:#fff3e0;color:#e65100;border-radius:12px;padding:2px 8px;font-size:12px;font-weight:600">4&#8211;6</span>
+              <span>= several</span>
+              <span style="background:#ffebee;color:#c62828;border-radius:12px;padding:2px 8px;font-size:12px;font-weight:600">&#8805;7</span>
+              <span>= many</span>
+            </div>
+
+            <!-- Split: table + dep panel -->
+            <div class="flexi-split">
+              <div class="tbl-wrap">
+                <table class="cal-tbl">
+                  <thead>
+                    <tr>
+                      <th style="width:200px">Name</th>
+                      <th style="width:180px">Label</th>
+                      <th style="width:120px">Object</th>
+                      <th style="width:60px">FD</th>
+                      <th style="width:60px">CL</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>Account_Sales_View</td>
+                      <td>Account Sales View</td>
+                      <td>Account</td>
+                      <td><span style="background:#e8f5e9;color:#2e7d32;border-radius:12px;padding:2px 8px;font-size:12px;font-weight:600">FD</span></td>
+                      <td><span style="background:#e8f5e9;color:#2e7d32;border-radius:12px;padding:2px 8px;font-size:12px;font-weight:600">&#8212;</span></td>
+                    </tr>
+                    <tr>
+                      <td>Account_Sales_Edit</td>
+                      <td>Account Edit Form</td>
+                      <td>Account</td>
+                      <td><span style="background:#c8e6c9;color:#1b5e20;border-radius:12px;padding:2px 8px;font-size:12px;font-weight:600">2</span></td>
+                      <td><span style="background:#c8e6c9;color:#1b5e20;border-radius:12px;padding:2px 8px;font-size:12px;font-weight:600">1</span></td>
+                    </tr>
+                    <tr>
+                      <td>Case_Service_View</td>
+                      <td>Case View</td>
+                      <td>Case</td>
+                      <td><span style="background:#e8f5e9;color:#2e7d32;border-radius:12px;padding:2px 8px;font-size:12px;font-weight:600">FD</span></td>
+                      <td><span style="background:#e8f5e9;color:#2e7d32;border-radius:12px;padding:2px 8px;font-size:12px;font-weight:600">&#8212;</span></td>
+                    </tr>
+                    <tr style="background:#fff8f8">
+                      <td><strong>Case_Edit_Advanced</strong></td>
+                      <td>Case Edit</td>
+                      <td>Case</td>
+                      <td><span style="background:#fff3e0;color:#e65100;border-radius:12px;padding:2px 8px;font-size:12px;font-weight:600">5</span></td>
+                      <td><span style="background:#c8e6c9;color:#1b5e20;border-radius:12px;padding:2px 8px;font-size:12px;font-weight:600">3</span></td>
+                    </tr>
+                    <tr>
+                      <td>Lead_Marketing</td>
+                      <td>Lead Capture</td>
+                      <td>Lead</td>
+                      <td><span style="background:#c8e6c9;color:#1b5e20;border-radius:12px;padding:2px 8px;font-size:12px;font-weight:600">1</span></td>
+                      <td><span style="background:#e8f5e9;color:#2e7d32;border-radius:12px;padding:2px 8px;font-size:12px;font-weight:600">&#8212;</span></td>
+                    </tr>
+                    <tr>
+                      <td>Opportunity_Finance</td>
+                      <td>Opp Finance</td>
+                      <td>Opportunity</td>
+                      <td><span style="background:#ffebee;color:#c62828;border-radius:12px;padding:2px 8px;font-size:12px;font-weight:600">8</span></td>
+                      <td><span style="background:#ffebee;color:#c62828;border-radius:12px;padding:2px 8px;font-size:12px;font-weight:600">7</span></td>
+                    </tr>
+                    <tr>
+                      <td>HR_HomePage</td>
+                      <td>HR Home</td>
+                      <td style="color:#888">(none)</td>
+                      <td><span style="background:#e8f5e9;color:#2e7d32;border-radius:12px;padding:2px 8px;font-size:12px;font-weight:600">FD</span></td>
+                      <td><span style="background:#e8f5e9;color:#2e7d32;border-radius:12px;padding:2px 8px;font-size:12px;font-weight:600">&#8212;</span></td>
+                    </tr>
+                    <tr>
+                      <td>Admin_Dashboard</td>
+                      <td>Admin Panel</td>
+                      <td style="color:#888">(none)</td>
+                      <td><span style="background:#e8f5e9;color:#2e7d32;border-radius:12px;padding:2px 8px;font-size:12px;font-weight:600">FD</span></td>
+                      <td><span style="background:#e8f5e9;color:#2e7d32;border-radius:12px;padding:2px 8px;font-size:12px;font-weight:600">&#8212;</span></td>
+                    </tr>
+                  </tbody>
+                </table>
+                <p class="dep-hint">Double-click a row to open in Salesforce</p>
+              </div>
+
+              <!-- Layout Dependencies panel — showing selection: Case_Edit_Advanced -->
+              <div class="dep-panel">
+                <div class="dep-panel-title">Case_Edit_Advanced</div>
+                <div style="font-size:11px;color:#888;margin-bottom:2px">Layout Dependencies</div>
+                <ul class="dep-list">
+                  <li>CaseLayout</li>
+                  <li>CaseCompactLayout</li>
+                  <li>CaseMiniLayout</li>
+                </ul>
+              </div>
+            </div>
+
+          </div>
+        </div><!-- /tab 1 -->
+
+        <!-- ══════════════════════════════════════════════════════════
+             Tab 2 — Flexi Unused
+             ══════════════════════════════════════════════════════════ -->
+        <div class="m-panel" id="tp42-2">
+          <div class="vbox" style="gap:8px;padding:6px 0 0 0">
+
+            <!-- Toolbar -->
+            <div class="hbox" style="gap:8px;align-items:center">
+              <button class="cal-btn btn-b" data-tip="Find FlexiPages not assigned to any app or profile">Extract</button>
+              <label class="cal-chk"><input type="checkbox" disabled> clearCache</label>
+              <span class="vsep"></span>
+              <span class="cal-lbl" style="font-size:12px;color:#888">Cache was last updated: 2026-04-22 09:14</span>
+            </div>
+
+            <!-- Table -->
+            <div class="tbl-wrap">
+              <table class="cal-tbl">
+                <thead>
+                  <tr>
+                    <th style="width:200px">Name</th>
+                    <th style="width:190px">Label</th>
+                    <th style="width:110px">Type</th>
+                    <th style="width:130px">Last Modified</th>
+                    <th style="width:150px">Object Related</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Legacy_OrderPage</td>
+                    <td>Order Legacy Page</td>
+                    <td>AppPage</td>
+                    <td style="color:#888">2024-11-03</td>
+                    <td>Order</td>
+                  </tr>
+                  <tr>
+                    <td>Old_ContactView</td>
+                    <td>Contact Old View</td>
+                    <td>RecordPage</td>
+                    <td style="color:#888">2025-01-14</td>
+                    <td>Contact</td>
+                  </tr>
+                  <tr>
+                    <td>Test_FlexiPage</td>
+                    <td>Test Page</td>
+                    <td>AppPage</td>
+                    <td style="color:#888">2025-03-08</td>
+                    <td style="color:#888">&#8212;</td>
+                  </tr>
+                  <tr>
+                    <td>Deprecated_CasePage</td>
+                    <td>Case Deprecated</td>
+                    <td>RecordPage</td>
+                    <td style="color:#888">2024-09-21</td>
+                    <td>Case</td>
+                  </tr>
+                  <tr>
+                    <td>Archive_LeadPage</td>
+                    <td>Lead Archive</td>
+                    <td>RecordPage</td>
+                    <td style="color:#888">2024-12-05</td>
+                    <td>Lead</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <p class="dep-hint" style="margin:2px 0 0 0">Double-click a row to open in Salesforce</p>
+
+          </div>
+        </div><!-- /tab 2 -->
+
+      </div><!-- /m-body -->
+    </div><!-- /m-tabpane -->
+
+  </div><!-- /mockup -->
+</div><!-- /mockup-wrap -->
+
+<!-- ───── Key features modal ───── -->
+<div id="modal-kf" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:999;align-items:center;justify-content:center" onclick="if(event.target===this)this.style.display='none'">
+  <div style="background:#fff;border-radius:8px;padding:28px 32px;max-width:540px;width:90%;color:#1a2a35;box-shadow:0 8px 32px rgba(0,0,0,.3)">
+    <h3 style="margin:0 0 14px;color:#2980b9">&#9733; Key features</h3>
+    <ul style="margin:0;padding-left:20px;line-height:1.8">
+      <li>Analyze all Lightning pages across profiles and detect legacy (non-LWC) components via the FD score</li>
+      <li>Color-coded FD/CL badges instantly identify problematic pages (green = clean, red = critical)</li>
+      <li>Layout Dependencies panel shows which classic layouts a FlexiPage still relies on, updated on row selection</li>
+      <li>Detect unused FlexiPages never assigned to any app or profile — safe cleanup candidates</li>
+      <li>Double-click any row to open the Lightning page directly in Salesforce Setup</li>
+      <li>Filterable by AppLabel, Name, Object, or Profile for quick drill-down across large orgs</li>
+    </ul>
+    <div style="text-align:right;margin-top:18px">
+      <button class="cal-btn btn-d" onclick="document.getElementById('modal-kf').style.display='none'">Close</button>
+    </div>
+  </div>
+</div>
+
+<script>
+function sw(id,idx){
+  var tp=document.getElementById(id);
+  tp.querySelectorAll('.m-tab').forEach(function(t,i){t.classList.toggle('act',i===idx)});
+  tp.querySelectorAll('.m-panel').forEach(function(p,i){p.classList.toggle('act',i===idx)});
+}
+</script>
+</body>
+</html>
