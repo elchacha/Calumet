@@ -1,5 +1,46 @@
-[version]v14.3.1[/version]
+[version]v14.4[/version]
 [history]
+v14.4 — 2026-11-15
+New screens
+- Unused Queues (licensed) — lists the queues nobody uses, crossing what names a queue in the metadata (assignment, auto-response and escalation rules, Email-to-Case / Web-to-Case settings, code) with what actually goes through it. A "Check transit" button verifies a single object on demand.
+- Release Updates (free) — every pending Salesforce Release Update with what it touches in your org, one decision per update (ready / not ready, and why), and a link from an affected component to its referents in the dependency graph.
+Object Activity (deletion package)
+- The deletion brief gains an ORG FACTS section: record counts, scheduled jobs, report usage, external API callers, and public / private reports built on the report types concerned. A fact Calumet could not read is never written as 0.
+- The AI review prompt reads these facts as evidence; the former "UNVERIFIED" verdict becomes "ORG-CHECK", and each ORG-CHECK row carries a question ID, with a table of the open questions.
+- Fields of an object being deleted are now checked for blockers too; Roll-Up Summary fields that sum the batch are removed automatically first; FlexiPage field instances are edited out automatically; a new Blocking column separates blocking referents from the ones Salesforce repairs itself.
+- A formula that would be neutralised gets a proposed constant (not imposed), and the brief names what reads it.
+Dep Graph
+- More accurate graph: SOQL traversed lookups, FROM aliases and subquery fields; Visualforce child relationships, iteration variables and compound merge expressions; assignment / auto-response / escalation rules, queues, Case and Lead settings; Process Builder.
+- The graph now records what its build was able to see, and scheduled jobs are refreshed on every build.
+- Explorer: the "Filter by type" panel is folded by default and clearly visible; viewer badges are larger and readable.
+- After updating, rebuild your graph ("Recompute from org"): the graph format changed and a full rebuild is required.
+DataSeeding
+- New Masking tab and masking at export (off by default): personal data is replaced with consistent fake values, a "Preview masking" button shows the result before export, and a masking report lists what stayed in clear.
+- Import checks picklist values refused by the target, lists the values to add, and accepts a picklist mapping file.
+- An empty numeric cell stays empty when the field allows it.
+Org Discovery
+- New merge report (licensed): compares two orgs to prepare an org merge.
+Field Catalog
+- New "Ask AI..." arbitration: a prompt with locally pseudonymised entity names, then "Load the AI answer" and a "Review the proposals" window to accept or reject each proposal. A fill-rate measure now stays fresh 180 days.
+Formula
+- Screen redesigned: syntax is checked as you type without the org, fields and picklist values are checked against the describe, a condition evaluates the formula on 10 records, and a safe suggestion is applied in one click (Ctrl+Z undoes it).
+Access & Provenance
+- Accounts view: Android / iOS filters, clickable mixed use, remaining count, sort and one-click reset; the coverage bar shows the login days kept, and the "Sync with org" result opens as a readable page.
+Limits
+- New "Platform Event subscribers" sub-tab, with a warning on direct subscriptions to a Platform Event.
+Control (Deploy Check)
+- Ask AI now includes the package.xml, the new components and their status in the prompt.
+Deploy
+- A warning before deploying permission sets you have not reviewed in the diff; the diff popup can be resized.
+Connection
+- The OAuth app choice is centred on your own External Client App, and a deployable External Client App template can be exported from the screen.
+General
+- A tab opened with Ctrl+K can be kept in your profile ("Keep in <profile>" banner or right-click); the shortcut list is now a readable page and includes Ctrl+K and Ctrl+R; arrow keys and Enter work in the command palette.
+- SOQL: an aggregate without alias (count(Id)) is no longer shown as an empty column.
+- Double-clicking an Id no longer fails on large orgs.
+- Uses sfd when installed for org list and project conversions (falls back to sf).
+- AI sessions: proposed session name, progress bar while preparing, and Calumet detects when the AI has finished.
+
 v14.3.1 — 2026-10-29
 Connection
 - The OAuth app choice "Calumet connected App" is always shown when you configure an org, instead of being hidden behind a global setting.
@@ -517,5 +558,5 @@ General
 - New OAuth 2.0 authentication flow available alongside the classic SOAP login.
 [/history]
 [update]dist/Calumet.jar[/update]
-[exe]dist/Calumet-14.3.1.exe[/exe]
+[exe]dist/Calumet-14.4.exe[/exe]
 [updaterVersion]4.1[/updaterVersion]

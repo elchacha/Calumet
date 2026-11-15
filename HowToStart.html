@@ -138,6 +138,30 @@ body.gs{display:block;height:auto;min-height:100vh;overflow:auto;background:#162
   .gs-hero{flex-direction:column-reverse;text-align:center}
   .mk-lbl{flex-basis:100%}
 }
+.eca-h{color:#fff;font-size:17px;margin:22px 0 10px}
+.eca-flow{display:flex;align-items:stretch;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+.eca-box{flex:1;min-width:130px;background:#16283d;border:1px solid #2e4a68;border-radius:9px;padding:9px 11px;font-size:13px;color:#cfe3f5;line-height:1.4}
+.eca-box b{display:inline-flex;width:20px;height:20px;border-radius:50%;background:#2ea4c9;color:#04141f;align-items:center;justify-content:center;font-size:11px;margin-right:7px}
+.eca-box small{display:block;color:#8fb0cc;font-size:11.5px;margin-top:3px}
+.eca-arr{align-self:center;color:#5d86a8;font-size:18px}
+.demo{background:#101f31;border:1px solid #2e4a68;border-radius:11px;padding:12px 14px;margin:10px 0 16px}
+.demo-top{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.demo-tag{background:#e6a23c;color:#3a2606;font-weight:800;font-size:11px;border-radius:4px;padding:2px 7px}
+.demo-title{color:#fff;font-weight:700;font-size:14.5px}
+.demo-count{margin-left:auto;color:#8fb0cc;font-size:12px}
+.demo-frame{display:none}
+.demo-cap{color:#cfe3f5;font-size:13.5px;line-height:1.5;margin:6px 2px 4px}
+.demo-two{display:flex;gap:10px;align-items:stretch;flex-wrap:wrap}
+.demo-card{flex:1;min-width:250px;background:#F4F5F6;border:1px solid #8295ab;border-radius:8px;padding:10px 14px;color:#2a3a45;font-size:12.5px}
+.demo-card h4{color:#1A5276;font-size:13.5px;margin-bottom:6px}
+.demo-card code{background:#e3e7ea;border-radius:3px;padding:1px 5px;font-size:11.5px;color:#13344a;word-break:break-all}
+.demo-ol{margin:0;padding-left:20px;line-height:1.7}
+.demo-or{align-self:center;color:#e6a23c;font-weight:800}
+.demo-nav{display:flex;align-items:center;justify-content:space-between;margin-top:10px}
+.demo-dots{display:flex;gap:7px}
+.demo-dots span{width:10px;height:10px;border-radius:50%;background:#2e4a68;cursor:pointer}
+.demo-dots span.on{background:#2ea4c9}
+.demo-nav button:disabled{opacity:.4;cursor:default}
 </style>
 </head>
 <body class="gs">
@@ -326,9 +350,22 @@ body.gs{display:block;height:auto;min-height:100vh;overflow:auto;background:#162
             <span class="mk-note">your Salesforce login</span>
           </div>
           <div class="mk-row">
+            <div class="mk-lbl">OAuth app :</div>
+            <label class="mk-radio mk-hi"><input type="radio" name="oa" disabled checked> External Client App</label>
+            <label class="mk-radio"><input type="radio" name="oa" disabled> Calumet connected App (older orgs)</label>
+            <span class="mk-pin">5</span>
+            <span class="mk-note">a recent org needs its own <b>External Client App</b> &mdash; see below</span>
+          </div>
+          <div class="mk-row">
+            <div class="mk-lbl"></div>
+            <select class="cal-cb" style="width:180px"><option>Calumet</option></select>
+            <button class="cal-btn btn-d">New app</button>
+            <button class="cal-btn btn-d mk-hi">ECA template...</button>
+          </div>
+          <div class="mk-row">
             <div class="mk-lbl">OAuth :</div>
             <button class="cal-btn btn-d mk-hi">init</button>
-            <span class="mk-pin">5</span>
+            <span class="mk-pin">6</span>
             <span class="mk-note">click to authorize (OAuth2 browser login)</span>
             <label class="cal-chk" style="margin-left:8px"><input type="checkbox" disabled> quickLogin</label>
           </div>
@@ -360,7 +397,7 @@ body.gs{display:block;height:auto;min-height:100vh;overflow:auto;background:#162
             <select class="cal-cb mk-hi go" style="width:130px"><option>&#9632; #498446</option></select>
             <span style="font-size:12px;color:#2a3a45;margin-left:6px">env txt color :</span>
             <select class="cal-cb mk-hi go" style="width:90px"><option>White</option></select>
-            <span class="mk-pin go">6</span>
+            <span class="mk-pin go">7</span>
             <span class="mk-note go">once <b>&#10003; connected</b>, pick a color, then <b>Save</b></span>
           </div>
           <div class="mk-row" style="justify-content:center;margin-top:14px;gap:14px">
@@ -368,6 +405,125 @@ body.gs{display:block;height:auto;min-height:100vh;overflow:auto;background:#162
           </div>
         </div>
       </div>
+
+      <div class="gs-callout">
+        <strong>Key point &mdash; the OAuth app.</strong> Salesforce no longer lets recent orgs use the Connected App
+        Calumet used to ship. Calumet now signs in through an <strong>External Client App (ECA)</strong> that
+        <em>you</em> create in your org, once. An org that already uses the Calumet connected App keeps working
+        &mdash; leave <em>Calumet connected App (older orgs)</em> selected.
+      </div>
+
+      <h3 class="eca-h">Connect with an External Client App &mdash; 4 steps</h3>
+      <div class="eca-flow">
+        <div class="eca-box"><b>1</b>Choose <em>External Client App</em></div><span class="eca-arr">&rarr;</span>
+        <div class="eca-box"><b>2</b>Get an ECA in your org<small>from Setup <u>or</u> Calumet's template</small></div><span class="eca-arr">&rarr;</span>
+        <div class="eca-box"><b>3</b><em>New app</em>: paste its Key &amp; Secret, <em>Save</em></div><span class="eca-arr">&rarr;</span>
+        <div class="eca-box"><b>4</b>Click <em>init</em> and log in</div>
+      </div>
+
+      <div class="demo" id="eca-demo">
+        <div class="demo-top"><span class="demo-tag">DEMO</span>
+          <span class="demo-title" id="demo-title"></span>
+          <span class="demo-count" id="demo-count"></span></div>
+
+        <div class="demo-frame" data-title="Choose External Client App">
+          <div class="mk"><div class="mk-bar peach">Env config<span class="mk-win">&#8211; &#9633; &#10005;</span></div>
+            <div class="mk-body">
+              <div class="mk-row"><div class="mk-lbl">OAuth app :</div>
+                <label class="mk-radio mk-hi"><input type="radio" disabled checked> External Client App (create one in your org)</label>
+                <label class="mk-radio"><input type="radio" disabled> Calumet connected App (older orgs)</label></div>
+              <div class="mk-row"><div class="mk-lbl"></div>
+                <select class="cal-cb" style="width:180px" disabled><option>&nbsp;</option></select>
+                <button class="cal-btn btn-d">New app</button><button class="cal-btn btn-d">ECA template...</button></div>
+            </div></div>
+          <p class="demo-cap">In <b>Env config</b>, select <b>External Client App</b>. The picker below it is empty: you have no app registered yet.</p>
+        </div>
+
+        <div class="demo-frame" data-title="Get an ECA in your org (two ways)">
+          <div class="demo-two">
+            <div class="demo-card"><h4>A &mdash; Create it in Setup</h4>
+              <ol class="demo-ol">
+                <li>Setup &rarr; <b>External Client App Manager</b> &rarr; <b>New External Client App</b></li>
+                <li>Name it <code>Calumet</code>, give a contact email</li>
+                <li>Tick <b>Enable OAuth</b>, callback URL <code>http://localhost:8011/callback</code></li>
+                <li>Scopes: <b>Api</b>, <b>Refresh Token</b>, <b>Web</b></li>
+                <li>Tick <b>Require PKCE</b> and <b>Require Secret for Refresh Token</b>, then <b>Create</b></li>
+              </ol></div>
+            <div class="demo-or">or</div>
+            <div class="demo-card"><h4>B &mdash; Use Calumet's template</h4>
+              <ol class="demo-ol">
+                <li>In Env config, click <button class="cal-btn btn-d mk-hi" style="display:inline">ECA template...</button></li>
+                <li>Pick a folder: Calumet writes <code>CalumetEca/</code> (Metadata API format) and opens it</li>
+                <li>Deploy it:<br><code>sf project deploy start --manifest package.xml --target-org &lt;alias&gt;</code></li>
+                <li>Everything above is already set in the files</li>
+              </ol></div>
+          </div>
+          <p class="demo-cap">Either way you end up with an app named <b>Calumet</b> in the org you want to connect. One app per org (a sandbox needs its own).</p>
+        </div>
+
+        <div class="demo-frame" data-title="Copy the Consumer Key and Secret">
+          <div class="mk"><div class="mk-bar blue">Salesforce Setup &mdash; External Client App Manager &rarr; Calumet &rarr; Settings &rarr; OAuth Settings</div>
+            <div class="mk-body">
+              <div class="mk-row"><div class="mk-lbl">Consumer Key :</div>
+                <input class="cal-tf mk-grow" value="3MVG9...XyZ" readonly><button class="cal-btn btn-d mk-hi">Copy</button></div>
+              <div class="mk-row"><div class="mk-lbl">Consumer Secret :</div>
+                <input class="cal-tf mk-grow" value="&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;" readonly><button class="cal-btn btn-d mk-hi">Copy</button></div>
+            </div></div>
+          <p class="demo-cap">Click <b>Consumer Key and Secret</b>: Salesforce sends you a verification code, then shows both values. Copy them &mdash; Calumet stores the secret encrypted with your master key.</p>
+        </div>
+
+        <div class="demo-frame" data-title="New app: paste the Key and Secret, then Save">
+          <div class="mk" style="max-width:520px"><div class="mk-bar blue">New OAuth app<span class="mk-win">&#8211; &#9633; &#10005;</span></div>
+            <div class="mk-body">
+              <div class="mk-row"><div class="mk-lbl">Name :</div><input class="cal-tf mk-grow mk-hi" value="Calumet - MyOrg" readonly></div>
+              <div class="mk-row"><div class="mk-lbl">Kind :</div>
+                <label class="mk-radio"><input type="radio" disabled> Connected App</label>
+                <label class="mk-radio"><input type="radio" disabled checked> External Client App</label></div>
+              <div class="mk-row"><div class="mk-lbl">Consumer Key :</div><input class="cal-tf mk-grow mk-hi" value="3MVG9...XyZ" readonly></div>
+              <div class="mk-row"><div class="mk-lbl">Consumer Secret :</div><input class="cal-tf mk-grow mk-hi" value="&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;" readonly></div>
+              <div class="mk-row" style="justify-content:flex-end"><button class="cal-btn btn-g mk-hi go">Save</button><button class="cal-btn btn-d">Close</button></div>
+            </div></div>
+          <p class="demo-cap">Click <b>New app</b> in Env config. Give it a name you will recognise, keep <b>External Client App</b>, paste the Key and the Secret, then <b>Save</b>. The new app is selected for you.</p>
+        </div>
+
+        <div class="demo-frame" data-title="init: log in once">
+          <div class="mk"><div class="mk-bar peach">Env config<span class="mk-win">&#8211; &#9633; &#10005;</span></div>
+            <div class="mk-body">
+              <div class="mk-row"><div class="mk-lbl">OAuth app :</div>
+                <label class="mk-radio"><input type="radio" disabled checked> External Client App</label>
+                <select class="cal-cb" style="width:180px" disabled><option>Calumet - MyOrg</option></select></div>
+              <div class="mk-row"><div class="mk-lbl">OAuth :</div>
+                <button class="cal-btn btn-d mk-hi go">init</button>
+                <span class="mk-redhint" style="margin-left:14px">&#10006; not connected</span>
+                <span class="mk-note go">&rarr; <b>&#10003; connected</b> after the browser login</span></div>
+            </div></div>
+          <p class="demo-cap">Click <b>init</b>: your browser opens the Salesforce login, you accept, and Calumet turns <b>&#10003; connected</b>. Then pick the colours and <b>Save</b> (pin 7 above). You will not be asked again: Calumet keeps the refresh token.</p>
+        </div>
+
+        <div class="demo-nav">
+          <button class="cal-btn btn-d" id="demo-prev">&larr; Previous</button>
+          <span class="demo-dots" id="demo-dots"></span>
+          <button class="cal-btn btn-g" id="demo-next">Next &rarr;</button>
+        </div>
+      </div>
+      <script>
+      (function(){
+        var root=document.getElementById('eca-demo'); if(!root) return;
+        var frames=root.querySelectorAll('.demo-frame'), i=0;
+        var title=document.getElementById('demo-title'), count=document.getElementById('demo-count');
+        var dots=document.getElementById('demo-dots'), prev=document.getElementById('demo-prev'), next=document.getElementById('demo-next');
+        for(var k=0;k<frames.length;k++){(function(n){var d=document.createElement('span');d.onclick=function(){show(n);};dots.appendChild(d);})(k);}
+        function show(n){
+          i=Math.max(0,Math.min(frames.length-1,n));
+          for(var k=0;k<frames.length;k++){frames[k].style.display=k===i?'block':'none';dots.children[k].className=k===i?'on':'';}
+          title.textContent=(i+1)+'. '+frames[i].getAttribute('data-title');
+          count.textContent=(i+1)+' / '+frames.length;
+          prev.disabled=i===0; next.disabled=i===frames.length-1;
+        }
+        prev.onclick=function(){show(i-1);}; next.onclick=function(){show(i+1);};
+        show(0);
+      })();
+      </script>
 
       <div class="gs-callout">
         <strong>Key point &mdash; <code>org type</code>.</strong> A <strong>Production</strong> or
