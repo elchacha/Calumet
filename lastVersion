@@ -1,5 +1,11 @@
-[version]v14.4[/version]
+[version]v14.4.1[/version]
 [history]
+v14.4.1 — 2026-11-15
+New screens
+No new screens in this release.
+General
+- macOS downloads are available again (Apple Silicon and Intel). Same content as v14.4; see the v14.4 notes below. If you are coming from v14.3.1 or earlier, rebuild your dependency graph after updating.
+
 v14.4 — 2026-11-15
 New screens
 - Unused Queues (licensed) — lists the queues nobody uses, crossing what names a queue in the metadata (assignment, auto-response and escalation rules, Email-to-Case / Web-to-Case settings, code) with what actually goes through it. A "Check transit" button verifies a single object on demand.
@@ -558,5 +564,5 @@ General
 - New OAuth 2.0 authentication flow available alongside the classic SOAP login.
 [/history]
 [update]dist/Calumet.jar[/update]
-[exe]dist/Calumet-14.4.exe[/exe]
+[exe]dist/Calumet-14.4.1.exe[/exe]
 [updaterVersion]4.1[/updaterVersion]

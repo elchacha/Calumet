@@ -1,5 +1,18 @@
 # Calumet — Changelog
 
+## v14.4.1 — 2026-11-15
+
+### New screens
+
+No new screens in this release.
+
+### Improvements
+
+**General**
+- macOS downloads are available again (Apple Silicon and Intel). Same content as v14.4; see the v14.4 notes below. If you are coming from v14.3.1 or earlier, rebuild your dependency graph after updating.
+
+---
+
 ## v14.4 — 2026-11-15
 
 ### New screens
