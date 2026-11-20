@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Fields Not Used &mdash; Calumet</title>
+<link rel="stylesheet" href="../shared.css">
+</head>
+<body class="tab-page">
+
+<div class="sum">
+  <div class="sum-title">
+    <h2>Fields Not Used</h2>
+    <span class="sum-badge">Tab 51</span>
+  </div>
+  <p class="sum-desc">
+    Analyse custom field usage across objects. Identify fields never populated, with creation dates and modification history. Managed (packaged) fields are excluded from this analysis.
+    <button class="cal-btn btn-d" style="margin-left:10px" onclick="document.getElementById('modal-kf').style.display='flex'">&#9733; Key features</button>
+  </p>
+</div>
+
+<div class="mockup-wrap">
+  <div class="mockup">
+
+    <!-- Toolbar row -->
+    <div class="hbox" style="gap:8px;align-items:center;padding:8px 10px;background:#F0F4F7;border-bottom:1px solid #9AABBF;">
+      <button class="cal-btn btn-b">Search</button>
+      <span class="cal-lbl" style="font-weight:700" data-tip="12 shown out of 41 fields found. Active filters: hide formulaFields is ticked (29 formula fields hidden)">12 / 41  (29 formula fields hidden)</span>
+      <label class="cal-chk" data-tip="Hides formula fields, except the ones a downloaded report reads">
+        <input type="checkbox" checked disabled> hide formulaFields
+      </label>
+      <input class="cal-tf" style="width:300px" readonly placeholder="Filter (use ; to combine terms)">
+      <span class="spacer"></span>
+      <button class="cal-btn btn-o" data-tip="Exports exactly what the table shows now, with the active filters written next to the rows">Export to json</button>
+    </div>
+
+    <!-- Main table -->
+    <div style="overflow-x:auto;">
+      <table class="cal-tbl" style="min-width:1500px">
+        <thead>
+          <tr>
+            <th>Object</th><th>Name</th><th>Label</th><th style="width:140px;text-align:center">Type</th>
+            <th style="text-align:center">Usage</th><th style="text-align:center">Percent</th>
+            
+            
+            
+            <th style="text-align:center">CreatedDate</th><th style="text-align:center">Created By</th>
+            <th style="width:130px;text-align:center">LastModifyDate</th><th style="text-align:center">LastModifyBy</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Account</td><td>Legacy_Code__c</td><td>Legacy Code</td>
+            <td style="text-align:center"><span style="display:inline-block;background:#2980b9;color:#fff;padding:2px 8px;border-radius:10px;font-size:11px;white-space:nowrap;">Text(40)</span></td>
+            <td style="text-align:center">0</td>
+            <td style="text-align:center">0.0</td>
+            
+            
+            
+            <td style="text-align:center">2018-03-12 17:34:44</td><td style="text-align:center">Admin User</td>
+            <td style="text-align:center"><span style="display:inline-block;background:#2f855a;color:#fff;padding:2px 8px;border-radius:10px;font-size:11px;white-space:nowrap;">2019-02-14</span></td><td style="text-align:center">Admin User</td>
+          </tr>
+          <tr style="background:#f9fafb">
+            <td>Account</td><td>Region_Segment__c</td><td>Region Segment</td>
+            <td style="text-align:center"><span style="display:inline-block;background:#d35400;color:#fff;padding:2px 8px;border-radius:10px;font-size:11px;white-space:nowrap;">Picklist</span></td>
+            <td style="text-align:center">18420</td>
+            <td style="text-align:center">92.1</td>
+            
+            
+            
+            <td style="text-align:center">2020-05-18 09:12:03</td><td style="text-align:center">Admin User</td>
+            <td style="text-align:center"><span style="display:inline-block;background:#c53030;color:#fff;padding:2px 8px;border-radius:10px;font-size:11px;white-space:nowrap;">2026-09-02</span></td><td style="text-align:center">Admin User</td>
+          </tr>
+          <tr>
+            <td>Account</td><td>Tier_Notes__c</td><td>Tier Notes</td>
+            <td style="text-align:center"><span style="display:inline-block;background:#2980b9;color:#fff;padding:2px 8px;border-radius:10px;font-size:11px;white-space:nowrap;">LT(32768)</span></td>
+            <td style="text-align:center">14</td>
+            <td style="text-align:center">0.1</td>
+            
+            
+            
+            <td style="text-align:center">2021-02-09 14:20:55</td><td style="text-align:center">Jane Smith</td>
+            <td style="text-align:center"><span style="display:inline-block;background:#b7791f;color:#fff;padding:2px 8px;border-radius:10px;font-size:11px;white-space:nowrap;">2022-06-30</span></td><td style="text-align:center">Jane Smith</td>
+          </tr>
+          <tr style="background:#f9fafb">
+            <td>Contact</td><td>Preferred_Channel__c</td><td>Preferred Channel</td>
+            <td style="text-align:center"><span style="display:inline-block;background:#d35400;color:#fff;padding:2px 8px;border-radius:10px;font-size:11px;white-space:nowrap;">Picklist</span></td>
+            <td style="text-align:center">6210</td>
+            <td style="text-align:center">61.8</td>
+            
+            
+            
+            <td style="text-align:center">2022-03-04 08:09:04</td><td style="text-align:center">Jane Smith</td>
+            <td style="text-align:center"><span style="display:inline-block;background:#dd6b20;color:#fff;padding:2px 8px;border-radius:10px;font-size:11px;white-space:nowrap;">2025-08-21</span></td><td style="text-align:center">Admin User</td>
+          </tr>
+          <tr>
+            <td>Contact</td><td>Legacy_Phone__c</td><td>Legacy Phone</td>
+            <td style="text-align:center"><span style="display:inline-block;background:#2980b9;color:#fff;padding:2px 8px;border-radius:10px;font-size:11px;white-space:nowrap;">Phone</span></td>
+            <td style="text-align:center">0</td>
+            <td style="text-align:center">0.0</td>
+            
+            
+            
+            <td style="text-align:center">2017-11-02 10:44:10</td><td style="text-align:center">John Doe</td>
+            <td style="text-align:center"><span style="display:inline-block;background:#2f855a;color:#fff;padding:2px 8px;border-radius:10px;font-size:11px;white-space:nowrap;">2018-01-15</span></td><td style="text-align:center">John Doe</td>
+          </tr>
+          <tr style="background:#f9fafb">
+            <td>Opportunity</td><td>Expected_Close_Reason__c</td><td>Expected Close Reason</td>
+            <td style="text-align:center"><span style="display:inline-block;background:#2980b9;color:#fff;padding:2px 8px;border-radius:10px;font-size:11px;white-space:nowrap;">Text(255)</span></td>
+            <td style="text-align:center">0</td>
+            <td style="text-align:center">0.0</td>
+            
+            
+            
+            <td style="text-align:center">2019-04-30 08:01:13</td><td style="text-align:center">John Doe</td>
+            <td style="text-align:center"><span style="display:inline-block;background:#2f855a;color:#fff;padding:2px 8px;border-radius:10px;font-size:11px;white-space:nowrap;">2019-04-30</span></td><td style="text-align:center">Admin User</td>
+          </tr>
+          <tr>
+            <td>Opportunity</td><td>Discount_Band__c</td><td>Discount Band</td>
+            <td style="text-align:center"><span style="display:inline-block;background:#16a085;color:#fff;padding:2px 8px;border-radius:10px;font-size:11px;white-space:nowrap;">Percent(5, 2)</span></td>
+            <td style="text-align:center">2310</td>
+            <td style="text-align:center">38.4</td>
+            
+            
+            
+            <td style="text-align:center">2023-01-17 11:30:41</td><td style="text-align:center">Admin User</td>
+            <td style="text-align:center"><span style="display:inline-block;background:#dd6b20;color:#fff;padding:2px 8px;border-radius:10px;font-size:11px;white-space:nowrap;">2024-10-11</span></td><td style="text-align:center">Admin User</td>
+          </tr>
+          <tr style="background:#f9fafb">
+            <td>Opportunity</td><td>Forecast_Ref__c</td><td>Forecast Reference</td>
+            <td style="text-align:center"><span style="display:inline-block;background:#1a5276;color:#fff;padding:2px 8px;border-radius:10px;font-size:11px;white-space:nowrap;">Lookup(Account)</span></td>
+            <td style="text-align:center">0</td>
+            <td style="text-align:center">0.0</td>
+            
+            
+            
+            <td style="text-align:center">2022-09-12 15:02:27</td><td style="text-align:center">Jane Smith</td>
+            <td style="text-align:center"><span style="display:inline-block;background:#b7791f;color:#fff;padding:2px 8px;border-radius:10px;font-size:11px;white-space:nowrap;">2023-02-03</span></td><td style="text-align:center">Admin User</td>
+          </tr>
+          <tr>
+            <td>Lead</td><td>Source_Detail__c</td><td>Source Detail</td>
+            <td style="text-align:center"><span style="display:inline-block;background:#2980b9;color:#fff;padding:2px 8px;border-radius:10px;font-size:11px;white-space:nowrap;">Text(80)</span></td>
+            <td style="text-align:center">0</td>
+            <td style="text-align:center">0.0</td>
+            
+            
+            
+            <td style="text-align:center">2020-10-19 09:28:00</td><td style="text-align:center">Admin User</td>
+            <td style="text-align:center"><span style="display:inline-block;background:#b7791f;color:#fff;padding:2px 8px;border-radius:10px;font-size:11px;white-space:nowrap;">2021-04-07</span></td><td style="text-align:center">Admin User</td>
+          </tr>
+          <tr style="background:#f9fafb">
+            <td>Lead</td><td>Imported_On__c</td><td>Imported On</td>
+            <td style="text-align:center"><span style="display:inline-block;background:#8e44ad;color:#fff;padding:2px 8px;border-radius:10px;font-size:11px;white-space:nowrap;">Date</span></td>
+            <td style="text-align:center">0</td>
+            <td style="text-align:center">0.0</td>
+            
+            
+            
+            <td style="text-align:center">2019-07-22 10:18:07</td><td style="text-align:center">John Doe</td>
+            <td style="text-align:center"><span style="display:inline-block;background:#2f855a;color:#fff;padding:2px 8px;border-radius:10px;font-size:11px;white-space:nowrap;">2019-07-22</span></td><td style="text-align:center">Admin User</td>
+          </tr>
+          <tr>
+            <td>Case</td><td>Escalation_Flag__c</td><td>Escalation Flag</td>
+            <td style="text-align:center"><span style="display:inline-block;background:#2c3e50;color:#fff;padding:2px 8px;border-radius:10px;font-size:11px;white-space:nowrap;">Checkbox</span></td>
+            <td style="text-align:center">410</td>
+            <td style="text-align:center">3.4</td>
+            
+            
+            
+            <td style="text-align:center">2024-02-14 11:09:44</td><td style="text-align:center">Jane Smith</td>
+            <td style="text-align:center"><span style="display:inline-block;background:#c53030;color:#fff;padding:2px 8px;border-radius:10px;font-size:11px;white-space:nowrap;">2026-10-28</span></td><td style="text-align:center">Jane Smith</td>
+          </tr>
+          <tr style="background:#f9fafb">
+            <td>Asset</td><td>Vendor_Ref__c</td><td>Vendor Reference</td>
+            <td style="text-align:center"><span style="display:inline-block;background:#2980b9;color:#fff;padding:2px 8px;border-radius:10px;font-size:11px;white-space:nowrap;">Text(30)</span></td>
+            <td style="text-align:center">0</td>
+            <td style="text-align:center">0.0</td>
+            
+            
+            
+            <td style="text-align:center">2021-12-13 09:49:23</td><td style="text-align:center">John Doe</td>
+            <td style="text-align:center"><span style="display:inline-block;background:#2f855a;color:#fff;padding:2px 8px;border-radius:10px;font-size:11px;white-space:nowrap;">2023-07-22</span></td><td style="text-align:center">Admin User</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Status bar -->
+    <div class="hbox" style="gap:6px;align-items:center;padding:4px 10px;background:#E8EEF2;border-top:1px solid #9AABBF;font-size:11px;color:#555">
+      <span>Double-click a row to open the field in Salesforce</span>
+    </div>
+
+  </div><!-- /.mockup -->
+</div><!-- /.mockup-wrap -->
+
+<script>
+function sw(id,idx){
+  var tp=document.getElementById(id);
+  tp.querySelectorAll('.m-tab').forEach(function(t,i){t.classList.toggle('act',i===idx)});
+  tp.querySelectorAll('.m-panel').forEach(function(p,i){p.classList.toggle('act',i===idx)});
+}
+</script>
+
+<!-- Key features modal -->
+<div id="modal-kf" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:999;align-items:center;justify-content:center" onclick="if(event.target===this)this.style.display='none'">
+  <div style="background:#fff;border-radius:8px;padding:28px 32px;max-width:560px;width:90%;color:#1a2a35;box-shadow:0 8px 32px rgba(0,0,0,.3)">
+    <h3 style="margin:0 0 14px;color:#2980b9">&#9733; Key features</h3>
+    <ul style="margin:0;padding-left:20px;line-height:1.8">
+      <li>Usage is the number of records that populate the field; Percent is its share of the object's records.</li>
+      <li>LastModifyDate is an age pill: red under 90 days, orange under 1 year, amber 1 to 3 years, green beyond 3 years (dormant).</li>
+      <li>Picklist fields authorised by a record type are left out as false positives.</li>
+      <li>The filter box accepts several terms separated by semicolons. Export to json saves the current view together with its filters.</li>
+    </ul>
+    <div style="text-align:right;margin-top:18px">
+      <button class="cal-btn btn-d" onclick="document.getElementById('modal-kf').style.display='none'">Close</button>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

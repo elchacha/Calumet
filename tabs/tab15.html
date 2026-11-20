@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Compare All Profiles &mdash; Calumet</title>
+<link rel="stylesheet" href="../shared.css">
+<style>
+.split-profiles{display:flex;gap:12px;align-items:stretch}
+.profile-panel{flex:0 0 190px;background:#f7fafc;border:1px solid #d0dae4;border-radius:6px;padding:8px;color:#1a2a35}
+.profile-list{display:flex;flex-direction:column;gap:5px}
+.profile-list label{display:flex;align-items:center;gap:7px;font-size:13px;padding:2px 4px;border-radius:3px}
+.cmp{flex:1;min-width:0;background:#fff;border:1px solid #d0dae4;border-radius:6px;color:#1a2a35;font-size:12px;overflow:hidden}
+.cmp-top{display:flex;flex-wrap:wrap;gap:10px;align-items:center;padding:8px 10px;border-bottom:1px solid #e1e8ee;background:#f7fafc}
+.cmp-top .lbl{font-weight:600;color:#666}
+.flt{border:1px solid #9AABBF;background:#fff;border-radius:12px;padding:2px 10px;font-size:12px;color:#1a2a35}
+.flt.act{background:#2980b9;border-color:#2980b9;color:#fff}
+.flt .n{opacity:.75;margin-left:3px}
+.cmp-top .asof{color:#666}
+.cmp-legend{display:flex;flex-wrap:wrap;gap:14px;padding:5px 10px;color:#555;border-bottom:1px solid #e1e8ee}
+.cmp-main{display:flex}
+.cmp-side{flex:0 0 190px;border-right:1px solid #e1e8ee;padding:8px;background:#fbfdfe}
+.cmp-side .st{font-weight:700;color:#1A5276;margin-bottom:6px}
+.cmp-side input{width:100%;box-sizing:border-box;margin-bottom:6px}
+.sec{display:flex;justify-content:space-between;gap:6px;padding:3px 6px;border-radius:4px;border-left:3px solid var(--c,#999)}
+.sec.act{background:#d6eaf8;font-weight:600}
+.sec .cnt{color:#666}
+.cmp-body{flex:1;min-width:0;padding:8px 10px}
+.mhead{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.mtitle{font-weight:700;font-size:14px;color:#1A5276}
+.mmeta{color:#666}
+.mhint{color:#777;margin:4px 0 6px}
+table.mx{border-collapse:collapse;width:100%}
+table.mx th,table.mx td{border-bottom:1px solid #e8eef2;padding:4px 8px;text-align:left}
+table.mx th{background:#eef3f7;font-weight:600;vertical-align:bottom}
+table.mx th .sub{display:block;font-weight:400;color:#777;font-size:11px}
+table.mx th.ref{background:#d6eaf8}
+table.mx .c{text-align:center}
+td.dev{background:#fff4e0}
+.bd{display:inline-block;padding:1px 8px;border-radius:10px;font-size:11px;font-weight:600;color:#fff}
+.t-field{background:#2471a3}.t-object{background:#b9770e}.t-global{background:#6c3483}.t-other{background:#117a65}
+.v-edit{background:#b9770e}.v-read{background:#2471a3}.v-none{background:#7f8c8d}
+.chip{display:inline-block;border:1px solid #9AABBF;border-radius:3px;padding:0 4px;margin-right:2px;font-size:11px}
+.chip.big{background:#eef3f7}
+.chk{color:#1e8449}.crs{color:#c0392b}
+.obj{color:#777}
+.muted-lbl{color:#888;font-size:12px}
+</style>
+</head>
+<body class="tab-page">
+
+<div class="sum">
+  <div class="sum-title">
+    <h2>Compare All Profiles</h2>
+    <span class="sum-badge">Tab 15</span>
+  </div>
+  <p class="sum-desc">
+    Compare all profiles side by side across the entire org. Identify differences in object permissions, field access, and system permissions. Pick two or more profiles and the page lists only the rows where they differ.
+    <button class="cal-btn btn-d" style="margin-left:10px" onclick="document.getElementById('modal-kf').style.display='flex'">&#9733; Key features</button>
+  </p>
+</div>
+
+<div class="mockup-wrap">
+  <div class="mockup">
+
+    <!-- Top bar -->
+    <div class="hbox" style="gap:10px;align-items:center;padding:8px 8px 6px;">
+      <button class="cal-btn btn-b">Read Profiles</button>
+      <label class="cal-chk"><input type="checkbox" checked disabled> Use cached values</label>
+      <label class="cal-chk"><input type="checkbox" disabled> Profiles with active users</label>
+      <button class="cal-btn btn-o" data-tip="Export the compared profiles as JSON (directly consumable by an LLM / tooling)">Export JSON</button>
+      <span class="muted-lbl">cache/profiles feeds the Dep Graph (Tab82)</span>
+    </div>
+
+    <div class="split-profiles" style="padding:0 8px 8px;">
+
+      <!-- Left: profile picker -->
+      <div class="profile-panel">
+        <input class="cal-tf" style="width:100%;margin-bottom:8px;box-sizing:border-box" placeholder="Filter profiles..." readonly>
+        <div class="profile-list">
+          <label><input type="checkbox" disabled> Chatter Free User</label>
+          <label><input type="checkbox" disabled> Contract Manager</label>
+          <label><input type="checkbox" disabled> Marketing User</label>
+          <label><input type="checkbox" disabled> Read Only</label>
+          <label><input type="checkbox" checked disabled> Sales Agent</label>
+          <label><input type="checkbox" disabled> Solution Manager</label>
+          <label><input type="checkbox" checked disabled> Standard User</label>
+          <label><input type="checkbox" checked disabled> Support Manager</label>
+          <label><input type="checkbox" disabled> System Administrator</label>
+        </div>
+      </div>
+
+      <!-- Right: comparison page -->
+      <div class="cmp">
+        <div class="cmp-top">
+          <span class="lbl">Show</span>
+          <span class="flt act" data-tip="Every difference">All <span class="n">9</span></span>
+          <span class="flt" data-tip="Global (system) permissions">Global <span class="n">2</span></span>
+          <span class="flt" data-tip="Object CRUD permissions">Object <span class="n">2</span></span>
+          <span class="flt" data-tip="Field-level security">Field <span class="n">3</span></span>
+          <span class="flt" data-tip="Apex classes, pages, connected apps, custom permissions, apps">Others <span class="n">2</span></span>
+          <span class="asof">3 profiles compared &middot; read 2026-11-19 09:42 UTC</span>
+        </div>
+        <div class="cmp-legend">
+          <span><span style="display:inline-block;width:12px;height:12px;background:#fff4e0;border:1px solid #e0c080;vertical-align:middle"></span> Differs from <b>the most common value</b></span>
+          <span><span class="bd v-edit">Edit</span> <span class="bd v-read">Read</span> <span class="bd v-none">None</span></span>
+          <span><b class="chk">&#10003;</b> enabled &nbsp; <b class="crs">&#10007;</b> disabled</span>
+        </div>
+        <div class="cmp-main">
+          <div class="cmp-side">
+            <div class="st">Sections &middot; 6</div>
+            <input class="cal-tf" placeholder="Find a section (object, type)&hellip;" readonly>
+            <div style="display:flex;flex-direction:column;gap:3px">
+              <div class="sec act" style="--c:#999"><span>All sections</span><span class="cnt">9</span></div>
+              <div class="sec" style="--c:#2471a3"><span>Account</span><span class="cnt">1</span></div>
+              <div class="sec" style="--c:#2471a3"><span>Case</span><span class="cnt">2</span></div>
+              <div class="sec" style="--c:#b9770e"><span>Object Security</span><span class="cnt">2</span></div>
+              <div class="sec" style="--c:#6c3483"><span>System permissions</span><span class="cnt">2</span></div>
+              <div class="sec" style="--c:#117a65"><span>ApexClass</span><span class="cnt">2</span></div>
+            </div>
+          </div>
+          <div class="cmp-body">
+            <div class="mhead">
+              <span class="mtitle">All differences</span>
+              <span class="mmeta">9 rows &middot; highlight: differs from the most common value</span>
+              <span class="spacer"></span>
+              <input class="cal-tf" style="width:170px" placeholder="Filter rows&hellip;" readonly>
+            </div>
+            <div class="mhint">Only rows where the profiles differ are listed. Click a profile header to compare everyone against that profile.</div>
+            <table class="mx">
+              <thead>
+                <tr>
+                  <th>Name &#9650;</th>
+                  <th class="c" data-tip="Sort by type">Type</th>
+                  <th class="c" data-tip="Number of different values across the compared profiles">Distinct</th>
+                  <th data-tip="Click to compare every profile against Sales Agent">Sales Agent<span class="sub">4 differ</span></th>
+                  <th data-tip="Click to compare every profile against Standard User">Standard User<span class="sub">3 differ</span></th>
+                  <th data-tip="Click to compare every profile against Support Manager">Support Manager<span class="sub">5 differ</span></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td>ModifyAllData</td><td class="c"><span class="bd t-global">System</span></td><td class="c">2</td>
+                  <td class="dev"><b class="chk">&#10003;</b></td><td><b class="crs">&#10007;</b></td><td><b class="crs">&#10007;</b></td></tr>
+                <tr><td>ExportReport</td><td class="c"><span class="bd t-global">System</span></td><td class="c">2</td>
+                  <td><b class="chk">&#10003;</b></td><td><b class="chk">&#10003;</b></td><td class="dev"><b class="crs">&#10007;</b></td></tr>
+                <tr><td>Opportunity</td><td class="c"><span class="bd t-object">Object</span></td><td class="c">3</td>
+                  <td><span class="chip">C</span><span class="chip">R</span><span class="chip">U</span><span class="chip big">View All</span></td>
+                  <td class="dev"><span class="chip">R</span><span class="chip">U</span></td>
+                  <td class="dev"><span class="bd v-none">None</span></td></tr>
+                <tr><td>Case</td><td class="c"><span class="bd t-object">Object</span></td><td class="c">2</td>
+                  <td class="dev"><span class="chip">R</span></td>
+                  <td><span class="chip">C</span><span class="chip">R</span><span class="chip">U</span></td>
+                  <td><span class="chip">C</span><span class="chip">R</span><span class="chip">U</span></td></tr>
+                <tr><td><span class="obj">Account.</span>AnnualRevenue</td><td class="c"><span class="bd t-field">Field</span></td><td class="c">3</td>
+                  <td><span class="bd v-edit">Edit</span></td><td class="dev"><span class="bd v-read">Read</span></td><td class="dev"><span class="bd v-none">None</span></td></tr>
+                <tr><td><span class="obj">Case.</span>IsEscalated</td><td class="c"><span class="bd t-field">Field</span></td><td class="c">2</td>
+                  <td class="dev"><span class="bd v-none">None</span></td><td><span class="bd v-edit">Edit</span></td><td><span class="bd v-edit">Edit</span></td></tr>
+                <tr><td><span class="obj">Case.</span>Priority</td><td class="c"><span class="bd t-field">Field</span></td><td class="c">2</td>
+                  <td><span class="bd v-read">Read</span></td><td><span class="bd v-read">Read</span></td><td class="dev"><span class="bd v-edit">Edit</span></td></tr>
+                <tr><td>AccountService</td><td class="c"><span class="bd t-other">ApexClass</span></td><td class="c">2</td>
+                  <td class="dev"><b class="crs">&#10007;</b></td><td><b class="chk">&#10003;</b></td><td><b class="chk">&#10003;</b></td></tr>
+                <tr><td>CaseSummaryPage</td><td class="c"><span class="bd t-other">ApexPage</span></td><td class="c">2</td>
+                  <td><b class="crs">&#10007;</b></td><td><b class="crs">&#10007;</b></td><td class="dev"><b class="chk">&#10003;</b></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Key features modal -->
+<div id="modal-kf" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:999;align-items:center;justify-content:center" onclick="if(event.target===this)this.style.display='none'">
+  <div style="background:#fff;border-radius:8px;padding:28px 32px;max-width:520px;width:90%;color:#1a2a35;box-shadow:0 8px 32px rgba(0,0,0,.3)">
+    <h3 style="margin:0 0 14px;color:#2980b9">&#9733; Key features</h3>
+    <ul style="margin:0;padding-left:20px;line-height:1.8">
+      <li>Read all org profiles in one click; <b>Use cached values</b> re-uses the last read for a fast restart</li>
+      <li>Filter the profile list by name, or keep only profiles that have active users</li>
+      <li>Tick two or more profiles: the comparison page builds itself and refreshes on every tick</li>
+      <li>Only rows where the profiles differ are listed; identical settings are left out</li>
+      <li>Category buttons (All, Global, Object, Field, Others) with a count on each, plus a section list with its own search</li>
+      <li>Row filter, sortable Name / Type / Distinct columns, one column per profile</li>
+      <li>Click a profile header to use it as the reference instead of the most common value</li>
+      <li>Export JSON writes the differing rows for an LLM or other tooling</li>
+    </ul>
+    <div style="text-align:right;margin-top:18px">
+      <button class="cal-btn btn-d" onclick="document.getElementById('modal-kf').style.display='none'">Close</button>
+    </div>
+  </div>
+</div>
+
+<script>
+function sw(id,idx){
+  var tp=document.getElementById(id);
+  tp.querySelectorAll('.m-tab').forEach(function(t,i){t.classList.toggle('act',i===idx)});
+  tp.querySelectorAll('.m-panel').forEach(function(p,i){p.classList.toggle('act',i===idx)});
+}
+</script>
+</body>
+</html>

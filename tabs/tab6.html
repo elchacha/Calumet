@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>TestClass — Calumet</title>
+<link rel="stylesheet" href="../shared.css">
+</head>
+<body class="tab-page">
+<div class="sum">
+  <div class="sum-title">
+    <h2>TestClass</h2>
+    <span class="sum-badge">Tab 6</span>
+  </div>
+  <p class="sum-desc">
+    Manage and run Apex test classes. View coverage results and test execution status.
+    <button class="cal-btn btn-d" style="margin-left:10px" onclick="document.getElementById('modal-kf').style.display='flex'">&#9733; Key features</button>
+  </p>
+</div>
+
+<div class="mockup-wrap">
+  <div class="mockup">
+
+    <div class="m-tabpane" id="tp6">
+      <div class="m-tabbar">
+        <div class="m-tab act" onclick="sw('tp6',0)">Coverage</div>
+        <div class="m-tab" onclick="sw('tp6',1)">Helper</div>
+        <div class="m-tab" onclick="sw('tp6',2)">Limits</div>
+        <div class="m-tab" onclick="sw('tp6',3)">Results</div>
+      </div>
+
+      <div class="m-body">
+
+        <!-- Coverage -->
+        <div class="m-panel act" id="tp6-0">
+          <div class="vbox" style="gap:8px;padding:6px 4px 4px">
+            <div class="hbox" style="gap:8px;align-items:center">
+              <span class="cal-lbl">Modified after</span>
+              <input class="cal-tf" value="2026-01-01" style="width:120px" readonly>
+              <button class="cal-btn btn-b" data-tip="Fetch Apex coverage from Salesforce">Search</button>
+              <input class="cal-tf" value="" placeholder="Filter name, author..." style="width:240px" readonly>
+              <span class="cal-lbl" style="font-weight:700;color:#1A5276">8 of 8 classes and triggers</span>
+              <div class="spacer"></div>
+              <button class="cal-btn btn-b" data-tip="Export test classes for selected items with coverage &gt; 75%">Extract test class &gt;75%</button>
+              <button class="cal-btn btn-b" data-tip="Export all test classes for the selected items">Extract all test class</button>
+            </div>
+            <div class="hbox" style="gap:8px;align-items:center">
+              <span class="cal-lbl" style="font-size:11px;font-weight:700;color:#475569">Show</span>
+              <span style="padding:2px 10px;border-radius:10px;background:#2980b9;color:#fff;font-size:12px">All 8</span>
+              <span style="padding:2px 10px;border-radius:10px;border:1px solid #27ae60;color:#27ae60;font-size:12px">Above 75% 4</span>
+              <span style="padding:2px 10px;border-radius:10px;border:1px solid #e67e22;color:#e67e22;font-size:12px">50 - 75% 2</span>
+              <span style="padding:2px 10px;border-radius:10px;border:1px solid #c0392b;color:#c0392b;font-size:12px">Below 50% 2</span>
+              <div class="spacer"></div>
+              <span class="cal-lbl" style="font-size:11px;font-weight:700;color:#475569">SOURCE</span>
+              <label class="cal-chk"><input type="checkbox" disabled> deploy</label>
+              <label class="cal-chk"><input type="checkbox" disabled> retrieve</label>
+              <label class="cal-chk"><input type="checkbox" checked disabled> sfdxProject</label>
+              <label class="cal-chk"><input type="checkbox" disabled> calumetProject</label>
+              <span style="display:inline-block;width:10px;height:10px;background:#FDECEA;border-radius:2px"></span>
+              <span class="cal-lbl" style="font-size:11px;color:#64748b">Below 50%</span>
+            </div>
+            <div class="tbl-wrap">
+              <table class="cal-tbl">
+                <thead>
+                  <tr>
+                    <th style="width:300px">Name</th>
+                    <th style="width:105px;text-align:center">Class/Trigger</th>
+                    <th style="width:95px;text-align:center">Coverage</th>
+                    <th style="width:80px;text-align:center">Covered</th>
+                    <th style="width:90px;text-align:center">Total lines</th>
+                    <th style="width:140px">Last modified</th>
+                    <th style="width:150px">Last modified by</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><td>AccountService</td><td style="text-align:center">Class</td><td style="text-align:center;color:#27ae60;font-weight:700">87.4%</td><td style="text-align:center">354</td><td style="text-align:center">404</td><td>2026-10-20 14:39</td><td>John Doe</td></tr>
+                  <tr><td>InvoiceBatch</td><td style="text-align:center">Class</td><td style="text-align:center;color:#27ae60;font-weight:700">92.1%</td><td style="text-align:center">70</td><td style="text-align:center">76</td><td>2026-10-14 09:56</td><td>Jane Smith</td></tr>
+                  <tr><td>ContactTrigger</td><td style="text-align:center">Trigger</td><td style="text-align:center;color:#27ae60;font-weight:700">97.5%</td><td style="text-align:center">157</td><td style="text-align:center">162</td><td>2026-09-04 17:03</td><td>John Doe</td></tr>
+                  <tr><td>OrderValidationHelper</td><td style="text-align:center">Class</td><td style="text-align:center;color:#27ae60;font-weight:700">78.6%</td><td style="text-align:center">66</td><td style="text-align:center">84</td><td>2026-08-22 11:45</td><td>Jane Smith</td></tr>
+                  <tr><td>OpportunityTrigger</td><td style="text-align:center">Trigger</td><td style="text-align:center;color:#e67e22;font-weight:700">66.7%</td><td style="text-align:center">14</td><td style="text-align:center">21</td><td>2026-07-20 14:33</td><td>John Doe</td></tr>
+                  <tr><td>PricingCalculator</td><td style="text-align:center">Class</td><td style="text-align:center;color:#e67e22;font-weight:700">58.3%</td><td style="text-align:center">35</td><td style="text-align:center">60</td><td>2026-06-10 10:12</td><td>Jane Smith</td></tr>
+                  <tr style="background:#FDECEA"><td>LegacyContractExport</td><td style="text-align:center">Class</td><td style="text-align:center;color:#E74C3C;font-weight:700">32.1%</td><td style="text-align:center">9</td><td style="text-align:center">28</td><td>2026-03-10 11:22</td><td>John Doe</td></tr>
+                  <tr style="background:#FDECEA"><td>BatchPurgeRecords</td><td style="text-align:center">Class</td><td style="text-align:center;color:#E74C3C;font-weight:700">0%</td><td style="text-align:center">0</td><td style="text-align:center">66</td><td>2026-02-18 09:14</td><td>Jane Smith</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Helper -->
+        <div class="m-panel" id="tp6-1">
+          <div class="hbox" style="gap:0;align-items:stretch;flex-wrap:nowrap">
+            <div class="vbox" style="gap:8px;width:270px;min-width:270px;padding:10px">
+              <span class="cal-lbl">Select the source org to use:</span>
+              <div class="hbox" style="gap:8px;align-items:center">
+                <select class="cal-cb" style="width:155px" disabled><option>Sandbox UAT</option></select>
+                <label class="cal-chk"><input type="checkbox" checked disabled> default</label>
+              </div>
+              <div><button class="cal-btn btn-d" data-tip="Refresh the test class cache from Salesforce">refreshCache</button></div>
+              <span class="cal-lbl" style="font-style:italic">cache date : 2026-11-18 09:42</span>
+              <hr class="hsep">
+              <span class="cal-lbl">Test class (MyClass.aMethod is also supported)</span>
+              <input class="cal-tf" value="AccountService" style="width:240px" readonly>
+              <div><button class="cal-btn btn-b" data-tip="Find test classes for the given Apex class or method">Search</button></div>
+              <hr class="hsep">
+              <span class="cal-lbl">Test Suite</span>
+              <input class="cal-tf" value="ProjectTestSuite" style="width:240px" readonly>
+              <div><button class="cal-btn btn-d" data-tip="Create or select a test suite file">Create / Select</button></div>
+            </div>
+            <div class="vbox" style="gap:6px;flex:1;min-width:0;padding:10px 10px 10px 0">
+              <span class="cal-lbl">Test classes found:</span>
+              <div class="tbl-wrap">
+                <table class="cal-tbl">
+                  <thead>
+                    <tr>
+                      <th style="width:260px">Class</th>
+                      <th style="width:120px;text-align:center">Coverage</th>
+                      <th style="width:70px;text-align:center">%</th>
+                      <th style="width:70px;text-align:center">D</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr><td>AccountServiceTest</td><td style="text-align:center">304/404</td><td style="text-align:center;color:#27ae60;font-weight:700">75.248</td><td style="text-align:center;color:#27ae60">75.248</td></tr>
+                    <tr><td>AccountServiceBulkTest</td><td style="text-align:center">42/404</td><td style="text-align:center">10.396</td><td style="text-align:center;color:#888">0.495</td></tr>
+                    <tr><td>InvoiceBatchTest</td><td style="text-align:center">0/404</td><td style="text-align:center">0</td><td style="text-align:center;color:#888">0</td></tr>
+                    <tr><td>ContactTriggerTest</td><td style="text-align:center">0/404</td><td style="text-align:center">0</td><td style="text-align:center;color:#888">0</td></tr>
+                    <tr><td>OrderValidationHelperTest</td><td style="text-align:center">0/404</td><td style="text-align:center">0</td><td style="text-align:center;color:#888">0</td></tr>
+                    <tr><td>PricingCalculatorTest</td><td style="text-align:center">0/404</td><td style="text-align:center">0</td><td style="text-align:center;color:#888">0</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Limits -->
+        <div class="m-panel" id="tp6-2">
+          <div class="vbox" style="gap:8px;padding:6px 4px 4px">
+            <div class="hbox" style="gap:10px;align-items:center">
+              <button class="cal-btn btn-b" data-tip="Fetch test limits from Salesforce">Search</button>
+              <span class="cal-lbl">6</span>
+              <div class="spacer"></div>
+              <span class="cal-lbl">Filter:</span>
+              <input class="cal-tf" value="" style="width:300px" readonly>
+            </div>
+            <div class="tbl-wrap">
+              <table class="cal-tbl">
+                <thead>
+                  <tr>
+                    <th style="width:300px">TestName</th>
+                    <th style="width:120px">RunBy</th>
+                    <th style="width:140px">RunDate</th>
+                    <th style="width:50px;text-align:center">Soql</th>
+                    <th style="width:75px;text-align:center">QueryRows</th>
+                    <th style="width:50px;text-align:center">Dml</th>
+                    <th style="width:65px;text-align:center">DmlRows</th>
+                    <th style="width:50px;text-align:center">Sosl</th>
+                    <th style="width:55px;text-align:center">Async</th>
+                    <th style="width:55px;text-align:center">Email</th>
+                    <th style="width:60px;text-align:center">Mobile</th>
+                    <th style="width:65px;text-align:center">Callouts</th>
+                    <th style="width:55px;text-align:center">Cpu</th>
+                    <th style="width:70px;text-align:center">Duration</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><td>AccountServiceTest.testCreateAccounts</td><td>John Doe</td><td>2026-11-12 15:41</td><td style="text-align:center">4</td><td style="text-align:center">12</td><td style="text-align:center">2</td><td style="text-align:center">200</td><td style="text-align:center">0</td><td style="text-align:center">0</td><td style="text-align:center">0</td><td style="text-align:center">0</td><td style="text-align:center">0</td><td style="text-align:center">312</td><td style="text-align:center">1204</td></tr>
+                  <tr><td>InvoiceBatchTest.testExecuteBatch</td><td>John Doe</td><td>2026-11-12 15:43</td><td style="text-align:center">7</td><td style="text-align:center">3</td><td style="text-align:center;color:#e67e22">4</td><td style="text-align:center">150</td><td style="text-align:center">0</td><td style="text-align:center">1</td><td style="text-align:center">0</td><td style="text-align:center">0</td><td style="text-align:center">0</td><td style="text-align:center">509</td><td style="text-align:center;color:#E74C3C">10721</td></tr>
+                  <tr><td>ContactTriggerTest.testBulkInsert</td><td>Jane Smith</td><td>2026-11-13 10:05</td><td style="text-align:center">2</td><td style="text-align:center">2</td><td style="text-align:center">1</td><td style="text-align:center">200</td><td style="text-align:center">0</td><td style="text-align:center">0</td><td style="text-align:center">0</td><td style="text-align:center">0</td><td style="text-align:center">0</td><td style="text-align:center">283</td><td style="text-align:center">808</td></tr>
+                  <tr><td>PricingCalculatorTest.testDiscounts</td><td>Jane Smith</td><td>2026-11-13 10:06</td><td style="text-align:center">1</td><td style="text-align:center;color:#e67e22">1</td><td style="text-align:center">0</td><td style="text-align:center">0</td><td style="text-align:center">0</td><td style="text-align:center">0</td><td style="text-align:center">0</td><td style="text-align:center">0</td><td style="text-align:center">0</td><td style="text-align:center">8</td><td style="text-align:center">408</td></tr>
+                  <tr><td>ShipmentCalloutTest.testSendShipment</td><td>John Doe</td><td>2026-11-14 09:20</td><td style="text-align:center">0</td><td style="text-align:center">0</td><td style="text-align:center">1</td><td style="text-align:center">1</td><td style="text-align:center">0</td><td style="text-align:center">0</td><td style="text-align:center">0</td><td style="text-align:center">0</td><td style="text-align:center">1</td><td style="text-align:center">95</td><td style="text-align:center">650</td></tr>
+                  <tr><td>OrderEmailNotifierTest.testNotify</td><td>Jane Smith</td><td>2026-11-14 09:22</td><td style="text-align:center">1</td><td style="text-align:center">1</td><td style="text-align:center">0</td><td style="text-align:center">0</td><td style="text-align:center">0</td><td style="text-align:center">0</td><td style="text-align:center">2</td><td style="text-align:center">0</td><td style="text-align:center">0</td><td style="text-align:center">120</td><td style="text-align:center">540</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Results -->
+        <div class="m-panel" id="tp6-3">
+          <div class="vbox" style="gap:8px;padding:6px 4px 4px">
+            <div class="hbox" style="gap:8px;align-items:center">
+              <button class="cal-btn btn-b" data-tip="Fetch test results from Salesforce">Search</button>
+              <input class="cal-tf" value="" placeholder="Filter class, method, message..." style="width:250px" readonly>
+              <span class="cal-lbl" style="font-weight:700;color:#1A5276">7 of 7 results</span>
+              <div class="spacer"></div>
+              <button class="cal-btn btn-o" data-tip="Show a package.xml with the test classes whose methods all have outcome=Pass (latest run per method)">Passing package.xml</button>
+              <button class="cal-btn btn-b" data-tip="Keep only the latest test run results">Keep Latest</button>
+              <button class="cal-btn btn-r" data-tip="Delete selected test results from the org">Delete Selected</button>
+              <button class="cal-btn btn-b" data-tip="Trigger execution of all test classes">Run All Tests</button>
+            </div>
+            <div class="hbox" style="gap:8px;align-items:center">
+              <span class="cal-lbl" style="font-size:11px;font-weight:700;color:#475569">Show</span>
+              <span style="padding:2px 10px;border-radius:10px;background:#2980b9;color:#fff;font-size:12px">All 7</span>
+              <span style="padding:2px 10px;border-radius:10px;border:1px solid #27ae60;color:#27ae60;font-size:12px">Pass 4</span>
+              <span style="padding:2px 10px;border-radius:10px;border:1px solid #c0392b;color:#c0392b;font-size:12px">Fail 2</span>
+              <span style="padding:2px 10px;border-radius:10px;border:1px solid #922b21;color:#922b21;font-size:12px">CompileFail 0</span>
+              <span style="padding:2px 10px;border-radius:10px;border:1px solid #7f8c8d;color:#7f8c8d;font-size:12px">Skip 1</span>
+              <div class="spacer"></div>
+              <span style="display:inline-block;width:10px;height:10px;background:#FDECEA;border-radius:2px"></span>
+              <span class="cal-lbl" style="font-size:11px;color:#64748b">Failing rows</span>
+              <span style="display:inline-block;width:10px;height:10px;background:#c0392b;border-radius:2px"></span>
+              <span class="cal-lbl" style="font-size:11px;color:#64748b">Fail / CompileFail count in the class list</span>
+            </div>
+            <div class="hbox" style="gap:0;align-items:stretch;flex-wrap:nowrap">
+              <div class="vbox" style="gap:8px;width:290px;min-width:290px;padding:10px;background:#EBF5FB;border:1px solid #C8DFE8">
+                <div class="hbox" style="gap:8px;align-items:center;flex-wrap:nowrap">
+                  <span class="cal-lbl" style="font-size:11px;font-weight:700;color:#475569">TEST CLASSES - 5</span>
+                  <div class="spacer"></div>
+                  <button class="cal-btn btn-d" style="font-size:10.5px;padding:2px 8px">All classes</button>
+                </div>
+                <input class="cal-tf" value="" placeholder="Search a test class..." readonly>
+                <div style="background:#fff;border:1px solid #C8DFE8;color:#1a2a35;font-size:12px">
+                  <div style="padding:5px 8px;display:flex;justify-content:space-between"><span>AccountServiceTest</span><span style="background:#e8f6ee;color:#1e8449;border-radius:8px;padding:0 7px">2</span></div>
+                  <div style="padding:5px 8px;display:flex;justify-content:space-between;background:#d6eaf8"><span>InvoiceBatchTest</span><span style="background:#c0392b;color:#fff;border-radius:8px;padding:0 7px">1 failed</span></div>
+                  <div style="padding:5px 8px;display:flex;justify-content:space-between"><span>ContactTriggerTest</span><span style="background:#e8f6ee;color:#1e8449;border-radius:8px;padding:0 7px">1</span></div>
+                  <div style="padding:5px 8px;display:flex;justify-content:space-between"><span>PricingCalculatorTest</span><span style="background:#c0392b;color:#fff;border-radius:8px;padding:0 7px">1 failed</span></div>
+                  <div style="padding:5px 8px;display:flex;justify-content:space-between"><span>ShipmentCalloutTest</span><span style="background:#e8f6ee;color:#1e8449;border-radius:8px;padding:0 7px">1</span></div>
+                </div>
+              </div>
+              <div class="vbox" style="flex:1;min-width:0;padding:0 0 0 10px">
+                <div class="tbl-wrap">
+                  <table class="cal-tbl">
+                    <thead>
+                      <tr>
+                        <th style="width:170px">Class</th>
+                        <th style="width:160px">Method</th>
+                        <th style="width:105px;text-align:center">Outcome</th>
+                        <th style="width:125px">Date</th>
+                        <th style="width:260px">Stack trace</th>
+                        <th>Message</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr><td>AccountServiceTest</td><td>testCreateAccounts</td><td style="text-align:center;color:#27ae60;font-weight:700">Pass</td><td>2026-11-18 10:02</td><td></td><td></td></tr>
+                      <tr><td>AccountServiceTest</td><td>testUpdateAccounts</td><td style="text-align:center;color:#27ae60;font-weight:700">Pass</td><td>2026-11-18 10:02</td><td></td><td></td></tr>
+                      <tr style="background:#FDECEA"><td>InvoiceBatchTest</td><td>testExecuteBatch</td><td style="text-align:center;color:#c0392b;font-weight:700">Fail</td><td>2026-11-18 10:03</td><td>Class.InvoiceBatchTest.testExecuteBatch: line 48, column 1</td><td>System.AssertException: Assertion Failed: Expected: 25, Actual: 24</td></tr>
+                      <tr><td>ContactTriggerTest</td><td>testBulkInsert</td><td style="text-align:center;color:#27ae60;font-weight:700">Pass</td><td>2026-11-18 10:03</td><td></td><td></td></tr>
+                      <tr style="background:#FDECEA"><td>PricingCalculatorTest</td><td>testDiscounts</td><td style="text-align:center;color:#c0392b;font-weight:700">Fail</td><td>2026-11-18 10:04</td><td>Class.PricingCalculator.applyDiscount: line 31, column 1</td><td>System.NullPointerException: Attempt to de-reference a null object</td></tr>
+                      <tr><td>ShipmentCalloutTest</td><td>testSendShipment</td><td style="text-align:center;color:#27ae60;font-weight:700">Pass</td><td>2026-11-18 10:04</td><td></td><td></td></tr>
+                      <tr><td>ShipmentCalloutTest</td><td>testRetryLater</td><td style="text-align:center;color:#7f8c8d;font-weight:700">Skip</td><td>2026-11-18 10:04</td><td></td><td></td></tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Key features modal -->
+<div id="modal-kf" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:999;align-items:center;justify-content:center" onclick="if(event.target===this)this.style.display='none'">
+  <div style="background:#fff;border-radius:8px;padding:28px 32px;max-width:520px;width:90%;color:#1a2a35;box-shadow:0 8px 32px rgba(0,0,0,.3)">
+    <h3 style="margin:0 0 14px;color:#2980b9">&#9733; Key features</h3>
+    <ul style="margin:0;padding-left:20px;line-height:1.8">
+      <li>Coverage: fetch Apex coverage, filter by band (above 75%, 50 - 75%, below 50%) and export the matching test classes</li>
+      <li>Helper: find the test classes that cover a class or a method, and build a test suite file</li>
+      <li>Limits: compare governor limits consumed by each test (SOQL, DML, callouts, CPU, duration)</li>
+      <li>Results: review the latest run per method, filter by outcome, keep only the latest run, delete results and run all tests</li>
+      <li>Passing package.xml: generate a package.xml of the test classes whose methods all pass</li>
+    </ul>
+    <div style="text-align:right;margin-top:18px">
+      <button class="cal-btn btn-d" onclick="document.getElementById('modal-kf').style.display='none'">Close</button>
+    </div>
+  </div>
+</div>
+
+<script>
+function sw(id,idx){
+  var tp=document.getElementById(id);
+  tp.querySelectorAll('.m-tab').forEach(function(t,i){t.classList.toggle('act',i===idx)});
+  tp.querySelectorAll('.m-panel').forEach(function(p,i){p.classList.toggle('act',i===idx)});
+}
+</script>
+</body>
+</html>

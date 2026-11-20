@@ -1,0 +1,899 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>FlexiPage Diff — Interactive Tour — Calumet</title>
+<style>
+/* ════════════════════════════════════════════════════════════
+   FlexiPage Diff Interactive Tour — fully self-contained
+   Palette adapted from shared.css (Calumet doc pages)
+   ════════════════════════════════════════════════════════════ */
+*{box-sizing:border-box;margin:0;padding:0}
+
+:root{
+  --sbg:#142540;--sbg2:#1a3050;--sborder:#244568;
+  --stxt:#e2e8f0;--smut:#8892a4;--sacc:#2ea4c9;
+  --blue:#2980b9;--green:#27ae60;--orange:#e67e22;--red:#E74C3C;
+  --hdr:#1A5276;
+}
+
+body{
+  font-family:system-ui,-apple-system,"Segoe UI",sans-serif;
+  background:#0f1d33;color:var(--stxt);
+  min-height:100vh;display:flex;flex-direction:column;
+}
+
+/* ── Top bar ── */
+#topbar{
+  background:var(--sbg);border-bottom:1px solid var(--sborder);
+  padding:14px 28px 12px;flex-shrink:0;
+}
+#topbar h1{font-size:18px;font-weight:800;color:#fff;letter-spacing:.2px}
+#topbar h1 .badge{
+  font-size:10px;background:#1e3a5e;color:var(--smut);
+  padding:2px 8px;border-radius:12px;font-weight:400;margin-left:8px;vertical-align:middle}
+#topbar .sub{font-size:12px;color:#a8b4c8;margin-top:3px}
+
+/* ── Progress dots ── */
+#progress{
+  display:flex;align-items:center;gap:0;margin-top:14px;flex-wrap:wrap;
+}
+.dot{
+  display:flex;align-items:center;gap:7px;cursor:pointer;user-select:none;
+}
+.dot .circle{
+  width:26px;height:26px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:12px;font-weight:700;
+  background:var(--sbg2);border:1px solid var(--sborder);color:var(--smut);
+  transition:all .25s ease;
+}
+.dot .lbl{font-size:10.5px;color:var(--smut);white-space:nowrap;transition:color .25s}
+.dot.done .circle{background:var(--green);border-color:var(--green);color:#fff}
+.dot.active .circle{background:var(--sacc);border-color:var(--sacc);color:#fff;
+  box-shadow:0 0 0 4px rgba(46,164,201,.22)}
+.dot.active .lbl{color:#fff;font-weight:700}
+.dot:hover .circle{border-color:var(--sacc)}
+.connector{width:14px;height:2px;background:var(--sborder);margin:0 3px;flex-shrink:0}
+.connector.done{background:var(--green)}
+
+/* ── Stage (mockup area) ── */
+#stage{
+  flex:1;padding:26px 28px;display:flex;flex-direction:column;
+  align-items:center;position:relative;overflow:auto;
+}
+#scene-frame{
+  width:100%;max-width:1000px;background:#e8eef2;border-radius:8px;
+  padding:1px;box-shadow:0 8px 30px rgba(0,0,0,.4);position:relative;
+}
+#scene-body{position:relative}
+
+/* ════════════════════════════════════════════
+   APP MOCKUP STYLES  (light Calumet theme)
+   ════════════════════════════════════════════ */
+.mockup{font-family:"Segoe UI",sans-serif;font-size:12px;color:#1a2a35;background:#F8F8F8;border-radius:8px;overflow:hidden}
+.m-tabpane{display:flex;flex-direction:column;background:#F8F8F8}
+.m-tabbar{display:flex;background:#D8E6EE;border-bottom:1px solid #9AABBF;flex-shrink:0;overflow-x:auto}
+.m-tab{padding:6px 13px;cursor:default;font-weight:700;font-size:11px;color:#2C3E50;border-right:1px solid #b0c8d8;user-select:none;white-space:nowrap}
+.m-tab.done{background:#27ae60;color:#fff;border-right-color:#1e8a4a}
+.m-tab.act{background:#F8F8F8;color:#1A5276;border-bottom:2px solid #F8F8F8;margin-bottom:-1px}
+.m-body{background:#F8F8F8;padding:12px;min-height:430px}
+
+/* header block: title, active-config band, step chips */
+.m-title{padding:8px 12px 6px;background:#eef5fb;border-bottom:1px solid #c9d9e6}
+.m-title b{display:block;font-size:13px;color:#1A5276}
+.m-title span{font-size:11px;color:#33485c}
+.m-band{display:flex;flex-wrap:wrap;gap:8px;align-items:center;padding:6px 12px;background:#eef5fb;border-bottom:1px solid #c9d9e6}
+.m-stepper{display:flex;flex-wrap:wrap;align-items:center;gap:6px;padding:8px 12px 2px;background:#eef5fb}
+.st{display:flex;align-items:center;gap:6px}
+.st .c{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;background:#e3e7ea;color:#55687a;border:1px solid #cfd6db;flex-shrink:0}
+.st.done .c{background:#27ae60;border-color:#27ae60;color:#fff}
+.st.act .c{background:#2c6fd1;border-color:#2c6fd1;color:#fff}
+.st .t{font-weight:700;font-size:11px;color:#1a2a35;line-height:1.1}
+.st.done .t{color:#1e8a4a}
+.st.act .t{color:#2c6fd1}
+.st .s{font-size:9px;color:#55687a;line-height:1.2;white-space:nowrap}
+.st-sep{color:#9AABBF;font-size:11px;margin:0 2px}
+.st-opt{font-style:italic;font-size:10px;color:#7f8c8d;margin:0 4px 0 6px}
+.m-hint{padding:2px 12px 7px;background:#eef5fb;font-size:10.5px;color:#4a5f70;border-bottom:1px solid #c9d9e6}
+
+.vbox{display:flex;flex-direction:column}
+.hbox{display:flex;flex-direction:row;flex-wrap:wrap}
+.split-pane{display:flex;gap:4px}
+.split-panel{flex:1;min-width:0}
+.spacer{flex:1}
+.vsep{width:1px;background:#9AABBF;align-self:stretch;margin:0 4px}
+.hsep{border:none;border-top:1px solid #9AABBF;margin:4px 0}
+
+.cal-btn{padding:4px 11px;border-radius:3px;font-size:11px;font-weight:700;cursor:pointer;border:1px solid #9AABBF;font-family:inherit;white-space:nowrap;transition:opacity .2s,filter .2s}
+.cal-btn:hover{filter:brightness(1.06)}
+.btn-d{background:#E8EEF2;color:#2C3E50;border-color:#9AABBF}
+.btn-b{background:#2980b9;color:#fff;border-color:#1f6699}
+.btn-g{background:#27ae60;color:#fff;border-color:#1e8a4a}
+.btn-o{background:#e67e22;color:#fff;border-color:#b8621a}
+.btn-r{background:#E74C3C;color:#fff;border-color:#c03a2b}
+.cal-btn.dim{opacity:.5;pointer-events:none}
+.cal-btn[disabled]{opacity:.4;pointer-events:none}
+
+.cal-lbl{font-size:12px;color:#1a2a35}
+.cal-tf,.cal-ta,.cal-cb{padding:3px 7px;background:#fff;border:1px solid #9AABBF;border-radius:3px;font-size:11px;color:#1a2a35;font-family:inherit}
+.cal-tf{height:24px}
+.cal-ta{resize:none;width:100%}
+.cal-cb{height:24px}
+.cal-grow{flex:1;min-width:0}
+.cal-chk{display:flex;align-items:center;gap:4px;font-size:11px;white-space:nowrap}
+.cal-chk input{accent-color:var(--sacc)}
+
+.card{border:1px solid #c9d6df;background:#fbfdff;border-radius:4px;padding:8px 10px}
+.card-h{display:flex;align-items:center;gap:7px;font-weight:700;font-size:12px;color:#1a2a35;margin-bottom:7px}
+.sec-num{width:19px;height:19px;border-radius:50%;background:#2c6fd1;color:#fff;font-size:10.5px;font-weight:700;display:inline-flex;align-items:center;justify-content:center}
+.note-i{font-size:10.5px;font-style:italic;color:#3d7a8a}
+
+.tbl-wrap{overflow-x:auto;border:1px solid #9AABBF;border-radius:3px;margin:2px 0}
+.cal-tbl{border-collapse:collapse;width:100%;font-size:11px}
+.cal-tbl th{background:#b8d5e3;color:#1A5276;font-weight:700;padding:4px 8px;text-align:left;border-right:1px solid #9AABBF;white-space:nowrap}
+.cal-tbl th:last-child{border-right:none}
+.cal-tbl td{padding:3px 8px;border-top:1px solid #d8e8f0}
+.cal-tbl td.n,.cal-tbl th.n{text-align:center}
+.cal-tbl tr.flash-orange{background:#ffe3c4;transition:background .4s}
+.cal-tbl tr.ignored td{color:#9aa8b3}
+.cal-tbl .empty-row td{text-align:center;color:#55687a;padding:34px 8px}
+.lnk{color:#2980b9;text-decoration:underline;cursor:pointer}
+.lnk-red{color:#C0392B;font-weight:700;text-decoration:underline;cursor:pointer}
+
+.cal-listview{border:1px solid #9AABBF;background:#fff;min-height:80px;border-radius:3px;font-size:11px}
+
+.pill{display:inline-block;padding:1px 9px;border-radius:10px;color:#fff;font-size:10px;font-weight:700}
+.pill.p{background:#27ae60}
+.pill.pc{background:#2c7fb8}
+.pill.c{background:#e67e22}
+
+/* overlay windows (popups) */
+.backdrop{position:absolute;left:0;top:0;right:0;bottom:0;background:rgba(20,37,64,.18);z-index:4;border-radius:8px}
+.win{color:#1a2a35;font-family:"Segoe UI",sans-serif;font-size:12px;position:absolute;left:50%;transform:translateX(-50%);top:46px;z-index:5;background:#f6f6f6;border:1px solid #8a9aa8;border-radius:6px;box-shadow:0 12px 34px rgba(0,0,0,.45);overflow:hidden}
+.win-title{display:flex;align-items:center;gap:8px;padding:6px 10px;background:#eceff2;border-bottom:1px solid #cdd5db;font-size:11px;color:#33485c}
+.win-title .x{margin-left:auto;color:#55687a}
+.win-body{padding:10px 12px}
+.win-h{font-weight:800;font-size:13px;color:#1a2a35}
+.win-sub{font-size:10px;color:#7f8c8d;margin-left:8px}
+.mono{font-family:Consolas,"Courier New",monospace;font-size:11px}
+.fail-box{border:1px solid #9AABBF;background:#fff;border-radius:3px;padding:8px 10px;font-family:Consolas,"Courier New",monospace;font-size:10.5px;line-height:1.55;color:#1a2a35;min-height:230px}
+
+/* Row fade-in animation */
+.row-in{animation:rowIn .35s ease both}
+@keyframes rowIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+/* Spinner */
+.spin{display:inline-block;width:13px;height:13px;border:2px solid rgba(41,128,185,.25);border-top-color:#2980b9;border-radius:50%;animation:sp .7s linear infinite;vertical-align:middle}
+@keyframes sp{to{transform:rotate(360deg)}}
+
+/* Mockup progress bar */
+.pbar-track{flex:1;height:16px;background:#c8dae6;border-radius:3px;overflow:hidden}
+.pbar-fill{width:0;height:100%;background:#2980b9;transition:width .12s linear}
+
+/* ── Animated cursor ── */
+#cursor{
+  position:fixed;left:0;top:0;width:30px;height:30px;z-index:9999;
+  pointer-events:none;transform:translate(-100px,-100px);
+  transition:transform .6s cubic-bezier(.4,0,.2,1);
+  filter:drop-shadow(0 2px 3px rgba(0,0,0,.45));
+}
+#ripple{
+  position:fixed;left:0;top:0;width:14px;height:14px;border-radius:50%;
+  border:2px solid var(--sacc);background:rgba(46,164,201,.25);
+  z-index:9998;pointer-events:none;opacity:0;
+  transform:translate(-50%,-50%) scale(.3);
+}
+#ripple.go{animation:rip .65s ease-out}
+@keyframes rip{0%{opacity:.9;transform:translate(-50%,-50%) scale(.3)}100%{opacity:0;transform:translate(-50%,-50%) scale(3.4)}}
+
+/* ── Popup bubble ── */
+#popup{
+  position:fixed;z-index:10000;max-width:340px;
+  background:#fff;color:#1a2a35;border-radius:8px;
+  border-left:4px solid var(--sacc);
+  box-shadow:0 10px 36px rgba(0,0,0,.45);
+  padding:14px 16px 13px;opacity:0;pointer-events:none;
+  transform:translateY(8px) scale(.97);transition:opacity .3s,transform .3s;
+}
+#popup.show{opacity:1;pointer-events:auto;transform:none}
+#popup .p-title{font-size:13.5px;font-weight:800;color:var(--hdr);margin-bottom:6px}
+#popup .p-text{font-size:12.5px;line-height:1.55;color:#33485c}
+#popup .p-text em{color:#2980b9;font-style:normal;font-weight:700}
+#popup .p-text code{background:#eef3f7;padding:0 4px;border-radius:3px;font-size:11.5px}
+#popup .p-btn{
+  margin-top:11px;float:right;background:var(--sacc);color:#fff;border:none;
+  padding:5px 14px;border-radius:5px;font-size:12px;font-weight:700;cursor:pointer;
+  font-family:inherit;transition:filter .2s}
+#popup .p-btn:hover{filter:brightness(1.1)}
+#popup::after{clear:both;content:"";display:block}
+
+/* ── Bottom nav ── */
+#nav{
+  flex-shrink:0;background:var(--sbg);border-top:1px solid var(--sborder);
+  padding:11px 28px;display:flex;align-items:center;gap:12px;
+}
+.nav-btn{
+  background:var(--sbg2);color:var(--stxt);border:1px solid var(--sborder);
+  padding:7px 18px;border-radius:6px;font-size:13px;font-weight:700;cursor:pointer;
+  font-family:inherit;transition:all .2s}
+.nav-btn:hover:not(:disabled){background:#244568;border-color:var(--sacc)}
+.nav-btn:disabled{opacity:.35;cursor:not-allowed}
+.nav-btn.primary{background:var(--sacc);border-color:var(--sacc);color:#fff}
+.nav-btn.primary:hover{filter:brightness(1.1);background:var(--sacc)}
+#scene-counter{font-size:12px;color:var(--smut)}
+#nav .spacer{flex:1}
+#autoplay{background:transparent;border:1px solid var(--sborder);color:var(--stxt);
+  width:38px;height:38px;border-radius:8px;font-size:15px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;transition:all .2s}
+#autoplay:hover{border-color:var(--sacc);color:var(--sacc)}
+#autoplay.on{background:var(--sacc);border-color:var(--sacc);color:#fff}
+
+/* ── Recap scene ── */
+.recap{padding:30px 34px;color:#1a2a35;background:#F8F8F8;border-radius:8px}
+.recap h2{font-size:22px;color:var(--hdr);margin-bottom:4px;font-weight:800}
+.recap .lead{font-size:13px;color:#55687a;margin-bottom:20px}
+.recap-list{list-style:none;margin-bottom:24px}
+.recap-list li{
+  display:flex;align-items:center;gap:10px;font-size:13.5px;padding:6px 0;
+  color:#2c3e50;opacity:0;transform:translateX(-10px);transition:all .4s}
+.recap-list li.in{opacity:1;transform:none}
+.recap-list li .chk{
+  width:22px;height:22px;border-radius:50%;background:var(--green);color:#fff;
+  display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0}
+.recap-list li.opt .chk{background:#9aabbf}
+.recap-list li b{color:var(--hdr)}
+.tips{display:flex;gap:14px;flex-wrap:wrap}
+.tip{
+  flex:1;min-width:200px;background:#fff;border:1px solid #d4e2ec;border-radius:8px;
+  padding:14px 16px;font-size:12.5px;line-height:1.5;color:#3a4d5e;
+  border-top:3px solid var(--blue)}
+.tip.warn{border-top-color:var(--orange)}
+.tip.cycle{border-top-color:var(--green)}
+.tip .icon{font-size:20px;display:block;margin-bottom:6px}
+.tip b{color:var(--hdr)}
+
+/* status line inside mockups */
+.statusline{font-size:11px;font-style:italic;transition:opacity .3s}
+.back-site{display:inline-block;margin-bottom:6px;font-size:12px;color:#7fd4ec;text-decoration:none;opacity:.9}
+.back-site:hover{text-decoration:underline;opacity:1}
+/* ════ FlexiPage Diff specifics ════ */
+#scene-frame{zoom:1.2;width:calc(96% / 1.2);max-width:1150px}
+.m-tabbar{flex-wrap:wrap}
+.orgbar{display:flex;align-items:center;gap:12px;padding:6px 12px;background:#c0392b;color:#fff;font-size:12px}
+.orgsel{background:#cfe3ee;color:#1a2a35;border:1px solid #9AABBF;padding:2px 10px;border-radius:3px;min-width:130px}
+.rhead{display:flex;align-items:center;gap:12px;padding:10px 4px;background:#fff;border-top:1px solid #dde6ec;font-size:12px}
+.sf-badge{background:#1b96ff;color:#fff;font-size:9px;padding:3px 8px;border-radius:3px;letter-spacing:.5px}
+.lg{display:inline-flex;align-items:center;gap:4px;font-size:10px;color:#55687a;margin-left:6px}
+.lg i{width:8px;height:8px;border-radius:2px;display:inline-block}
+.tiles{display:flex;background:#f1f5f8;border-top:1px solid #e1e8ed;border-bottom:1px solid #e1e8ed}
+.tile{flex:1;text-align:center;padding:9px 0;cursor:pointer;border-right:1px solid #e1e8ed}
+.tile b{display:block;font-size:20px;font-weight:400}
+.tile span{font-size:9px;letter-spacing:.8px;color:#8a98a6}
+.tile.k-add b{color:#27ae60}.tile.k-del b{color:#e74c3c}.tile.k-mod b{color:#e67e22}.tile.k-mov b{color:#8e44ad}.tile.k-same b{color:#55687a}
+.tile.on{background:#fff;box-shadow:inset 0 -3px 0 #2980b9}
+.rtabs2{display:flex;gap:22px;padding:10px 14px 0;background:#fff;border-bottom:1px solid #e1e8ed}
+.rt2{padding:6px 2px 8px;font-size:11px;color:#55687a;border-bottom:2px solid transparent;cursor:default}
+.rt2.on{color:#1a73c8;border-bottom-color:#1a73c8}
+.rbody{background:#fff;padding:10px 14px 14px}
+.sumbar{padding:8px 12px;background:#f1f5f8;border:1px solid #e1e8ed;border-radius:3px;font-size:11px;color:#55687a;margin-bottom:10px}
+.sg{border:1px solid #e1e8ed;border-radius:3px;margin-bottom:8px;overflow:hidden}
+.sgh{padding:5px 10px;font-size:10px;font-weight:700;letter-spacing:.5px}
+.sg-del .sgh{background:#fde0e0;color:#c0392b}.sg-add .sgh{background:#e3f6ea;color:#1e8a4a}
+.sg-mod .sgh{background:#fff3d9;color:#b8741a}.sg-mov .sgh{background:#ece4fb;color:#6c3fb5}
+.sgr{display:flex;align-items:center;gap:8px;padding:3px 10px;font-size:11px;border-top:1px solid #f0f3f5}
+.sgs{width:10px;color:#8a98a6;font-weight:700}
+.sgx{font-size:10px;color:#6b7b88}
+.chip{background:#e4ecf2;color:#6b7b88;font-size:9.5px;padding:1px 7px;border-radius:3px;font-family:Consolas,monospace}
+.reg{font-size:10px;color:#8a98a6;min-width:80px;text-align:right}
+.pill2{padding:2px 12px;border-radius:12px;border:1px solid #cfd8de;background:#f6f8fa;font-size:10.5px;color:#55687a;cursor:default;font-family:Georgia,serif}
+.pill2.on{background:#0f8fd0;border-color:#0f8fd0;color:#fff}
+.card2{border:1px solid #d9d2f0;border-radius:6px;margin-bottom:6px;overflow:hidden}
+.card2.c-add{background:#f1fbf5;border-color:#bfe6cc}.card2.c-del{background:#fff1f1;border-color:#f3c4c4}
+.card2.c-mod{background:#fffaf0;border-color:#f1dcb0}.card2.c-mov{background:#f6f2fd;border-color:#d9cdf3}.card2.c-same{background:#f8fafb;border-color:#e1e8ed}
+.ch2{display:flex;align-items:center;gap:10px;padding:7px 10px;font-size:11px}
+.xb{width:16px;height:16px;border-radius:50%;background:#7a8a96;color:#fff;font-size:10px;display:inline-flex;align-items:center;justify-content:center}
+.st{padding:2px 9px;border-radius:4px;color:#fff;font-size:9px;font-weight:700;letter-spacing:.4px}
+.st-add{background:#27ae60}.st-del{background:#e74c3c}.st-mod{background:#e67e22}.st-mov{background:#8e44ad}.st-same{background:#b6c2cb}
+.cn{font-size:12px;flex:1}
+.cb2{padding:6px 12px 10px 38px;border-top:1px solid rgba(0,0,0,.05)}
+.ptab{border-collapse:collapse;font-size:11px;width:100%}
+.ptab th{text-align:left;color:#8a98a6;font-weight:600;padding:3px 8px}
+.ptab td{padding:3px 8px;border-top:1px solid rgba(0,0,0,.05)}
+.ptab td.o{background:#fde8e8;color:#a93226}.ptab td.n{background:#e3f6ea;color:#1e8a4a}
+.mvi{font-size:11px;color:#6c3fb5}
+.zone{font-size:10px;font-weight:800;letter-spacing:.6px;color:#2c3e50;margin:10px 0 4px}
+.lrow{display:flex;align-items:center;gap:8px;padding:5px 10px;margin-bottom:4px;border:1px solid #e1e8ed;border-radius:3px;font-size:11px;background:#fbfcfd}
+.lrow i{font-size:9px;color:#8a98a6;font-style:normal}
+.lrow.ghost{border:1px dashed #cfd8de;background:transparent;min-height:26px}
+.lrow.l-add{background:#e8f8ee;border-color:#bfe6cc}.lrow.l-del{background:#fde0e0;border-color:#f3b4b4}
+.lrow.l-mod{background:#fff3d9;border-color:#f1dcb0}.lrow.l-mov{background:#ece4fb;border-color:#d0c0f0}
+.lsg{width:12px;font-weight:700;color:#55687a}
+.vtag{flex:1;background:#eef2f6;border:1px solid #dde6ec;border-radius:3px;padding:5px 10px;font-size:10px;letter-spacing:.4px;color:#55687a}
+.vtag.v2{background:#e9f7ee}
+.bband{display:flex;gap:6px;padding:8px;border:1px solid #e1e8ed;border-radius:4px;margin-bottom:10px;background:#fbfcfd}
+.bband .bchip{flex:1;margin:0}
+.bcol{background:#fbfcfd;border:1px solid #e8eef2;border-radius:4px;padding:8px}
+.bchip{padding:6px 10px;border:1px solid #e1e8ed;border-radius:3px;font-size:11px;margin-bottom:5px;background:#fff}
+.b-add{background:#e8f8ee;border-color:#bfe6cc}.b-del{background:#fde0e0;border-color:#f3b4b4}.b-mod{background:#fff3d9;border-color:#f1dcb0}.b-mov{background:#ece4fb;border-color:#d0c0f0}
+.bbox{border:1.5px solid #d0c0f0;border-radius:5px;padding:6px;margin-bottom:6px;background:#f6f2fd}
+.bbox.b-add{border-color:#bfe6cc;background:#f1fbf5}
+.bin{margin:4px 0 0 10px}
+.cal-chk input[type=checkbox]{accent-color:#2980b9}
+
+</style>
+</head>
+<body>
+
+<div id="topbar">
+  <a class="back-site" id="backSite" href="../demos.html">&larr; All demos</a>
+  <h1>FlexiPage Diff <span class="badge">Tab 75 · Interactive Tour</span></h1>
+  <div class="sub">A guided walkthrough of the comparison of two Lightning pages: pick them, compare, read the changes. Fictional data.</div>
+  <div id="progress"></div>
+</div>
+
+<div id="stage">
+  <div id="scene-frame">
+    <div id="scene-body"></div>
+  </div>
+</div>
+
+<div id="nav">
+  <button class="nav-btn" id="btn-prev">&larr; Prev</button>
+  <span id="scene-counter">1 / 1</span>
+  <div class="spacer"></div>
+  <button id="autoplay" title="Auto-play">&#9654;</button>
+  <button class="nav-btn primary" id="btn-next">Next &rarr;</button>
+</div>
+
+<!-- floating elements -->
+<svg id="cursor" viewBox="0 0 28 28">
+  <path d="M5 2 L5 22 L10 17 L13 24 L16 23 L13 16 L20 16 Z"
+        fill="#fff" stroke="#1a2a35" stroke-width="1.4" stroke-linejoin="round"/>
+</svg>
+<div id="ripple"></div>
+
+<div id="popup">
+  <div class="p-title"></div>
+  <div class="p-text"></div>
+  <button class="p-btn">Got it &rarr;</button>
+</div>
+
+<script>
+"use strict";
+
+/* ───────────────────────── Helpers ───────────────────────── */
+var $ = function(sel,ctx){return (ctx||document).querySelector(sel);};
+var sceneBody = $("#scene-body");
+var sceneFrame = $("#scene-frame");
+var cursor = $("#cursor");
+var ripple = $("#ripple");
+var popup = $("#popup");
+
+
+/* timers we must clear on scene change */
+var pending = [];
+function after(ms, fn){ var id = setTimeout(fn, ms); pending.push(id); return id; }
+function clearPending(){ pending.forEach(clearTimeout); pending = []; if(typeInterval){clearInterval(typeInterval);typeInterval=null;} if(playTimer){/*keep autoplay*/} }
+var typeInterval = null;
+
+/* Move the animated cursor to viewport coords of an element, fire ripple + popup */
+function pointAt(targetEl, popupTitle, popupText, color, popupSide){
+  if(!targetEl) return;
+  var r = targetEl.getBoundingClientRect();
+  var x = r.left + r.width/2;
+  var y = r.top + r.height/2;
+  // cursor tip is roughly top-left of svg, offset so the point lands on target
+  cursor.style.transform = "translate(" + (x-3) + "px," + (y-2) + "px)";
+  // ripple after the move completes
+  after(620, function(){
+    ripple.style.left = x + "px";
+    ripple.style.top = y + "px";
+    ripple.classList.remove("go");
+    void ripple.offsetWidth; // reflow
+    ripple.classList.add("go");
+  });
+  // popup ~0.8s after click
+  after(620 + 800, function(){
+    showPopup(popupTitle, popupText, color, targetEl, popupSide);
+  });
+}
+
+function showPopup(title, text, color, anchorEl, side){
+  $(".p-title", popup).textContent = title;
+  $(".p-text", popup).innerHTML = text;
+  popup.style.borderLeftColor = color || "#2ea4c9";
+  $(".p-btn", popup).style.background = color || "#2ea4c9";
+  // position relative to anchor
+  popup.classList.add("show");
+  // need measured size -> position after it's visible
+  var pr = popup.getBoundingClientRect();
+  var ar = anchorEl ? anchorEl.getBoundingClientRect() : sceneFrame.getBoundingClientRect();
+  var left = ar.left + ar.width/2 - pr.width/2;
+  var top;
+  if(side === "above"){ top = ar.top - pr.height - 14; }
+  else { top = ar.bottom + 14; }
+  // clamp to viewport
+  var vw = window.innerWidth, vh = window.innerHeight;
+  if(left < 12) left = 12;
+  if(left + pr.width > vw - 12) left = vw - 12 - pr.width;
+  if(top < 12) top = ar.bottom + 14;
+  if(top + pr.height > vh - 12) top = ar.top - pr.height - 14;
+  if(top < 12) top = 12;
+  popup.style.left = left + "px";
+  popup.style.top = top + "px";
+}
+function hidePopup(){ popup.classList.remove("show"); }
+
+/* A scene often explains several things in a row. Each "Got it" moves to the next element of the
+   list; the last one moves on to the next scene. step = {sel,title,text,color,side,before}. */
+var popupNextFn = null;
+function popupChain(steps){
+  var i = 0;
+  var tries = 0;
+  function show(){
+    var s = steps[i];
+    var last = (i === steps.length-1);
+    var el = $(s.sel);
+    // The target may still be animating in (a row, a link): wait for it instead of skipping the step.
+    if(!el && tries++ < 20){ after(400, show); return; }
+    tries = 0;
+    if(s.before) s.before();
+    popupNextFn = last ? null : function(){ hidePopup(); i++; after(300, show); };
+    pointAt($(s.sel), s.title, s.text, s.color, s.side);
+  }
+  show();
+}
+
+/* type text into a textarea char by char */
+function typeInto(el, text, speed, done){
+  el.value = "";
+  var i = 0;
+  typeInterval = setInterval(function(){
+    el.value = text.slice(0, ++i);
+    el.scrollTop = el.scrollHeight;
+    if(i >= text.length){ clearInterval(typeInterval); typeInterval=null; if(done) done(); }
+  }, speed || 38);
+}
+
+/* append log lines progressively to a textarea */
+function streamLog(el, lines, speed, done){
+  var i = 0;
+  function step(){
+    if(i >= lines.length){ if(done) done(); return; }
+    el.value += (el.value ? "\n" : "") + lines[i++];
+    el.scrollTop = el.scrollHeight;
+    after(speed || 220, step);
+  }
+  step();
+}
+
+/* small builders */
+function btn(cls, label, id, extra){
+  return '<button class="cal-btn '+cls+'"'+(id?' id="'+id+'"':'')+(extra||'')+'>'+label+'</button>';
+}
+function card(num, title, inner, style){
+  return '<div class="card" style="'+(style||'')+'"><div class="card-h"><span class="sec-num">'+num+'</span>'+title+'</div>'+inner+'</div>';
+}
+/* in-scene popup window: a backdrop plus an absolutely positioned window */
+function overlay(title, width, top, body){
+  return '<div class="backdrop"></div>'+
+    '<div class="win" style="width:'+width+'px;top:'+top+'px">'+
+      '<div class="win-title"><span>'+title+'</span><span class="x">&#x2715;</span></div>'+
+      '<div class="win-body">'+body+'</div>'+
+    '</div>';
+}
+
+/* One colour per scene, by NAME. */
+var COL = {
+  pick:"#2980b9", compare:"#e67e22", summary:"#16a085", diff:"#8e44ad", layout:"#2c7fb8", beta:"#27ae60", recap:"#27ae60"
+};
+
+/* ───────────────────────── Demo data (fictional) ───────────────────────── */
+var PAGE = "Case_Record_Page (Case Record Page)";
+var ENTRIES = [
+  /* status, name, type, region, extra */
+  ["del","lwcLegacyInfo","c:lwcLegacyInfo","main",""],
+  ["add","c_caseHeaderPanel","c:caseHeaderPanel","header",""],
+  ["add","RecordSummary_cField","Record.Summary__c","flexipage_column",""],
+  ["add","flexipage_column","flexipage:column","Facet-2582a490",""],
+  ["add","flexipage_fieldSection","flexipage:fieldSection","rightsidebar",""],
+  ["add","support_emailSummaries","support:emailSummaries","rightsidebar",""],
+  ["add","force_relatedListSingleContainer3","force:relatedListSingleContainer","InfosLT",""],
+  ["mod","force_highlightsPanel","force:highlightsPanel","header","+hideSlackAction = false"],
+  ["mod","support_milestones","support:milestones","rightsidebar","hideMarkCompleteButton: false → true; visibility rule"],
+  ["mov","c_lwcCaseSummary","c:lwcCaseSummary","main","position: #2 → #1"],
+  ["mov","flexipage_tabset","flexipage:tabset","main","position: #3 → #2"],
+  ["mov","lwcCaseLinks","c:lwcCaseLinks","rightsidebar","position: #2 → #3"],
+  ["mov","flexipage_tabset2","flexipage:tabset","rightsidebar","position: #3 → #5"],
+  ["mov","forceKnowledge_articleSearchDesktop","forceKnowledge:articleSearchDesktop","rightsidebar","position: #4 → #6"]
+];
+var LAB = {add:"Ajouté", del:"Supprimé", mod:"Modifié", mov:"Déplacé", same:"Inchangé"};
+var SIGN = {add:"+", del:"−", mod:"~", mov:"↕", same:""};
+var TAB_NAMES = ["ChangeTracker","Retrieve","Deploy Check","Deploy","History","Audit","Metadata Search","Sfdx","DataSeeding","FlexiPage Diff"];
+
+/* ───────────────────────── Chrome ───────────────────────── */
+function chrome75(o){
+  o = o || {};
+  var tabs = TAB_NAMES.map(function(t){ return '<div class="m-tab'+(t === "FlexiPage Diff" ? " act" : "")+'">'+t+'</div>'; }).join("");
+  return ''+
+  '<div class="mockup">'+
+    '<div class="orgbar"><b>Org :</b><span class="orgsel">Prod &#9662;</span><span style="color:#7dff9b">&#10003;</span><span>api : 4.76%</span></div>'+
+    '<div class="m-tabbar">'+tabs+'</div>'+
+    '<div class="m-title"><b>FlexiPage Diff</b><span>Compare Lightning page (FlexiPage) layouts between two orgs side by side. Select a FlexiPage in each org and visualise component-level differences: added, removed, and modified components.</span></div>'+
+    '<div class="m-body" style="min-height:0;padding:10px 12px">'+
+      '<div class="hbox" style="gap:10px;align-items:center;margin-bottom:8px" id="row1">'+
+        '<span class="cal-lbl" style="width:46px">Org :</span><span class="cal-lbl" style="width:90px;color:#9aa8b3">Prod</span>'+
+        '<span class="cal-lbl">FlexiPage :</span><select class="cal-cb" id="fp1" style="width:290px"><option>'+PAGE+'</option></select>'+
+        '<span class="note-i" id="dl1">downloaded 02/10/2026 17:42</span></div>'+
+      '<div class="hbox" style="gap:10px;align-items:center;margin-bottom:8px" id="row2">'+
+        '<span class="cal-lbl" style="width:46px">Org 2 :</span><select class="cal-cb" id="org2" style="width:90px"><option>'+(o.org2 || "Select org…")+'</option></select>'+
+        '<span class="cal-lbl">FlexiPage :</span><select class="cal-cb" id="fp2" style="width:290px"><option>'+(o.fp2 || "Select org first…")+'</option></select>'+
+        '<span class="note-i" id="dl2">'+(o.fp2 ? "downloaded 02/10/2026 17:42" : "")+'</span></div>'+
+      '<div class="hbox" style="gap:10px;align-items:center;margin-bottom:6px">'+
+        btn("btn-d","Compare","btn-compare")+btn("btn-o","Compare VSCode","btn-vscode")+
+        '<label class="cal-chk" id="force"><input type="checkbox"> ignore cache (force retrieve)</label>'+
+        '<span class="note-i" id="status">'+(o.status || "")+'</span></div>'+
+      '<div id="result">'+(o.result || "")+'</div>'+
+    '</div>'+
+  '</div>';
+}
+
+function tilesHtml(active){
+  var t = [["add","6","AJOUTÉS"],["del","1","SUPPRIMÉS"],["mod","2","MODIFIÉS"],["mov","5","DÉPLACÉS"],["same","27","INCHANGÉS"]];
+  return '<div class="tiles" id="tiles">'+t.map(function(x){
+    return '<div class="tile k-'+x[0]+(active === x[0] ? " on" : "")+'" data-k="'+x[0]+'"><b>'+x[1]+'</b><span>'+x[2]+'</span></div>';
+  }).join("")+'</div>';
+}
+function resultHead(){
+  return '<div class="rhead"><span class="sf-badge">SALESFORCE</span><div><b>Prod / Case_Record_Page → Sandbox_QA / Case_Record_Page</b><div class="mono" style="color:#8a98a6;font-size:10px">FlexiPage Diff</div></div>'+
+    '<span class="spacer"></span><span class="lg"><i style="background:#27ae60"></i>Ajouté</span><span class="lg"><i style="background:#e74c3c"></i>Supprimé</span><span class="lg"><i style="background:#e67e22"></i>Modifié</span><span class="lg"><i style="background:#8e44ad"></i>Déplacé</span><span class="lg"><i style="background:#cfd8de"></i>Inchangé</span></div>';
+}
+function rtabs(active){
+  var t = [["sum","Résumé"],["diff","Vue Diff"],["layout","Vue Mise en page"],["beta","Mise en page (beta)"]];
+  return '<div class="rtabs2" id="rtabs">'+t.map(function(x){ return '<span class="rt2'+(active === x[0] ? " on" : "")+'" id="rt-'+x[0]+'" data-t="'+x[0]+'">'+x[1]+'</span>'; }).join("")+'</div>';
+}
+
+function summaryBody(){
+  var order = [["del","DELETED"],["add","ADDED"],["mod","MODIFIED"],["mov","MOVED"]];
+  return '<div class="sumbar">41 component(s): 1 deleted, 6 added, 2 modified, 5 moved, 27 unchanged.</div>'+
+    order.map(function(o){
+      var rows = ENTRIES.filter(function(e){ return e[0] === o[0]; });
+      return '<div class="sg sg-'+o[0]+'" id="sg-'+o[0]+'"><div class="sgh">'+o[1]+' ('+rows.length+')</div>'+
+        rows.map(function(e){
+          return '<div class="sgr"><span class="sgs">'+SIGN[e[0]]+'</span><span class="mono">'+e[1]+'</span><span class="spacer"></span>'+
+            (e[4] ? '<i class="sgx">'+e[4]+'</i>' : '')+'<span class="chip">'+e[2]+'</span><span class="reg">'+e[3]+'</span></div>';
+        }).join("")+'</div>';
+    }).join("");
+}
+
+function filterPills(active){
+  var f = [["all","Tout"],["add","+ Ajoutés"],["del","✕ Supprimés"],["mod","~ Modifiés"],["mov","↕ Déplacés"],["same","= Inchangés"]];
+  return '<div class="hbox" style="gap:6px;align-items:center;margin:4px 0 8px"><span class="note-i" style="font-style:normal">Filtrer :</span>'+
+    f.map(function(x){ return '<span class="pill2'+(active === x[0] ? " on" : "")+'" id="pf-'+x[0]+'" data-f="'+x[0]+'">'+x[1]+'</span>'; }).join("")+'</div>';
+}
+function cardsHtml(kind, openName){
+  var rows = ENTRIES.filter(function(e){ return kind === "all" || e[0] === kind; });
+  if(kind === "same") rows = [["same","force_detailPanel","force:detailPanel","main",""],["same","force_recordFeed","forceChatter:recordFeedContainer","main",""]];
+  return rows.map(function(e){
+    var open = openName === e[1];
+    var body = "";
+    if(e[0] === "mod"){
+      body = '<table class="ptab"><tr><th>Propriété</th><th>Avant (v1)</th><th></th><th>Après (v2)</th></tr>'+
+        (e[1] === "support_milestones"
+          ? '<tr><td>hideMarkCompleteButton</td><td class="o">false</td><td>→</td><td class="n">true</td></tr><tr><td>visibility rule</td><td class="o">—</td><td>→</td><td class="n">{!$User.Profile.Name} = Support</td></tr>'
+          : '<tr><td>hideSlackAction</td><td class="o">—</td><td>→</td><td class="n">false</td></tr>')+'</table>';
+    } else if(e[0] === "mov"){
+      body = '<div class="mvi">↕ '+e[4].replace("position:","Position :")+'</div>';
+    } else if(e[0] === "add"){
+      body = '<table class="ptab"><tr><th>Propriété</th><th>Valeur</th></tr><tr><td>componentName</td><td class="n">'+e[2]+'</td></tr></table>';
+    }
+    return '<div class="card2 c-'+e[0]+'" data-n="'+e[1]+'" id="cd-'+e[1]+'"><div class="ch2"><span class="xb">'+(e[0] === "same" ? "" : "▾")+'</span>'+
+      '<span class="st st-'+e[0]+'">'+LAB[e[0]].toUpperCase()+'</span><span class="cn">'+e[1]+'</span><span class="chip">'+e[2]+'</span><span class="reg">'+e[3]+'</span></div>'+
+      (body ? '<div class="cb2"'+(open ? "" : ' style="display:none"')+'>'+body+'</div>' : '')+'</div>';
+  }).join("");
+}
+
+/* Side-by-side layout view */
+function layoutRows(){
+  function side(items){ return items.map(function(i){
+    if(!i) return '<div class="lrow ghost"></div>';
+    return '<div class="lrow l-'+i[1]+'" id="'+(i[3]||"")+'"><span class="lsg">'+SIGN[i[1]]+'</span>'+i[0]+'<span class="spacer"></span><i>#'+i[2]+'</i></div>';
+  }).join(""); }
+  var left = {
+    header:[["force_highlightsPanel","mod",1,"lh1"],null],
+    main:[["lwcLegacyInfo","del",1,"lm1"],["c_lwcCaseSummary","mov",2],["flexipage_tabset","mov",3]],
+    right:[null,["support_milestones","mod",1],["lwcCaseLinks","mov",2],["flexipage_tabset2","mov",3],["forceKnowledge_articleSearchDesktop","mov",4]]
+  };
+  var right = {
+    header:[["force_highlightsPanel","mod",1],["c_caseHeaderPanel","add",2,"rh2"]],
+    main:[null,["c_lwcCaseSummary","mov",1],["flexipage_tabset","mov",2]],
+    right:[["flexipage_fieldSection","add",1],["support_milestones","mod",2],["lwcCaseLinks","mov",3],["flexipage_tabset2","mov",5],["forceKnowledge_articleSearchDesktop","mov",6]]
+  };
+  function zone(name, l, r){
+    return '<div class="zone">'+name+'</div><div class="split-pane" style="gap:8px"><div class="split-panel">'+side(l)+'</div><div class="split-panel">'+side(r)+'</div></div>';
+  }
+  return '<div class="split-pane" style="gap:8px;margin-bottom:4px"><div class="vtag">V1 &nbsp;PROD / CASE_RECORD_PAGE</div><div class="vtag v2">V2 &nbsp;SANDBOX_QA / CASE_RECORD_PAGE</div></div>'+
+    zone("HEADER", left.header, right.header)+zone("MAIN", left.main, right.main)+zone("RIGHTSIDEBAR", left.right, right.right);
+}
+
+function betaBody(){
+  function ch(n, s){ return '<div class="bchip b-'+s+'">'+n+'</div>'; }
+  return '<p class="note-i" style="margin:2px 0 8px">Beta : squelette approximatif de la page (versions fusionnées, couleurs = statut du diff). La géométrie réelle du template n\'est pas connue : l\'agencement des colonnes est indicatif.</p>'+
+    '<div class="bband" id="bband">'+ch("force_highlightsPanel","mod")+ch("c_caseHeaderPanel","add")+'</div>'+
+    '<div class="split-pane" style="gap:8px;align-items:flex-start">'+
+      '<div class="split-panel bcol"><div class="zone">MAIN</div>'+ch("lwcLegacyInfo","del")+ch("c_lwcCaseSummary","mov")+
+        '<div class="bbox b-mov" id="bbox">'+ch("flexipage_tabset","mov")+'<div class="bin">'+ch("Feed › force:chatter_recordFeedContainer","same")+ch("Detail › force:detailPanel","same")+'</div></div></div>'+
+      '<div class="split-panel bcol"><div class="zone">RIGHTSIDEBAR</div>'+
+        '<div class="bbox b-add">'+ch("flexipage_fieldSection","add")+'<div class="bin">'+ch("flexipage_column › RecordSummary_cField","add")+'</div></div>'+
+        ch("support_milestones","mod")+ch("lwcCaseLinks","mov")+ch("flexipage_tabset2","mov")+ch("support_emailSummaries","add")+ch("forceKnowledge_articleSearchDesktop","mov")+'</div>'+
+    '</div>';
+}
+
+function fullResult(active, filter, openName){
+  var body = active === "sum" ? summaryBody() : active === "diff" ? filterPills(filter || "all")+cardsHtml(filter || "all", openName) : active === "layout" ? layoutRows() : betaBody();
+  return resultHead()+tilesHtml(active === "diff" && filter && filter !== "all" ? filter : "")+rtabs(active)+'<div class="rbody" id="rbody">'+body+'</div>';
+}
+
+function clickAt(el, cb){
+  if(!el) return;
+  var r = el.getBoundingClientRect();
+  var x = r.left + Math.min(r.width/2, 40), y = r.top + r.height/2;
+  cursor.style.transform = "translate(" + (x-3) + "px," + (y-2) + "px)";
+  after(640, function(){
+    ripple.style.left = x + "px"; ripple.style.top = y + "px";
+    ripple.classList.remove("go"); void ripple.offsetWidth; ripple.classList.add("go");
+    if(cb) cb();
+  });
+}
+function setTab(t, filter, open){
+  $("#result").innerHTML = fullResult(t, filter, open);
+}
+
+/* ───────────────────────── Scene 1 — pick the two pages ───────────────────────── */
+function scene1(){ sceneBody.innerHTML = chrome75(); }
+scene1.run = function(){
+  popupChain([
+    {sel:"#row1", title:"The page you start from", color:COL.pick, side:"below",
+     text:"The first line is the <em>main org</em> of Calumet, and a FlexiPage of that org. The date says when its XML was last downloaded: Calumet keeps a local copy so that a second comparison is instant."}
+  ]);
+  after(2500, function(){ $("#popup").classList.remove("show"); });
+  after(3000, function(){ clickAt($("#org2"), function(){ $("#org2").innerHTML = "<option>Sandbox_QA</option>"; $("#fp2").innerHTML = "<option>Loading…</option>"; }); });
+  after(4400, function(){
+    $("#fp2").innerHTML = "<option>"+PAGE+"</option>";
+    $("#dl2").textContent = "downloaded 02/10/2026 17:42";
+    showPopup("The same page, in another org", "Choose <b>Org 2</b>, then the FlexiPage to compare with. Typically the same page in a <em>sandbox</em> and in <em>production</em>, or two versions of a page you have been editing.", COL.pick, $("#row2"), "below");
+  });
+};
+
+/* ───────────────────────── Scene 2 — compare ───────────────────────── */
+function scene2(){ sceneBody.innerHTML = chrome75({org2:"Sandbox_QA", fp2:PAGE}); }
+scene2.run = function(){
+  popupChain([
+    {sel:"#force", title:"Local copy or fresh download", color:COL.compare, side:"below",
+     text:"By default Calumet reuses the XML it already downloaded. Tick <b>ignore cache (force retrieve)</b> to download both pages again from their orgs, for instance right after someone edited one of them."}
+  ]);
+  popupNextFn = function(){
+    hidePopup();
+    clickAt($("#btn-compare"), function(){
+      $("#status").textContent = "Comparing…";
+      after(1300, function(){
+        $("#status").textContent = "Done — 41 component(s) analysed.";
+        setTab("sum");
+        showPopup("Compare reads the XML, not the screen", "Calumet parses the two page definitions and matches components one by one. <b>Compare VSCode</b> is the alternative: it opens both XML files in VSCode's own diff, for a line-by-line reading.", COL.compare, $("#btn-vscode"), "below");
+        popupNextFn = null;
+      });
+    });
+  };
+};
+
+/* ───────────────────────── Scene 3 — summary ───────────────────────── */
+function scene3(){ sceneBody.innerHTML = chrome75({org2:"Sandbox_QA", fp2:PAGE, status:"Done — 41 component(s) analysed.", result:fullResult("sum")}); }
+scene3.run = function(){
+  popupChain([
+    {sel:"#tiles", title:"Five numbers, five colours", color:COL.summary, side:"below",
+     text:"<em>Added</em> (green), <em>Deleted</em> (red), <em>Modified</em> (orange), <em>Moved</em> (purple), <em>Unchanged</em> (grey). The same colours are used everywhere in the result. The tiles are also buttons: click one to keep only that kind of change."},
+    {sel:"#sg-mod", title:"Read it as a change list", color:COL.summary, side:"above",
+     text:"The <b>R&eacute;sum&eacute;</b> tab lists every change, grouped by kind, with the component, its type and its region of the page. For a modified component, the property that changed is written right on the line."},
+    {sel:"#sg-mov", title:"Moved is not Modified", color:COL.summary, side:"above",
+     text:"A <em>moved</em> component has not changed: it only sits somewhere else (another position, or another region). Telling the two apart avoids reading a re-ordering as an edit."}
+  ]);
+};
+
+/* ───────────────────────── Scene 4 — Vue Diff ───────────────────────── */
+function scene4(){ sceneBody.innerHTML = chrome75({org2:"Sandbox_QA", fp2:PAGE, status:"Done — 41 component(s) analysed.", result:fullResult("sum")}); }
+scene4.run = function(){
+  after(800, function(){
+    clickAt($("#rt-diff"), function(){
+      setTab("diff", "all");
+      popupChain([
+        {sel:"#pf-all", title:"One card per component", color:COL.diff, side:"below",
+         text:"<b>Vue Diff</b> shows one card per component. Use the filters to keep a single kind of change: click a filter, click it again to come back to everything."}
+      ]);
+      popupNextFn = function(){
+        hidePopup();
+        clickAt($("#pf-mod"), function(){
+          setTab("diff", "mod");
+          after(600, function(){
+            clickAt($("#cd-support_milestones .ch2"), function(){
+              $("#cd-support_milestones .cb2").style.display = "block";
+              after(500, function(){
+                showPopup("Open a card to see what changed", "Click a card to see the property table: the value <em>before</em> (v1) and <em>after</em> (v2), with only the differing words highlighted. Here a button is now hidden and a visibility rule appeared.", COL.diff, $("#cd-support_milestones .cb2"), "above");
+                popupNextFn = null;
+              });
+            });
+          });
+        });
+      };
+    });
+  });
+};
+
+/* ───────────────────────── Scene 5 — layout view ───────────────────────── */
+function scene5(){ sceneBody.innerHTML = chrome75({org2:"Sandbox_QA", fp2:PAGE, status:"Done — 41 component(s) analysed.", result:fullResult("sum")}); }
+scene5.run = function(){
+  after(800, function(){
+    clickAt($("#rt-layout"), function(){
+      setTab("layout");
+      popupChain([
+        {sel:".vtag", title:"The two pages, region by region", color:COL.layout, side:"below",
+         text:"<b>Vue Mise en page</b> puts version 1 on the left and version 2 on the right, region by region (header, sidebars, main). Each row is a component, with its position."},
+        {sel:"#lm1", title:"Dashed gaps keep the rows aligned", color:COL.layout, side:"below",
+         text:"A <em>deleted</em> component has an empty, dashed slot on the other side, an <em>added</em> one has it on this side. The two columns always line up, so you can see what shifted without counting."},
+        {sel:"#rh2", title:"Colour = status of the diff", color:COL.layout, side:"below",
+         text:"The new header panel is green: added in version 2. A purple row has only changed place. The little number on the right is its position in the region."}
+      ]);
+    });
+  });
+};
+
+/* ───────────────────────── Scene 6 — beta ───────────────────────── */
+function scene6(){ sceneBody.innerHTML = chrome75({org2:"Sandbox_QA", fp2:PAGE, status:"Done — 41 component(s) analysed.", result:fullResult("sum")}); }
+scene6.run = function(){
+  after(800, function(){
+    clickAt($("#rt-beta"), function(){
+      setTab("beta");
+      popupChain([
+        {sel:"#bband", title:"A sketch of the page", color:COL.beta, side:"below",
+         text:"The <b>beta</b> tab merges both versions into one rough picture: the header on top as a band, the other regions as columns, components nested like boxes in boxes."},
+        {sel:"#bbox", title:"Indicative, not a mockup", color:COL.beta, side:"above",
+         text:"Calumet does not know the real geometry of the page template, so the columns are only <em>indicative</em>. Use it to get the overall shape of the page and where the changes are concentrated, then go back to the other tabs for the detail."}
+      ]);
+    });
+  });
+};
+
+/* ───────────────────────── Scene 7 — recap ───────────────────────── */
+var recapItems = [
+  ["pick the same FlexiPage in two orgs, or two versions of one page"],
+  ["compare from the local copy, or force a fresh download"],
+  ["read the summary: added, deleted, modified, moved, unchanged"],
+  ["filter the cards and open one to see its properties before and after"],
+  ["see both pages side by side, region by region"],
+  ["open the same two pages in VSCode for a line-by-line diff"]
+];
+function scene7(){
+  sceneBody.innerHTML =
+  '<div class="recap">'+
+    '<h2>You can now compare any two Lightning pages</h2>'+
+    '<div class="lead">FlexiPage Diff tells you what really differs between two versions of a page, before you deploy it.</div>'+
+    '<ul class="recap-list" id="recap-list">'+
+      recapItems.map(function(it,i){
+        return '<li id="rl-'+i+'"><span class="chk">&#10003;</span> <span>'+it[0].charAt(0).toUpperCase()+it[0].slice(1)+'</span></li>';
+      }).join("")+
+    '</ul>'+
+    '<div class="tips">'+
+      '<div class="tip"><span class="icon">&#128161;</span><b>Compare before you deploy.</b> Run the diff between your sandbox and production: a component you did not mean to change shows up at once.</div>'+
+      '<div class="tip warn"><span class="icon">&#9888;&#65039;</span><b>Moved is not edited.</b> A purple card only changed place. Look at the orange ones first.</div>'+
+      '<div class="tip cycle"><span class="icon">&#128260;</span><b>Stale copy?</b> If a page was edited a moment ago, tick <b>ignore cache</b> so both sides are downloaded again.</div>'+
+    '</div>'+
+  '</div>';
+}
+scene7.run = function(){
+  for(var i=0;i<recapItems.length;i++){
+    (function(i){ after(250 + i*220, function(){ var li=$("#rl-"+i); if(li) li.classList.add("in"); }); })(i);
+  }
+};
+
+/* ───────────────────────── Scene registry ───────────────────────── */
+var scenes = [
+  {fn:scene1, run:scene1.run}, {fn:scene2, run:scene2.run}, {fn:scene3, run:scene3.run},
+  {fn:scene4, run:scene4.run}, {fn:scene5, run:scene5.run}, {fn:scene6, run:scene6.run}, {fn:scene7, run:scene7.run}
+];
+
+
+/* ───────────────────────── Engine ───────────────────────── */
+var current = 0;
+
+function buildProgress(){
+  var p = $("#progress");
+  var html = "";
+  for(var i=0;i<scenes.length;i++){
+    html += '<div class="dot" data-i="'+i+'"><span class="circle">'+(i+1)+'</span></div>';
+    if(i<scenes.length-1) html += '<div class="connector" data-c="'+i+'"></div>';
+  }
+  p.innerHTML = html;
+  p.querySelectorAll(".dot").forEach(function(d){
+    d.addEventListener("click", function(){ goTo(parseInt(d.getAttribute("data-i"),10)); });
+  });
+}
+
+function updateProgress(){
+  var dots = $("#progress").querySelectorAll(".dot");
+  var conns = $("#progress").querySelectorAll(".connector");
+  dots.forEach(function(d,i){
+    d.classList.toggle("active", i===current);
+    d.classList.toggle("done", i<current);
+  });
+  conns.forEach(function(c,i){ c.classList.toggle("done", i<current); });
+}
+
+function goTo(i){
+  if(i<0 || i>=scenes.length) return;
+  clearPending();
+  hidePopup();
+  popupNextFn = null;   // a chain left over from the previous scene must not answer this scene's "Got it"
+  // park cursor off-screen during transition
+  cursor.style.transition = "none";
+  cursor.style.transform = "translate(-120px,-120px)";
+  void cursor.offsetWidth;
+  current = i;
+  scenes[i].fn();
+  updateProgress();
+  $("#scene-counter").textContent = (i+1) + " / " + scenes.length;
+  $("#btn-prev").disabled = (i===0);
+  $("#btn-next").textContent = (i===scenes.length-1) ? "Restart ↺" : "Next →";
+  // restore transition then run the scene animation
+  after(60, function(){
+    cursor.style.transition = "transform .6s cubic-bezier(.4,0,.2,1)";
+    scenes[i].run();
+  });
+}
+
+function goNext(){
+  if(current === scenes.length-1){ goTo(0); }
+  else goTo(current+1);
+}
+function goPrev(){ goTo(current-1); }
+
+/* ── Controls ── */
+$("#btn-next").addEventListener("click", goNext);
+$("#btn-prev").addEventListener("click", goPrev);
+$(".p-btn", popup).addEventListener("click", function(){ (popupNextFn || goNext)(); });
+
+document.addEventListener("keydown", function(e){
+  if(e.key === "ArrowRight" || e.key === " "){ e.preventDefault(); goNext(); }
+  else if(e.key === "ArrowLeft"){ e.preventDefault(); goPrev(); }
+});
+
+/* ── Auto-play ── */
+var playTimer = null;
+var autoBtn = $("#autoplay");
+function startAuto(){
+  autoBtn.classList.add("on");
+  autoBtn.innerHTML = "&#10073;&#10073;"; // pause
+  playTimer = setInterval(goNext, 5000);
+}
+function stopAuto(){
+  autoBtn.classList.remove("on");
+  autoBtn.innerHTML = "&#9654;";
+  if(playTimer){ clearInterval(playTimer); playTimer = null; }
+}
+autoBtn.addEventListener("click", function(){
+  if(playTimer) stopAuto(); else startAuto();
+});
+
+/* reposition popup on resize */
+window.addEventListener("resize", function(){
+  if(popup.classList.contains("show")) hidePopup();
+});
+
+/* ── Init ── */
+buildProgress();
+goTo(0);
+</script>
+<script>/* Back link: website only, hidden in the application help (JavaFX WebView) */
+if(navigator.userAgent.indexOf('JavaFX')>=0){var b=document.getElementById('backSite');if(b)b.style.display='none';}</script>
+</body>
+</html>

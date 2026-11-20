@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Metadata Bundle — Calumet</title>
+<link rel="stylesheet" href="../shared.css">
+<style>
+.tile{display:inline-flex;flex-direction:column;gap:3px;width:190px;box-sizing:border-box;padding:6px 8px;border:1px solid #e2e8f0;border-left-width:5px;border-radius:5px;margin:0 6px 6px 0;vertical-align:top;color:#1a2a35}
+.tile.in{background:#fff}
+.tile.pend{background:#fafaf9}
+.tile b{font-size:11.5px;word-break:break-all}
+.tile .via{font-size:10px;color:#666}
+.tile .row{display:flex;gap:4px;align-items:center}
+.tile .cal-btn{font-size:10px;padding:1px 6px}
+.tile label{font-size:10px}
+.sec{border:1px solid #cbd5e1;border-radius:4px;margin-bottom:8px;background:rgba(255,255,255,.04)}
+.sec-h{padding:4px 8px;font-size:12px;font-weight:600;background:rgba(148,163,184,.25)}
+.sec-b{padding:6px}
+.dot{font-size:10px;margin-right:4px}
+.xtile{display:inline-flex;gap:6px;align-items:center;background:#f3f4f6;border-left:4px solid #64748b;padding:4px 8px;border-radius:4px;margin:0 6px 6px 0;font-size:11px;color:#1a2a35}
+.xtile s{font-size:11px}
+.ptitle{font-weight:700;margin:2px 0 4px}
+.pre{font-family:Consolas,monospace;font-size:11px;white-space:pre;overflow:auto}
+</style>
+</head>
+<body class="tab-page">
+<div class="sum">
+  <div class="sum-title">
+    <h2>Metadata Bundle</h2>
+    <span class="sum-badge">Tab 37</span>
+  </div>
+  <p class="sum-desc">
+    Builds a deployable package from a handful of seed components by walking the dependency graph, with human curation.
+    <button class="cal-btn btn-d" style="margin-left:10px" onclick="document.getElementById('modal-kf').style.display='flex'">★ Key features</button>
+  </p>
+</div>
+<div class="mockup-wrap">
+  <div class="mockup">
+    <div class="vbox" style="gap:8px">
+
+      <div class="hbox" style="gap:8px;align-items:center">
+        <span class="cal-lbl">Manual add (a type the graph does not cover, or a catch-up)</span>
+        <select class="cal-cb" style="width:220px" disabled data-tip="Editable: pick a type or type any MDAPI type"><option>QueueRoutingConfig</option></select>
+        <input class="cal-tf" style="width:240px" readonly value="Billing_Queue_Routing" placeholder="Name">
+        <button class="cal-btn btn-b">Add</button>
+      </div>
+
+      <div class="hbox" style="gap:8px;align-items:center">
+        <button class="cal-btn btn-b" data-tip="Walks the dependency graph one hop from every Bundle member and fills the Proposed column">Recompute neighbours</button>
+        <button class="cal-btn btn-g" data-tip="Writes package.xml and grappe-brief.md into an AI session folder, then runs a real metadata retrieve">Generate package + retrieve</button>
+        <span class="vsep"></span>
+        <button class="cal-btn btn-d">Hide package.xml «</button>
+        <span class="cal-lbl" style="color:#888">Done.</span>
+        <span class="spacer"></span>
+        <span class="cal-lbl" style="color:#888">Bundle: 10 &nbsp;|&nbsp; Proposed: 7 (+12 hidden) &nbsp;|&nbsp; Excluded: 3</span>
+        <span class="vsep"></span>
+        <span class="cal-lbl">Auto-uncheck Expand above</span>
+        <input class="cal-tf" style="width:45px;text-align:center" readonly value="10" data-tip="A newly-added Bundle member with more neighbours than this defaults to Expand neighbours unchecked. Saved globally, applies to every org.">
+        <span class="cal-lbl">refs</span>
+        <span class="vsep"></span>
+        <button class="cal-btn btn-d">Reset</button>
+      </div>
+
+      <div class="split-pane" style="align-items:stretch">
+
+        <!-- LEFT: Bundle + Excluded -->
+        <div class="split-panel" style="flex:1.3;min-width:0">
+          <div class="ptitle">Bundle</div>
+
+          <div class="sec"><div class="sec-h"><span class="dot" style="color:#2563eb">●</span>Apex Class (3)</div><div class="sec-b">
+            <div class="tile in" style="border-left-color:#2563eb"><b>InvoiceService</b><span class="via">added manually</span>
+              <label><input type="checkbox" checked disabled> Expand neighbours (6 refs)</label>
+              <div class="row"><button class="cal-btn btn-d">Remove</button><button class="cal-btn btn-r">Exclude</button></div></div>
+            <div class="tile in" style="border-left-color:#2563eb"><b>InvoiceTriggerHandler</b><span class="via">via InvoiceTrigger (calls, inbound)</span>
+              <label><input type="checkbox" checked disabled> Expand neighbours (3 refs)</label>
+              <div class="row"><button class="cal-btn btn-d">Remove</button><button class="cal-btn btn-r">Exclude</button></div></div>
+            <div class="tile in" style="border-left-color:#2563eb"><b>AccountSelector</b><span class="via">via InvoiceService (calls, outbound)</span>
+              <label><input type="checkbox" disabled data-tip="Unchecked: this component still ships in the package.xml, but Recompute neighbours will never look for its callers/callees"> Expand neighbours (27 refs)</label>
+              <div class="row"><button class="cal-btn btn-d">Remove</button><button class="cal-btn btn-r">Exclude</button></div></div>
+          </div></div>
+
+          <div class="sec"><div class="sec-h"><span class="dot" style="color:#7c3aed">●</span>Apex Trigger (1)</div><div class="sec-b">
+            <div class="tile in" style="border-left-color:#7c3aed"><b>InvoiceTrigger</b><span class="via">added manually</span>
+              <label><input type="checkbox" checked disabled> Expand neighbours (4 refs)</label>
+              <div class="row"><button class="cal-btn btn-d">Remove</button><button class="cal-btn btn-r">Exclude</button></div></div>
+          </div></div>
+
+          <div class="sec"><div class="sec-h"><span class="dot" style="color:#16a34a">●</span>Object (2)</div><div class="sec-b">
+            <div class="tile in" style="border-left-color:#16a34a"><b>Invoice__c</b><span class="via">via InvoiceTrigger (on, outbound)</span>
+              <label><input type="checkbox" checked disabled> Expand neighbours (8 refs)</label>
+              <div class="row"><button class="cal-btn btn-d">Remove</button><button class="cal-btn btn-r">Exclude</button></div></div>
+            <div class="tile in" style="border-left-color:#16a34a"><b>Account</b><span class="via">via Invoice__c (lookup, outbound)</span>
+              <label><input type="checkbox" disabled> Expand neighbours (112 refs)</label>
+              <div class="row"><button class="cal-btn btn-d">Remove</button><button class="cal-btn btn-r">Exclude</button></div></div>
+          </div></div>
+
+          <div class="sec"><div class="sec-h"><span class="dot" style="color:#ea580c">●</span>Flow (1)</div><div class="sec-b">
+            <div class="tile in" style="border-left-color:#ea580c"><b>Invoice_Approval</b><span class="via">via Invoice__c (reads, inbound)</span>
+              <label><input type="checkbox" checked disabled> Expand neighbours (2 refs)</label>
+              <div class="row"><button class="cal-btn btn-d">Remove</button><button class="cal-btn btn-r">Exclude</button></div></div>
+          </div></div>
+
+          <div class="sec"><div class="sec-h"><span class="dot" style="color:#0891b2">●</span>Custom Label (1)</div><div class="sec-b">
+            <div class="tile in" style="border-left-color:#0891b2"><b>Invoice_Overdue_Message</b><span class="via">via InvoiceService (uses, outbound)</span>
+              <label><input type="checkbox" checked disabled> Expand neighbours (1 ref)</label>
+              <div class="row"><button class="cal-btn btn-d">Remove</button><button class="cal-btn btn-r">Exclude</button></div></div>
+          </div></div>
+
+          <div class="sec"><div class="sec-h"><span class="dot" style="color:#8a5a9c">●</span>Email Template (1)</div><div class="sec-b">
+            <div class="tile in" style="border-left-color:#8a5a9c"><b>Invoice_Reminder</b><span class="via">via Invoice_Approval (sends, outbound)</span>
+              <label><input type="checkbox" checked disabled> Expand neighbours (1 ref)</label>
+              <div class="row"><button class="cal-btn btn-d">Remove</button><button class="cal-btn btn-r">Exclude</button></div></div>
+          </div></div>
+
+          <div class="sec"><div class="sec-h"><span class="dot" style="color:#5b8a3c">●</span>Queue Routing Config (1)</div><div class="sec-b">
+            <div class="tile in" style="border-left-color:#5b8a3c"><b>Billing_Queue_Routing</b><span class="via">added manually</span>
+              <label><input type="checkbox" checked disabled> Expand neighbours (0 refs)</label>
+              <div class="row"><button class="cal-btn btn-d">Remove</button><button class="cal-btn btn-r">Exclude</button></div></div>
+          </div></div>
+
+          <div class="sec"><div class="sec-h">▸ Excluded (3)</div><div class="sec-b">
+            <span class="xtile"><s>PAD_Utils</s><button class="cal-btn btn-d" style="font-size:10px;padding:1px 6px">Restore</button></span>
+            <span class="xtile"><s>Legacy_Invoice_Sync</s><button class="cal-btn btn-d" style="font-size:10px;padding:1px 6px">Restore</button></span>
+            <span class="xtile"><s>ReportExporter</s><button class="cal-btn btn-d" style="font-size:10px;padding:1px 6px">Restore</button></span>
+          </div></div>
+        </div>
+
+        <!-- CENTER: Proposed -->
+        <div class="split-panel" style="flex:1.3;min-width:0">
+          <div class="hbox" style="gap:8px;align-items:center">
+            <span class="ptitle">Proposed (by usage)</span>
+            <span class="spacer"></span>
+            <span class="cal-lbl" style="color:#888">12 hidden by the type filter</span>
+            <button class="cal-btn btn-o" data-tip="Choose which node types the Proposed column may show (view filter, saved per org)">Types</button>
+          </div>
+
+          <div class="sec"><div class="sec-h"><span class="dot" style="color:#2563eb">●</span>Apex Class (2)</div><div class="sec-b">
+            <div class="hbox" style="gap:6px;margin-bottom:6px"><button class="cal-btn btn-g">Include all</button><button class="cal-btn btn-r">Exclude all</button></div>
+            <div class="tile pend" style="border-left-color:#2563eb"><b>BillingBatch</b><span class="via">via InvoiceService (calls, inbound)</span>
+              <div class="row"><button class="cal-btn btn-g">Include</button><button class="cal-btn btn-r">Exclude</button></div></div>
+            <div class="tile pend" style="border-left-color:#2563eb"><b>InvoiceServiceTest</b><span class="via">via InvoiceService (tests, inbound)</span>
+              <div class="row"><button class="cal-btn btn-g">Include</button><button class="cal-btn btn-r">Exclude</button></div></div>
+          </div></div>
+
+          <div class="sec"><div class="sec-h"><span class="dot" style="color:#db2777">●</span>Lightning Page (2)</div><div class="sec-b">
+            <div class="hbox" style="gap:6px;margin-bottom:6px"><button class="cal-btn btn-g">Include all</button><button class="cal-btn btn-r">Exclude all</button></div>
+            <div class="tile pend" style="border-left-color:#db2777"><b>Invoice_Record_Page</b><span class="via">via Invoice__c (page_for, inbound)</span>
+              <div class="row"><button class="cal-btn btn-g">Include</button><button class="cal-btn btn-r">Exclude</button></div></div>
+            <div class="tile pend" style="border-left-color:#db2777"><b>Account_Record_Page</b><span class="via">via Account (page_for, inbound)</span>
+              <div class="row"><button class="cal-btn btn-g">Include</button><button class="cal-btn btn-r">Exclude</button></div></div>
+          </div></div>
+
+          <div class="sec"><div class="sec-h"><span class="dot" style="color:#9333ea">●</span>LWC (2)</div><div class="sec-b">
+            <div class="hbox" style="gap:6px;margin-bottom:6px"><button class="cal-btn btn-g">Include all</button><button class="cal-btn btn-r">Exclude all</button></div>
+            <div class="tile pend" style="border-left-color:#9333ea"><b>invoiceSummary</b><span class="via">via InvoiceService (apex_import, inbound)</span>
+              <div class="row"><button class="cal-btn btn-g">Include</button><button class="cal-btn btn-r">Exclude</button></div></div>
+            <div class="tile pend" style="border-left-color:#9333ea"><b>invoiceLineEditor</b><span class="via">via Invoice__c (field_use, inbound)</span>
+              <div class="row"><button class="cal-btn btn-g">Include</button><button class="cal-btn btn-r">Exclude</button></div></div>
+          </div></div>
+
+          <div class="sec"><div class="sec-h"><span class="dot" style="color:#65a30d">●</span>Custom Tab (1)</div><div class="sec-b">
+            <div class="hbox" style="gap:6px;margin-bottom:6px"><button class="cal-btn btn-g">Include all</button><button class="cal-btn btn-r">Exclude all</button></div>
+            <div class="tile pend" style="border-left-color:#65a30d"><b>Invoice__c</b><span class="via">via Invoice__c (tab_for, inbound)</span>
+              <div class="row"><button class="cal-btn btn-g">Include</button><button class="cal-btn btn-r">Exclude</button></div></div>
+          </div></div>
+        </div>
+
+        <!-- RIGHT: package.xml preview -->
+        <div class="split-panel" style="flex:1;min-width:0">
+          <div class="ptitle">package.xml (live preview)</div>
+          <textarea class="cal-ta pre" readonly rows="22" style="width:100%;box-sizing:border-box">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;Package xmlns="http://soap.sforce.com/2006/04/metadata"&gt;
+  &lt;types&gt;
+    &lt;members&gt;AccountSelector&lt;/members&gt;
+    &lt;members&gt;InvoiceService&lt;/members&gt;
+    &lt;members&gt;InvoiceTriggerHandler&lt;/members&gt;
+    &lt;name&gt;ApexClass&lt;/name&gt;
+  &lt;/types&gt;
+  &lt;types&gt;
+    &lt;members&gt;InvoiceTrigger&lt;/members&gt;
+    &lt;name&gt;ApexTrigger&lt;/name&gt;
+  &lt;/types&gt;
+  &lt;types&gt;
+    &lt;members&gt;Account&lt;/members&gt;
+    &lt;members&gt;Invoice__c&lt;/members&gt;
+    &lt;name&gt;CustomObject&lt;/name&gt;
+  &lt;/types&gt;
+  &lt;types&gt;
+    &lt;members&gt;Invoice_Overdue_Message&lt;/members&gt;
+    &lt;name&gt;CustomLabel&lt;/name&gt;
+  &lt;/types&gt;
+  &lt;types&gt;
+    &lt;members&gt;Invoice_Approval&lt;/members&gt;
+    &lt;name&gt;Flow&lt;/name&gt;
+  &lt;/types&gt;
+  &lt;types&gt;
+    &lt;members&gt;Billing_Queue_Routing&lt;/members&gt;
+    &lt;name&gt;QueueRoutingConfig&lt;/name&gt;
+  &lt;/types&gt;
+  &lt;version&gt;66.0&lt;/version&gt;
+&lt;/Package&gt;</textarea>
+          <div class="ptitle" style="margin-top:8px">Outside the package (to complete by hand)</div>
+          <textarea class="cal-ta" readonly rows="3" style="width:100%;box-sizing:border-box">EmailTemplate:Invoice_Reminder</textarea>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Key features modal -->
+<div id="modal-kf" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:999;align-items:center;justify-content:center" onclick="if(event.target===this)this.style.display='none'">
+  <div style="background:#fff;border-radius:8px;padding:28px 32px;max-width:520px;width:90%;color:#1a2a35;box-shadow:0 8px 32px rgba(0,0,0,.3)">
+    <h3 style="margin:0 0 14px;color:#2980b9">★ Key features</h3>
+    <ul style="margin:0;padding-left:20px;line-height:1.8">
+      <li>Start from a few seed components (manual add), then click Recompute neighbours to walk the dependency graph one hop at a time.</li>
+      <li>Structural neighbours join the Bundle automatically; usage neighbours land in Proposed, grouped by type, for you to Include or Exclude one by one or in bulk.</li>
+      <li>Per-member "Expand neighbours" checkbox, auto-unchecked above a ref threshold, keeps widely-used utility classes from flooding Proposed.</li>
+      <li>Types filter hides noisy node types from Proposed (saved per org).</li>
+      <li>Live package.xml preview, plus a list of members that cannot be mapped to a package type.</li>
+      <li>Generate package + retrieve writes package.xml and a brief into an AI session folder and runs a real metadata retrieve.</li>
+      <li>Requires a full licence and a dependency graph built for the org.</li>
+    </ul>
+    <div style="text-align:right;margin-top:18px">
+      <button class="cal-btn btn-d" onclick="document.getElementById('modal-kf').style.display='none'">Close</button>
+    </div>
+  </div>
+</div>
+<script>
+function sw(id,idx){
+  var tp=document.getElementById(id);
+  tp.querySelectorAll('.m-tab').forEach(function(t,i){t.classList.toggle('act',i===idx)});
+  tp.querySelectorAll('.m-panel').forEach(function(p,i){p.classList.toggle('act',i===idx)});
+}
+</script>
+</body>
+</html>

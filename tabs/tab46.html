@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Layout Unused — Calumet</title>
+<link rel="stylesheet" href="../shared.css">
+</head>
+<body class="tab-page">
+
+<div class="sum">
+  <div class="sum-title">
+    <h2>LayoutUnused</h2>
+    <span class="sum-badge">Tab 46</span>
+  </div>
+  <p class="sum-desc">
+    Find unused page layouts across objects. Filter by profile and active record type assignments to identify safe-to-remove layouts.
+    <button class="cal-btn btn-d" style="margin-left:10px" onclick="document.getElementById('modal-kf').style.display='flex'">★ Key features</button>
+  </p>
+</div>
+
+<div class="mockup-wrap">
+  <div class="mockup">
+
+    <div class="anchor" style="padding:10px;gap:8px">
+
+      <!-- Toolbar -->
+      <div class="hbox" style="gap:10px;align-items:center">
+        <button class="cal-btn btn-b"
+                data-tip="Analyse every page layout of the selected org and list those that are not really used">
+          Extract unused layouts
+        </button>
+        <label class="cal-chk" data-tip="Ignore profiles that have no active user when deciding whether a layout is assigned">
+          <input type="checkbox" checked disabled> Only profiles with users
+        </label>
+        <label class="cal-chk" data-tip="Ignore inactive record types when deciding whether a layout is assigned">
+          <input type="checkbox" checked disabled> Only active record types
+        </label>
+        <span class="spacer"></span>
+        <span class="cal-lbl" style="color:#64748b;font-size:12px">8 unused layouts</span>
+        <input class="cal-tf" style="width:180px" readonly placeholder="filter..." value="">
+      </div>
+
+      <!-- Results table -->
+      <div class="tbl-wrap">
+        <table class="cal-tbl">
+          <thead>
+            <tr>
+              <th style="width:200px">Object</th>
+              <th style="width:260px">Layout</th>
+              
+              <th style="width:120px;text-align:center">Created</th>
+              <th style="width:200px;text-align:center">Reason</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr data-tip="Double-click to open this object's Page Layouts in Setup">
+              <td>Account</td>
+              <td>Account Layout (Legacy)</td>
+              
+              <td style="text-align:center" data-tip="2019-03-12 09:41:07">2019-03-12</td>
+              <td style="text-align:center"><span style="background:#dc2626;color:#fff;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:bold" data-tip="Layout is not assigned to any profile">Not assigned</span></td>
+            </tr>
+            <tr data-tip="Double-click to open this object's Page Layouts in Setup">
+              <td>Case</td>
+              <td>Case Layout - Escalation</td>
+              
+              <td style="text-align:center" data-tip="2020-07-22 14:05:33">2020-07-22</td>
+              <td style="text-align:center"><span style="background:#f59e0b;color:#fff;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:bold" data-tip="Only used by inactive record types: Escalated Case (inactive)">Inactive record types</span></td>
+            </tr>
+            <tr data-tip="Double-click to open this object's Page Layouts in Setup">
+              <td>Contact</td>
+              <td>Contact Layout - Partner</td>
+              
+              <td style="text-align:center" data-tip="2018-11-02 16:20:48">2018-11-02</td>
+              <td style="text-align:center"><span style="background:#f59e0b;color:#fff;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:bold" data-tip="Only assigned to profiles without active users: Partner Community User, Customer Community Login User">Inactive profiles</span></td>
+            </tr>
+            <tr data-tip="Double-click to open this object's Page Layouts in Setup">
+              <td>Opportunity</td>
+              <td>Opportunity Layout v2</td>
+              
+              <td style="text-align:center" data-tip="2021-01-14 18:45:19">2021-01-14</td>
+              <td style="text-align:center"><span style="background:#dc2626;color:#fff;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:bold">Not assigned</span></td>
+            </tr>
+            <tr data-tip="Double-click to open this object's Page Layouts in Setup">
+              <td>Lead</td>
+              <td>Lead Layout - Web</td>
+              
+              <td style="text-align:center" data-tip="2020-02-05 11:12:09">2020-02-05</td>
+              <td style="text-align:center"><span style="background:#f59e0b;color:#fff;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:bold" data-tip="Used only by inactive record types and by profiles without active users">Inactive RT + profiles</span></td>
+            </tr>
+            <tr data-tip="Double-click to open this object's Page Layouts in Setup">
+              <td>Campaign</td>
+              <td>Campaign Layout</td>
+              
+              <td style="text-align:center" data-tip="2017-12-20 00:16:33">2017-12-20</td>
+              <td style="text-align:center"><span style="background:#dc2626;color:#fff;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:bold">Not assigned</span></td>
+            </tr>
+            <tr data-tip="Double-click to open this object's Page Layouts in Setup">
+              <td>Contract</td>
+              <td>Contract Layout - Renewal</td>
+              
+              <td style="text-align:center" data-tip="2022-09-01 18:05:28">2022-09-01</td>
+              <td style="text-align:center"><span style="background:#dc2626;color:#fff;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:bold">Not assigned</span></td>
+            </tr>
+            <tr data-tip="Double-click to open this object's Page Layouts in Setup">
+              <td>Asset</td>
+              <td>Asset Layout - Community</td>
+              
+              <td style="text-align:center" data-tip="2018-09-15 10:18:22">2018-09-15</td>
+              <td style="text-align:center"><span style="background:#f59e0b;color:#fff;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:bold">Inactive profiles</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div><!-- /anchor -->
+  </div><!-- /mockup -->
+</div><!-- /mockup-wrap -->
+
+<script>
+function sw(id,idx){
+  var tp=document.getElementById(id);
+  tp.querySelectorAll('.m-tab').forEach(function(t,i){t.classList.toggle('act',i===idx)});
+  tp.querySelectorAll('.m-panel').forEach(function(p,i){p.classList.toggle('act',i===idx)});
+}
+</script>
+
+<!-- Key features modal -->
+<div id="modal-kf" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:999;align-items:center;justify-content:center" onclick="if(event.target===this)this.style.display='none'">
+  <div style="background:#fff;border-radius:8px;padding:28px 32px;max-width:560px;width:90%;color:#1a2a35;box-shadow:0 8px 32px rgba(0,0,0,.3)">
+    <h3 style="margin:0 0 14px;color:#2980b9">★ Key features</h3>
+    <ul style="margin:0;padding-left:20px;line-height:1.8">
+      <li><strong>Extract unused layouts</strong> analyses the selected org; a progress bar with "Loading..." shows while it runs.</li>
+      <li><strong>Only profiles with users</strong> and <strong>Only active record types</strong> (both on by default) decide which assignments count.</li>
+      <li><strong>Reason</strong> badge: red <em>Not assigned</em>; orange <em>Inactive record types</em>, <em>Inactive profiles</em> or <em>Inactive RT + profiles</em>. Hover for the detail.</li>
+      <li>The <strong>filter</strong> box searches object, layout and reason; the counter shows "shown / total unused layouts".</li>
+      <li>Double-click a row to open that object's Page Layouts in Setup. The <strong>Created</strong> column shows the day; hover for the full timestamp.</li>
+    </ul>
+    <div style="text-align:right;margin-top:18px">
+      <button class="cal-btn btn-d" onclick="document.getElementById('modal-kf').style.display='none'">Close</button>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Record Comparison — Calumet</title>
+<link rel="stylesheet" href="../shared.css">
+<style>
+  .left-panel { width:340px; flex-shrink:0; display:flex; flex-direction:column; gap:12px; padding-top:4px; }
+  .rec-section { background:#f8f9fa; border:1px solid #dce3e8; border-radius:6px; padding:14px 16px; display:flex; flex-direction:column; gap:8px; }
+  .obj-badge { background:#2980b9; color:#fff; border-radius:6px; padding:2px 10px; font-size:12px; font-weight:600; display:inline-block; }
+  .main-split { display:flex; gap:14px; align-items:flex-start; }
+  .right-panel { flex:1; min-width:0; display:flex; flex-direction:column; gap:8px; }
+</style>
+</head>
+<body class="tab-page">
+
+<div class="sum">
+  <div class="sum-title">
+    <h2>Record Comparison</h2>
+    <span class="sum-badge">Tab 58</span>
+  </div>
+  <p class="sum-desc">
+    Compare two Salesforce records by ID side-by-side to detect field-level data differences.
+    <button class="cal-btn btn-d" style="margin-left:10px" onclick="document.getElementById('modal-kf').style.display='flex'">&#9733; Key features</button>
+  </p>
+</div>
+
+<div class="mockup-wrap">
+  <div class="mockup">
+    <div class="main-split">
+
+      <div class="left-panel">
+        <span class="cal-lbl">Use those feature to compare 2 objects or twice the same object</span>
+
+        <div class="rec-section">
+          <div class="hbox" style="gap:8px;align-items:center">
+            <span class="cal-lbl" style="width:70px">First id</span>
+            <input class="cal-tf cal-grow" readonly value="001000000000001AAA">
+          </div>
+          <div class="hbox" style="gap:8px;align-items:center">
+            <button class="cal-btn btn-g" data-tip="Save a snapshot of the first record to disk">Save</button>
+            <button class="cal-btn btn-b" data-tip="Compare the first record with its saved snapshot">Compare to itself</button>
+            <span class="cal-lbl" style="color:#27ae60;font-weight:700">Saved</span>
+          </div>
+        </div>
+
+        <div class="rec-section">
+          <div class="hbox" style="gap:8px;align-items:center">
+            <span class="cal-lbl" style="width:70px">Second id</span>
+            <input class="cal-tf cal-grow" readonly value="001000000000002AAA">
+          </div>
+          <div class="hbox" style="gap:8px;align-items:center">
+            <button class="cal-btn btn-b" data-tip="Compare the first record with the second one">Compare</button>
+            <select class="cal-cb" data-tip="Org in which the second record is read">
+              <option>Production</option>
+              <option selected>Sandbox UAT</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="right-panel">
+        <div class="hbox" style="gap:8px;align-items:center">
+          <span class="cal-lbl">Type d'objet :</span>
+          <span class="obj-badge">Account</span>
+          <span class="spacer"></span>
+          <input class="cal-tf" readonly value="phone" style="width:241px" placeholder="Filter">
+        </div>
+        <div class="tbl-wrap">
+          <table class="cal-tbl">
+            <thead><tr><th style="width:187px">Field</th><th style="width:204px">Value first object</th><th style="width:301px">Value second object</th></tr></thead>
+            <tbody>
+              <tr><td>Name</td><td>Sample Account One</td><td>Sample Account Two</td></tr>
+              <tr><td>Phone</td><td>+1 555 0100</td><td>+1 555 0199</td></tr>
+              <tr><td>Industry</td><td>Technology</td><td>Finance</td></tr>
+              <tr><td>BillingCity</td><td>Springfield</td><td>Riverside</td></tr>
+              <tr><td>NumberOfEmployees</td><td>250</td><td>1200</td></tr>
+              <tr><td>Rating</td><td>Hot</td><td>Warm</td></tr>
+              <tr><td>Region_Code__c</td><td>EU-01</td><td>US-02</td></tr>
+              <tr><td>LastModifiedDate</td><td>2026-10-02T09:14:00.000+0000</td><td>2026-11-12T16:40:00.000+0000</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- Key features modal -->
+<div id="modal-kf" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:999;align-items:center;justify-content:center" onclick="if(event.target===this)this.style.display='none'">
+  <div style="background:#fff;border-radius:8px;padding:28px 32px;max-width:520px;width:90%;color:#1a2a35;box-shadow:0 8px 32px rgba(0,0,0,.3)">
+    <h3 style="margin:0 0 14px;color:#2980b9">&#9733; Key features</h3>
+    <ul style="margin:0;padding-left:20px;line-height:1.8">
+      <li>Compare two records by ID, field by field, in a three-column grid (Field, first value, second value).</li>
+      <li>Pick another org in the environment list to compare a record against its counterpart elsewhere.</li>
+      <li>Save a snapshot of the first record, then use Compare to itself to see what changed since.</li>
+      <li>Filter the result grid by any text once a comparison has run.</li>
+    </ul>
+    <div style="text-align:right;margin-top:18px">
+      <button class="cal-btn btn-d" onclick="document.getElementById('modal-kf').style.display='none'">Close</button>
+    </div>
+  </div>
+</div>
+
+<script>
+function sw(id,idx){
+  var tp=document.getElementById(id);
+  tp.querySelectorAll('.m-tab').forEach(function(t,i){t.classList.toggle('act',i===idx)});
+  tp.querySelectorAll('.m-panel').forEach(function(p,i){p.classList.toggle('act',i===idx)});
+}
+</script>
+</body>
+</html>

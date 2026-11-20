@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>User Activity Analysis &mdash; Calumet</title>
+<link rel="stylesheet" href="../shared.css">
+<style>
+/* Row tint per recommendation (matches the real app) */
+tr.row-safe td   { background-color: #EEF6FD; }
+tr.row-review td { background-color: #FEF5EA; }
+tr.row-keep td   { background-color: #F0FAF3; }
+
+/* Solid badges */
+.badge { display:inline-block;color:#fff;border-radius:4px;padding:2px 8px;font-size:11px;white-space:nowrap;text-align:center; }
+.b-safe   { background:#2E86C1;min-width:104px; }
+.b-review { background:#E67E22;min-width:104px; }
+.b-keep   { background:#27AE60;min-width:104px; }
+.b-yes    { background:#2f855a;min-width:28px; }
+.b-no     { background:#a0aab4;min-width:28px; }
+
+/* Filter pills */
+.pills { display:flex;align-items:center;gap:5px; }
+.pills .p-lbl { font-size:11px;color:#64748b;margin-right:2px; }
+.pill { border:1px solid #c5d3dc;border-radius:12px;padding:2px 10px;font-size:11px;color:#475569;background:#fff;white-space:nowrap; }
+.pill.on { color:#fff;border-color:transparent; }
+.pill.on.all { background:#475569; }
+.pill.on.act { background:#2f855a; }
+
+.top { background:#fff;border-bottom:1px solid #C8DFE8;padding:8px 12px;display:flex;flex-direction:column;gap:7px;color:#1a2a35; }
+.muted { color:#64748b;font-size:11px; }
+.savings { background:#e6f4ea;color:#1e6b3a;font-size:11px;font-weight:bold;padding:2px 8px;border-radius:4px;white-space:nowrap; }
+td.c { text-align:center; }
+.never { color:#c53030;font-weight:bold; }
+</style>
+</head>
+<body class="tab-page">
+
+<div class="sum">
+  <div class="sum-title">
+    <h2>User Activity Analysis</h2>
+    <span class="sum-badge">Tab 71</span>
+  </div>
+  <p class="sum-desc">
+    Identify unused Salesforce licenses by analysing user inactivity, and optimise licence costs. Every user gets a recommendation: Safe to Deactivate, Review or Keep.
+    <button class="cal-btn btn-d" style="margin-left:10px" onclick="document.getElementById('modal-kf').style.display='flex'">&#9733; Key features</button>
+  </p>
+</div>
+
+<div class="mockup-wrap">
+  <div class="mockup">
+
+    <!-- Top bar, row 1 : actions -->
+    <div class="top">
+      <div class="hbox" style="gap:8px;align-items:center">
+        <span class="cal-lbl">Inactivity period</span>
+        <input class="cal-tf" value="90" style="width:56px" readonly data-tip="Number of days without login after which a user counts as inactive">
+        <span class="muted">days</span>
+        <button class="cal-btn btn-b" data-tip="Run the analysis against the connected org (shows Start Analysis until a first run, then Refresh)">Refresh</button>
+        <button class="cal-btn btn-o" data-tip="Not available yet: this button does not produce a file">Export Excel</button>
+        <span class="spacer"></span>
+        <span class="muted">Cache: 14/11/2026 09:42</span>
+      </div>
+
+      <!-- Row 2 : pills, status line, savings -->
+      <div class="hbox" style="gap:10px;align-items:center">
+        <div class="pills" data-tip="Exclusive filter. Active is selected by default; click the active pill again to go back to All">
+          <span class="p-lbl">Status</span>
+          <span class="pill all">All (54)</span>
+          <span class="pill on act">Active (47)</span>
+          <span class="pill">Inactive (7)</span>
+        </div>
+        <span class="vsep"></span>
+        <div class="pills" data-tip="Exclusive filter on the recommendation. Counts reflect the Status pill">
+          <span class="p-lbl">Show</span>
+          <span class="pill on all">All (47)</span>
+          <span class="pill" style="border-color:#2E86C1;color:#2E86C1">Safe to Deactivate (14)</span>
+          <span class="pill" style="border-color:#E67E22;color:#E67E22">Review (9)</span>
+          <span class="pill" style="border-color:#27AE60;color:#27AE60">Keep (24)</span>
+        </div>
+        <span class="spacer"></span>
+        <span class="muted">Showing 47 of 54 users &nbsp;|&nbsp; 47 active</span>
+        <span class="savings" data-tip="Active Safe to Deactivate users as a share of all active users">Immediate license savings 29.8%</span>
+      </div>
+    </div>
+
+    <!-- Results table : sorted by Recommendation -->
+    <div class="tbl-wrap" style="max-height:460px;overflow-y:auto;">
+      <table class="cal-tbl">
+        <thead>
+          <tr>
+            <th style="width:210px">Username&nbsp; (47)</th>
+            <th style="width:130px">Profile</th>
+            <th style="width:140px">Recommendation</th>
+            <th style="width:70px;text-align:center">Active</th>
+            <th style="width:90px;text-align:center">Last Login</th>
+            <th style="width:120px">Roles</th>
+            <th style="width:260px">Activity</th>
+            <th style="width:240px">Decision</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="row-safe">
+            <td>user.a@example.com</td><td>Standard User</td>
+            <td><span class="badge b-safe">Safe to Deactivate</span></td>
+            <td class="c"><span class="badge b-yes">Yes</span></td>
+            <td class="c never">Never</td><td>None</td>
+            <td>Never logged in. No API calls recorded.</td>
+            <td>Account created but never used; no records owned.</td>
+          </tr>
+          <tr class="row-safe">
+            <td>user.b@example.com</td><td>Custom Profile 1</td>
+            <td><span class="badge b-safe">Safe to Deactivate</span></td>
+            <td class="c"><span class="badge b-yes">Yes</span></td>
+            <td class="c">2025-12-08</td><td>None</td>
+            <td>No login for 341 days. No open tasks.</td>
+            <td>Inactive over 90 days, no role, nothing owned.</td>
+          </tr>
+          <tr class="row-safe">
+            <td>user.c@example.com</td><td>Standard User</td>
+            <td><span class="badge b-safe">Safe to Deactivate</span></td>
+            <td class="c"><span class="badge b-yes">Yes</span></td>
+            <td class="c">2025-09-17</td><td>Sales Team</td>
+            <td>No login for 428 days. No records owned.</td>
+            <td>Inactive over 90 days, no recent activity.</td>
+          </tr>
+          <tr class="row-safe">
+            <td>user.d@example.com</td><td>Custom Profile 2</td>
+            <td><span class="badge b-safe">Safe to Deactivate</span></td>
+            <td class="c"><span class="badge b-yes">Yes</span></td>
+            <td class="c">2025-06-02</td><td>None</td>
+            <td>No login for 535 days. Zero API calls.</td>
+            <td>Inactive over 90 days, no role, no recent tasks.</td>
+          </tr>
+          <tr class="row-review">
+            <td>user.e@example.com</td><td>Sales Manager</td>
+            <td><span class="badge b-review">Review</span></td>
+            <td class="c"><span class="badge b-yes">Yes</span></td>
+            <td class="c">2026-07-21</td><td>Regional Manager</td>
+            <td>Last login 121 days ago. Owns 47 Opportunities.</td>
+            <td>Still owns records; confirm before deactivating.</td>
+          </tr>
+          <tr class="row-review">
+            <td>user.f@example.com</td><td>Read Only</td>
+            <td><span class="badge b-review">Review</span></td>
+            <td class="c"><span class="badge b-yes">Yes</span></td>
+            <td class="c">2026-06-30</td><td>None</td>
+            <td>Runs 3 scheduled reports. No manual logins.</td>
+            <td>Consider a report subscription instead of a licence.</td>
+          </tr>
+          <tr class="row-review">
+            <td>user.g@example.com</td><td>Standard User</td>
+            <td><span class="badge b-review">Review</span></td>
+            <td class="c"><span class="badge b-yes">Yes</span></td>
+            <td class="c">2026-08-05</td><td>Team Lead</td>
+            <td>Infrequent logins. Approver on 6 active flows.</td>
+            <td>Approver role needs a delegate first.</td>
+          </tr>
+          <tr class="row-keep">
+            <td>Sales User 1</td><td>Sales Rep</td>
+            <td><span class="badge b-keep">Keep</span></td>
+            <td class="c"><span class="badge b-yes">Yes</span></td>
+            <td class="c">2026-11-18</td><td>Account Executive</td>
+            <td>Daily logins. 38 open Opportunities.</td>
+            <td>High activity; keep active.</td>
+          </tr>
+          <tr class="row-keep">
+            <td>Integration User 1</td><td>Integration Profile</td>
+            <td><span class="badge b-keep">Keep</span></td>
+            <td class="c"><span class="badge b-yes">Yes</span></td>
+            <td class="c">2026-11-19</td><td>None</td>
+            <td>62,000 API calls in the last 30 days. No UI logins.</td>
+            <td>Active integration; keep active.</td>
+          </tr>
+          <tr class="row-keep">
+            <td>Support User 1</td><td>Customer Support</td>
+            <td><span class="badge b-keep">Keep</span></td>
+            <td class="c"><span class="badge b-yes">Yes</span></td>
+            <td class="c">2026-11-18</td><td>Support Tier 2</td>
+            <td>Daily logins. 127 Cases worked in the last 30 days.</td>
+            <td>Active support agent; keep active.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+</div>
+
+<script>
+function sw(id,idx){
+  var tp=document.getElementById(id);
+  tp.querySelectorAll('.m-tab').forEach(function(t,i){t.classList.toggle('act',i===idx)});
+  tp.querySelectorAll('.m-panel').forEach(function(p,i){p.classList.toggle('act',i===idx)});
+}
+</script>
+
+<!-- Key features modal -->
+<div id="modal-kf" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:999;align-items:center;justify-content:center" onclick="if(event.target===this)this.style.display='none'">
+  <div style="background:#fff;border-radius:8px;padding:28px 32px;max-width:540px;width:90%;color:#1a2a35;box-shadow:0 8px 32px rgba(0,0,0,.3)">
+    <h3 style="margin:0 0 14px;color:#2980b9">&#9733; Key features</h3>
+    <ul style="margin:0;padding-left:20px;line-height:1.8">
+      <li><strong>Three recommendations</strong>: Safe to Deactivate (blue), Review (orange), Keep (green), shown as a badge and a light row tint.</li>
+      <li><strong>Configurable inactivity period</strong>: number of days, 90 by default. A non-numeric value raises an alert.</li>
+      <li><strong>Two exclusive pill filters</strong>: Status (All / Active / Inactive, Active by default) and Show (recommendation). Each group's counts reflect the other group's selection; no re-query needed.</li>
+      <li><strong>Immediate license savings</strong>: share of active users flagged Safe to Deactivate (inactive users do not consume a licence).</li>
+      <li><strong>Roles, Activity and Decision columns</strong>: wrapped text explaining the signals behind each recommendation.</li>
+      <li><strong>Local cache</strong>: the last result is reloaded when the tab opens, with its date shown at the top right. The button reads Start Analysis until a first run, then Refresh.</li>
+    </ul>
+    <div style="text-align:right;margin-top:18px">
+      <button class="cal-btn btn-d" onclick="document.getElementById('modal-kf').style.display='none'">Close</button>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

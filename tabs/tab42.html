@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>FlexiPages — Calumet</title>
+<link rel="stylesheet" href="../shared.css">
+<style>
+  .legend-row { display:flex; flex-wrap:wrap; align-items:center; gap:6px; font-size:12px; color:#555; }
+  .legend-sep { color:#bbb; padding:0 4px; }
+  .bdg { display:inline-block; border-radius:12px; padding:2px 8px; font-size:12px; font-weight:600; min-width:22px; text-align:center }
+  .b-fd { background:#e8f5e9; color:#2e7d32 }
+  .b-ok { background:#c8e6c9; color:#1b5e20 }
+  .b-warn { background:#fff3e0; color:#e65100 }
+  .b-err { background:#ffebee; color:#c62828 }
+  .a-view { background:#e3f2fd; color:#1565c0 }
+  .a-edit { background:#fff3e0; color:#e65100 }
+  .a-new { background:#e8f5e9; color:#2e7d32 }
+  .a-tab { background:#ede7f6; color:#4527a0 }
+  .a-def { background:#eceff1; color:#455a64 }
+  .g-assigned { background:#c53030; color:#fff; border-radius:10px; padding:2px 8px; font-size:11px }
+  .g-unassigned { background:#2f855a; color:#fff; border-radius:10px; padding:2px 8px; font-size:11px }
+  .g-none { background:#718096; color:#fff; border-radius:10px; padding:2px 8px; font-size:11px }
+  .ctr { text-align:center }
+  .lvl1 td:first-child { padding-left:22px } .lvl2 td:first-child { padding-left:44px }
+  .caret { color:#888; display:inline-block; width:14px }
+  .flexi-split { display:flex; gap:8px; align-items:flex-start; }
+  .flexi-split .tbl-wrap { flex:1; min-width:0; overflow-x:auto; }
+  .dep-panel { min-width:200px; max-width:300px; border:1px solid #ddd; border-radius:6px; background:#fafafa; color:#34495e; padding:10px 12px; font-size:12px; display:flex; flex-direction:column; gap:6px; }
+  .dep-panel b { color:#2c3e50; font-size:13px; word-break:break-word }
+  .dep-hint { font-style:italic; font-size:11px; color:#888 }
+  .layout-pop { border:1px solid #cbd5e1; border-radius:6px; background:#fff; color:#334155; padding:10px 14px; font-size:12px; line-height:1.7; font-family:'Segoe UI',Arial,sans-serif }
+  .layout-pop .legacy { background:#fff3e0; border-left:3px solid #e67e22; padding:0 6px }
+</style>
+</head>
+<body class="tab-page">
+
+<div class="sum">
+  <div class="sum-title">
+    <h2>FlexiPages</h2>
+    <span class="sum-badge">Tab 42</span>
+  </div>
+  <p class="sum-desc">
+    Browse and manage Lightning pages (FlexiPages): view profile overrides, unused components, and layout assignments.
+    <button class="cal-btn btn-d" style="margin-left:10px" onclick="document.getElementById('modal-kf').style.display='flex'">&#9733; Key features</button>
+  </p>
+</div>
+
+<div class="mockup-wrap">
+  <div class="mockup">
+    <div class="m-tabpane" id="tp42">
+      <div class="m-tabbar">
+        <div class="m-tab act" onclick="sw('tp42',0)">Profile overrides</div>
+        <div class="m-tab" onclick="sw('tp42',1)">FlexiPages</div>
+        <div class="m-tab" onclick="sw('tp42',2)">Flexi Unused</div>
+      </div>
+      <div class="m-body">
+
+        <!-- ===== Profile overrides ===== -->
+        <div class="m-panel act" id="tp42-0">
+          <div class="vbox" style="gap:8px;padding:6px 0 0 0">
+            <div class="hbox" style="gap:8px;align-items:center">
+              <button class="cal-btn btn-b">Extract</button>
+              <button class="cal-btn btn-d" data-tip="Clear the cached applications and extract again">Clear cache</button>
+              <span class="cal-lbl">Cache was last updated: 2026-11-18 09:14</span>
+              <span class="spacer"></span>
+              <button class="cal-btn btn-d">Expand All</button>
+              <button class="cal-btn btn-d">Collapse All</button>
+            </div>
+            <div class="hbox" style="gap:6px;align-items:center">
+              <span class="cal-lbl">AppLabel:</span><input class="cal-tf" style="width:120px" placeholder="filter..." readonly>
+              <span class="cal-lbl">Name:</span><input class="cal-tf" style="width:120px" placeholder="filter..." readonly>
+              <span class="cal-lbl">Object:</span><input class="cal-tf" style="width:120px" value="Account" readonly>
+              <span class="cal-lbl">Profile:</span><input class="cal-tf" style="width:120px" placeholder="filter..." readonly>
+            </div>
+            <div class="legend-row">
+              <span>FD : FullDynamic -</span>
+              <span class="bdg b-fd">FD</span><span>= no non-FullDynamic element</span>
+              <span class="bdg b-ok">1-3</span><span>= low</span>
+              <span class="bdg b-warn">4-6</span><span>= medium</span>
+              <span class="bdg b-err">7+</span><span>= high (count of non-FullDynamic elements)</span>
+            </div>
+            <div class="tbl-wrap">
+              <table class="cal-tbl">
+                <thead><tr>
+                  <th style="width:150px">AppLabel</th><th style="width:60px" class="ctr">FD</th><th style="width:110px">Action</th>
+                  <th style="width:190px">Name</th><th style="width:170px">Label</th><th style="width:90px">Object</th>
+                  <th style="width:120px">RecordType</th><th style="width:130px">Profile</th><th>Layout</th>
+                </tr></thead>
+                <tbody>
+                  <tr><td><span class="caret">&#9662;</span>Sales</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+                  <tr class="lvl1"><td><span class="caret">&#9662;</span></td><td class="ctr"><span class="bdg b-fd">FD</span></td><td><span class="bdg a-view">View</span></td><td>Account_Record_Page</td><td>Account Record Page</td><td>Account</td><td></td><td></td><td></td></tr>
+                  <tr class="lvl2"><td></td><td></td><td></td><td></td><td></td><td></td><td>Customer</td><td>Standard User</td><td>Account Layout</td></tr>
+                  <tr class="lvl2"><td></td><td></td><td></td><td></td><td></td><td></td><td>Partner</td><td>Sales Manager</td><td>Account Partner Layout</td></tr>
+                  <tr class="lvl1"><td><span class="caret">&#9662;</span></td><td class="ctr"><span class="bdg b-warn">5</span></td><td><span class="bdg a-edit">Edit</span></td><td>Account_Edit_Page</td><td>Account Edit Page</td><td>Account</td><td></td><td></td><td></td></tr>
+                  <tr class="lvl2"><td></td><td></td><td></td><td></td><td></td><td></td><td>Customer</td><td>Read Only</td><td>Account Layout</td></tr>
+                  <tr class="lvl1"><td><span class="caret">&#9656;</span></td><td class="ctr"><span class="bdg b-ok">2</span></td><td><span class="bdg a-new">New</span></td><td>Account_New_Page</td><td>Account New Page</td><td>Account</td><td></td><td></td><td></td></tr>
+                  <tr><td><span class="caret">&#9656;</span>Service Console</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+                  <tr><td><span class="caret">&#9662;</span>Marketing</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+                  <tr class="lvl1"><td><span class="caret">&#9656;</span></td><td class="ctr"><span class="bdg b-err">8</span></td><td><span class="bdg a-tab">Tab</span></td><td>Sales_Home_Page</td><td>Sales Home Page</td><td></td><td></td><td></td><td></td></tr>
+                  <tr class="lvl1"><td><span class="caret">&#9656;</span></td><td class="ctr"><span class="bdg b-fd">FD</span></td><td><span class="bdg a-def">Default</span></td><td>Contact_Record_Page</td><td>Contact Record Page</td><td>Contact</td><td></td><td></td><td></td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="dep-hint">Application rows group the overrides; override rows group the record type / profile leaves. Double-click an override or leaf to open the page in Setup.</div>
+          </div>
+        </div>
+
+        <!-- ===== FlexiPages ===== -->
+        <div class="m-panel" id="tp42-1">
+          <div class="vbox" style="gap:8px;padding:6px 0 0 0">
+            <div class="hbox" style="gap:8px;align-items:center">
+              <button class="cal-btn btn-b">Extract</button>
+              <label class="cal-chk"><input type="checkbox" disabled> clearCache</label>
+              <span class="cal-lbl">Cache was last updated: 2026-11-18 09:14</span>
+            </div>
+            <div class="hbox" style="gap:6px;align-items:center">
+              <span class="cal-lbl">Object:</span><input class="cal-tf" style="width:150px" placeholder="filter..." readonly>
+            </div>
+            <div class="legend-row">
+              <span>FD : FullDynamic -</span>
+              <span class="bdg b-fd">FD</span><span>= no legacy component</span>
+              <span class="bdg b-ok">1-3</span><span>= low</span>
+              <span class="bdg b-warn">4-6</span><span>= medium</span>
+              <span class="bdg b-err">7+</span><span>= high</span>
+              <span class="legend-sep">|</span>
+              <span>CL : Classic Layout -</span>
+              <span class="bdg b-fd">&#8212;</span><span>= none</span>
+              <span class="bdg b-ok">1-3</span><span>= few</span>
+              <span class="bdg b-warn">4-6</span><span>= several</span>
+              <span class="bdg b-err">7+</span><span>= many</span>
+            </div>
+            <div class="flexi-split">
+              <div class="tbl-wrap">
+                <table class="cal-tbl">
+                  <thead><tr><th style="width:190px">Name</th><th style="width:190px">Label</th><th style="width:110px">Object</th><th style="width:70px" class="ctr">FD</th><th style="width:70px" class="ctr">CL</th></tr></thead>
+                  <tbody>
+                    <tr><td>Account_Record_Page</td><td>Account Record Page</td><td>Account</td><td class="ctr"><span class="bdg b-fd" style="cursor:pointer" data-tip="See the page layout (zones not yet Full Dynamic)">FD</span></td><td class="ctr"><span class="bdg b-ok">2</span></td></tr>
+                    <tr style="background:#1e3a5e22"><td>Contact_Record_Page</td><td>Contact Record Page</td><td>Contact</td><td class="ctr"><span class="bdg b-warn" style="cursor:pointer" data-tip="See the page layout (zones not yet Full Dynamic)">5</span></td><td class="ctr"><span class="bdg b-warn">4</span></td></tr>
+                    <tr><td>Opportunity_Record_Page</td><td>Opportunity Record Page</td><td>Opportunity</td><td class="ctr"><span class="bdg b-err" style="cursor:pointer" data-tip="See the page layout (zones not yet Full Dynamic)">9</span></td><td class="ctr"><span class="bdg b-err">7</span></td></tr>
+                    <tr><td>Sales_Home_Page</td><td>Sales Home Page</td><td></td><td class="ctr"><span class="bdg b-fd">FD</span></td><td class="ctr"><span class="bdg b-fd">&#8212;</span></td></tr>
+                    <tr><td>Case_Record_Page</td><td>Case Record Page</td><td>Case</td><td class="ctr"><span class="bdg b-ok">3</span></td><td class="ctr"><span class="bdg b-ok">1</span></td></tr>
+                    <tr><td>Lead_Record_Page</td><td>Lead Record Page</td><td>Lead</td><td class="ctr"><span class="bdg b-warn">6</span></td><td class="ctr"><span class="bdg b-fd">&#8212;</span></td></tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="dep-panel">
+                <b>Contact_Record_Page</b>
+                <span>Object: Contact</span>
+                <span>Classic layouts used: 4</span>
+                <span class="dep-hint">Details of the selected page. Double-click a row to open it in Setup; click an FD badge to open the layout view.</span>
+              </div>
+            </div>
+            <div class="layout-pop">
+              <b>Layout view &#8212; Contact_Record_Page</b> (popup opened from an FD badge)<br>
+              Header: Highlights Panel<br>
+              Region main: Tabs &gt; Details tab &gt; <span class="legacy">force:detailPanel</span><br>
+              Region main: Related lists tab &gt; <span class="legacy">force:relatedListContainer</span><br>
+              Region sidebar: Activities, Chatter Feed<br>
+              <span style="color:#888">Highlighted components are still on force:* (not yet Full Dynamic).</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- ===== Flexi Unused ===== -->
+        <div class="m-panel" id="tp42-2">
+          <div class="vbox" style="gap:8px;padding:6px 0 0 0">
+            <div class="hbox" style="gap:8px;align-items:center">
+              <button class="cal-btn btn-b">Extract</button>
+              <label class="cal-chk"><input type="checkbox" disabled> clearCache</label>
+              <span class="cal-lbl">Cache was last updated: 2026-11-18 09:14</span>
+            </div>
+            <div class="tbl-wrap">
+              <table class="cal-tbl">
+                <thead><tr><th style="width:200px">Name</th><th style="width:190px">Label</th><th style="width:110px">Type</th><th style="width:130px">Last Modified</th><th>Object Related</th></tr></thead>
+                <tbody>
+                  <tr><td>Account_Legacy_Page</td><td>Account Legacy Page</td><td>RecordPage</td><td>2024-03-12</td><td>Account</td></tr>
+                  <tr><td>Home_Old_Layout</td><td>Home Old Layout</td><td>HomePage</td><td>2023-09-30</td><td></td></tr>
+                  <tr><td>Opportunity_Pilot_Page</td><td>Opportunity Pilot Page</td><td>RecordPage</td><td>2025-01-21</td><td>Opportunity</td></tr>
+                  <tr><td>Case_Test_Page</td><td>Case Test Page</td><td>RecordPage</td><td>2024-07-05</td><td>Case</td></tr>
+                  <tr><td>Sales_App_Page_Copy</td><td>Sales App Page Copy</td><td>AppPage</td><td>2025-06-17</td><td></td></tr>
+                  <tr><td>Contact_Draft_Page</td><td>Contact Draft Page</td><td>RecordPage</td><td>2024-11-02</td><td>Contact</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Key features modal -->
+<div id="modal-kf" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:999;align-items:center;justify-content:center" onclick="if(event.target===this)this.style.display='none'">
+  <div style="background:#fff;border-radius:8px;padding:28px 32px;max-width:520px;width:90%;color:#1a2a35;box-shadow:0 8px 32px rgba(0,0,0,.3)">
+    <h3 style="margin:0 0 14px;color:#2980b9">&#9733; Key features</h3>
+    <ul style="margin:0;padding-left:20px;line-height:1.8">
+      <li>Profile overrides: tree of applications, overrides and record type / profile assignments, with filters on AppLabel, Name, Object and Profile, plus Expand All / Collapse All.</li>
+      <li>FD badge: number of components not yet Full Dynamic; click it to open the layout view of the page.</li>
+      <li>FlexiPages: every Lightning page with its FD and CL (Classic Layout) badges, an Object filter and a detail panel.</li>
+      <li>Flexi Unused: pages that no app, record page or tab appears to assign.</li>
+      <li>Double-click a row to open the page in Setup; the clearCache option or Clear cache button refreshes the data.</li>
+    </ul>
+    <div style="text-align:right;margin-top:18px">
+      <button class="cal-btn btn-d" onclick="document.getElementById('modal-kf').style.display='none'">Close</button>
+    </div>
+  </div>
+</div>
+
+<script>
+function sw(id,idx){
+  var tp=document.getElementById(id);
+  tp.querySelectorAll('.m-tab').forEach(function(t,i){t.classList.toggle('act',i===idx)});
+  tp.querySelectorAll('.m-panel').forEach(function(p,i){p.classList.toggle('act',i===idx)});
+}
+</script>
+</body>
+</html>

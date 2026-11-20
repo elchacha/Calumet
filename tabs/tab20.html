@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Org Limits &mdash; Calumet</title>
+<link rel="stylesheet" href="../shared.css">
+<style>
+.pct-bar-wrap { display:flex; align-items:center; gap:6px; }
+.pct-bar { height:8px; border-radius:4px; min-width:2px; }
+.pct-ok  { background:#27ae60; }
+.pct-warn{ background:#e67e22; }
+.pct-err { background:#e74c3c; }
+.pct-val { font-size:11px; white-space:nowrap; }
+</style>
+</head>
+<body class="tab-page">
+
+<div class="sum">
+  <div class="sum-title">
+    <h2>Org Limits</h2>
+    <span class="sum-badge">Tab 20</span>
+  </div>
+  <p class="sum-desc">
+    Display Salesforce org governor limits in real time: API calls remaining, storage usage, data rows, and more.
+    <button class="cal-btn btn-d" style="margin-left:10px" onclick="document.getElementById('modal-kf').style.display='flex'">&#9733; Key features</button>
+  </p>
+</div>
+
+<div class="mockup-wrap">
+  <div class="mockup">
+    <div class="m-tabpane" id="tpLimits">
+      <div class="m-tabbar">
+        <div class="m-tab act" onclick="sw('tpLimits',0)">Limits</div>
+      </div>
+      <div class="m-body">
+        <div class="m-panel act" id="tpLimits-0">
+          <div class="vbox" style="gap:8px">
+            <div class="hbox" style="gap:10px;align-items:center">
+              <button class="cal-btn btn-b" data-tip="Read all governor limits from the connected org">Display</button>
+              <label class="cal-chk" data-tip="Hide limits that have not been consumed at all"><input type="checkbox" checked disabled> Hide unused</label>
+            </div>
+            <div class="tbl-wrap">
+              <table class="cal-tbl">
+                <thead>
+                  <tr>
+                    <th style="width:300px">Name</th>
+                    <th style="width:90px">Type</th>
+                    <th style="width:70px">Delay</th>
+                    <th style="width:80px;text-align:center">Used</th>
+                    <th style="width:90px;text-align:center">Remain</th>
+                    <th style="width:90px;text-align:center">Max</th>
+                    <th style="width:120px;text-align:center">% Used</th>
+                  </tr>
+                </thead>
+                <tbody>
+            <tr><td>DailyApiRequests</td><td style="color:#2980b9">Platform</td><td>Daily</td><td style="text-align:center;color:#27ae60">18 420</td><td style="text-align:center">4 981 580</td><td style="text-align:center">5 000 000</td><td style="text-align:center"><div class="pct-bar-wrap" style="justify-content:center"><div class="pct-bar pct-ok" style="width:2px"></div><span class="pct-val" style="color:#27ae60">0.37</span></div></td></tr>
+            <tr><td>DataStorageMB</td><td style="color:#8e44ad">Storage</td><td></td><td style="text-align:center;color:#e67e22">2 599</td><td style="text-align:center">2 521</td><td style="text-align:center">5 120</td><td style="text-align:center"><div class="pct-bar-wrap" style="justify-content:center"><div class="pct-bar pct-warn" style="width:40px"></div><span class="pct-val" style="color:#e67e22">50.76</span></div></td></tr>
+            <tr><td>FileStorageMB</td><td style="color:#8e44ad">Storage</td><td></td><td style="text-align:center;color:#27ae60">1 204</td><td style="text-align:center">19 276</td><td style="text-align:center">20 480</td><td style="text-align:center"><div class="pct-bar-wrap" style="justify-content:center"><div class="pct-bar pct-ok" style="width:4px"></div><span class="pct-val" style="color:#27ae60">5.88</span></div></td></tr>
+            <tr><td>DailyBulkV2QueryJobs</td><td style="color:#2980b9">Platform</td><td>Daily</td><td style="text-align:center;color:#27ae60">1</td><td style="text-align:center">9 999</td><td style="text-align:center">10 000</td><td style="text-align:center"><div class="pct-bar-wrap" style="justify-content:center"><div class="pct-bar pct-ok" style="width:2px"></div><span class="pct-val" style="color:#27ae60">0.01</span></div></td></tr>
+            <tr><td>SingleEmail</td><td style="color:#c0392b">Email</td><td>Daily</td><td style="text-align:center;color:#27ae60">120</td><td style="text-align:center">4 880</td><td style="text-align:center">5 000</td><td style="text-align:center"><div class="pct-bar-wrap" style="justify-content:center"><div class="pct-bar pct-ok" style="width:2px"></div><span class="pct-val" style="color:#27ae60">2.4</span></div></td></tr>
+            <tr><td>DailyAsyncApexExecutions</td><td style="color:#2980b9">Platform</td><td>Daily</td><td style="text-align:center;color:#27ae60">3 150</td><td style="text-align:center">246 850</td><td style="text-align:center">250 000</td><td style="text-align:center"><div class="pct-bar-wrap" style="justify-content:center"><div class="pct-bar pct-ok" style="width:2px"></div><span class="pct-val" style="color:#27ae60">1.26</span></div></td></tr>
+            <tr><td>DailyStreamingApiEvents</td><td style="color:#16a085">Streaming</td><td>Daily</td><td style="text-align:center;color:#27ae60">42 000</td><td style="text-align:center">158 000</td><td style="text-align:center">200 000</td><td style="text-align:center"><div class="pct-bar-wrap" style="justify-content:center"><div class="pct-bar pct-ok" style="width:16px"></div><span class="pct-val" style="color:#27ae60">21.0</span></div></td></tr>
+            <tr><td>HourlyTimeBasedWorkflow</td><td style="color:#7f8c8d">Workflows</td><td>Hourly</td><td style="text-align:center;color:#E74C3C">38</td><td style="text-align:center">12</td><td style="text-align:center">50</td><td style="text-align:center"><div class="pct-bar-wrap" style="justify-content:center"><div class="pct-bar pct-err" style="width:60px"></div><span class="pct-val" style="color:#E74C3C">76.0</span></div></td></tr>
+            <tr><td>ConcurrentAsyncGetReportInstances</td><td style="color:#2980b9">Platform</td><td></td><td style="text-align:center;color:#27ae60">5</td><td style="text-align:center">195</td><td style="text-align:center">200</td><td style="text-align:center"><div class="pct-bar-wrap" style="justify-content:center"><div class="pct-bar pct-ok" style="width:2px"></div><span class="pct-val" style="color:#27ae60">2.5</span></div></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+function sw(id,idx){
+  var tp=document.getElementById(id);
+  tp.querySelectorAll('.m-tab').forEach(function(t,i){t.classList.toggle('act',i===idx)});
+  tp.querySelectorAll('.m-panel').forEach(function(p,i){p.classList.toggle('act',i===idx)});
+}
+</script>
+
+<!-- Key features modal -->
+<div id="modal-kf" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:999;align-items:center;justify-content:center" onclick="if(event.target===this)this.style.display='none'">
+  <div style="background:#fff;border-radius:8px;padding:28px 32px;max-width:520px;width:90%;color:#1a2a35;box-shadow:0 8px 32px rgba(0,0,0,.3)">
+    <h3 style="margin:0 0 14px;color:#2980b9">&#9733; Key features</h3>
+    <ul style="margin:0;padding-left:20px;line-height:1.8">
+      <li>Display reads every governor limit of the connected org in one click</li>
+      <li>Used, Remain and Max values for each limit, plus the percentage consumed</li>
+      <li>Type column groups limits by family (Platform, Storage, Streaming, Email, Workflows, PE, PE-CDC...)</li>
+      <li>Delay column tells when the headroom resets (Daily, Hourly, Monthly)</li>
+      <li>Hide unused is switched on after each Display, so only limits already consumed are listed; untick it to see them all</li>
+      <li>The API call-out counter of the main window is refreshed after each Display</li>
+    </ul>
+    <div style="text-align:right;margin-top:18px">
+      <button class="cal-btn btn-d" onclick="document.getElementById('modal-kf').style.display='none'">Close</button>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

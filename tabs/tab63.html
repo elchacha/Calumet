@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>LockRow Helper — Calumet</title>
+<link rel="stylesheet" href="../shared.css">
+</head>
+<body class="tab-page">
+<div class="sum">
+  <div class="sum-title">
+    <h2>LockRow Helper</h2>
+    <span class="sum-badge">Tab 63</span>
+  </div>
+  <p class="sum-desc">
+    Display record references and locking dependencies for a given record ID. Shows which related records (children pointing at it, parents it points to) are counted around the record, to help you understand what can block or lock it.
+    <button class="cal-btn btn-d" style="margin-left:10px" onclick="document.getElementById('modal-kf').style.display='flex'">&#9733; Key features</button>
+  </p>
+</div>
+<div class="mockup-wrap">
+  <div class="mockup">
+    <div class="anchor">
+      <div class="hbox" style="gap:8px;align-items:center">
+        <span class="cal-lbl">record Id</span>
+        <input class="cal-tf" style="width:231px" readonly value="001Dn00000AbCdEIAV" data-tip="15 or 18-character Id of the record to analyse. The first 3 characters (key prefix) identify the object.">
+        <button class="cal-btn btn-b" data-tip="Resolve the object from the Id prefix, list all its relations and count the related records">Extract</button>
+      </div>
+      <div class="hbox" style="gap:8px;align-items:center">
+        <span class="cal-lbl">Object type :</span>
+        <span class="cal-lbl"><b>Account</b></span>
+      </div>
+      <div class="tbl-wrap">
+        <table class="cal-tbl">
+          <thead><tr>
+            <th style="width:90px">Relation</th>
+            <th style="width:150px">Object type</th>
+            <th style="width:170px">Relation name</th>
+            <th style="width:170px">Field name</th>
+            <th style="width:110px">type</th>
+            <th style="width:60px;text-align:center">nb</th>
+          </tr></thead>
+          <tbody>
+            <tr><td>Child</td><td>Contact</td><td>Contacts</td><td>AccountId</td><td>Lookup</td><td style="text-align:center">412</td></tr>
+            <tr><td>Child</td><td>Case</td><td>Cases</td><td>AccountId</td><td>Lookup</td><td style="text-align:center">268</td></tr>
+            <tr><td>Child</td><td>Opportunity</td><td>Opportunities</td><td>AccountId</td><td>Lookup</td><td style="text-align:center">57</td></tr>
+            <tr><td>Child</td><td>Invoice__c</td><td>Invoices__r</td><td>Account__c</td><td>MasterDetail</td><td style="text-align:center">34</td></tr>
+            <tr><td>Child</td><td>Order__c</td><td>Orders__r</td><td>Account__c</td><td>Lookup</td><td style="text-align:center">19</td></tr>
+            <tr><td>Parent</td><td>Account</td><td>Parent</td><td>ParentId</td><td>Hierarchy</td><td style="text-align:center">12</td></tr>
+            <tr><td>Parent</td><td>User</td><td>Owner</td><td>OwnerId</td><td>Lookup</td><td style="text-align:center">1830</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Key features modal -->
+<div id="modal-kf" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:999;align-items:center;justify-content:center" onclick="if(event.target===this)this.style.display='none'">
+  <div style="background:#fff;border-radius:8px;padding:28px 32px;max-width:520px;width:90%;color:#1a2a35;box-shadow:0 8px 32px rgba(0,0,0,.3)">
+    <h3 style="margin:0 0 14px;color:#2980b9">&#9733; Key features</h3>
+    <ul style="margin:0;padding-left:20px;line-height:1.8">
+      <li>Enter a record Id: the object is found automatically from the Id key prefix.</li>
+      <li>Lists every child relation (objects pointing at the record) and parent relation (lookups on the record).</li>
+      <li>Counts the child records that reference this record, and the records sharing each parent value.</li>
+      <li>Results sorted by record count, largest first: the heaviest locking candidates come on top.</li>
+      <li>If no record matches the Id, the Object type label says so.</li>
+      <li>Cells can be selected and copied.</li>
+    </ul>
+    <div style="text-align:right;margin-top:18px">
+      <button class="cal-btn btn-d" onclick="document.getElementById('modal-kf').style.display='none'">Close</button>
+    </div>
+  </div>
+</div>
+<script>
+function sw(id,idx){
+  var tp=document.getElementById(id);
+  tp.querySelectorAll('.m-tab').forEach(function(t,i){t.classList.toggle('act',i===idx)});
+  tp.querySelectorAll('.m-panel').forEach(function(p,i){p.classList.toggle('act',i===idx)});
+}
+</script>
+</body>
+</html>

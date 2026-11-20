@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Audit &mdash; Calumet</title>
+<link rel="stylesheet" href="../shared.css">
+<style>
+.pills { display:flex; flex-wrap:wrap; gap:6px; align-items:center; padding:4px 8px; }
+.pill { display:inline-block; padding:2px 10px; border-radius:12px; font-size:12px; font-weight:600; color:#fff; }
+.pill.off { opacity:.75; }
+.pill.act { outline:2px solid #fff; }
+.badge { display:inline-block; padding:1px 8px; border-radius:10px; font-size:11px; font-weight:600; color:#fff; white-space:nowrap; }
+.filter-bar { display:flex; flex-wrap:wrap; gap:8px; align-items:center; padding:6px 8px; }
+.audit-action { color:#2980b9; font-weight:600; }
+</style>
+</head>
+<body class="tab-page">
+
+<div class="sum">
+  <div class="sum-title">
+    <h2>Audit</h2>
+    <span class="sum-badge">Tab 11</span>
+  </div>
+  <p class="sum-desc">
+    Browse the Salesforce Setup Audit Trail. Filter by date range and user to track configuration changes made in Setup.
+    <button class="cal-btn btn-d" style="margin-left:10px" onclick="document.getElementById('modal-kf').style.display='flex'">&#9733; Key features</button>
+  </p>
+</div>
+
+<div class="mockup-wrap">
+  <div class="mockup">
+
+    <!-- Row 1 : dates + extract actions -->
+    <div class="hbox" style="gap:8px;align-items:center;padding:8px 8px 4px">
+      <span class="cal-lbl">Start date</span>
+      <input class="cal-tf" style="width:110px" value="10/01/2026" readonly data-tip="Start date of the audit period">
+      <span class="cal-lbl">End date</span>
+      <input class="cal-tf" style="width:110px" value="11/18/2026" readonly data-tip="End date of the audit period">
+      <button class="cal-btn btn-b" data-tip="Extract audit trail from Salesforce for the selected date range">Extract</button>
+      <button class="cal-btn btn-g" data-tip="Exchange the setup audit trail and the login history with the org's Files, one file per month: what Salesforce no longer keeps stays in the org, and every machine gets it. Once an org has been synced from this machine, every Extract syncs it again on its own">Sync history</button>
+      <span class="cal-lbl cal-grow" style="font-style:italic;color:#5b9bac;font-size:12px" data-tip="Cache coverage of the last extract">Cache covers 2026-05-21 to 2026-11-18 (4,812 lines)</span>
+      <button class="cal-btn btn-d" data-tip="List CustomField lines whose object/field name could not be determined (Name, Section, Display)">Unresolved fields</button>
+      <button class="cal-btn btn-r" data-tip="Delete the local audit trail cache for this org (the next extract rebuilds it from the org, history beyond 180 days is lost)">Clear cache</button>
+    </div>
+
+    <!-- Row 1 bis : start-of-month reminder (replaces the status text, only at the start of a month) -->
+    <div class="hbox" style="gap:8px;align-items:center;padding:0 8px 4px">
+      <span class="cal-lbl" style="font-style:italic;color:#5b9bac;font-size:12px">Start-of-month reminder (shown in the status line instead of the coverage): October is closed and not synced from this machine yet.</span>
+      <button class="cal-btn btn-d" style="padding:0 8px" data-tip="Hide this reminder until next month">x</button>
+    </div>
+
+    <!-- Row 2 : category pills (exclusive) + Show noise + Internal -->
+    <div class="pills">
+      <span class="cal-lbl">Categories</span>
+      <span class="pill" style="background:#2980b9" data-tip="Code">Code 142</span>
+      <span class="pill" style="background:#8e44ad" data-tip="Profiles &amp; Perms">Profiles &amp; Perms 96</span>
+      <span class="pill" style="background:#c0392b" data-tip="Users &amp; Security">Users &amp; Security 211</span>
+      <span class="pill" style="background:#27ae60" data-tip="Object structure">Object structure 187</span>
+      <span class="pill" style="background:#3d7a8a" data-tip="Picklists &amp; Metadata">Picklists &amp; Metadata 64</span>
+      <div class="vsep" style="height:20px"></div>
+      <label class="cal-chk" data-tip="Also show the lines ranked as noise (settings that did not change, ignored types) and the ones that cannot be categorised"><input type="checkbox" disabled> Show noise&nbsp; 3,905</label>
+      <div class="vsep" style="height:20px"></div>
+      <span class="pill" style="background:#2c3e50" data-tip="Lines made by an empty user or Automated Process, hidden by default">Internal 207</span>
+    </div>
+
+    <!-- Row 3 : text filters -->
+    <div class="filter-bar">
+      <span class="cal-lbl">Action</span>
+      <input class="cal-tf" style="width:150px" placeholder="filter..." readonly data-tip="Filter by action (contains)">
+      <div class="vsep" style="height:20px"></div>
+      <span class="cal-lbl">User</span>
+      <select class="cal-cb" style="width:180px" disabled data-tip="Filter by user"><option></option><option>Alex Admin</option><option>Sam Sample</option></select>
+      <div class="vsep" style="height:20px"></div>
+      <span class="cal-lbl">Section</span>
+      <select class="cal-cb" style="width:150px" disabled data-tip="Filter by section"><option></option><option>Manage Users</option><option>Customize Accounts</option></select>
+      <div class="vsep" style="height:20px"></div>
+      <span class="cal-lbl">Display</span>
+      <input class="cal-tf" style="width:200px" placeholder="filter..." readonly data-tip="Filter by display value (contains)">
+      <div class="spacer"></div>
+      <button class="cal-btn btn-d" data-tip="Reset all column filters">Clear filters</button>
+    </div>
+
+    <!-- Audit table -->
+    <div class="tbl-wrap" style="max-height:420px;overflow-y:auto">
+      <table class="cal-tbl">
+        <thead>
+          <tr>
+            <th style="width:150px">Category</th>
+            <th style="width:200px">Target</th>
+            <th>Display</th>
+            <th style="width:170px">Section</th>
+            <th style="width:130px">Type</th>
+            <th style="width:170px">Action</th>
+            <th style="width:110px">User</th>
+            <th style="width:160px">Date</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="badge" style="background:#2980b9">Code</span></td>
+            <td>InvoiceService</td>
+            <td>Changed Apex Class InvoiceService: changed code</td>
+            <td>Apex Class</td>
+            <td>ApexClass</td>
+            <td class="audit-action">changedApexClass</td>
+            <td>Alex Admin</td>
+            <td>2026-11-18 14:32:10</td>
+          </tr>
+          <tr>
+            <td><span class="badge" style="background:#27ae60">Object structure</span></td>
+            <td>Order__c.Priority__c</td>
+            <td>Created custom field Priority__c (Picklist) on Order</td>
+            <td>Customize Orders</td>
+            <td>CustomField</td>
+            <td class="audit-action">createdCustomField</td>
+            <td>Sam Sample</td>
+            <td>2026-11-18 11:05:44</td>
+          </tr>
+          <tr>
+            <td><span class="badge" style="background:#8e44ad">Profiles &amp; Perms</span></td>
+            <td>Support_Agent</td>
+            <td>Permission set Support_Agent assigned to user Pat Example</td>
+            <td>Manage Users</td>
+            <td>PermissionSet</td>
+            <td class="audit-action">PermSetAssign</td>
+            <td>Alex Admin</td>
+            <td>2026-11-17 16:48:02</td>
+          </tr>
+          <tr>
+            <td><span class="badge" style="background:#c0392b">Users &amp; Security</span></td>
+            <td></td>
+            <td>Changed session timeout from 2 hours to 4 hours</td>
+            <td>Session Settings</td>
+            <td></td>
+            <td class="audit-action">changedSessionSettings</td>
+            <td>Alex Admin</td>
+            <td>2026-11-17 09:12:31</td>
+          </tr>
+          <tr>
+            <td><span class="badge" style="background:#3d7a8a">Picklists &amp; Metadata</span></td>
+            <td>Case.Reason</td>
+            <td>Added picklist value Billing to Case.Reason</td>
+            <td>Customize Cases</td>
+            <td>Picklist</td>
+            <td class="audit-action">picklistValueAdded</td>
+            <td>Sam Sample</td>
+            <td>2026-11-14 15:20:09</td>
+          </tr>
+          <tr>
+            <td><span class="badge" style="background:#27ae60">Object structure</span></td>
+            <td>Account.Region__c</td>
+            <td>Changed field Region__c: label changed from Area to Region</td>
+            <td>Customize Accounts</td>
+            <td>CustomField</td>
+            <td class="audit-action">changedCustomField</td>
+            <td>Alex Admin</td>
+            <td>2026-11-13 10:41:55</td>
+          </tr>
+          <tr>
+            <td><span class="badge" style="background:#8e44ad">Profiles &amp; Perms</span></td>
+            <td>Support_Agent</td>
+            <td>Permission set Support_Agent unassigned from user Robin Demo</td>
+            <td>Manage Users</td>
+            <td>PermissionSet</td>
+            <td class="audit-action">PermSetUnassign</td>
+            <td>Sam Sample</td>
+            <td>2026-11-12 17:03:27</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="cal-lbl" style="font-size:12px;color:#888;padding:4px 8px">Double-click a row to open the Audit detail popup. The Target, Section and User columns hide themselves when they are empty on every displayed row.</p>
+  </div>
+</div>
+
+<!-- Key features modal -->
+<div id="modal-kf" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:999;align-items:center;justify-content:center" onclick="if(event.target===this)this.style.display='none'">
+  <div style="background:#fff;border-radius:8px;padding:28px 32px;max-width:560px;width:90%;color:#1a2a35;box-shadow:0 8px 32px rgba(0,0,0,.3)">
+    <h3 style="margin:0 0 14px;color:#2980b9">&#9733; Key features</h3>
+    <ul style="margin:0;padding-left:20px;line-height:1.8">
+      <li><b>Extract</b> the Setup Audit Trail for a date range; the result is cached locally per org, and the status line shows what the cache covers.</li>
+      <li><b>Sync history</b> keeps the audit trail and the login history in the org's Files, one file per month, so history older than Salesforce keeps is not lost and every machine gets it.</li>
+      <li><b>Category pills</b> (exclusive, with live counts), a <b>Show noise</b> box and an <b>Internal</b> pill (changes made by Automated Process or an empty user, hidden by default).</li>
+      <li>Text filters on Action, User, Section and Display, applied as you type.</li>
+      <li><b>Unresolved fields</b> lists custom field lines whose object or field name could not be determined.</li>
+      <li><b>Clear cache</b> deletes the local copy; history beyond 180 days is then lost unless it was synced.</li>
+      <li>Double-click a row for the full detail of the change.</li>
+    </ul>
+    <div style="text-align:right;margin-top:18px">
+      <button class="cal-btn btn-d" onclick="document.getElementById('modal-kf').style.display='none'">Close</button>
+    </div>
+  </div>
+</div>
+
+<script>
+function sw(id,idx){
+  var tp=document.getElementById(id);
+  tp.querySelectorAll('.m-tab').forEach(function(t,i){t.classList.toggle('act',i===idx)});
+  tp.querySelectorAll('.m-panel').forEach(function(p,i){p.classList.toggle('act',i===idx)});
+}
+</script>
+</body>
+</html>

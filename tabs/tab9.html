@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>LastRecords — Calumet</title>
+<link rel="stylesheet" href="../shared.css">
+<style>
+  .soql-pane{flex:1;border:1px solid #a0b4c0;border-radius:4px;background:#fff;overflow:hidden;display:flex;flex-direction:column;min-height:200px}
+  .soql-editor{background:#1e2430;padding:10px 12px;font-family:Consolas,monospace;font-size:11px;color:#d4e0f0;min-height:60px}
+  .soql-kw{color:#5b9be8}
+  .soql-obj{color:#f0a040}
+  .soql-val{color:#80c8a0}
+  .soql-toolbar{background:#f0f4f7;border-top:1px solid #c0d0dc;padding:6px 10px;display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:11px;color:#1a2a35}
+  .soql-results{background:#f8fbfc;border-top:1px solid #dde8ee;padding:10px 12px;font-size:11px;color:#888;font-style:italic;flex:1}
+  .tbl-selected td{background:#0066aa;color:#fff !important}
+  .mono{font-family:Consolas,monospace;font-size:11px}
+  #modal-ex{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:999;align-items:center;justify-content:center}
+</style>
+</head>
+<body class="tab-page">
+
+<div class="sum">
+  <div class="sum-title">
+    <h2>LastRecords</h2>
+    <span class="sum-badge">Tab 9</span>
+  </div>
+  <p class="sum-desc">
+    List recently created or modified records across objects. Filter by user, date range, and object type to audit recent activity.
+  </p>
+</div>
+
+<div class="mockup-wrap">
+  <div class="mockup">
+
+    <div class="m-tabpane" id="tp9">
+      <div class="m-tabbar">
+        <div class="m-tab act" onclick="sw('tp9',0)">Results</div>
+        <div class="m-tab" onclick="sw('tp9',1)">View Total for 8 objects</div>
+      </div>
+
+      <div class="m-body">
+
+        <!-- Results -->
+        <div class="m-panel act" id="tp9-0">
+          <div class="anchor" style="padding:10px 12px 6px">
+
+            <div style="margin-bottom:8px">
+              <span class="cal-lbl" style="font-style:italic;font-weight:600">
+                This screen is retrieving the latest records modified accroing to below criteria (date or userId can be empty)
+              </span>
+            </div>
+
+            <div class="hbox" style="gap:14px;align-items:center;margin-bottom:6px">
+              <span class="cal-lbl">nb records max</span>
+              <input class="cal-tf" style="width:60px" value="20" readonly>
+              <span class="cal-lbl">after (yyyy-mm-dd)</span>
+              <input class="cal-tf" style="width:108px" value="2026-11-19" readonly>
+              <span class="cal-lbl">userId</span>
+              <input class="cal-tf cal-grow" style="max-width:260px" value="Sales User 1" readonly data-tip="Start typing a user name: names are suggested from the org's users">
+              <span class="spacer"></span>
+              <button class="cal-btn btn-d" onclick="document.getElementById('modal-ex').style.display='flex'">Manage excluded objects</button>
+            </div>
+
+            <div class="hbox" style="gap:15px;align-items:center;margin-bottom:6px">
+              <button class="cal-btn btn-b">Search</button>
+              <label class="cal-chk" data-tip="Ignore objects belonging to a managed package (NamespacePrefix not null)">
+                <input type="checkbox" checked disabled> Hide Managed Objects
+              </label>
+              <label class="cal-chk" data-tip="Unchecked: only scan custom objects + the core whitelist (cfg/coreObjectsSoql.txt), like the Soql tab. Check to scan every queryable object (slower on large orgs).">
+                <input type="checkbox" disabled> All objects
+              </label>
+              <span class="cal-lbl">created : 991 / Modified : 1,284</span>
+            </div>
+
+            <div style="margin-bottom:8px">
+              <span class="cal-lbl" style="color:#E74C3C;font-weight:700">Production Org Detected , the search will consume 214 api call</span>
+            </div>
+
+            <div class="tbl-wrap">
+              <table class="cal-tbl">
+                <thead>
+                  <tr>
+                    <th style="width:170px">Id</th>
+                    <th style="width:150px">Object</th>
+                    <th style="width:140px">ModifyBy</th>
+                    <th style="width:150px">Modified</th>
+                    <th style="width:140px">CreatedBy</th>
+                    <th style="width:150px">Created</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><td class="mono">006000000000A01AAA</td><td>Opportunity</td><td>Sales User 1</td><td>2026-11-19 14:52:08</td><td>Sales User 1</td><td>2026-11-19 14:52:08</td></tr>
+                  <tr><td class="mono">006000000000A02AAA</td><td>Opportunity</td><td>Sales User 1</td><td>2026-11-19 14:47:31</td><td>Sales User 2</td><td>2026-11-12 09:15:40</td></tr>
+                  <tr><td class="mono">001000000000B01AAA</td><td>Account</td><td>Sales User 2</td><td>2026-11-19 13:34:07</td><td>User A</td><td>2026-10-10 09:12:44</td></tr>
+                  <tr><td class="mono">003000000000C01AAA</td><td>Contact</td><td>User A</td><td>2026-11-19 12:58:31</td><td>User A</td><td>2026-11-19 12:58:31</td></tr>
+                  <tr><td class="mono">500000000000D01AAA</td><td>Case</td><td>Support User 1</td><td>2026-11-19 11:20:19</td><td>Support User 1</td><td>2026-11-19 11:20:19</td></tr>
+                  <tr><td class="mono">00T000000000E01AAA</td><td>Task</td><td>Sales User 1</td><td>2026-11-19 10:44:55</td><td>Sales User 1</td><td>2026-11-18 16:30:22</td></tr>
+                  <tr><td class="mono">00Q000000000F01AAA</td><td>Lead</td><td>Marketing User 1</td><td>2026-11-19 09:16:10</td><td>Marketing User 1</td><td>2026-11-19 09:16:10</td></tr>
+                  <tr><td class="mono">701000000000G01AAA</td><td>Campaign</td><td>Marketing User 1</td><td>2026-11-19 08:30:44</td><td>User A</td><td>2026-09-02 15:08:33</td></tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div style="margin-top:6px">
+              <span class="cal-lbl" style="color:#888;font-size:11px">
+                Double-click (left): open record dump &nbsp;|&nbsp; Double-click (right): open in browser &nbsp;|&nbsp; Delete key: delete selected record(s)
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- View Total -->
+        <div class="m-panel" id="tp9-1">
+          <div class="anchor" style="padding:10px 12px 6px">
+            <div class="hbox" style="gap:24px;align-items:flex-start;flex-wrap:nowrap">
+
+              <div style="flex:0 0 280px">
+                <div class="tbl-wrap">
+                  <table class="cal-tbl">
+                    <thead>
+                      <tr>
+                        <th style="width:150px">ObjectName</th>
+                        <th style="width:60px;text-align:center">Modified</th>
+                        <th style="width:60px;text-align:center">Created</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr><td>Account</td><td style="text-align:center">96</td><td style="text-align:center">41</td></tr>
+                      <tr><td>Campaign</td><td style="text-align:center">20</td><td style="text-align:center">12</td></tr>
+                      <tr><td>Case</td><td style="text-align:center">187</td><td style="text-align:center">120</td></tr>
+                      <tr><td>Contact</td><td style="text-align:center">212</td><td style="text-align:center">150</td></tr>
+                      <tr><td>Event</td><td style="text-align:center">64</td><td style="text-align:center">40</td></tr>
+                      <tr class="tbl-selected"><td>Lead</td><td style="text-align:center;color:#fff">310</td><td style="text-align:center;color:#fff">310</td></tr>
+                      <tr><td>Opportunity</td><td style="text-align:center">40</td><td style="text-align:center">18</td></tr>
+                      <tr><td>Task</td><td style="text-align:center">355</td><td style="text-align:center">300</td></tr>
+                    </tbody>
+                  </table>
+                </div>
+                <div style="margin-top:5px;font-size:11px;color:#556">
+                  Click a row to load a SOQL query for that object.<br>
+                  Delete / Backspace: delete the records of the selected object(s).
+                </div>
+              </div>
+
+              <div class="soql-pane">
+                <div class="soql-editor">
+                  <span class="soql-kw">SELECT</span> * <span class="soql-kw">FROM</span>
+                  <span class="soql-obj">Lead</span>
+                  &nbsp;<span class="soql-kw">WHERE</span>
+                  <span class="soql-obj">LastModifiedDate</span>&gt;<span class="soql-val">2026-11-19T00:00:00.000Z</span>
+                </div>
+                <div class="soql-toolbar">
+                  <button class="cal-btn btn-b" style="padding:2px 10px">Execute</button>
+                  <span>Records : 310</span>
+                </div>
+                <div class="soql-results">310 records loaded — click Execute to display results in grid</div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Manage excluded objects popup -->
+<div id="modal-ex" onclick="if(event.target===this)this.style.display='none'">
+  <div style="background:#fff;border-radius:8px;padding:22px 26px;max-width:640px;width:92%;color:#1a2a35;box-shadow:0 8px 32px rgba(0,0,0,.3)">
+    <h3 style="margin:0 0 4px;color:#2980b9">Manage Excluded Objects</h3>
+    <p style="margin:0 0 12px;font-size:13px">Objects in the right list are excluded from the Last Records search.</p>
+    <div class="hbox" style="gap:12px;align-items:flex-start;flex-wrap:nowrap">
+      <div style="flex:1">
+        <div style="font-weight:700;margin-bottom:4px">Available Objects</div>
+        <input class="cal-tf" style="width:100%;box-sizing:border-box;margin-bottom:4px" placeholder="Filter…" readonly data-tip="Filter available objects by name (contains, case-insensitive)">
+        <div style="border:1px solid #a0b4c0;height:130px;font-size:12px;padding:4px;overflow:hidden" data-tip="Double-click or use the arrow to exclude an object">
+          Account<br>Campaign<br>Case<br>Contact<br>Lead<br>Opportunity
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:6px;padding-top:50px">
+        <button class="cal-btn btn-d" data-tip="Exclude selected objects">&#9654;</button>
+        <button class="cal-btn btn-d" data-tip="Exclude all visible objects">&#9654;&#9654;</button>
+        <button class="cal-btn btn-d" data-tip="Re-include selected objects">&#9664;</button>
+        <button class="cal-btn btn-d" data-tip="Re-include all excluded objects">&#9664;&#9664;</button>
+      </div>
+      <div style="flex:1">
+        <div style="font-weight:700;margin-bottom:4px">Excluded Objects</div>
+        <div style="border:1px solid #a0b4c0;height:158px;margin-top:28px;font-size:12px;padding:4px;overflow:hidden" data-tip="Double-click or use the arrow to re-include an object">
+          ContentVersion<br>FeedItem<br>LoginHistory
+        </div>
+      </div>
+    </div>
+    <div style="text-align:right;margin-top:16px">
+      <button class="cal-btn btn-g" data-tip="Save the excluded objects list to disk">Save</button>
+      <button class="cal-btn btn-d" onclick="document.getElementById('modal-ex').style.display='none'">Close</button>
+    </div>
+  </div>
+</div>
+
+<script>
+function sw(id,idx){
+  var tp=document.getElementById(id);
+  tp.querySelectorAll('.m-tab').forEach(function(t,i){t.classList.toggle('act',i===idx)});
+  tp.querySelectorAll('.m-panel').forEach(function(p,i){p.classList.toggle('act',i===idx)});
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Metadata Search &mdash; Calumet</title>
+<link rel="stylesheet" href="../shared.css">
+</head>
+<body class="tab-page">
+
+<div class="sum">
+  <div class="sum-title">
+    <h2>Metadata Search</h2>
+    <span class="sum-badge">Tab 13</span>
+  </div>
+  <p class="sum-desc">
+    Full-text search across org metadata: find any term in Apex classes, validation rules, workflows, custom labels, and more. The Dependency sub-tab lists what uses, or is used by, a given component.
+    <button class="cal-btn btn-d" style="margin-left:10px" onclick="document.getElementById('modal-kf').style.display='flex'">&#9733; Key features</button>
+  </p>
+</div>
+
+<div class="mockup-wrap">
+  <div class="mockup">
+    <div class="m-tabpane" id="tp0">
+      <div class="m-tabbar">
+        <div class="m-tab act" onclick="sw('tp0',0)">Search</div>
+        <div class="m-tab" onclick="sw('tp0',1)">Dependency</div>
+      </div>
+      <div class="m-body">
+
+        <!-- SEARCH -->
+        <div class="m-panel act" id="tp0-0" style="padding:0">
+          <div class="split-pane" style="gap:0;height:560px">
+            <div class="split-panel" style="max-width:240px;min-width:220px;border-right:1px solid #9AABBF;padding:8px 10px;display:flex;flex-direction:column;gap:6px;background:#F0F6FA">
+              <span class="cal-lbl" style="font-weight:700">Value to find</span>
+              <input class="cal-tf" value="AccountService" placeholder="search value..." readonly data-tip="Text to search across all selected metadata types" style="width:100%">
+              <hr class="hsep">
+              <label class="cal-chk" data-tip="Search in custom labels (Name, MasterLabel, Value)"><input type="checkbox" checked disabled> Custom label</label>
+              <label class="cal-chk" data-tip="Search in validation rule error messages"><input type="checkbox" checked disabled> Validation rules</label>
+              <label class="cal-chk" data-tip="Deep search in Apex class and trigger bodies"><input type="checkbox" checked disabled> Apex</label>
+              <label class="cal-chk" data-tip="Search in VisualForce page markup"><input type="checkbox" disabled> Visual Force</label>
+              <label class="cal-chk" data-tip="Search in Aura component source"><input type="checkbox" disabled> Aura</label>
+              <label class="cal-chk" data-tip="Search in Lightning Web Component source"><input type="checkbox" checked disabled> LWC</label>
+              <label class="cal-chk" data-tip="Search in custom metadata records"><input type="checkbox" disabled> Custom metadata</label>
+              <label class="cal-chk" data-tip="Search in workflow rule names"><input type="checkbox" disabled> Workflow rule</label>
+              <label class="cal-chk" data-tip="Search in workflow field update names"><input type="checkbox" disabled> Workflow field update</label>
+              <label class="cal-chk" data-tip="Search in flow names and labels"><input type="checkbox" checked disabled> Flow</label>
+              <label class="cal-chk" data-tip="Search in email template names"><input type="checkbox" disabled> Mail template</label>
+              <label class="cal-chk" data-tip="Search in Lightning page names and labels"><input type="checkbox" disabled> FlexiPage</label>
+              <label class="cal-chk" data-tip="Search in lookup filter definitions"><input type="checkbox" disabled> LookupFilter</label>
+              <hr class="hsep">
+              <div class="hbox" style="gap:8px;align-items:center">
+                <button class="cal-btn btn-b" data-tip="Run the search across all selected metadata types">Search</button>
+                <label class="cal-chk" data-tip="Bypass the local cache and force a fresh extraction"><input type="checkbox" disabled> Clear cache</label>
+              </div>
+            </div>
+
+            <!-- Results: one WebView page -->
+            <div class="split-panel" style="display:flex;flex-direction:column;overflow:auto;padding:8px;gap:8px;background:#fff;color:#1a2a35">
+              <div class="hbox" style="gap:6px;align-items:center">
+                <span class="cal-lbl" style="color:#555">Show</span>
+                <button class="cal-btn btn-b" data-tip="Every result type">All 14</button>
+                <button class="cal-btn btn-d" data-tip="Apex, Visualforce, Aura, LWC">Code 8</button>
+                <button class="cal-btn btn-d" data-tip="Labels, validation rules, workflow, flows, Lightning pages, lookup filters">Declarative 6</button>
+                <button class="cal-btn btn-d" data-tip="Custom metadata records and email templates">Content and data 0</button>
+              </div>
+              <div style="display:flex;gap:8px;flex:1;min-height:0">
+                <div style="width:190px;border:1px solid #cfd8dc;border-radius:4px;padding:6px;display:flex;flex-direction:column;gap:3px;font-size:12px">
+                  <div style="font-weight:700;color:#555">Result types</div>
+                  <input class="cal-tf" placeholder="Find a result type..." readonly style="width:100%">
+                  <div style="padding:5px 8px;border-radius:4px;display:flex;justify-content:space-between;background:#2980b9;color:#fff;"><span>Classes and triggers</span><b>5</b></div><div style="padding:5px 8px;border-radius:4px;display:flex;justify-content:space-between;"><span>Test classes</span><b>1</b></div><div style="padding:5px 8px;border-radius:4px;display:flex;justify-content:space-between;"><span>Flows</span><b>3</b></div><div style="padding:5px 8px;border-radius:4px;display:flex;justify-content:space-between;"><span>Custom labels</span><b>2</b></div><div style="padding:5px 8px;border-radius:4px;display:flex;justify-content:space-between;"><span>Validation rules</span><b>1</b></div><div style="padding:5px 8px;border-radius:4px;display:flex;justify-content:space-between;"><span>LWC components</span><b>2</b></div><div style="padding:5px 8px;color:#888;display:flex;justify-content:space-between"><span>Aura components</span><b>0</b></div><div style="padding:5px 8px;color:#888;display:flex;justify-content:space-between"><span>Email templates</span><b>0</b></div>
+                </div>
+                <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:6px">
+                  <div class="hbox" style="gap:8px;align-items:center">
+                    <b>Classes and triggers</b><span style="color:#888;font-size:12px">5 hits</span>
+                    <span class="spacer"></span>
+                    <button class="cal-btn btn-g" data-tip="Ask the application to add the selected rows to a package.xml">Add 2 to package.xml...</button>
+                    <input class="cal-tf" placeholder="Filter results (a;b = either)..." readonly style="width:210px">
+                  </div>
+                  <div style="font-size:11px;color:#666">Double-click: download the source and open it. The match is inside the body.</div>
+                  <div class="tbl-wrap"><table class="cal-tbl">
+                    <thead><tr><th style="width:100px">Type</th><th>Name</th><th style="width:130px">Modified</th><th style="width:110px">Modified by</th></tr></thead>
+                    <tbody><tr><td><span style="background:#2980b9;color:#fff;border-radius:3px;padding:1px 6px;font-size:10px;font-weight:700">ApexClass</span></td><td style="font-family:monospace">AccountService</td><td>2026-03-30 14:26</td><td>Jane Smith</td></tr><tr><td><span style="background:#2980b9;color:#fff;border-radius:3px;padding:1px 6px;font-size:10px;font-weight:700">ApexClass</span></td><td style="font-family:monospace">AccountServiceHelper</td><td>2025-10-07 15:15</td><td>Jane Smith</td></tr><tr><td><span style="background:#2980b9;color:#fff;border-radius:3px;padding:1px 6px;font-size:10px;font-weight:700">ApexClass</span></td><td style="font-family:monospace">CaseLinks</td><td>2024-11-25 10:27</td><td>Alex Martin</td></tr><tr><td><span style="background:#2980b9;color:#fff;border-radius:3px;padding:1px 6px;font-size:10px;font-weight:700">ApexClass</span></td><td style="font-family:monospace">AccountSelector</td><td>2024-07-03 20:15</td><td>Alex Martin</td></tr><tr><td><span style="background:#e67e22;color:#fff;border-radius:3px;padding:1px 6px;font-size:10px;font-weight:700">ApexTrigger</span></td><td style="font-family:monospace">AccountTrigger</td><td>2024-05-09 18:59</td><td>Sam Taylor</td></tr></tbody></table></div>
+                  <div style="font-weight:700;font-size:12px;margin-top:6px">Flows type (status counts appear above the table)</div>
+                  <div class="hbox" style="gap:10px;font-size:11px"><span style="color:#27ae60">Active 1</span><span style="color:#e67e22">Draft 1</span><span style="color:#888">Obsolete 1</span></div>
+                  <div class="tbl-wrap"><table class="cal-tbl">
+                    <thead><tr><th>Label</th><th>API name</th><th>Type</th><th>Trigger</th><th>Status</th><th style="width:55px">Version</th><th>Modified</th><th>Modified by</th></tr></thead>
+                    <tbody><tr><td>Account Onboarding</td><td style="font-family:monospace">Account_Onboarding</td><td>Record-Triggered</td><td>After save</td><td style="color:#27ae60">Active</td><td style="text-align:center">3</td><td>2026-02-11 09:12</td><td>Jane Smith</td></tr><tr><td>Account Merge Helper</td><td style="font-family:monospace">Account_Merge_Helper</td><td>Screen</td><td></td><td style="color:#e67e22">Draft</td><td style="text-align:center">1</td><td>2026-01-20 16:40</td><td>Alex Martin</td></tr><tr><td>Legacy Account Sync</td><td style="font-family:monospace">Legacy_Account_Sync</td><td>Autolaunched</td><td></td><td style="color:#888">Obsolete</td><td style="text-align:center">2</td><td>2023-09-02 11:05</td><td>Sam Taylor</td></tr></tbody></table></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- DEPENDENCY -->
+        <div class="m-panel" id="tp0-1" style="padding:8px">
+          <div class="hbox" style="gap:8px;align-items:center;margin-bottom:8px">
+            <span class="cal-lbl">Type</span>
+            <select class="cal-cb" style="width:200px" data-tip="Salesforce metadata type to search dependencies for"><option>ApexClass</option><option>CustomObject</option><option>Flow</option><option>CustomField</option></select>
+            <span class="cal-lbl">Name</span>
+            <input class="cal-tf" value="AccountService" readonly data-tip="Name or Id of the metadata element" style="width:250px">
+            <span class="cal-lbl" style="color:#888" data-tip="Name of the matched element (kept as a reminder once the Id replaces it in the field)">AccountService</span>
+            <label class="cal-chk" data-tip="Also analyse custom fields of the selected object (CustomObject only)"><input type="checkbox" disabled> Include Object Custom Fields</label>
+          </div>
+          <div class="hbox" style="gap:8px;align-items:center;margin-bottom:8px">
+            <button class="cal-btn btn-o" data-tip="Run the dependency search on the row selected in the results (pivot to that metadata)">Search ApexTrigger</button>
+            <button class="cal-btn btn-b" data-tip="Find all metadata that use or are used by the selected element">Search</button>
+            <span class="cal-lbl" style="color:#27ae60;font-weight:700">result : 7</span>
+            <label class="cal-chk" data-tip="Filter out flows with a non-Active status from results"><input type="checkbox" disabled> Hide inactive flows</label>
+            <label class="cal-chk" data-tip="Also pull direct dependencies from the local Tab82 component graph ; graph-only rows = missed by the Tooling API"><input type="checkbox" checked disabled> Completer avec le graphe (Dep Graph)</label>
+            <span class="cal-lbl" style="color:#888">graphe : 2026-11-17</span>
+            <label class="cal-chk" data-tip="Reuse the metadata inventory cached on disk (fast first search). Uncheck to refresh it from the org (slower) and update the cache."><input type="checkbox" checked disabled> Utiliser le cache metadata</label>
+            <span class="cal-lbl" style="color:#888">cache : 2026-11-18</span>
+          </div>
+          <div class="tbl-wrap"><table class="cal-tbl">
+            <thead><tr><th style="width:160px">Metadata Id</th><th style="width:190px">Type</th><th>Name</th><th style="width:90px">Direction</th><th style="width:190px">Relation</th><th style="width:90px">Source</th></tr></thead>
+            <tbody><tr><td style="color:#888;font-size:10px">01p000000000A1AAA</td><td>ApexClass</td><td>AccountServiceHelper</td><td style="text-align:center"><span style="background:#2980b9;color:#fff;border-radius:3px;padding:1px 6px;font-size:10px;font-weight:700">Uses</span></td><td></td><td style="color:#16a34a">Both</td></tr><tr><td style="color:#888;font-size:10px">01q000000000B2BAA</td><td>ApexTrigger</td><td>AccountTrigger</td><td style="text-align:center"><span style="background:#8e44ad;color:#fff;border-radius:3px;padding:1px 6px;font-size:10px;font-weight:700">Used By</span></td><td></td><td style="color:#16a34a">Both</td></tr><tr><td style="color:#888;font-size:10px">301000000000C3CAA</td><td>Flow</td><td>Account_Onboarding-3</td><td style="text-align:center"><span style="background:#8e44ad;color:#fff;border-radius:3px;padding:1px 6px;font-size:10px;font-weight:700">Used By</span></td><td></td><td style="color:#94a3b8">Tooling</td></tr><tr><td style="color:#888;font-size:10px">0Rb000000000D4DAA</td><td>LightningComponentBundle</td><td>accountSummary</td><td style="text-align:center"><span style="background:#8e44ad;color:#fff;border-radius:3px;padding:1px 6px;font-size:10px;font-weight:700">Used By</span></td><td></td><td style="color:#94a3b8">Tooling</td></tr><tr><td style="color:#888;font-size:10px">00N000000000E5EAA</td><td>CustomField</td><td>Account.Region__c</td><td style="text-align:center"><span style="background:#2980b9;color:#fff;border-radius:3px;padding:1px 6px;font-size:10px;font-weight:700">Uses</span></td><td>reads x2</td><td style="color:#c0392b;font-weight:700">Graph</td></tr><tr><td style="color:#888;font-size:10px">01p000000000F6FAA</td><td>ApexClass</td><td>AccountServiceTest</td><td style="text-align:center"><span style="background:#8e44ad;color:#fff;border-radius:3px;padding:1px 6px;font-size:10px;font-weight:700">Used By</span></td><td></td><td style="color:#16a34a">Both</td></tr><tr><td style="color:#888;font-size:10px">0Hs000000000G7GAA</td><td>FlexiPage</td><td>Account_Record_Page</td><td style="text-align:center"><span style="background:#8e44ad;color:#fff;border-radius:3px;padding:1px 6px;font-size:10px;font-weight:700">Used By</span></td><td>displays</td><td style="color:#c0392b;font-weight:700">Graph</td></tr></tbody></table></div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+function sw(id,idx){
+  var tp=document.getElementById(id);
+  tp.querySelectorAll(':scope > .m-tabbar > .m-tab').forEach(function(t,i){t.classList.toggle('act',i===idx)});
+  tp.querySelectorAll(':scope > .m-body > .m-panel').forEach(function(p,i){p.classList.toggle('act',i===idx)});
+}
+</script>
+
+<!-- Key features modal -->
+<div id="modal-kf" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:999;align-items:center;justify-content:center" onclick="if(event.target===this)this.style.display='none'">
+  <div style="background:#fff;border-radius:8px;padding:28px 32px;max-width:560px;width:90%;color:#1a2a35;box-shadow:0 8px 32px rgba(0,0,0,.3)">
+    <h3 style="margin:0 0 14px;color:#2980b9">&#9733; Key features</h3>
+    <ul style="margin:0;padding-left:20px;line-height:1.8;font-size:13px">
+      <li><strong>One term, many types</strong> &mdash; 13 checkboxes feed 14 result types (Apex covers both classes and test classes).</li>
+      <li><strong>Single results page</strong> &mdash; family filters (All, Code, Declarative, Content and data), a result-type list with hit counts, and a table with the term highlighted.</li>
+      <li><strong>Row filter</strong> &mdash; narrow the current table; separate terms with ; for &ldquo;either&rdquo;. Flows also get status counts.</li>
+      <li><strong>Double-click to open</strong> &mdash; source files are downloaded and opened locally, flows open in Flow Builder, other rows open in Salesforce.</li>
+      <li><strong>Add to package.xml</strong> &mdash; select rows and use the green button (or right-click) to add them to a package.</li>
+      <li><strong>Dependency search</strong> &mdash; what uses a component and what it uses, from the Tooling API, optionally completed with the local Dep Graph (rows marked Graph were missed by the API).</li>
+      <li><strong>Pivot</strong> &mdash; select a result row and run the dependency search on it directly.</li>
+      <li><strong>Caches</strong> &mdash; Clear cache forces a fresh extraction; the Dependency tab can reuse the on-disk metadata inventory.</li>
+    </ul>
+    <div style="text-align:right;margin-top:18px">
+      <button class="cal-btn btn-d" onclick="document.getElementById('modal-kf').style.display='none'">Close</button>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

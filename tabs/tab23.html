@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Sfdx — Calumet</title>
+<link rel="stylesheet" href="../shared.css">
+</head>
+<body class="tab-page">
+<div class="sum">
+  <div class="sum-title">
+    <h2>Sfdx</h2>
+    <span class="sum-badge">Tab 23</span>
+  </div>
+  <p class="sum-desc">
+    Lists the orgs authenticated with the Salesforce CLI (<code>sf</code>) and lets you rename an alias, set the default user or default DevHub, disconnect an org, and create or manage scratch orgs.
+    <button class="cal-btn btn-d" style="margin-left:10px" onclick="document.getElementById('modal-kf').style.display='flex'">&#9733; Key features</button>
+  </p>
+</div>
+
+<div class="mockup-wrap">
+  <div class="mockup">
+
+    <div style="background:#d0e8f4;border-bottom:1px solid #9AABBF;padding:4px 10px;font-size:11px;color:#1A5276;">
+      Sfdx &mdash; Integrate with the Salesforce CLI (SFDX): list authenticated orgs, manage aliases, set default org, and create scratch orgs.
+    </div>
+
+    <div class="m-tabpane" id="tp23">
+      <div class="m-tabbar">
+        <div class="m-tab act" onclick="sw('tp23',0)">Orgs</div>
+      </div>
+      <div class="m-body">
+        <div class="m-panel act" id="tp23-0" style="padding:10px">
+
+          <div class="hbox" style="gap:8px;align-items:center;margin-bottom:4px">
+            <button class="cal-btn btn-b">Refresh orgs</button>
+            <button class="cal-btn btn-g" data-tip="Select a DevHub org first, then click to open the Create Scratch Org popup">Create Scratch Org</button>
+          </div>
+
+          <div class="hbox" style="gap:6px;align-items:center;margin-bottom:8px">
+            <button class="cal-btn btn-d">Rename Alias</button>
+            <button class="cal-btn btn-b">Set Default User</button>
+            <button class="cal-btn btn-d">Disconnect</button>
+            <button class="cal-btn btn-b" style="opacity:.45" data-tip="Enabled when the selected org is a DevHub that is not already the default DevHub">Set Default DevHub</button>
+            <button class="cal-btn btn-r" style="opacity:.45" data-tip="Enabled for scratch orgs only">Delete Org</button>
+            <button class="cal-btn btn-g" style="opacity:.45" data-tip="Enabled for scratch orgs only">Generate Password</button>
+            <button class="cal-btn btn-o" style="opacity:.45" data-tip="Enabled for scratch orgs only">Auth Scratch Org</button>
+          </div>
+
+          <div class="tbl-wrap">
+            <table class="cal-tbl">
+              <thead>
+                <tr>
+                  <th style="width:130px">Alias</th>
+                  <th style="width:310px">Username</th>
+                  <th style="width:150px">Status</th>
+                  <th style="width:70px;text-align:center">DevHub</th>
+                  <th style="width:70px;text-align:center">Def Hub</th>
+                  <th style="width:70px;text-align:center">Def User</th>
+                  <th style="width:150px">Scratch</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>dev-sandbox</td>
+                  <td>admin@dev-sandbox.example.com</td>
+                  <td style="color:#27ae60">Connected</td>
+                  <td style="text-align:center"></td>
+                  <td style="text-align:center"></td>
+                  <td style="text-align:center"><span style="color:#27ae60;font-weight:bold">&#10003;</span></td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td>qa-sandbox</td>
+                  <td>admin@qa-sandbox.example.com</td>
+                  <td style="color:#27ae60">Connected</td>
+                  <td style="text-align:center"></td>
+                  <td style="text-align:center"></td>
+                  <td style="text-align:center"></td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td>uat-sandbox</td>
+                  <td>admin@uat-sandbox.example.com</td>
+                  <td style="color:#e67e22">RefreshTokenAuthError</td>
+                  <td style="text-align:center"></td>
+                  <td style="text-align:center"></td>
+                  <td style="text-align:center"></td>
+                  <td></td>
+                </tr>
+                <tr style="background:#c8dce8">
+                  <td><strong>main-devhub</strong></td>
+                  <td>devhub@example.com</td>
+                  <td style="color:#27ae60">Connected</td>
+                  <td style="text-align:center"><span style="color:#27ae60;font-weight:bold">&#10003;</span></td>
+                  <td style="text-align:center"><span style="color:#27ae60;font-weight:bold">&#10003;</span></td>
+                  <td style="text-align:center"></td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td>partner-devhub</td>
+                  <td>hub.admin@example.com</td>
+                  <td style="color:#27ae60">Connected</td>
+                  <td style="text-align:center"><span style="color:#27ae60;font-weight:bold">&#10003;</span></td>
+                  <td style="text-align:center"></td>
+                  <td style="text-align:center"></td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td>scratch1</td>
+                  <td>test-kx7f2q@example.com</td>
+                  <td style="color:#27ae60">Connected</td>
+                  <td style="text-align:center"></td>
+                  <td style="text-align:center"></td>
+                  <td style="text-align:center"></td>
+                  <td style="color:#888">Expires 2026-12-14</td>
+                </tr>
+                <tr>
+                  <td>scratch2</td>
+                  <td>test-p4n9wd@example.com</td>
+                  <td style="color:#27ae60">Connected</td>
+                  <td style="text-align:center"></td>
+                  <td style="text-align:center"></td>
+                  <td style="text-align:center"></td>
+                  <td style="color:#888">Expires 2026-12-21</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div style="margin-top:6px;font-size:10px;color:#888;">
+            7 orgs listed &mdash; double-click a row to see its alias, username, login URL, instance URL, last used date and DevHub flags.
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+function sw(id,idx){
+  var tp=document.getElementById(id);
+  tp.querySelectorAll('.m-tab').forEach(function(t,i){t.classList.toggle('act',i===idx)});
+  tp.querySelectorAll('.m-panel').forEach(function(p,i){p.classList.toggle('act',i===idx)});
+}
+</script>
+
+<!-- Key features modal -->
+<div id="modal-kf" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:999;align-items:center;justify-content:center" onclick="if(event.target===this)this.style.display='none'">
+  <div style="background:#fff;border-radius:8px;padding:28px 32px;max-width:520px;width:90%;color:#1a2a35;box-shadow:0 8px 32px rgba(0,0,0,.3)">
+    <h3 style="margin:0 0 14px;color:#2980b9">&#9733; Key features</h3>
+    <ul style="margin:0;padding-left:20px;line-height:1.8">
+      <li>Lists every org known to the Salesforce CLI with alias, username, status, DevHub and default flags, and scratch org information; the list also loads in the background at startup when <code>sf</code> is installed</li>
+      <li>Rename Alias opens a small popup to change the alias of the selected org</li>
+      <li>Set Default User makes the selected org the CLI default user</li>
+      <li>Set Default DevHub is available for a DevHub that is not already the default one</li>
+      <li>Disconnect logs the selected org out of the CLI (not available for scratch orgs)</li>
+      <li>Create Scratch Org opens the creation popup for the DevHub currently selected in the table</li>
+      <li>For a scratch org: Delete Org, Generate Password (shown in an information window) and Auth Scratch Org (opens the Env config window to connect it to Calumet)</li>
+      <li>Every CLI action runs in the background and refreshes the list when it ends; a failure is reported in an error message</li>
+    </ul>
+    <div style="text-align:right;margin-top:18px">
+      <button class="cal-btn btn-d" onclick="document.getElementById('modal-kf').style.display='none'">Close</button>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

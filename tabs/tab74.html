@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Object Activity &mdash; Calumet</title>
+<link rel="stylesheet" href="../shared.css">
+<style>
+  .bdg{display:inline-block;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:700;white-space:nowrap;color:#fff}
+  .b-active{background:#27ae60}.b-6m{background:#f39c12}.b-1y{background:#e67e22}.b-2y{background:#c0392b}.b-empty{background:#95a5a6}
+  .b-safe{background:#27ae60}.b-data{background:#f39c12}.b-review{background:#d4a017}.b-disp{background:#2c7a7b}
+  .b-test{background:#7c3aed}.b-ref{background:#c0392b}.b-assumed{background:#0d9488}.b-nodel{background:#95a5a6}
+  .b-ref-tbl{background:#8e44ad}
+  .pill{display:inline-block;padding:2px 10px;border-radius:4px;font-size:11px;color:#fff}
+  .pill.off{background:#dce3e8;color:#95a5a6}
+  .stat-total{color:#2c3e50;font-size:12px}.stat-active{color:#27ae60;font-size:12px;font-weight:700}
+  .stat-stale{color:#e67e22;font-size:12px;font-weight:700}.stat-empty{color:#95a5a6;font-size:12px;font-weight:700}
+  .progress-lbl{color:#2980b9;font-style:italic;font-size:12px}
+  .num{text-align:center}
+  .link{color:#2980b9;text-decoration:underline;font-weight:700}
+  .muted{color:#95a5a6}
+  .blk{color:#e67e22;font-weight:700}
+</style>
+</head>
+<body class="tab-page">
+
+<div class="sum">
+  <div class="sum-title">
+    <h2>Object Activity</h2>
+    <span class="sum-badge">Tab 74</span>
+  </div>
+  <p class="sum-desc">
+    Analyse SObject record activity across the org: total records, last creation and modification dates, days of inactivity,
+    dependencies, inbound lookups and an activity status for every object. Tick the dormant ones and send them to the
+    <b>Delete Helper</b>, which builds a safe deletion work package.
+    <button class="cal-btn btn-d" style="margin-left:10px" onclick="document.getElementById('modal-kf').style.display='flex'">&#9733; Key features</button>
+  </p>
+</div>
+
+<div class="mockup-wrap">
+  <div class="mockup">
+    <div class="m-tabpane" id="tp1">
+      <div class="m-tabbar">
+        <div class="m-tab act" onclick="sw('tp1',0)">Object Activity</div>
+        <div class="m-tab" onclick="sw('tp1',1)">Delete Helper</div>
+        <div class="m-tab" onclick="sw('tp1',2)" data-tip="Disabled until 'Build work package' succeeds">Ask AI</div>
+      </div>
+      <div class="m-body">
+
+        <!-- ============ Sub-tab 1 : Object Activity ============ -->
+        <div class="m-panel act" id="tp1-0">
+          <div class="vbox" style="gap:6px;padding:8px">
+            <div class="hbox" style="gap:8px;align-items:center">
+              <button class="cal-btn btn-b" data-tip="Send the TICKED objects to the Delete Helper tab to assess whether they can be safely deleted. Tick the boxes in the first column - highlighting rows is for copying cells, it never decides what gets added.">Add to Delete Helper</button>
+              <button class="cal-btn btn-b" data-tip="Query all objects to find their last creation and modification dates (may take several minutes on large orgs)">Analyse</button>
+              <button class="cal-btn btn-d" data-tip="Delete the on-disk cache for this org and clear the results, so Analyse comes back and requeries Salesforce.">Clear cache</button>
+              <div class="vsep"></div>
+              <span class="cal-lbl">Show:</span>
+              <span class="pill" style="background:#27ae60">Custom, unmanaged (48)</span>
+              <span class="pill off">Standard (212)</span>
+              <span class="pill off">Managed (19)</span>
+              <div class="vsep"></div>
+              <span class="cal-lbl">Filter</span>
+              <input class="cal-tf" style="width:200px" placeholder="object name..." data-tip="Filter results by object name (contains, case-insensitive)" readonly>
+            </div>
+            <div class="hbox" style="gap:6px;align-items:center">
+              <span class="cal-lbl">Status:</span>
+              <span class="pill" style="background:#27ae60">Active</span>
+              <span class="pill" style="background:#f39c12">Stale 6m</span>
+              <span class="pill" style="background:#e67e22">Stale 1y</span>
+              <span class="pill" style="background:#c0392b">Stale 2y+</span>
+              <span class="pill" style="background:#95a5a6">Empty</span>
+            </div>
+            <div><span class="progress-lbl">From cache (2026-11-18 09:42). Clear cache to requery.</span></div>
+            <div class="hbox" style="gap:16px;align-items:center">
+              <span class="stat-total">48 / 279 objects</span><div class="vsep"></div>
+              <span class="stat-active">17 active</span><div class="vsep"></div>
+              <span class="stat-stale">9 stale</span><div class="vsep"></div>
+              <span class="stat-empty">22 empty</span>
+            </div>
+            <div class="tbl-wrap">
+              <table class="cal-tbl">
+                <thead><tr>
+                  <th style="width:38px"><input type="checkbox" disabled data-tip="Tick/untick every row currently shown by the filters"></th>
+                  <th style="width:200px">Object</th><th class="num">Total Records</th><th class="num">Last Created</th>
+                  <th class="num">Last Modified</th><th class="num">Days inactive</th><th class="num">Dependencies</th>
+                  <th class="num" style="width:150px">Pointed at by</th><th class="num">Status</th>
+                </tr></thead>
+                <tbody>
+                  <tr><td class="num"><input type="checkbox" checked disabled></td><td>Legacy_Import__c</td><td class="num">0</td><td class="num">&mdash;</td><td class="num">&mdash;</td><td class="num">&mdash;</td><td class="num muted">0</td><td class="num muted">0</td><td class="num"><span class="bdg b-empty">Empty</span></td></tr>
+                  <tr><td class="num"><input type="checkbox" checked disabled></td><td>Survey_Result__c</td><td class="num">0</td><td class="num">&mdash;</td><td class="num">&mdash;</td><td class="num">&mdash;</td><td class="num link">3</td><td class="num muted">0</td><td class="num"><span class="bdg b-empty">Empty</span></td></tr>
+                  <tr><td class="num"><input type="checkbox" disabled></td><td>Region_Code__c</td><td class="num">42</td><td class="num">2019-03-12</td><td class="num">2019-03-12</td><td class="num">2810</td><td class="num link">5</td><td class="num"><span class="bdg b-ref-tbl">4 &mdash; reference table?</span></td><td class="num"><span class="bdg b-2y">Stale 2y+</span></td></tr>
+                  <tr><td class="num"><input type="checkbox" disabled></td><td>Old_Campaign__c</td><td class="num">1250</td><td class="num">2022-05-02</td><td class="num">2023-06-21</td><td class="num">879</td><td class="num link">11</td><td class="num muted">0</td><td class="num"><span class="bdg b-2y">Stale 2y+</span></td></tr>
+                  <tr><td class="num"><input type="checkbox" disabled></td><td>Trial_Request__c</td><td class="num">318</td><td class="num">2024-09-14</td><td class="num">2025-02-03</td><td class="num">289</td><td class="num link">2</td><td class="num muted">0</td><td class="num"><span class="bdg b-1y">Stale 1y</span></td></tr>
+                  <tr><td class="num"><input type="checkbox" disabled></td><td>Feedback__c</td><td class="num">96</td><td class="num">2025-06-30</td><td class="num">2025-07-02</td><td class="num">140</td><td class="num">&mdash;</td><td class="num muted">0</td><td class="num"><span class="bdg b-6m">Stale 6m</span></td></tr>
+                  <tr><td class="num"><input type="checkbox" disabled></td><td>Project__c</td><td class="num">1480</td><td class="num">2026-11-17</td><td class="num">2026-11-18</td><td class="num">1</td><td class="num link">14</td><td class="num"><span class="bdg b-ref-tbl">2 &mdash; reference table?</span></td><td class="num"><span class="bdg b-active">Active</span></td></tr>
+                  <tr><td class="num"><input type="checkbox" disabled></td><td>Invoice__c</td><td class="num">8210</td><td class="num">2026-11-18</td><td class="num">2026-11-18</td><td class="num">1</td><td class="num link">9</td><td class="num muted">0</td><td class="num"><span class="bdg b-active">Active</span></td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="cal-lbl" style="font-size:11px;color:#888">
+              Dependencies: a number opens the list of components using the object; an unloaded cell is clicked to load it (filled automatically from the dep graph when one exists).
+              Pointed at by: a badge opens a popup of the objects that point to it, through which field, and what happens on delete.
+            </div>
+          </div>
+        </div>
+
+        <!-- ============ Sub-tab 2 : Delete Helper ============ -->
+        <div class="m-panel" id="tp1-1">
+          <div class="vbox" style="gap:8px;padding:8px">
+            <div class="hbox" style="gap:8px;align-items:center">
+              <button class="cal-btn btn-r" data-tip="Build a single-deploy package: package.xml (components to retrieve, edit and redeploy so they stop referencing the object) + destructiveChangesPost.xml (the object and its used-only-here cascade, deleted AFTER the edits land), written into the AI export's work-package folder. Delete set driven by the dep-graph closure, not the current verdict. Unlocks the Ask AI tab.">Build work package</button>
+              <button class="cal-btn btn-d" data-tip="Releases the lock the work-package's AI session put on this org's graph, once you are done with it. Shows who holds it and since when first.">End session</button>
+              <button class="cal-btn btn-d" data-tip="Remove the selected rows from the candidate list">Remove selected</button>
+              <button class="cal-btn btn-d" data-tip="Empty the candidate list">Clear</button>
+              <div class="vsep"></div>
+              <button class="cal-btn btn-b" data-tip="Recursively add components that would become orphaned once the current candidates are deleted (all their referents are already in the delete set). Requires the dep graph (Tab82).">Find orphans</button>
+              <span class="spacer"></span>
+              <span class="cal-lbl" style="color:#2c3e50;font-size:12px">4 candidate(s) - 2 deletable (1 assumed - validate)</span>
+            </div>
+            <div class="hbox" style="gap:10px;align-items:center">
+              <span class="cal-lbl" style="font-size:11px;color:#555">Deletion safety:</span>
+              <span class="bdg b-safe">SAFE</span><span class="bdg b-data">DATA_ONLY</span><span class="bdg b-review">REVIEW</span>
+              <span class="bdg b-disp" data-tip="Only shown on layouts/screens elsewhere - no code, automation or formula touches it. Salesforce drops it from those screens automatically, but users stop seeing it there.">DISPLAY ONLY</span>
+              <span class="bdg b-test">TEST ONLY</span><span class="bdg b-ref">REFERENCED</span>
+              <span class="bdg b-assumed" data-tip="Entered the delete set via the 'Delete?' score (not a graph proof). Kept flagged until an AI or a human validates it - see the deletion brief.">ASSUMED</span>
+              <span class="bdg b-nodel">NOT DELETABLE</span>
+              <span class="spacer"></span>
+              <span style="font-size:11px;color:#7f8c8d;font-style:italic">Dependencies via dep graph (Tab82)</span>
+            </div>
+            <div class="split-pane">
+              <div class="split-panel" style="flex:45">
+                <div style="font-weight:700;color:#2c3e50;margin-bottom:4px">Deletion candidates</div>
+                <div style="background:#1565c0;color:#fff;padding:4px 8px;border-radius:3px;margin-bottom:4px;display:flex;gap:8px;align-items:center">
+                  <b>Filtered: only the 1 of 4 candidate(s) referenced by Order_Status_Flow</b><span class="spacer"></span>
+                  <button class="cal-btn btn-d" data-tip="Show all the deletion candidates again">Clear filter</button>
+                </div>
+                <div class="tbl-wrap"><table class="cal-tbl">
+                  <thead><tr><th>Type</th><th>Name</th><th class="num">Records</th><th class="num">Refs</th><th class="num" data-tip="Referrers outside the delete set that you must edit or delete. (xN) = usage sites in their source. (+N repaired) = referrers Salesforce cleans up by itself (layouts, list views, report types, profiles): they cost nothing.">Blocking</th><th class="num">Deletion safety</th><th class="num">Meta modified</th></tr></thead>
+                  <tbody>
+                    <tr><td>CustomObject</td><td>Legacy_Import__c</td><td class="num">0</td><td class="num">2</td><td class="num muted">0</td><td class="num"><span class="bdg b-safe">SAFE</span></td><td class="num">2023-02-10</td></tr>
+                    <tr><td>CustomObject</td><td>Survey_Result__c</td><td class="num">0</td><td class="num">5</td><td class="num blk">1 (x2) (+3 repaired)</td><td class="num"><span class="bdg b-ref">REFERENCED</span></td><td class="num">2022-11-04</td></tr>
+                    <tr><td>CustomObject</td><td>Old_Campaign__c</td><td class="num">1250</td><td class="num">8</td><td class="num muted">0</td><td class="num"><span class="bdg b-data">DATA_ONLY</span></td><td class="num">2023-06-21</td></tr>
+                    <tr><td>CustomObject</td><td>Trial_Request__c</td><td class="num">318</td><td class="num">3</td><td class="num blk">2</td><td class="num"><span class="bdg b-assumed">ASSUMED</span></td><td class="num">2025-02-03</td></tr>
+                  </tbody></table></div>
+              </div>
+              <div class="split-panel" style="flex:55">
+                <div class="hbox" style="gap:8px;align-items:center;margin-bottom:4px">
+                  <b style="color:#2c3e50">References (blockers)</b>
+                  <button class="cal-btn btn-d" data-tip="A short tutorial: what the two tables are, what Promote and Force do, and what each verdict means.">How does this work?</button>
+                  <span class="spacer"></span>
+                  <span style="font-size:11px;color:#7f8c8d">Delete? score:</span>
+                  <input type="range" min="0" max="100" value="60" disabled style="width:100px" data-tip="Score threshold above which a surviving referrer is flagged 'Delete?' (likely dead metadata). Lower it to surface more candidates, raise it to keep only near-certain ones.">
+                  <b style="font-size:11px;color:#0d9488">60</b>
+                </div>
+                <div class="hbox" style="gap:8px;align-items:center;margin-bottom:4px">
+                  <button class="cal-btn btn-b" data-tip="Open the recursive reference tree of the selected row: its referrers, their referrers, and so on - each marked 'in delete set' or external. Same view as double-clicking the row.">Recursive refs</button>
+                  <button class="cal-btn btn-b" data-tip="Move the 'To delete' rows into the candidate list, then recompute the references against the grown set (some 'To modify' rows may become deletable). Repeat until stable: left table = destructive package, right table = components to modify.">Promote 'To delete'</button>
+                  <button class="cal-btn btn-b" data-tip="Move the scored 'Delete?' candidates AND their external chains into the delete set, then recompute - this can uncover further hidden dead metadata behind them. They are only ASSUMED dead: the deletion brief flags them for validation by an AI or a human before deploying.">Promote 'Delete?'</button>
+                  <button class="cal-btn btn-b" data-tip="Override the verdict for the SELECTED row: add it to the delete set even though it is 'To modify' (a real external referrer keeps it alive) or 'Review'. Recomputes the frontier. Fully reversible (Remove selected / Clear).">Force to delete</button>
+                </div>
+                <div style="font-size:12px;color:#2c3e50;margin-bottom:4px">Promoted 1 component(s). 2 still to modify.</div>
+                <div class="tbl-wrap"><table class="cal-tbl">
+                  <thead><tr><th>Type</th><th>Component</th><th>Via</th><th class="num">Action</th><th class="num">Score</th><th>Meta modified</th></tr></thead>
+                  <tbody>
+                    <tr><td>Flow</td><td>Order_Status_Flow</td><td>uses (1)</td><td class="num"><span class="bdg" style="background:#e67e22">To modify 35</span></td><td class="num">35</td><td>2025-08-19</td></tr>
+                    <tr><td>ApexClass</td><td>SurveyReportController</td><td>uses, reads (1)</td><td class="num"><span class="bdg" style="background:#e67e22">To modify 20</span></td><td class="num">20</td><td>2024-03-02</td></tr>
+                    <tr><td>ApexTrigger</td><td>SurveyResultTrigger</td><td>triggers on (1)</td><td class="num"><span class="bdg" style="background:#c0392b">To delete</span></td><td class="num"></td><td>2022-11-04</td></tr>
+                    <tr><td>ApexClass</td><td>LegacySyncBatch</td><td>uses (1)</td><td class="num"><span class="bdg b-assumed">Delete? 82</span></td><td class="num">82</td><td>2021-05-27</td></tr>
+                    <tr><td>Report</td><td>Surveys_by_Region</td><td>reads (1)</td><td class="num"><span class="bdg" style="background:#95a5a6">Manual</span></td><td class="num"></td><td>2023-01-13</td></tr>
+                  </tbody></table></div>
+                <div style="font-size:11px;color:#888;margin-top:4px">Clicking a REFERENCED / TEST ONLY / DISPLAY ONLY badge filters this table to that candidate's blockers; clicking a Via cell narrows the candidates to those it references; NOT DELETABLE opens an explanation popup.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ============ Sub-tab 3 : Ask AI ============ -->
+        <div class="m-panel" id="tp1-2">
+          <div class="vbox" style="gap:8px;padding:12px">
+            <p style="margin:0">This tab is disabled until <b>Build work package</b> succeeds in the Delete Helper. It then opens automatically and shows the Ask AI panel pointed at the work-package folder (package.xml, destructiveChangesPost.xml and the deletion brief), so an AI session can validate the plan before anything is deployed.</p>
+            <p style="margin:0;color:#888;font-size:12px">The panel's content is the shared Ask AI component; its layout is not reproduced here.</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Key features modal -->
+<div id="modal-kf" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:999;align-items:center;justify-content:center" onclick="if(event.target===this)this.style.display='none'">
+  <div style="background:#fff;border-radius:8px;padding:28px 32px;max-width:560px;width:90%;color:#1a2a35;box-shadow:0 8px 32px rgba(0,0,0,.3)">
+    <h3 style="margin:0 0 14px;color:#2980b9">&#9733; Key features</h3>
+    <ul style="margin:0;padding-left:20px;line-height:1.8">
+      <li>Per-object record count, last created / modified dates and days inactive, cached per org on disk (Clear cache to requery).</li>
+      <li>Scope pills (Custom unmanaged, Standard, Managed) and exclusive status badges (Active, Stale 6m, Stale 1y, Stale 2y+, Empty) with live counts.</li>
+      <li>Dependencies and Pointed at by columns, each opening a detail popup; likely reference tables are flagged.</li>
+      <li>Tick objects and send them to the Delete Helper, which gives a deletion-safety verdict per candidate.</li>
+      <li>Blockers are split into To delete / To modify / Delete? / Review / Manual; Promote, Force and Find orphans grow the delete set until stable.</li>
+      <li>Build work package writes package.xml and destructiveChangesPost.xml and unlocks the Ask AI tab.</li>
+    </ul>
+    <div style="text-align:right;margin-top:18px">
+      <button class="cal-btn btn-d" onclick="document.getElementById('modal-kf').style.display='none'">Close</button>
+    </div>
+  </div>
+</div>
+
+<script>
+function sw(id,idx){
+  var tp=document.getElementById(id);
+  tp.querySelectorAll('.m-tab').forEach(function(t,i){t.classList.toggle('act',i===idx)});
+  tp.querySelectorAll('.m-panel').forEach(function(p,i){p.classList.toggle('act',i===idx)});
+}
+</script>
+</body>
+</html>
