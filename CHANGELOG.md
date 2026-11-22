@@ -1,5 +1,26 @@
 # Calumet — Changelog
 
+## v15.0 — 2026-11-22
+
+### New screens
+
+No new screens in this release.
+
+### Improvements
+
+**General**
+- IMPORTANT: the dependency graph format changed. After updating, open the dependency graph screen and run "Recalculer depuis l'org" (full recompute) once for each org. Older Calumet versions refuse a graph written by this version.
+- Dependency graph: the analysis of unused items now takes into account inactive flows, triggers and rules, scheduled classes and old flow versions, so fewer live items are reported as unused and fewer dead ones are missed.
+- Dependency graph: a dependent picklist now depends on its controlling field, so the impact of changing or deleting a controlling field is shown. Many more references are now read (permission sets, apps, quick actions, record types, flows using Apex-typed variables, e-mail templates, workflow time triggers).
+- Dependency graph: the incremental rebuild is faster and safer. It is checked against a full build regularly, an interrupted rebuild is flagged as incomplete, two rebuilds of the same org can no longer run side by side, and a layer that fails is reported instead of looking fine.
+- Data seeding: the steps are now walked with Previous / Next, the export asks what to do with heavy objects (the decision is remembered), automations on the target can be switched off before the export, a clear warning appears before an import into production, and the starting query is checked and explained before you move on. A new Traversal tree window shows the order in which objects will be exported.
+- Security: Calumet is protected against the Java Base64 vulnerability (CVE-2026-114938) on every launch.
+- All pop-ups now open on the same screen as Calumet (multi-screen setups).
+- Help: the "?" button of each screen now opens the right help page, and several screen descriptions were corrected to match what the screen does.
+- Demo organisations: several screens work on demo data.
+
+---
+
 ## v14.4.1 — 2026-11-15
 
 ### New screens
