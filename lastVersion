@@ -1,5 +1,8 @@
-[version]v15.0[/version]
+[version]v15.0.1[/version]
 [history]
+v15.0.1 — 2026-11-22
+- Help: the title of the help page of the "Compare Orgs: Profiles & PermSets" screen now matches the menu.
+
 v15.0 — 2026-11-22
 - IMPORTANT: the dependency graph format changed. After updating, open the dependency graph screen and run "Recalculer depuis l'org" (full recompute) once for each org. Older Calumet versions refuse a graph written by this version.
 - Dependency graph: the analysis of unused items now takes into account inactive flows, triggers and rules, scheduled classes and old flow versions, so fewer live items are reported as unused and fewer dead ones are missed.
@@ -575,5 +578,5 @@ General
 - New OAuth 2.0 authentication flow available alongside the classic SOAP login.
 [/history]
 [update]dist/Calumet.jar[/update]
-[exe]dist/Calumet-15.0.exe[/exe]
+[exe]dist/Calumet-15.0.1.exe[/exe]
 [updaterVersion]4.2[/updaterVersion]

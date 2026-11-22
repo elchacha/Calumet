@@ -1,5 +1,18 @@
 # Calumet — Changelog
 
+## v15.0.1 — 2026-11-22
+
+### New screens
+
+No new screens in this release.
+
+### Improvements
+
+**General**
+- Help: the title of the help page of the "Compare Orgs: Profiles & PermSets" screen now matches the menu.
+
+---
+
 ## v15.0 — 2026-11-22
 
 ### New screens
