@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>CustomMetadata Updater — Calumet</title>
+<link rel="stylesheet" href="../shared.css">
+</head>
+<body class="tab-page">
+<div class="sum">
+  <div class="sum-title">
+    <h2>CustomMetadata Updater</h2>
+    <span class="sum-badge">Tab 53</span>
+  </div>
+  <p class="sum-desc">
+    Manage the records of a Custom Metadata Type through Excel: display the records, export them to an .xlsx workbook, edit them offline, then upsert the file back into the org. Selected records can be deleted or exported on their own.
+    <button class="cal-btn btn-d" style="margin-left:10px" onclick="document.getElementById('modal-kf').style.display='flex'">&#9733; Key features</button>
+  </p>
+</div>
+
+<div class="mockup-wrap">
+  <div class="mockup" style="padding:10px;">
+
+    <div class="hbox" style="gap:8px;align-items:center;margin-bottom:6px;">
+      <span class="cal-lbl">Custom metadata type</span>
+      <select class="cal-cb" style="width:429px" disabled
+              data-tip="Editable list: type to narrow the custom metadata types of the org. Picking a type displays its records.">
+        <option>Feature_Flag__mdt</option>
+      </select>
+      <button class="cal-btn btn-b"
+              data-tip="Load all records of the selected type into the table">Display</button>
+      <label class="cal-chk" data-tip="Include managed (namespaced) types such as ns__Name__mdt in the list"><input type="checkbox" disabled> Show managed</label>
+    </div>
+
+    <div class="hbox" style="gap:8px;align-items:center;margin-bottom:6px;">
+      <button class="cal-btn btn-o"
+              data-tip="Export all records of the type to an Excel (.xlsx) file">Export all records</button>
+      <button class="cal-btn btn-b"
+              data-tip="Generate an empty .xlsx file with the column headers of the type">Generate empty xlsx file</button>
+      <button class="cal-btn btn-g"
+              data-tip="Choose an .xlsx file and upsert its rows into the org">Upsert Values</button>
+      <button class="cal-btn btn-r"
+              data-tip="Delete the selected records from the org (Delete or Backspace in the table does the same)">Delete Selection</button>
+      <button class="cal-btn btn-o"
+              data-tip="Export only the selected records to an Excel file">Export Selection</button>
+    </div>
+
+    <div class="hbox" style="gap:8px;align-items:center;margin-bottom:4px;">
+      <input class="cal-tf" style="width:288px;" value="checkout;true" readonly
+             data-tip="Filters the rows as you type. Separate several terms with ; (all must match).">
+      <span class="cal-lbl">records (3)</span>
+    </div>
+
+    <div class="tbl-wrap">
+      <table class="cal-tbl">
+        <thead>
+          <tr>
+            <th style="width:220px;text-align:center">Name</th>
+            <th style="width:220px;text-align:center">Label</th>
+            <th style="width:110px;text-align:center">Is_Enabled__c</th>
+            <th style="width:130px;text-align:center">Rollout_Percent__c</th>
+            <th style="width:260px;text-align:center">Description__c</th>
+            <th style="width:190px;text-align:center">Owner_Email__c</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr style="text-align:center"><td>Checkout_NewFlow</td><td>Checkout NewFlow</td><td>true</td><td>100.0</td><td>New checkout screen flow</td><td>platform@example.com</td></tr>
+          <tr style="text-align:center"><td>Checkout_GiftCards</td><td>Checkout GiftCards</td><td>true</td><td>25.0</td><td>Gift card payment option</td><td>payments@example.com</td></tr>
+          <tr style="text-align:center"><td>Checkout_OneClick</td><td>Checkout OneClick</td><td>true</td><td>10.0</td><td>One-click reorder for returning customers</td><td>platform@example.com</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div style="font-size:11px;color:#888;margin-top:5px;">
+      Double-click a row to open the record in Salesforce Setup.
+    </div>
+
+  </div>
+</div>
+
+<!-- Key features modal -->
+<div id="modal-kf" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:999;align-items:center;justify-content:center" onclick="if(event.target===this)this.style.display='none'">
+  <div style="background:#fff;border-radius:8px;padding:28px 32px;max-width:520px;width:90%;color:#1a2a35;box-shadow:0 8px 32px rgba(0,0,0,.3)">
+    <h3 style="margin:0 0 14px;color:#2980b9">&#9733; Key features</h3>
+    <ul style="margin:0;padding-left:20px;line-height:1.8">
+      <li>Searchable type list: type part of a name to narrow the types; picking one displays its records. Managed types are hidden unless <b>Show managed</b> is ticked.</li>
+      <li>Live filter on all columns; separate terms with <b>;</b> to require all of them. The record count follows the filter.</li>
+      <li><b>Export all records</b> writes every record to an .xlsx file; <b>Generate empty xlsx file</b> writes only the headers, ready to be filled in to create records.</li>
+      <li><b>Upsert Values</b> reads an .xlsx file, creates or updates the records, and reports how many succeeded and which rows had issues.</li>
+      <li><b>Delete Selection</b> and <b>Export Selection</b> appear once rows are selected; Delete or Backspace in the table also deletes the selection.</li>
+      <li>Double-click a row to open that record in Salesforce Setup.</li>
+    </ul>
+    <div style="text-align:right;margin-top:18px">
+      <button class="cal-btn btn-d" onclick="document.getElementById('modal-kf').style.display='none'">Close</button>
+    </div>
+  </div>
+</div>
+
+<script>
+function sw(id,idx){
+  var tp=document.getElementById(id);
+  tp.querySelectorAll('.m-tab').forEach(function(t,i){t.classList.toggle('act',i===idx)});
+  tp.querySelectorAll('.m-panel').forEach(function(p,i){p.classList.toggle('act',i===idx)});
+}
+</script>
+</body>
+</html>

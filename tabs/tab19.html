@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Formula Explorer — Calumet</title>
+<link rel="stylesheet" href="../shared.css">
+<style>
+.formula-title { font-size:12px; font-weight:700; color:#2980b9; }
+.formula-ta { width:100%; font-family:monospace; font-size:12px; background:#fafcfe; border:1px solid #c0cdd8; border-radius:4px; padding:8px; resize:none; color:#1a2a35; box-sizing:border-box; }
+.formula-add { width:100%; border:1px dashed #8aa; background:transparent; color:#2980b9; border-radius:4px; padding:5px; font-size:12px; }
+.status-good { color:#27ae60; font-size:12px; font-weight:600; }
+.status-warn { color:#e67e22; font-size:12px; font-weight:600; }
+.check-page { background:#fff; color:#1a2a35; border:1px solid #c0cdd8; border-radius:4px; padding:10px; font-size:12px; }
+.check-card { border:1px solid #dce3ea; border-radius:4px; padding:8px 10px; margin-bottom:8px; }
+.check-card h4 { margin:0 0 4px; font-size:12px; color:#2980b9; }
+.check-card code { background:#f0f4f8; padding:1px 4px; border-radius:3px; }
+.chip { display:inline-block; border-radius:10px; padding:1px 8px; font-size:11px; color:#fff; }
+.chip-g { background:#1e8449; } .chip-w { background:#b9650f; } .chip-b { background:#c0392b; }
+.fixbtn { font-size:11px; border:1px solid #2980b9; background:#fff; color:#2980b9; border-radius:3px; padding:0 6px; }
+.check-card table { border-collapse:collapse; font-size:12px; }
+.check-card td, .check-card th { border:1px solid #dce3ea; padding:2px 8px; text-align:left; }
+</style>
+</head>
+<body class="tab-page">
+
+<div class="sum">
+  <div class="sum-title">
+    <h2>Formula Explorer</h2>
+    <span class="sum-badge">Tab 19</span>
+  </div>
+  <p class="sum-desc">
+    Test and evaluate formula field expressions against live org data. Validate syntax and preview results before deployment.
+    <button class="cal-btn btn-d" style="margin-left:10px" onclick="document.getElementById('modal-kf').style.display='flex'">&#9733; Key features</button>
+  </p>
+</div>
+
+<div class="mockup-wrap">
+  <div class="mockup">
+
+    <div class="m-tabpane" id="tp19">
+      <div class="m-tabbar">
+        <div class="m-tab act" onclick="sw('tp19',0)">Test</div>
+        <div class="m-tab" onclick="sw('tp19',1)">Explode</div>
+      </div>
+      <div class="m-body">
+
+        <!-- Test panel -->
+        <div class="m-panel act" id="tp19-0">
+          <div class="vbox" style="gap:8px;padding:10px">
+
+            <div class="hbox" style="gap:10px;align-items:center">
+              <span class="cal-lbl">Record Id</span>
+              <input class="cal-tf" style="width:200px" value="006000000000001AAA" placeholder="15 or 18 characters" readonly data-tip="Record the formulas are evaluated on; its object also gives the field names and picklist values checked below">
+              <span class="cal-lbl">Return type</span>
+              <select class="cal-cb" style="width:130px" disabled data-tip="Return type of the formula, required by the org to evaluate it">
+                <option>Text</option><option>Checkbox</option><option>Decimal</option><option>Double</option><option>Integer</option><option>Long</option><option>Date</option><option>DateTime</option><option>Time</option><option>Id</option>
+              </select>
+              <button class="cal-btn btn-b" data-tip="Evaluate the formulas in the org (anonymous Apex): on the record, or on the records matching the condition. Shortcut: Ctrl+Enter in a formula.">Execute formulas</button>
+              <span class="status-good">&#10003; Record found: Opportunity</span>
+            </div>
+            <div class="hbox" style="gap:10px;align-items:center">
+              <span class="cal-lbl">Records where</span>
+              <input class="cal-tf cal-grow" value="StageName = 'Closed Won'" placeholder="Optional SOQL condition, e.g. StageName = 'Closed Won'" readonly data-tip="Leave empty to evaluate on the record Id above. With a condition, the formulas run on the first 10 records of the same object that match it, one result per record: the WHERE clause of a SOQL query, without WHERE. :recordId can be used in it.">
+            </div>
+
+            <!-- Formula editors -->
+            <div class="vbox" style="gap:10px">
+              <div>
+                <div class="hbox" style="gap:10px;align-items:center">
+                  <span class="formula-title">Formula 1</span>
+                  <button class="cal-btn btn-d" style="padding:0 8px">Remove</button>
+                  <label class="cal-chk" data-tip="One editor per operand of this formula's top-level && chain, to see which condition fails; untick to restore the formula"><input type="checkbox" disabled> Split on top-level &amp;&amp;</label>
+                </div>
+                <textarea class="formula-ta" rows="3" readonly>IF(ISPICKVAL(StageName, "Closed Won") && Amount > 100000,
+  "Strategic", "Standard")</textarea>
+              </div>
+              <div>
+                <div class="hbox" style="gap:10px;align-items:center">
+                  <span class="formula-title">Formula 2</span>
+                  <button class="cal-btn btn-d" style="padding:0 8px">Remove</button>
+                </div>
+                <textarea class="formula-ta" rows="2" readonly>TEXT(CloseDate) &amp; " - " &amp; Name</textarea>
+              </div>
+              <button class="formula-add" data-tip="Add an empty formula editor">+ Add formula</button>
+            </div>
+
+            <div class="hsep"></div>
+
+            <!-- Check / result page -->
+            <div class="check-page">
+              <div style="color:#555;margin-bottom:6px">Field names and picklist values are checked against <b>Opportunity</b>.</div>
+              <div class="check-card">
+                <h4>Formula 1 <span class="chip chip-g">Syntax OK</span> <span class="chip chip-g">Evaluated</span></h4>
+                Result on 3 records where <code>StageName = 'Closed Won'</code>:
+                <table style="margin-top:4px">
+                  <tr><th>Record</th><th>Result</th></tr>
+                  <tr><td>006000000000001AAA</td><td>Strategic</td></tr>
+                  <tr><td>006000000000002AAA</td><td>Standard</td></tr>
+                  <tr><td>006000000000003AAA</td><td>Strategic</td></tr>
+                </table>
+              </div>
+              <div class="check-card">
+                <h4>Formula 2 <span class="chip chip-w">1 warning</span> <span class="chip chip-g">Evaluated</span></h4>
+                Line 1, col 21: <code>Name</code> is written with a different case than the field API name.
+                <button class="fixbtn">Fix</button><br>
+                Result: <code>2026-03-14 - Renewal Deal</code> (first matching record)
+              </div>
+              <div class="check-card">
+                <h4>Formula 3 <span class="chip chip-b">1 error</span> <span class="chip chip-w">Not sent</span></h4>
+                Line 1, col 18: missing closing parenthesis. The formula is not sent to the org until this is fixed.
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Explode panel -->
+        <div class="m-panel" id="tp19-1">
+          <div class="vbox" style="gap:8px;padding:10px">
+            <div class="hbox" style="gap:10px;align-items:center">
+              <button class="cal-btn btn-b" data-tip="Lay the pasted formula out to show its structure; only whitespace changes">Expand formula</button>
+              <span class="status-good">Syntax OK</span>
+            </div>
+            <textarea class="formula-ta" rows="4" placeholder="Paste the formula to expand here..." readonly data-tip="The raw Salesforce formula">IF(AND(ISPICKVAL(StageName,"Closed Won"),Amount>100000,NOT(ISPICKVAL(Type,"Partner"))),"Strategic Win","Standard")</textarea>
+            <textarea class="formula-ta" rows="11" placeholder="The expanded formula appears here." readonly data-tip="The same formula, laid out">IF(
+  AND(
+    ISPICKVAL(StageName, "Closed Won"),
+    Amount > 100000,
+    NOT(
+      ISPICKVAL(Type, "Partner")
+    )
+  ),
+  "Strategic Win",
+  "Standard"
+)</textarea>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Key features modal -->
+<div id="modal-kf" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:999;align-items:center;justify-content:center" onclick="if(event.target===this)this.style.display='none'">
+  <div style="background:#fff;border-radius:8px;padding:28px 32px;max-width:520px;width:90%;color:#1a2a35;box-shadow:0 8px 32px rgba(0,0,0,.3)">
+    <h3 style="margin:0 0 14px;color:#2980b9">&#9733; Key features</h3>
+    <ul style="margin:0;padding-left:20px;line-height:1.8">
+      <li>Enter a record Id: the record is looked up and its object gives the field names and picklist values to check</li>
+      <li>Any number of formula editors, each checked for syntax as you type, with one-click fixes</li>
+      <li>Evaluate on the record, or on the first 10 records matching an optional SOQL condition</li>
+      <li>Choose the return type the org needs to evaluate the formulas</li>
+      <li>Split on top-level &amp;&amp; shows which condition of a long formula fails</li>
+      <li>Explode tab lays out a pasted formula in a readable structure (whitespace only)</li>
+    </ul>
+    <div style="text-align:right;margin-top:18px">
+      <button class="cal-btn btn-d" onclick="document.getElementById('modal-kf').style.display='none'">Close</button>
+    </div>
+  </div>
+</div>
+
+<script>
+function sw(id,idx){
+  var tp=document.getElementById(id);
+  tp.querySelectorAll('.m-tab').forEach(function(t,i){t.classList.toggle('act',i===idx)});
+  tp.querySelectorAll('.m-panel').forEach(function(p,i){p.classList.toggle('act',i===idx)});
+}
+</script>
+</body>
+</html>

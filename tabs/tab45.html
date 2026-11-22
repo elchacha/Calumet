@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Weblinks Unused — Calumet</title>
+<link rel="stylesheet" href="../shared.css">
+</head>
+<body class="tab-page">
+
+<div class="sum">
+  <div class="sum-title">
+    <h2>Weblinks Unused</h2>
+    <span class="sum-badge">Tab 45</span>
+  </div>
+  <p class="sum-desc">
+    Identify unused custom buttons and web links across objects. Lists candidates for cleanup with usage history.
+    <button class="cal-btn btn-d" style="margin-left:10px" onclick="document.getElementById('modal-kf').style.display='flex'">&#9733; Key features</button>
+  </p>
+</div>
+
+<div class="mockup-wrap">
+  <div class="mockup">
+    <div class="anchor" style="padding:10px;gap:8px">
+
+      <!-- Toolbar -->
+      <div class="hbox" style="gap:10px;align-items:center">
+        <button class="cal-btn btn-b" data-tip="Scan WebLinks (custom buttons + custom links) and cross-check against every Page Layout's referenced buttons">Extract</button>
+        <span class="vsep"></span>
+        <span class="cal-lbl" style="color:#888">Filter</span>
+        <input class="cal-tf" style="width:280px" value="" placeholder="label, name, object... (use ; for AND)" readonly
+               data-tip="Multi-keyword AND filter: type 'sales;mass' to keep only rows containing BOTH terms">
+        <span class="spacer"></span>
+        <span class="cal-lbl" style="color:#888">8 unused WebLinks</span>
+      </div>
+
+      <!-- Results (default sort: Last Modified, oldest first) -->
+      <div class="tbl-wrap">
+        <table class="cal-tbl">
+          <thead>
+            <tr>
+              <th style="width:130px">Object</th>
+              <th style="width:180px">Label</th>
+              <th style="width:190px">API Name</th>
+              
+              <th style="width:130px;text-align:center">Type</th>
+              <th style="width:110px;text-align:center">Display</th>
+              <th style="width:110px">Last Modified &#9650;</th>
+              <th style="width:130px">By</th>
+              <th style="width:90px">Created</th>
+              <th style="width:200px">Comment</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Account</td><td>Open Billing Portal</td><td>Account_OpenBillingPortal</td>
+              
+              <td style="text-align:center"><span style="background:#dc2626;color:#fff;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:700" data-tip="Deprecated by Salesforce - high priority cleanup">JavaScript</span></td>
+              <td style="text-align:center"><span style="background:#e2e8f0;color:#334155;padding:2px 8px;border-radius:4px;font-size:11px">Button</span></td>
+              <td data-tip="2020-03-12">6 y ago</td><td>Sam Carter</td><td data-tip="2018-09-03">8 y ago</td><td></td>
+            </tr>
+            <tr>
+              <td>Opportunity</td><td>Generate Quote PDF</td><td>Opportunity_GenerateQuotePDF</td>
+              
+              <td style="text-align:center"><span style="background:#f59e0b;color:#fff;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:700">VisualforcePage</span></td>
+              <td style="text-align:center"><span style="background:#e2e8f0;color:#334155;padding:2px 8px;border-radius:4px;font-size:11px">Button</span></td>
+              <td data-tip="2021-06-30">5 y ago</td><td>Alex Morgan</td><td data-tip="2019-04-11">7 y ago</td><td>Replaced by a Flow action</td>
+            </tr>
+            <tr>
+              <td>Contact</td><td>Send Welcome Email</td><td>Contact_SendWelcomeEmail</td>
+              
+              <td style="text-align:center"><span style="background:#7c3aed;color:#fff;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:700" data-tip="Deprecated by Salesforce - high priority cleanup">sControl</span></td>
+              <td style="text-align:center"><span style="background:#e2e8f0;color:#334155;padding:2px 8px;border-radius:4px;font-size:11px">Link</span></td>
+              <td data-tip="2022-01-18">4 y ago</td><td>Sam Carter</td><td data-tip="2020-01-22">6 y ago</td><td></td>
+            </tr>
+            <tr>
+              <td>Case</td><td>Escalate to Tier 2</td><td>Case_EscalateToTier2</td>
+              
+              <td style="text-align:center"><span style="background:#dc2626;color:#fff;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:700">JavaScript</span></td>
+              <td style="text-align:center"><span style="background:#e2e8f0;color:#334155;padding:2px 8px;border-radius:4px;font-size:11px">Mass action</span></td>
+              <td data-tip="2022-11-02">4 y ago</td><td>Jamie Lee</td><td data-tip="2019-05-06">7 y ago</td><td></td>
+            </tr>
+            <tr>
+              <td>Lead</td><td>Sync to Marketing</td><td>Lead_SyncToMarketing</td>
+              
+              <td style="text-align:center"><span style="background:#2563eb;color:#fff;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:700">URL</span></td>
+              <td style="text-align:center"><span style="background:#e2e8f0;color:#334155;padding:2px 8px;border-radius:4px;font-size:11px">Link</span></td>
+              <td data-tip="2023-08-21">3 y ago</td><td>Alex Morgan</td><td data-tip="2021-07-14">5 y ago</td><td></td>
+            </tr>
+            <tr>
+              <td>Contract</td><td>Export Contract DOCX</td><td>Contract_ExportDOCX</td>
+              
+              <td style="text-align:center"><span style="background:#2563eb;color:#fff;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:700">URL</span></td>
+              <td style="text-align:center"><span style="background:#e2e8f0;color:#334155;padding:2px 8px;border-radius:4px;font-size:11px">Button</span></td>
+              <td data-tip="2024-02-09">2 y ago</td><td>Jamie Lee</td><td data-tip="2022-01-10">4 y ago</td><td>Used by the legal team?</td>
+            </tr>
+            <tr>
+              <td>Account</td><td>Open Support Ticket</td><td>Account_OpenSupportTicket</td>
+              
+              <td style="text-align:center"><span style="background:#2563eb;color:#fff;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:700">URL</span></td>
+              <td style="text-align:center"><span style="background:#e2e8f0;color:#334155;padding:2px 8px;border-radius:4px;font-size:11px">Link</span></td>
+              <td data-tip="2025-04-09">1 y ago</td><td>Sam Carter</td><td data-tip="2023-06-05">3 y ago</td><td></td>
+            </tr>
+            <tr>
+              <td>Opportunity</td><td>Create Project Record</td><td>Opportunity_CreateProject</td>
+              
+              <td style="text-align:center"><span style="background:#f59e0b;color:#fff;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:700">VisualforcePage</span></td>
+              <td style="text-align:center"><span style="background:#e2e8f0;color:#334155;padding:2px 8px;border-radius:4px;font-size:11px">Button</span></td>
+              <td data-tip="2026-06-17">5 mo ago</td><td>Alex Morgan</td><td data-tip="2024-03-25">2 y ago</td><td></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="hbox" style="gap:8px;align-items:center;margin-top:2px">
+        <span class="cal-lbl" style="color:#888;font-size:10px;font-style:italic">
+          Double-click a row to open the WebLink in Salesforce Setup. Dates show as relative ages; hover a date for the full value. Hover a badge for details; click "On layout" to list the hosting layouts.
+        </span>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+function sw(id,idx){
+  var tp=document.getElementById(id);
+  tp.querySelectorAll('.m-tab').forEach(function(t,i){t.classList.toggle('act',i===idx)});
+  tp.querySelectorAll('.m-panel').forEach(function(p,i){p.classList.toggle('act',i===idx)});
+}
+</script>
+
+<!-- Key features modal -->
+<div id="modal-kf" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:999;align-items:center;justify-content:center" onclick="if(event.target===this)this.style.display='none'">
+  <div style="background:#fff;border-radius:8px;padding:28px 32px;max-width:520px;width:90%;color:#1a2a35;box-shadow:0 8px 32px rgba(0,0,0,.3)">
+    <h3 style="margin:0 0 14px;color:#2980b9">&#9733; Key features</h3>
+    <ul style="margin:0;padding-left:20px;line-height:1.8">
+      <li>Extract scans custom buttons and custom links and cross-checks them against the buttons referenced by every Page Layout.</li>
+      <li>Type badges: JavaScript and sControl links are deprecated by Salesforce and are priority cleanup candidates.</li>
+      <li>Display badge tells whether the item is a Button, a Link or a Mass action.</li>
+      <li>Rows are sorted by oldest Last Modified first, the strongest cleanup candidates.</li>
+      <li>Multi-keyword filter with AND (use ;) and a live count of shown versus total links.</li>
+      <li>Double-click a row to open the WebLink in Salesforce Setup.</li>
+      <li>Detection does not cover Apex, Flow or LWC references: always confirm before deleting.</li>
+    </ul>
+    <div style="text-align:right;margin-top:18px">
+      <button class="cal-btn btn-d" onclick="document.getElementById('modal-kf').style.display='none'">Close</button>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

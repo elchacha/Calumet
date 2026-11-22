@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Object Relations Usage &mdash; Calumet</title>
+<link rel="stylesheet" href="../shared.css">
+<style>
+  .b-formula,.b-validationrule,.b-workflowrule { border-radius:8px; padding:1px 8px; font-size:11px; border:1px solid; display:inline-block; }
+  .b-formula { color:#3d7a8a; background:#EBF5FB; border-color:#C8DFE8; }
+  .b-workflowrule { color:#a86a00; background:#FEF5E7; border-color:#F5CBA7; }
+  .b-validationrule { color:#a93226; background:#FDEDEC; border-color:#F5B7B1; }
+  .root { font-family:Consolas,Menlo,monospace; color:#3d7a8a; }
+  .obj-selected td { background:#d0e8f0 !important; }
+  .ghead td { background:#F0F7FA; font-weight:600; }
+  .split-tables { display:flex; gap:16px; align-items:flex-start; }
+  .split-tables .tbl-wrap { flex:1; min-width:0; overflow-x:auto; }
+  .split-tables .tbl-wrap:first-child { max-width:300px; }
+  .rhead { margin-bottom:6px; }
+  .rhead .meta { color:#888; font-size:11px; margin-left:12px; }
+</style>
+</head>
+<body class="tab-page">
+
+<div class="sum">
+  <div class="sum-title">
+    <h2>Object Relations Usage</h2>
+    <span class="sum-badge">Tab 52</span>
+  </div>
+  <p class="sum-desc">
+    Map lookup, master-detail, and formula field dependencies for a selected SObject. Visualise cross-object relationships.
+    <button class="cal-btn btn-d" style="margin-left:10px" onclick="document.getElementById('modal-kf').style.display='flex'">&#9733; Key features</button>
+  </p>
+</div>
+
+<div class="mockup-wrap">
+  <div class="mockup">
+    <div class="vbox" style="gap:8px;padding:6px 0 0 0">
+
+      <div class="hbox" style="gap:12px;align-items:center">
+        <button class="cal-btn btn-b" data-tip="Read the relations used by formulas, workflow rules and validation rules of the org">Search</button>
+      </div>
+
+      <div class="hbox" style="gap:12px;align-items:center">
+        <input class="cal-tf" style="width:220px" readonly placeholder="Filter objects..." data-tip="Filter the object list by name">
+        <label class="cal-chk" data-tip="One row per distinct relation, with its types and the items that use it"><input type="checkbox" id="single" onchange="toggleView()"> Display single relations only</label>
+        <span class="spacer"></span>
+        <span style="color:#888;font-size:11px">12 of 12 objects</span>
+      </div>
+
+      <div class="split-tables">
+        <div class="tbl-wrap">
+          <table class="cal-tbl">
+            <thead><tr><th>Object</th><th style="width:60px;text-align:center">Rel</th></tr></thead>
+            <tbody>
+<tr><td>Account</td><td style="text-align:center">16</td></tr>
+<tr><td>Case</td><td style="text-align:center">14</td></tr>
+<tr><td>Contact</td><td style="text-align:center">4</td></tr>
+<tr><td>Contract__c</td><td style="text-align:center">11</td></tr>
+<tr><td>Invoice__c</td><td style="text-align:center">10</td></tr>
+<tr><td>Lead</td><td style="text-align:center">7</td></tr>
+<tr><td>Opportunity</td><td style="text-align:center">13</td></tr>
+<tr class="obj-selected"><td><strong>Order__c</strong></td><td style="text-align:center">11</td></tr>
+<tr><td>OrderItem</td><td style="text-align:center">7</td></tr>
+<tr><td>Product2</td><td style="text-align:center">5</td></tr>
+<tr><td>Project__c</td><td style="text-align:center">12</td></tr>
+<tr><td>Task</td><td style="text-align:center">8</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div style="flex:1;min-width:0">
+          <div class="rhead">Relations of <b style="color:#3d7a8a">Order__c</b><span class="meta">6 relations &middot; 10 usages</span></div>
+          <div class="tbl-wrap" id="grouped" data-tip="Double-click a formula row to open its field in Salesforce Setup">
+            <table class="cal-tbl">
+              <thead><tr><th>Used by</th><th>Path</th></tr></thead>
+              <tbody>
+<tr class="ghead"><td colspan="2">&#9662; <span class="root">Account__r</span> <span style="color:#888">(3 usages)</span> <span style="float:right"><span class="b-formula">formula</span></span></td></tr>
+<tr><td style="padding-left:26px">Account_Area__c</td><td><em style="color:#999">direct</em></td></tr>
+<tr><td style="padding-left:26px">Billing_Summary__c</td><td><em style="color:#999">direct</em></td></tr>
+<tr><td style="padding-left:26px">Owning_Team__c</td><td><span class="root">› Owner</span></td></tr>
+<tr class="ghead"><td colspan="2">&#9662; <span class="root">Account__r</span> <span style="color:#888">(2 usages)</span> <span style="float:right"><span class="b-validationrule">ValidationRule</span></span></td></tr>
+<tr><td style="padding-left:26px">Order__c.Account_Required_When_Active</td><td><em style="color:#999">direct</em></td></tr>
+<tr><td style="padding-left:26px">Order__c.Account_Type_Check</td><td><span class="root">› RecordType</span></td></tr>
+<tr class="ghead"><td colspan="2">&#9662; <span class="root">Contract__r</span> <span style="color:#888">(2 usages)</span> <span style="float:right"><span class="b-formula">formula</span></span></td></tr>
+<tr><td style="padding-left:26px">Contract_Label__c</td><td><em style="color:#999">direct</em></td></tr>
+<tr><td style="padding-left:26px">Contract_End__c</td><td><span class="root">› Terms__r</span></td></tr>
+<tr class="ghead"><td colspan="2">&#9662; <span class="root">Contract__r</span> <span style="color:#888">(1 usage)</span> <span style="float:right"><span class="b-workflowrule">WorkflowRule</span></span></td></tr>
+<tr><td style="padding-left:26px">Order__c.Notify_On_Contract_Renewal</td><td><em style="color:#999">direct</em></td></tr>
+<tr class="ghead"><td colspan="2">&#9662; <span class="root">Opportunity__r</span> <span style="color:#888">(2 usages)</span> <span style="float:right"><span class="b-formula">formula</span></span></td></tr>
+<tr><td style="padding-left:26px">Deal_Stage_Text__c</td><td><em style="color:#999">direct</em></td></tr>
+<tr><td style="padding-left:26px">Deal_Amount_Band__c</td><td><em style="color:#999">direct</em></td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="tbl-wrap" id="singleview" style="display:none">
+            <table class="cal-tbl">
+              <thead><tr><th style="width:36%">Relation</th><th style="width:20%">Type</th><th>Used by</th></tr></thead>
+              <tbody>
+<tr><td><span class="root">Account__r</span></td><td><span class="b-formula">formula</span> <span class="b-validationrule">ValidationRule</span></td><td><span style="color:#888">(3)</span> Account_Area__c, Billing_Summary__c, Order__c.Account_Required_When_Active</td></tr>
+<tr><td><span class="root">Account__r.Owner</span></td><td><span class="b-formula">formula</span></td><td><span style="color:#888">(1)</span> Owning_Team__c</td></tr>
+<tr><td><span class="root">Account__r.RecordType</span></td><td><span class="b-validationrule">ValidationRule</span></td><td><span style="color:#888">(1)</span> Order__c.Account_Type_Check</td></tr>
+<tr><td><span class="root">Contract__r</span></td><td><span class="b-formula">formula</span> <span class="b-workflowrule">WorkflowRule</span></td><td><span style="color:#888">(2)</span> Contract_Label__c, Order__c.Notify_On_Contract_Renewal</td></tr>
+<tr><td><span class="root">Contract__r.Terms__r</span></td><td><span class="b-formula">formula</span></td><td><span style="color:#888">(1)</span> Contract_End__c</td></tr>
+<tr><td><span class="root">Opportunity__r</span></td><td><span class="b-formula">formula</span></td><td><span style="color:#888">(2)</span> Deal_Stage_Text__c, Deal_Amount_Band__c</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Key features modal -->
+<div id="modal-kf" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:999;align-items:center;justify-content:center" onclick="if(event.target===this)this.style.display='none'">
+  <div style="background:#fff;border-radius:8px;padding:28px 32px;max-width:520px;width:90%;color:#1a2a35;box-shadow:0 8px 32px rgba(0,0,0,.3)">
+    <h3 style="margin:0 0 14px;color:#2980b9">&#9733; Key features</h3>
+    <ul style="margin:0;padding-left:20px;line-height:1.8">
+      <li>Search lists every object reached through relationships by formulas, workflow rules and validation rules, with its number of distinct relations (Rel)</li>
+      <li>Filter the object list by name as you type</li>
+      <li>Select an object to see where its relations are used, grouped by first hop and usage type (formula, WorkflowRule, ValidationRule); click a group header to collapse it</li>
+      <li>"Display single relations only" shows one row per distinct relation with its types and the items that use it</li>
+      <li>Double-click a formula row to open the field in Salesforce Setup</li>
+    </ul>
+    <div style="text-align:right;margin-top:18px">
+      <button class="cal-btn btn-d" onclick="document.getElementById('modal-kf').style.display='none'">Close</button>
+    </div>
+  </div>
+</div>
+
+<script>
+function toggleView(){
+  var one=document.getElementById('single').checked;
+  document.getElementById('grouped').style.display=one?'none':'';
+  document.getElementById('singleview').style.display=one?'':'none';
+}
+</script>
+</body>
+</html>

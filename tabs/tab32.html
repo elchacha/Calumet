@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Schedule — Calumet</title>
+<link rel="stylesheet" href="../shared.css">
+<style>
+  .top-bar { display:flex; flex-wrap:wrap; align-items:center; gap:8px; padding:10px 12px; background:#1e2d38; border:1px solid #2e3f4f; border-radius:6px; }
+  .sub-bar { display:flex; flex-wrap:wrap; align-items:center; gap:8px; padding:4px 2px; }
+  .cnt { font-weight:700; color:#7ec8f4; }
+  .loaded { font-size:11.5px; color:#0369a1; background:#e0f2fe; border:1px solid #bae6fd; border-radius:4px; padding:3px 9px; }
+  .fpill { display:inline-block; padding:3px 10px; border-radius:12px; font-size:12px; font-weight:600; color:#fff; opacity:.55; white-space:nowrap; }
+  .fpill.on { opacity:1; box-shadow:0 0 0 2px rgba(255,255,255,.35); }
+  .legend { display:flex; align-items:center; gap:6px; font-size:11px; color:#94a3b8; }
+  .sw { width:10px; height:10px; border-radius:2px; display:inline-block; }
+  .type-pill { display:inline-block; padding:2px 10px; border-radius:10px; font-size:11px; font-weight:600; color:#fff; white-space:nowrap; }
+  .t-apex { background:#2980b9; } .t-batch { background:#16a085; } .t-flow { background:#27ae60; }
+  .cron-readable { font-size:11px; font-style:italic; }
+  .mono { font-family:Consolas,monospace; font-size:11.5px; }
+  .ctr { text-align:center; }
+  tr.never td { background:#FFF4E0; color:#1a2a35; }
+  tr.never td .type-pill { color:#fff; }
+  tr.norun td { background:#E6E6E6; color:#1a2a35; }
+  .hint { font-size:11px; color:#6a8aaa; font-style:italic; }
+</style>
+</head>
+<body class="tab-page">
+
+<div class="sum">
+  <div class="sum-title">
+    <h2>Schedule</h2>
+    <span class="sum-badge">Tab 32</span>
+  </div>
+  <p class="sum-desc">
+    View and manage scheduled Apex jobs and batch processes. Shows cron expressions, next fire times, and execution counts.
+    <button class="cal-btn btn-d" style="margin-left:10px" onclick="document.getElementById('modal-kf').style.display='flex'">&#9733; Key features</button>
+  </p>
+</div>
+
+<div class="mockup-wrap">
+  <div class="mockup">
+    <div class="vbox" style="gap:10px">
+
+      <div class="top-bar">
+        <button class="cal-btn btn-b" data-tip="Reload all scheduled jobs from the connected org">Search</button>
+        <input class="cal-tf" style="width:260px" placeholder="Filter name, target, submitter..." readonly value="Nightly">
+        <span class="cnt">3 of 14 schedules</span>
+        <span class="loaded">Loaded 19/11/2026 09:42 from the org</span>
+        <span class="spacer"></span>
+        <button class="cal-btn btn-r" data-tip="Abort every selected scheduled job through anonymous Apex (System.abortJob), then reload the list">Kill schedule selected</button>
+      </div>
+
+      <div class="sub-bar">
+        <span class="cal-lbl">Show</span>
+        <span class="fpill" style="background:#7f8c8d">All (14)</span>
+        <span class="fpill on" style="background:#2c3e50">Apex + Batch + Flow (8)</span>
+        <span class="fpill" style="background:#2980b9">Apex Class (3)</span>
+        <span class="fpill" style="background:#16a085">Batch Job (2)</span>
+        <span class="fpill" style="background:#27ae60">Schedule Flow (3)</span>
+        <span class="fpill" style="background:#8e44ad">Dashboard (2)</span>
+        <span class="fpill" style="background:#1a5276">Report (1)</span>
+        <span class="fpill" style="background:#d35400">Report Notification (2)</span>
+        <span class="fpill" style="background:#7f8c8d">Others (1)</span>
+        <span class="spacer"></span>
+        <span class="sw" style="background:#FFF4E0"></span><span class="legend">Never triggered yet (2)</span>
+        <span class="sw" style="background:#E6E6E6"></span><span class="legend">No next run</span>
+      </div>
+
+      <div class="tbl-wrap">
+        <table class="cal-tbl">
+          <thead>
+            <tr>
+              <th style="min-width:190px">Job name</th>
+              <th style="min-width:130px">Type</th>
+              <th style="min-width:190px">Target</th>
+              <th style="min-width:40px">NS</th>
+              <th style="min-width:110px">Submitter</th>
+              <th style="min-width:120px">Started</th>
+              <th style="min-width:120px">Next run</th>
+              <th style="min-width:200px">Schedule</th>
+              <th style="min-width:150px">Expression</th>
+              <th style="min-width:80px" class="ctr">Triggered</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>NightlyCleanupJob</td>
+              <td><span class="type-pill t-apex">Apex Class</span></td>
+              <td>NightlyCleanupSchedulable</td>
+              <td class="ctr"></td>
+              <td>Admin User</td>
+              <td>2025-06-15 02:00</td>
+              <td>2026-11-20 02:00</td>
+              <td class="cron-readable">Every night at 02:00</td>
+              <td class="mono">0 0 2 * * ?</td>
+              <td class="ctr">524</td>
+            </tr>
+            <tr>
+              <td>InvoiceBatch_Weekly</td>
+              <td><span class="type-pill t-batch">Batch Job</span></td>
+              <td>InvoiceBatch</td>
+              <td class="ctr"></td>
+              <td>Admin User</td>
+              <td>2025-09-01 06:00</td>
+              <td>2026-11-22 06:00</td>
+              <td class="cron-readable">Every Sunday at 06:00</td>
+              <td class="mono">0 0 6 ? * 1</td>
+              <td class="ctr">62</td>
+            </tr>
+            <tr>
+              <td>Account_Health_Refresh-3</td>
+              <td><span class="type-pill t-flow">Schedule Flow</span></td>
+              <td>Account Health Refresh</td>
+              <td class="ctr"></td>
+              <td>Jane Smith</td>
+              <td>2025-03-01 07:30</td>
+              <td>2026-11-20 07:30</td>
+              <td class="cron-readable">At 07:30, Monday through Friday</td>
+              <td class="mono">0 30 7 ? * 2-6</td>
+              <td class="ctr">188</td>
+            </tr>
+            <tr>
+              <td>OrderSyncScheduler</td>
+              <td><span class="type-pill t-apex">Apex Class</span></td>
+              <td>OrderSyncSchedulable</td>
+              <td class="ctr"></td>
+              <td>John Doe</td>
+              <td>2025-04-10 12:00</td>
+              <td>2026-11-19 12:00</td>
+              <td class="cron-readable">At 12:00</td>
+              <td class="mono">0 0 12 ? * *</td>
+              <td class="ctr">223</td>
+            </tr>
+            <tr class="never">
+              <td>LeadScoringRefresh</td>
+              <td><span class="type-pill t-apex">Apex Class</span></td>
+              <td>LeadScoringSchedulable</td>
+              <td class="ctr"></td>
+              <td>John Doe</td>
+              <td>2026-11-18 16:45</td>
+              <td>2026-11-20 05:00</td>
+              <td class="cron-readable">At 05:00</td>
+              <td class="mono">0 0 5 ? * *</td>
+              <td class="ctr">0</td>
+            </tr>
+            <tr>
+              <td>Renewal_Reminder_Flow-8</td>
+              <td><span class="type-pill t-flow">Schedule Flow</span></td>
+              <td>Renewal Reminder</td>
+              <td class="ctr"></td>
+              <td>Jane Smith</td>
+              <td>2025-10-10 08:00</td>
+              <td>2026-11-20 08:00</td>
+              <td class="cron-readable">At 08:00</td>
+              <td class="mono">0 0 8 ? * *</td>
+              <td class="ctr">405</td>
+            </tr>
+            <tr class="norun">
+              <td>OneShotMigrationRun</td>
+              <td><span class="type-pill t-batch">Batch Job</span></td>
+              <td>ContactMigrationBatch</td>
+              <td class="ctr"></td>
+              <td>Admin User</td>
+              <td>2026-10-02 22:00</td>
+              <td></td>
+              <td class="cron-readable">At 22:00 on day 2 of October, only in 2026</td>
+              <td class="mono">0 0 22 2 10 ? 2026</td>
+              <td class="ctr">1</td>
+            </tr>
+            <tr>
+              <td>Weekly_Digest_Flow-14</td>
+              <td><span class="type-pill t-flow">Schedule Flow</span></td>
+              <td>Weekly Digest</td>
+              <td class="ctr"></td>
+              <td>Jane Smith</td>
+              <td>2025-01-13 18:08</td>
+              <td>2026-11-19 18:08</td>
+              <td class="cron-readable">At 18:08</td>
+              <td class="mono">0 8 18 ? * *</td>
+              <td class="ctr">309</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="hint">Double-click a Schedule Flow row to open that flow in Flow Builder in the browser. The table is empty until you press Search.</div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+function sw(id,idx){
+  var tp=document.getElementById(id);
+  tp.querySelectorAll('.m-tab').forEach(function(t,i){t.classList.toggle('act',i===idx)});
+  tp.querySelectorAll('.m-panel').forEach(function(p,i){p.classList.toggle('act',i===idx)});
+}
+</script>
+
+<!-- Key features modal -->
+<div id="modal-kf" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:999;align-items:center;justify-content:center" onclick="if(event.target===this)this.style.display='none'">
+  <div style="background:#fff;border-radius:8px;padding:28px 32px;max-width:540px;width:90%;color:#1a2a35;box-shadow:0 8px 32px rgba(0,0,0,.3)">
+    <h3 style="margin:0 0 14px;color:#2980b9">&#9733; Key features</h3>
+    <ul style="margin:0;padding-left:20px;line-height:1.9">
+      <li><strong>Search</strong> reloads every scheduled job of the org and stamps the time of the load next to the counter.</li>
+      <li>Type pills (<strong>Apex + Batch + Flow</strong> by default, then Apex Class, Batch Job, Schedule Flow, Dashboard, Report, Report Notification, Others) show how many schedules each type holds; one pill is active at a time.</li>
+      <li>Text filter on job name, target and submitter; the counter reads "n of N schedules".</li>
+      <li>Ten columns: job name, type badge, target, namespace, submitter, started, next run, readable schedule, raw cron expression and number of times triggered.</li>
+      <li>Rows tinted orange have never been triggered; grey rows have no next run.</li>
+      <li><strong>Kill schedule selected</strong> aborts every selected job with <code>System.abortJob()</code> through anonymous Apex, then reloads the list.</li>
+      <li>Double-click a Schedule Flow row to open it in Flow Builder.</li>
+    </ul>
+    <div style="text-align:right;margin-top:18px">
+      <button class="cal-btn btn-d" onclick="document.getElementById('modal-kf').style.display='none'">Close</button>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Sandboxes — Calumet</title>
+<link rel="stylesheet" href="../shared.css">
+<style>
+.sb{color:#fff;padding:3px 8px;border-radius:4px;font-size:11px;display:inline-block}
+.c{text-align:center}
+</style>
+</head>
+<body class="tab-page">
+<div class="sum">
+  <div class="sum-title">
+    <h2>Sandboxes</h2>
+    <span class="sum-badge">Tab 79</span>
+  </div>
+  <p class="sum-desc">
+    Lists all sandboxes of the production org (via the <code>SandboxInfo</code> Tooling API) with license type, last modified date, and a shortcut to create the matching org config. From the same screen you can queue a new sandbox, refresh one or delete one.
+    <button class="cal-btn btn-d" style="margin-left:10px" onclick="document.getElementById('modal-kf').style.display='flex'">&#9733; Key features</button>
+  </p>
+</div>
+<div class="mockup-wrap">
+  <div class="mockup">
+    <div class="vbox" style="gap:8px">
+
+      <!-- Toolbar -->
+      <div class="hbox" style="gap:10px;align-items:center">
+        <button class="cal-btn btn-b" data-tip="Query all sandboxes from the Tooling API (SandboxInfo)">Display</button>
+        <button class="cal-btn btn-d" data-tip="Create a new org config pre-filled with the selected sandbox name and username">New Org</button>
+        <button class="cal-btn btn-g" data-tip="Queue a new sandbox in the production org (SandboxInfo, Tooling API). Needs the Manage Sandboxes permission and a free licence of that type.">Create sandbox</button>
+        <button class="cal-btn btn-r" data-tip="Queue the refresh of the selected sandbox: it is OVERWRITTEN by a copy of its source">Refresh sandbox</button>
+        <button class="cal-btn btn-r" data-tip="Delete the selected sandbox and free its licence. Irreversible.">Delete sandbox</button>
+        <span class="vsep"></span>
+        <span class="cal-lbl">Filter</span>
+        <input class="cal-tf" style="width:200px" placeholder="sandbox name, user, description..." data-tip="Filter all columns (contains, case-insensitive)" readonly>
+        <span class="cal-lbl" style="color:#2980b9;font-style:italic">8 / 8 sandbox(es)</span>
+      </div>
+
+      <!-- Results table -->
+      <div class="tbl-wrap">
+        <table class="cal-tbl">
+          <thead>
+            <tr>
+              <th style="width:140px">Sandbox Name</th>
+              <th style="width:130px">License Type</th>
+              <th style="width:300px">Description</th>
+              <th style="width:140px">Last Modified Date</th>
+              <th style="width:160px">Last Modified By</th>
+              <th style="width:170px">Activation User Group</th>
+              <th style="width:140px">Source Sandbox</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="c" style="font-weight:bold">dev1</td>
+              <td class="c"><span class="sb" style="background:#7f8c8d">DEVELOPER</span></td>
+              <td class="c">Daily development sandbox</td>
+              <td class="c">2026-11-12 09:41</td>
+              <td class="c"><span class="sb" style="background:#2980b9">Alex Admin</span></td>
+              <td class="c"><span class="sb" style="background:#27ae60">Sandbox Users</span></td>
+              <td class="c"></td>
+            </tr>
+            <tr>
+              <td class="c" style="font-weight:bold">dev2</td>
+              <td class="c"><span class="sb" style="background:#7f8c8d">DEVELOPER</span></td>
+              <td class="c"></td>
+              <td class="c" style="color:#e67e22" data-tip="Last modified more than 6 months ago">&#9888; 2026-02-03 14:20</td>
+              <td class="c"><span class="sb" style="background:#8e44ad">Sam Builder</span></td>
+              <td class="c"><span class="sb" style="background:#27ae60">Sandbox Users</span></td>
+              <td class="c"></td>
+            </tr>
+            <tr>
+              <td class="c" style="font-weight:bold">devpro</td>
+              <td class="c"><span class="sb" style="background:#2c3e50">DEVELOPER_PRO</span></td>
+              <td class="c">Integration build with larger data volume</td>
+              <td class="c">2026-10-28 16:05</td>
+              <td class="c"><span class="sb" style="background:#8e44ad">Sam Builder</span></td>
+              <td class="c"><span class="sb" style="background:#27ae60">Sandbox Users</span></td>
+              <td class="c"><span class="sb" style="background:#d35400">fullcopy</span></td>
+            </tr>
+            <tr>
+              <td class="c" style="font-weight:bold">uat</td>
+              <td class="c"><span class="sb" style="background:#c0392b">PARTIAL</span></td>
+              <td class="c">User acceptance testing</td>
+              <td class="c">2026-11-05 11:30</td>
+              <td class="c"><span class="sb" style="background:#16a085">Chris Tester</span></td>
+              <td class="c"><span class="sb" style="background:#27ae60">Sandbox Users</span></td>
+              <td class="c"><span class="sb" style="background:#d35400">fullcopy</span></td>
+            </tr>
+            <tr>
+              <td class="c" style="font-weight:bold">fullcopy</td>
+              <td class="c"><span class="sb" style="background:#d35400">FULL</span></td>
+              <td class="c">Full copy of production, refreshed quarterly</td>
+              <td class="c" style="color:#e67e22" data-tip="Last modified more than 1 year ago">&#9888; 2025-09-18 08:12</td>
+              <td class="c"><span class="sb" style="background:#2980b9">Alex Admin</span></td>
+              <td class="c"><span class="sb" style="background:#16a085">QA Group</span></td>
+              <td class="c"></td>
+            </tr>
+            <tr>
+              <td class="c" style="font-weight:bold">training</td>
+              <td class="c"><span class="sb" style="background:#7f8c8d">DEVELOPER</span></td>
+              <td class="c">Training sessions for new users</td>
+              <td class="c" style="color:#E74C3C" data-tip="Last modified more than 2 years ago">&#9888; 2024-04-22 10:47</td>
+              <td class="c"><span class="sb" style="background:#2980b9">Alex Admin</span></td>
+              <td class="c"></td>
+              <td class="c"></td>
+            </tr>
+            <tr>
+              <td class="c" style="font-weight:bold">hotfix</td>
+              <td class="c"><span class="sb" style="background:#7f8c8d">DEVELOPER</span></td>
+              <td class="c"></td>
+              <td class="c">2026-09-30 13:55</td>
+              <td class="c"><span class="sb" style="background:#16a085">Chris Tester</span></td>
+              <td class="c"><span class="sb" style="background:#27ae60">Sandbox Users</span></td>
+              <td class="c"><span class="sb" style="background:#d35400">fullcopy</span></td>
+            </tr>
+            <tr>
+              <td class="c" style="font-weight:bold">demo</td>
+              <td class="c"><span class="sb" style="background:#c0392b">PARTIAL</span></td>
+              <td class="c">Customer demo environment</td>
+              <td class="c">2026-08-14 15:02</td>
+              <td class="c"><span class="sb" style="background:#8e44ad">Sam Builder</span></td>
+              <td class="c"><span class="sb" style="background:#16a085">QA Group</span></td>
+              <td class="c"><span class="sb" style="background:#d35400">fullcopy</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- Key features modal -->
+<div id="modal-kf" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:999;align-items:center;justify-content:center" onclick="if(event.target===this)this.style.display='none'">
+  <div style="background:#fff;border-radius:8px;padding:28px 32px;max-width:580px;width:90%;color:#1a2a35;box-shadow:0 8px 32px rgba(0,0,0,.3);max-height:90vh;overflow:auto">
+    <h3 style="margin:0 0 14px;color:#2980b9">&#9733; Key features</h3>
+    <ul style="margin:0;padding-left:20px;line-height:1.8">
+      <li><b>Display</b> queries every sandbox of the connected org via the <code>SandboxInfo</code> Tooling API: name, license type, description, last modified date and user, activation user group and source sandbox.</li>
+      <li><b>New Org</b> (enabled once a row is selected) opens the org configuration pre-filled with the sandbox name and a derived username (<code>base.sandboxname</code>). If a config with that username already exists, it opens in edit mode instead.</li>
+      <li><b>Create sandbox</b> queues a new sandbox in the production org. It needs the Manage Sandboxes permission and a free licence of the chosen type. The form lets you pick the license type, a description, the activation user group and optionally a source sandbox to clone. The new sandbox shows up in the list once the org lists it.</li>
+      <li><b>Refresh sandbox</b> queues the refresh of the selected sandbox. It is overwritten by a copy of its source, so you must type the sandbox name to confirm.</li>
+      <li><b>Delete sandbox</b> deletes the selected sandbox and frees its licence. This is irreversible and you must type the sandbox name to confirm. If an org config in Calumet still points at it, you are offered to delete that config too.</li>
+      <li><b>Last Modified Date</b> is flagged with a warning marker when older than 6 months, and with a stronger marker after 1 year and 2 years.</li>
+      <li><b>Color-coded badges</b> give each user, activation group and source sandbox its own color; rows are tinted to match the user who last modified the sandbox.</li>
+      <li><b>Filter</b> searches the name, description, license type, user, group and source columns (contains, case-insensitive). The counter shows shown / total.</li>
+      <li>Create, Refresh and Delete only work on a <b>production</b> org. On any other org the message &ldquo;Only works for production org&rdquo; is shown and these buttons are disabled; Refresh and Delete also need a selected sandbox.</li>
+    </ul>
+    <div style="text-align:right;margin-top:18px">
+      <button class="cal-btn btn-d" onclick="document.getElementById('modal-kf').style.display='none'">Close</button>
+    </div>
+  </div>
+</div>
+
+<script>
+function sw(id,idx){
+  var tp=document.getElementById(id);
+  tp.querySelectorAll('.m-tab').forEach(function(t,i){t.classList.toggle('act',i===idx)});
+  tp.querySelectorAll('.m-panel').forEach(function(p,i){p.classList.toggle('act',i===idx)});
+}
+</script>
+</body>
+</html>

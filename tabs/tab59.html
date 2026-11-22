@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>All Relations — Calumet</title>
+<link rel="stylesheet" href="../shared.css">
+<style>
+.pill{display:inline-block;min-width:96px;padding:1px 9px;border-radius:10px;font-size:10.5px;font-weight:700;color:#fff;text-align:center;white-space:nowrap}
+.pill.lk{background:#2980b9}.pill.md{background:#1e8449}.pill.hi{background:#c0560a}.pill.jn{background:#8e44ad}
+.fpill{display:inline-flex;align-items:center;gap:6px;height:24px;padding:0 10px;border:1.5px solid #5b6b7a;border-radius:12px;font-size:12px;font-weight:600;color:#cfd8e3;white-space:nowrap}
+.fpill.on{background:#3d7a8a;border-color:#3d7a8a;color:#fff}
+.fl{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:#8fa0b3;margin-right:2px}
+.obj-item{display:flex;align-items:center;gap:6px;padding:4px 7px;border:1px solid #2f3b4c;border-radius:4px;margin-bottom:3px}
+.obj-item.on{background:#3d7a8a;border-color:#3d7a8a;color:#fff}
+.obj-item .api{display:block;font-size:10.5px;opacity:.75}
+.cnt{margin-left:auto;font-size:10px;font-weight:700;padding:1px 6px;border-radius:8px;background:rgba(255,255,255,.14)}
+.cnt.inc{margin-left:auto;background:#fdebd9;color:#b45309}
+.tag{display:inline-block;padding:0 7px;border-radius:9px;font-size:10.5px;font-weight:700;border:1px solid}
+.tag.dp{color:#2980b9;border-color:#b9d6ea;background:#eaf3fa}.tag.dc{color:#b45309;border-color:#f0cf93;background:#fff5e6}
+.tag.cas{color:#b45309;border-color:#f0cf93;background:#fff5e6}.tag.res{color:#7c3aed;border-color:#d4c3ee;background:#f2ecf8}
+.gb{display:inline-block;min-width:78px;padding:2px 9px;border-radius:10px;font-size:11px;color:#fff;text-align:center}
+.gb.refs{background:#2b6cb0}.gb.noref{background:#718096}
+.api2{display:block;font-family:Consolas,"Courier New",monospace;font-size:10.5px;opacity:.7}
+.c{text-align:center}
+</style>
+</head>
+<body class="tab-page">
+<div class="sum">
+  <div class="sum-title">
+    <h2>All Relations</h2>
+    <span class="sum-badge">Tab 59</span>
+  </div>
+  <p class="sum-desc">
+    Explore all relationships (lookup, master-detail, self) for a given SObject. Filter by type and field.
+    <button class="cal-btn btn-d" style="margin-left:10px" onclick="document.getElementById('modal-kf').style.display='flex'">&#9733; Key features</button>
+  </p>
+</div>
+<div class="mockup-wrap">
+  <div class="mockup">
+    <div class="vbox" style="gap:8px">
+      <div class="hbox" style="gap:8px;align-items:center">
+        <button class="cal-btn btn-b">Refresh</button>
+        <button class="cal-btn btn-o" data-tip="Bypass the local describe cache and re-fetch every SObject from Salesforce">Force refresh</button>
+        <span class="cal-lbl">Cache : 18/11/2026 09:42</span>
+      </div>
+      <div class="hbox" style="gap:8px;align-items:center">
+        <span class="fl">Type</span>
+        <span class="fpill" data-tip="Every relationship">All 13</span>
+        <span class="fpill" data-tip="Lookup - 11 in the org">Lookup 11</span>
+        <span class="fpill" data-tip="Master-Detail - 2 in the org">Master-Detail 2</span>
+        <span class="fpill" data-tip="Hierarchy - 0 in the org">Hierarchy 0</span>
+        <span class="fpill" data-tip="Junction - 0 in the org">Junction 0</span>
+        <span class="vsep"></span>
+        <span class="fl">Direction</span>
+        <span class="fpill" data-tip="Fields of this object: what each of its relationships points to">Parents 8</span>
+        <span class="fpill" data-tip="Fields of other objects that point at this object">Children 5</span>
+        <span class="fpill on" data-tip="Parents and children together">Both 13</span>
+      </div>
+      <div class="hbox" style="gap:8px;align-items:center">
+        <input class="cal-tf" style="width:190px" readonly placeholder="Field label or API name" value="">
+        <input class="cal-tf" style="width:190px" readonly placeholder="References object&hellip;" value="">
+        <span class="spacer"></span>
+        <span class="cal-lbl">Cache : 2026-11-18 09:42 &middot; 148 relationships in the org</span>
+      </div>
+      <div class="split-pane" style="gap:8px;align-items:flex-start">
+        <div class="split-panel" style="flex:0 0 270px">
+          <div class="cal-lbl" style="font-weight:700;margin-bottom:4px">OBJECTS &middot; 7</div>
+          <input class="cal-tf" style="width:100%;margin-bottom:6px" readonly placeholder="Find an object (API name or label)&hellip;">
+          <div class="hbox" style="gap:6px;align-items:center;margin-bottom:6px">
+            <label class="cal-chk"><input type="checkbox" checked disabled> Hide managed packages (3)</label>
+            <span class="spacer"></span>
+            <button class="cal-btn btn-d" data-tip="Sort the objects by label">A&ndash;Z</button>
+            <button class="cal-btn btn-d" data-tip="Sort by number of relationships: its own relationship fields plus the fields of other objects pointing at it">Most related</button>
+          </div>
+          <div class="obj-item"><span><b>All objects</b></span><span class="cnt">31</span></div>
+          <div class="obj-item"><span><b>Account</b><span class="api">Account</span></span><span class="cnt inc">&larr; 9</span><span class="cnt" style="margin-left:4px">5</span></div>
+          <div class="obj-item"><span><b>Case</b><span class="api">Case</span></span><span class="cnt inc">&larr; 2</span><span class="cnt" style="margin-left:4px">7</span></div>
+          <div class="obj-item"><span><b>Contact</b><span class="api">Contact</span></span><span class="cnt inc">&larr; 6</span><span class="cnt" style="margin-left:4px">4</span></div>
+          <div class="obj-item on"><span><b>Opportunity</b><span class="api">Opportunity</span></span><span class="cnt">&larr; 5</span><span class="cnt" style="margin-left:4px">8</span></div>
+          <div class="obj-item"><span><b>Opportunity Product</b><span class="api">OpportunityLineItem</span></span><span class="cnt" style="margin-left:auto">3</span></div>
+          <div class="obj-item"><span><b>Quote</b><span class="api">Quote</span></span><span class="cnt inc">&larr; 1</span><span class="cnt" style="margin-left:4px">4</span></div>
+        </div>
+        <div class="split-panel" style="flex:1;min-width:0">
+          <div class="hbox" style="gap:10px;align-items:center;margin-bottom:4px">
+            <b>Opportunity</b>
+            <span class="cal-lbl">13 / 148 relationships &middot; Opportunity</span>
+            <span class="spacer"></span>
+            <span class="cal-lbl" style="font-style:italic">Click a row to select &middot; Refs badge: referrers window &middot; +N more: all referenced objects</span>
+          </div>
+          <div class="tbl-wrap">
+            <table class="cal-tbl">
+              <thead><tr>
+                <th style="width:15%">Object &#9650;</th>
+                <th style="width:80px" class="c">Direction</th>
+                <th style="width:19%">Field</th>
+                <th style="width:120px" class="c">Type</th>
+                <th style="width:66px" class="c">Nillable</th>
+                <th style="width:84px" class="c">On delete</th>
+                <th style="width:18%" class="c">References</th>
+                <th class="c">Rollup fields</th>
+                
+              </tr></thead>
+              <tbody>
+                <tr><td>Case<span class="api2">Case</span></td><td class="c"><span class="tag dc">Child</span></td><td>Related Opportunity<span class="api2">Related_Opportunity__c</span></td><td class="c"><span class="pill lk">Lookup</span></td><td class="c" style="color:#27ae60">&#10003;</td><td class="c">&mdash;</td><td class="c">Opportunity</td><td class="c">&mdash;</td></tr>
+                <tr><td>Opportunity<span class="api2">Opportunity</span></td><td class="c"><span class="tag dp">Parent</span></td><td>Account ID<span class="api2">AccountId</span></td><td class="c"><span class="pill lk">Lookup</span></td><td class="c" style="color:#27ae60">&#10003;</td><td class="c">&mdash;</td><td class="c">Account</td><td class="c">&mdash;</td></tr>
+                <tr><td>Opportunity<span class="api2">Opportunity</span></td><td class="c"><span class="tag dp">Parent</span></td><td>Campaign ID<span class="api2">CampaignId</span></td><td class="c"><span class="pill lk">Lookup</span></td><td class="c" style="color:#27ae60">&#10003;</td><td class="c">&mdash;</td><td class="c">Campaign</td><td class="c">&mdash;</td></tr>
+                <tr><td>Opportunity<span class="api2">Opportunity</span></td><td class="c"><span class="tag dp">Parent</span></td><td>Primary Contact<span class="api2">ContactId</span></td><td class="c"><span class="pill lk">Lookup</span></td><td class="c" style="color:#27ae60">&#10003;</td><td class="c">&mdash;</td><td class="c">Contact</td><td class="c">&mdash;</td></tr>
+                <tr><td>Opportunity<span class="api2">Opportunity</span></td><td class="c"><span class="tag dp">Parent</span></td><td>Legacy Account<span class="api2">Legacy_Account__c</span></td><td class="c"><span class="pill lk">Lookup</span></td><td class="c" style="color:#27ae60">&#10003;</td><td class="c">&mdash;</td><td class="c">Account</td><td class="c">&mdash;</td></tr>
+                <tr><td>Opportunity<span class="api2">Opportunity</span></td><td class="c"><span class="tag dp">Parent</span></td><td>Owner ID<span class="api2">OwnerId</span></td><td class="c"><span class="pill lk">Lookup</span></td><td class="c" style="color:#E74C3C">&#10007;</td><td class="c">&mdash;</td><td class="c">User <span style="color:#2980b9;text-decoration:underline">+1 more</span></td><td class="c">&mdash;</td></tr>
+                <tr><td>Opportunity<span class="api2">Opportunity</span></td><td class="c"><span class="tag dp">Parent</span></td><td>Price Book ID<span class="api2">Pricebook2Id</span></td><td class="c"><span class="pill lk">Lookup</span></td><td class="c" style="color:#27ae60">&#10003;</td><td class="c">&mdash;</td><td class="c">Pricebook2</td><td class="c">&mdash;</td></tr>
+                <tr><td>Opportunity<span class="api2">Opportunity</span></td><td class="c"><span class="tag dp">Parent</span></td><td>Record Type ID<span class="api2">RecordTypeId</span></td><td class="c"><span class="pill lk">Lookup</span></td><td class="c" style="color:#27ae60">&#10003;</td><td class="c">&mdash;</td><td class="c">RecordType</td><td class="c">&mdash;</td></tr>
+                <tr><td>Opportunity<span class="api2">Opportunity</span></td><td class="c"><span class="tag dp">Parent</span></td><td>Related Order<span class="api2">Related_Order__c</span></td><td class="c"><span class="pill lk">Lookup</span></td><td class="c" style="color:#27ae60">&#10003;</td><td class="c"><span class="tag res">Restricted</span></td><td class="c">Order</td><td class="c">&mdash;</td></tr>
+                <tr><td>Opportunity Product<span class="api2">OpportunityLineItem</span></td><td class="c"><span class="tag dc">Child</span></td><td>Opportunity ID<span class="api2">OpportunityId</span></td><td class="c"><span class="pill md">Master-Detail</span></td><td class="c" style="color:#E74C3C">&#10007;</td><td class="c"><span class="tag cas">Cascade</span></td><td class="c">Opportunity</td><td class="c">&mdash;</td></tr>
+                <tr><td>Opportunity Contact Role<span class="api2">OpportunityContactRole</span></td><td class="c"><span class="tag dc">Child</span></td><td>Opportunity ID<span class="api2">OpportunityId</span></td><td class="c"><span class="pill md">Master-Detail</span></td><td class="c" style="color:#E74C3C">&#10007;</td><td class="c"><span class="tag cas">Cascade</span></td><td class="c">Opportunity</td><td class="c">&mdash;</td></tr>
+                <tr><td>Quote<span class="api2">Quote</span></td><td class="c"><span class="tag dc">Child</span></td><td>Opportunity ID<span class="api2">OpportunityId</span></td><td class="c"><span class="pill lk">Lookup</span></td><td class="c" style="color:#27ae60">&#10003;</td><td class="c">&mdash;</td><td class="c">Opportunity</td><td class="c">&mdash;</td></tr>
+                <tr><td>Task<span class="api2">Task</span></td><td class="c"><span class="tag dc">Child</span></td><td>Related To ID<span class="api2">WhatId</span></td><td class="c"><span class="pill lk">Lookup</span></td><td class="c" style="color:#27ae60">&#10003;</td><td class="c">&mdash;</td><td class="c">Account <span style="color:#2980b9;text-decoration:underline">+14 more</span></td><td class="c">&mdash;</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Key features modal -->
+<div id="modal-kf" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:999;align-items:center;justify-content:center" onclick="if(event.target===this)this.style.display='none'">
+  <div style="background:#fff;border-radius:8px;padding:28px 32px;max-width:520px;width:90%;color:#1a2a35;box-shadow:0 8px 32px rgba(0,0,0,.3)">
+    <h3 style="margin:0 0 14px;color:#2980b9">&#9733; Key features</h3>
+    <ul style="margin:0;padding-left:20px;line-height:1.8">
+      <li>Every relationship field of the org in one page: lookup, master-detail, hierarchy and junction.</li>
+      <li>Pick an object, then split its relations into Parents (its own fields) and Children (fields of other objects pointing at it).</li>
+      <li>Filter by type, by field label or API name, and by referenced object; hide managed-package objects.</li>
+      <li>Sort the object list by label or by number of relationships; sort the table by object, field, type or references.</li>
+      <li>See nillable, cascade or restricted delete and roll-up fields at a glance.</li>
+      <li>Results are cached per org; Refresh re-reads them and Force refresh bypasses the describe cache.</li>
+    </ul>
+    <div style="text-align:right;margin-top:18px">
+      <button class="cal-btn btn-d" onclick="document.getElementById('modal-kf').style.display='none'">Close</button>
+    </div>
+  </div>
+</div>
+<script>
+function sw(id,idx){
+  var tp=document.getElementById(id);
+  tp.querySelectorAll('.m-tab').forEach(function(t,i){t.classList.toggle('act',i===idx)});
+  tp.querySelectorAll('.m-panel').forEach(function(p,i){p.classList.toggle('act',i===idx)});
+}
+</script>
+</body>
+</html>

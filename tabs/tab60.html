@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Object Limits — Calumet</title>
+<link rel="stylesheet" href="../shared.css">
+</head>
+<body class="tab-page">
+<div class="sum">
+  <div class="sum-title">
+    <h2>Object Limits</h2>
+    <span class="sum-badge">Tab 60</span>
+  </div>
+  <p class="sum-desc">Show record count and storage usage per SObject to monitor data volume against org limits.</p>
+</div>
+<div class="mockup-wrap">
+  <div class="mockup"><div class="vbox" style="gap:0px"><div class="anchor"><button class="cal-btn btn-b">Search</button><div class="tbl-wrap"><table class="cal-tbl"><thead><tr><th>Object Label</th><th>Object Name</th><th>type</th><th>Label</th><th>Remaining</th><th>max</th><th>used</th></tr></thead><tbody><tr><td colspan="20" class="tbl-empty"></td></tr></tbody></table></div><input class="cal-tf" placeholder="" style="width:306.0px;" readonly></div></div></div>
+</div>
+<script>
+function sw(id,idx){
+  var tp=document.getElementById(id);
+  tp.querySelectorAll('.m-tab').forEach(function(t,i){t.classList.toggle('act',i===idx)});
+  tp.querySelectorAll('.m-panel').forEach(function(p,i){p.classList.toggle('act',i===idx)});
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Compare 2 Profiles/PermSets — Calumet</title>
+<link rel="stylesheet" href="../shared.css">
+<style>
+.rs{background:#F8F8F8;color:#1a2a35;border:1px solid #9AABBF;border-radius:4px;padding:8px;margin-top:8px;font-size:12px}
+.rs-who{display:flex;gap:8px;margin-bottom:6px}
+.rs-id{flex:1;display:flex;align-items:center;gap:8px;background:#fff;border:1px solid #C8DFE8;border-radius:4px;padding:4px 10px}
+.rs-tag{width:20px;height:20px;border-radius:50%;color:#fff;font-weight:800;font-size:11px;display:inline-flex;align-items:center;justify-content:center}
+.rs-env{margin-left:auto;color:#666;font-size:11px;border:1px solid #C8DFE8;border-radius:9px;padding:0 7px;background:#F0F7FA}
+.rs-role{font-size:10px;color:#666;text-transform:uppercase;font-weight:700}
+.rs-bar{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:6px}
+.rs-f{display:inline-block;border:1.5px solid #475569;border-radius:13px;padding:2px 10px;font-weight:600;background:#fff}
+.rs-f.on{background:#475569;color:#fff}
+.rs-main{display:flex;gap:8px}
+.rs-side{flex:0 0 190px;background:#F0F7FA;border:1px solid #C8DFE8;border-radius:4px;padding:6px}
+.rs-side b{display:block;font-size:10px;text-transform:uppercase;color:#1A5276;margin-bottom:4px}
+.rs-cat{display:flex;gap:4px;align-items:center;background:#fff;border:1px solid #C8DFE8;border-radius:4px;padding:3px 6px;margin-bottom:3px}
+.rs-cat.on{background:#3d7a8a;color:#fff}
+.rs-cat span:first-child{flex:1}
+.rs-n{font-size:10px;font-weight:700;padding:0 6px;border-radius:8px}
+.rs-grid{flex:1;min-width:0;background:#fff;border:1px solid #9AABBF;border-radius:4px;overflow:hidden}
+.rs-note{padding:4px 10px;font-size:11px;color:#666;background:#fffdf3;border-bottom:1px solid #C8DFE8}
+.rs-act{padding:4px 10px;background:#fbfdfe;border-bottom:1px solid #C8DFE8;display:flex;gap:8px;align-items:center}
+.rs table{border-collapse:collapse;width:100%}
+.rs th{background:#e5f1f6;color:#1A5276;font-size:10.5px;text-align:left;padding:5px 8px;border-bottom:1px solid #9AABBF}
+.rs td{padding:4px 8px;border-bottom:1px solid #e3eef3;color:#2C3E50}
+.rs tr.d td{background:#fff5e6}.rs tr.a td{background:#e6f2f5}.rs tr.b td{background:#f2ecf8}.rs tr.sel td{background:#d3ebf2}
+.rs td.nm{font-family:Consolas,monospace;font-size:11px}
+.rs-st{display:inline-block;min-width:70px;text-align:center;border:1px solid;border-radius:10px;font-size:10.5px;font-weight:700;background:#fff}
+.rs-ch{display:inline-block;margin:1px 3px 1px 0;padding:0 7px;border-radius:9px;font-size:10.5px;font-weight:700;background:#e6f4ea;color:#1e7e4f}
+.rs-ch.off{background:#eef1f3;color:#7a8791}.rs-ch.chg{box-shadow:0 0 0 1px #d99024}
+.rs-abs{color:#a7b3ba;font-style:italic;font-size:11px}
+</style>
+</head>
+<body class="tab-page">
+<div class="sum">
+  <div class="sum-title">
+    <h2>Compare 2 Profiles/PermSets</h2>
+    <span class="sum-badge">Tab 64</span>
+  </div>
+  <p class="sum-desc">Diff two profiles or permission sets attribute by attribute. Three sub-tabs cover Profile vs Profile, Permission Set vs Permission Set, and Profile vs Permission Set.
+    <button class="cal-btn btn-d" style="margin-left:10px" onclick="document.getElementById('modal-kf').style.display='flex'">★ Key features</button>
+  </p>
+</div>
+<div class="mockup-wrap">
+<div class="mockup">
+<div class="m-tabpane" id="tp64">
+  <div class="m-tabbar">
+    <div class="m-tab act" onclick="sw('tp64',0)">Profile</div>
+    <div class="m-tab" onclick="sw('tp64',1)">Permission Set</div>
+    <div class="m-tab" onclick="sw('tp64',2)">Profile vs Permission Set</div>
+  </div>
+  <div class="m-body">
+
+  <!-- ============ Profile ============ -->
+  <div class="m-panel act" id="tp64-0">
+    <div class="hbox" style="gap:8px;align-items:flex-end">
+      <div class="vbox" style="gap:2px"><span class="cal-lbl">first profile</span><input class="cal-tf" style="width:243px" value="Standard User" readonly></div>
+      <button class="cal-btn btn-o" data-tip="Saves the first profile as a .profile-meta.xml file (disabled while the first profile is empty)">Export</button>
+      <div class="vbox" style="gap:2px"><span class="cal-lbl">second profile</span><input class="cal-tf" style="width:243px" value="Sales Agent" readonly></div>
+      <div class="vbox" style="gap:2px"><span class="cal-lbl">org for second profile</span><select class="cal-cb" style="width:150px"><option>Sandbox QA</option></select></div>
+    </div>
+    <div class="hbox" style="gap:12px;align-items:center;margin-top:6px">
+      <button class="cal-btn btn-b" data-tip="Enabled once both profile names are filled">Compare</button>
+      <label class="cal-chk"><input type="checkbox" checked disabled> reuse cached files</label>
+    </div>
+    <div class="rs">
+      <div class="rs-who">
+        <div class="rs-id"><span class="rs-tag" style="background:#3d7a8a">A</span><div><div class="rs-role">Side A</div><b>Standard User</b></div><span class="rs-env">Production</span></div>
+        <div class="rs-id"><span class="rs-tag" style="background:#7c3aed">B</span><div><div class="rs-role">Side B</div><b>Sales Agent</b></div><span class="rs-env">Sandbox QA</span></div>
+      </div>
+      <div class="rs-bar">
+        <b style="font-size:11px;color:#666">SHOW</b>
+        <span class="rs-f on">All 9</span><span class="rs-f" style="border-color:#d99024">Different 5</span><span class="rs-f" style="border-color:#3d7a8a">Only in A 2</span><span class="rs-f" style="border-color:#7c3aed">Only in B 2</span>
+        <span class="rs-f" style="border-style:dashed" data-tip="Hide rows whose name contains an installed-package namespace of the two orgs">Hide AppExchange 1</span>
+        <input class="cal-tf" style="width:240px" placeholder="Filter (type;name;value) - use ; for AND" readonly>
+      </div>
+      <div class="rs-main">
+        <div class="rs-side"><b>Permission categories · 5</b>
+          <div class="rs-cat on"><span>All categories</span><span class="rs-n">9</span></div>
+          <div class="rs-cat"><span>Object Security</span><span class="rs-n" style="background:#fff5e6">3</span><span class="rs-n" style="background:#e6f2f5">1</span></div>
+          <div class="rs-cat"><span>Field Security</span><span class="rs-n" style="background:#fff5e6">1</span><span class="rs-n" style="background:#f2ecf8">1</span></div>
+          <div class="rs-cat"><span>UserPermission</span><span class="rs-n" style="background:#e6f2f5">1</span><span class="rs-n" style="background:#f2ecf8">1</span></div>
+          <div class="rs-cat"><span>ApexClass</span><span class="rs-n" style="background:#fff5e6">1</span></div>
+          <div class="rs-cat"><span>TabSet</span><span class="rs-n" style="background:#fff5e6">0</span></div>
+        </div>
+        <div class="rs-grid">
+          <div class="rs-act"><span style="color:#666;min-width:110px">2 selected</span>
+            <button class="cal-btn btn-g" data-tip="Writes the A values of the selected Different / Only-in-A rows as profile Sales Agent in the deploy folder of Sandbox QA">Deployment package A → B (2)</button>
+            <button class="cal-btn btn-g" data-tip="Writes the B values of the selected Different / Only-in-B rows as profile Standard User in the deploy folder of Production">Deployment package B → A (1)</button>
+            <span style="margin-left:auto;color:#666;font-style:italic;font-size:11px">Click: select · Ctrl/Shift: several · Delete: hide the selected Different rows</span>
+          </div>
+          <table>
+            <thead><tr><th style="width:90px">Status</th><th style="width:32%">Name</th><th>A · Standard User<br><small>Production</small></th><th>B · Sales Agent<br><small>Sandbox QA</small></th></tr></thead>
+            <tbody>
+              <tr class="d sel"><td><span class="rs-st" style="color:#925c00;border-color:#d99024">Different</span></td><td class="nm">Account</td><td><span class="rs-ch chg">Read</span><span class="rs-ch">Create</span></td><td><span class="rs-ch">Read</span><span class="rs-ch chg">Edit</span><span class="rs-ch">Create</span></td></tr>
+              <tr class="d"><td><span class="rs-st" style="color:#925c00;border-color:#d99024">Different</span></td><td class="nm">Opportunity</td><td><span class="rs-ch">Read</span></td><td><span class="rs-ch">Read</span><span class="rs-ch chg">Edit</span></td></tr>
+              <tr class="d"><td><span class="rs-st" style="color:#925c00;border-color:#d99024">Different</span></td><td class="nm">Case</td><td><span class="rs-ch off chg">None</span></td><td><span class="rs-ch chg">Read</span></td></tr>
+              <tr class="a sel"><td><span class="rs-st" style="color:#3d7a8a;border-color:#3d7a8a">Only in A</span></td><td class="nm">Contact.Birthdate</td><td><span class="rs-ch">editable</span></td><td><span class="rs-abs">not in side B</span></td></tr>
+              <tr class="b"><td><span class="rs-st" style="color:#7c3aed;border-color:#7c3aed">Only in B</span></td><td class="nm">ExportReport</td><td><span class="rs-abs">not in side A</span></td><td><span class="rs-ch">enabled</span></td></tr>
+              <tr class="d"><td><span class="rs-st" style="color:#925c00;border-color:#d99024">Different</span></td><td class="nm">AccountTriggerHandler</td><td><span class="rs-ch off chg">disabled</span></td><td><span class="rs-ch chg">enabled</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ Permission Set ============ -->
+  <div class="m-panel" id="tp64-1">
+    <div class="hbox" style="gap:8px;align-items:flex-end">
+      <div class="vbox" style="gap:2px"><span class="cal-lbl">first permission set</span><input class="cal-tf" value="Sales_Reports_Access" readonly></div>
+      <div class="vbox" style="gap:2px"><span class="cal-lbl">second permission set</span><input class="cal-tf" value="Service_Console_User" readonly></div>
+      <div class="vbox" style="gap:2px"><span class="cal-lbl">org for second perm set</span><select class="cal-cb" style="width:150px"><option>Sandbox QA</option></select></div>
+      <button class="cal-btn btn-b">Compare</button>
+      <div class="vbox" style="gap:2px">
+        <label class="cal-chk"><input type="checkbox" disabled> reuse cached files</label>
+        <span class="cal-lbl" style="color:#888;font-size:11px" data-tip="The comparison reads the permission sets cached by Permission Set (Tab54): refresh them there">cache: 18/11/2026 09:42</span>
+      </div>
+    </div>
+    <div class="rs">
+      <div class="rs-who">
+        <div class="rs-id"><span class="rs-tag" style="background:#3d7a8a">A</span><div><div class="rs-role">Side A</div><b>Sales_Reports_Access</b></div><span class="rs-env">Sandbox QA</span></div>
+        <div class="rs-id"><span class="rs-tag" style="background:#7c3aed">B</span><div><div class="rs-role">Side B</div><b>Service_Console_User</b></div><span class="rs-env">Sandbox QA</span></div>
+      </div>
+      <div class="rs-bar">
+        <b style="font-size:11px;color:#666">SHOW</b>
+        <span class="rs-f on">All 6</span><span class="rs-f" style="border-color:#d99024">Different 2</span><span class="rs-f" style="border-color:#3d7a8a">Only in A 2</span><span class="rs-f" style="border-color:#7c3aed">Only in B 2</span>
+        <input class="cal-tf" style="width:240px" placeholder="Filter (type;name;value) - use ; for AND" readonly>
+        <span style="margin-left:auto;font-size:11px;color:#666">Different / Only in A / Only in B / value differs from the other side</span>
+      </div>
+      <div class="rs-main">
+        <div class="rs-side"><b>Permission categories · 4</b>
+          <div class="rs-cat on"><span>All categories</span><span class="rs-n">6</span></div>
+          <div class="rs-cat"><span>Object Security</span><span class="rs-n" style="background:#fff5e6">1</span><span class="rs-n" style="background:#e6f2f5">1</span></div>
+          <div class="rs-cat"><span>UserPermission</span><span class="rs-n" style="background:#e6f2f5">1</span><span class="rs-n" style="background:#f2ecf8">1</span></div>
+          <div class="rs-cat"><span>ApexClass</span><span class="rs-n" style="background:#f2ecf8">1</span></div>
+          <div class="rs-cat"><span>TabSet</span><span class="rs-n" style="background:#fff5e6">1</span></div>
+        </div>
+        <div class="rs-grid">
+          <div class="rs-act"><span style="margin-left:auto;color:#666;font-style:italic;font-size:11px">Read-only comparison</span></div>
+          <table>
+            <thead><tr><th style="width:90px">Status</th><th style="width:32%">Name</th><th>A · Sales_Reports_Access<br><small>Sandbox QA</small></th><th>B · Service_Console_User<br><small>Sandbox QA</small></th></tr></thead>
+            <tbody>
+              <tr class="d"><td><span class="rs-st" style="color:#925c00;border-color:#d99024">Different</span></td><td class="nm">Account</td><td><span class="rs-ch">Read</span></td><td><span class="rs-ch">Read</span><span class="rs-ch chg">Edit</span></td></tr>
+              <tr class="a"><td><span class="rs-st" style="color:#3d7a8a;border-color:#3d7a8a">Only in A</span></td><td class="nm">Opportunity</td><td><span class="rs-ch">Read</span><span class="rs-ch">View All</span></td><td><span class="rs-abs">not in side B</span></td></tr>
+              <tr class="a"><td><span class="rs-st" style="color:#3d7a8a;border-color:#3d7a8a">Only in A</span></td><td class="nm">RunReports</td><td><span class="rs-ch">enabled</span></td><td><span class="rs-abs">not in side B</span></td></tr>
+              <tr class="b"><td><span class="rs-st" style="color:#7c3aed;border-color:#7c3aed">Only in B</span></td><td class="nm">ViewSetup</td><td><span class="rs-abs">not in side A</span></td><td><span class="rs-ch">enabled</span></td></tr>
+              <tr class="b"><td><span class="rs-st" style="color:#7c3aed;border-color:#7c3aed">Only in B</span></td><td class="nm">CaseQueueHandler</td><td><span class="rs-abs">not in side A</span></td><td><span class="rs-ch">enabled</span></td></tr>
+              <tr class="d"><td><span class="rs-st" style="color:#925c00;border-color:#d99024">Different</span></td><td class="nm">standard-Service</td><td><span class="rs-ch off chg">Hidden</span></td><td><span class="rs-ch chg">DefaultOn</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ Profile vs Permission Set ============ -->
+  <div class="m-panel" id="tp64-2">
+    <div class="hbox" style="gap:8px;align-items:flex-end">
+      <div class="vbox" style="gap:2px"><span class="cal-lbl">profile name</span><input class="cal-tf" value="Standard User" readonly></div>
+      <div class="vbox" style="gap:2px"><span class="cal-lbl">permission set name</span><input class="cal-tf" value="Sales_Reports_Access" readonly></div>
+      <div class="vbox" style="gap:2px"><span class="cal-lbl">org for permission set</span><select class="cal-cb" style="width:150px"><option>Production</option></select></div>
+      <button class="cal-btn btn-b">Compare</button>
+      <div class="vbox" style="gap:2px">
+        <label class="cal-chk"><input type="checkbox" disabled> reuse cached files</label>
+        <span class="cal-lbl" style="color:#888;font-size:11px">cache: 18/11/2026 09:42</span>
+      </div>
+    </div>
+    <div class="rs">
+      <div class="rs-who">
+        <div class="rs-id"><span class="rs-tag" style="background:#3d7a8a">A</span><div><div class="rs-role">Profile</div><b>Standard User</b></div><span class="rs-env">Production</span></div>
+        <div class="rs-id"><span class="rs-tag" style="background:#7c3aed">B</span><div><div class="rs-role">Permission set</div><b>Sales_Reports_Access</b></div><span class="rs-env">Production</span></div>
+      </div>
+      <div class="rs-bar">
+        <b style="font-size:11px;color:#666">SHOW</b>
+        <span class="rs-f on">All 7</span><span class="rs-f" style="border-color:#d99024" data-tip="Entries on both sides with a different value">Modified 2</span><span class="rs-f" style="border-color:#7c3aed" data-tip="Entries only the permission set grants (what the profile alone grants is never shown)">Adds 3</span><span class="rs-f" style="border-color:#1e7e4f" data-tip="Entries with the same value on both sides">Common 2</span>
+        <input class="cal-tf" style="width:240px" placeholder="Filter (type;name;value) - use ; for AND" readonly>
+      </div>
+      <div class="rs-main">
+        <div class="rs-side"><b>Permission categories · 4</b>
+          <div class="rs-cat on"><span>All categories</span><span class="rs-n">7</span></div>
+          <div class="rs-cat"><span>Object Security</span><span class="rs-n" style="background:#fff5e6">2</span><span class="rs-n" style="background:#f2ecf8">1</span><span class="rs-n" style="background:#e6f4ea">1</span></div>
+          <div class="rs-cat"><span>UserPermission</span><span class="rs-n" style="background:#f2ecf8">2</span><span class="rs-n" style="background:#e6f4ea">1</span></div>
+          <div class="rs-cat"><span>TabSet</span><span class="rs-n" style="background:#e6f4ea">0</span></div>
+        </div>
+        <div class="rs-grid">
+          <div class="rs-note">Shows what the permission set adds on top of the profile, what it modifies and what is common. What the profile alone grants is not shown.</div>
+          <div class="rs-act"><span style="margin-left:auto;color:#666;font-style:italic;font-size:11px">Read-only comparison</span></div>
+          <table>
+            <thead><tr><th style="width:90px">Status</th><th style="width:32%">Name</th><th>Profile · Standard User<br><small>Production</small></th><th>Permission set · Sales_Reports_Access<br><small>Production</small></th></tr></thead>
+            <tbody>
+              <tr class="d"><td><span class="rs-st" style="color:#925c00;border-color:#d99024">Modified</span></td><td class="nm">Account</td><td><span class="rs-ch">Read</span></td><td><span class="rs-ch">Read</span><span class="rs-ch chg">Edit</span></td></tr>
+              <tr class="d"><td><span class="rs-st" style="color:#925c00;border-color:#d99024">Modified</span></td><td class="nm">Opportunity</td><td><span class="rs-ch">Read</span></td><td><span class="rs-ch">Read</span><span class="rs-ch chg">View All</span></td></tr>
+              <tr class="b"><td><span class="rs-st" style="color:#7c3aed;border-color:#7c3aed">Adds</span></td><td class="nm">Report</td><td><span class="rs-abs">not in permission set</span></td><td><span class="rs-ch">Read</span><span class="rs-ch">Create</span></td></tr>
+              <tr class="b"><td><span class="rs-st" style="color:#7c3aed;border-color:#7c3aed">Adds</span></td><td class="nm">RunReports</td><td><span class="rs-abs">not in permission set</span></td><td><span class="rs-ch">enabled</span></td></tr>
+              <tr class="b"><td><span class="rs-st" style="color:#7c3aed;border-color:#7c3aed">Adds</span></td><td class="nm">ExportReport</td><td><span class="rs-abs">not in permission set</span></td><td><span class="rs-ch">enabled</span></td></tr>
+              <tr><td><span class="rs-st" style="color:#1e7e4f;border-color:#9fd2b5">Common</span></td><td class="nm">Contact</td><td><span class="rs-ch">Read</span><span class="rs-ch">Edit</span></td><td><span class="rs-ch">Read</span><span class="rs-ch">Edit</span></td></tr>
+              <tr><td><span class="rs-st" style="color:#1e7e4f;border-color:#9fd2b5">Common</span></td><td class="nm">ViewSetup</td><td><span class="rs-ch">enabled</span></td><td><span class="rs-ch">enabled</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  </div>
+</div>
+</div>
+</div>
+
+<!-- Key features modal -->
+<div id="modal-kf" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:999;align-items:center;justify-content:center" onclick="if(event.target===this)this.style.display='none'">
+  <div style="background:#fff;border-radius:8px;padding:28px 32px;max-width:520px;width:90%;color:#1a2a35;box-shadow:0 8px 32px rgba(0,0,0,.3)">
+    <h3 style="margin:0 0 14px;color:#2980b9">★ Key features</h3>
+    <ul style="margin:0;padding-left:20px;line-height:1.8">
+      <li>Profile sub-tab: compare two profiles, the second one possibly in another org; reuse cached files; export the first profile as XML.</li>
+      <li>Permission Set sub-tab: compare two permission sets; reads the Tab54 permission set cache when available.</li>
+      <li>Profile vs Permission Set sub-tab: see what a permission set adds, modifies and shares with a profile.</li>
+      <li>One result table with status filters, permission category list, and a Filter box (use ; for AND).</li>
+      <li>Profile sub-tab only: select rows and build a deployment package A to B or B to A; hide AppExchange entries; hide rows with Delete.</li>
+    </ul>
+    <div style="text-align:right;margin-top:18px">
+      <button class="cal-btn btn-d" onclick="document.getElementById('modal-kf').style.display='none'">Close</button>
+    </div>
+  </div>
+</div>
+<script>
+function sw(id,idx){
+  var tp=document.getElementById(id);
+  tp.querySelectorAll('.m-tab').forEach(function(t,i){t.classList.toggle('act',i===idx)});
+  tp.querySelectorAll('.m-panel').forEach(function(p,i){p.classList.toggle('act',i===idx)});
+}
+</script>
+</body>
+</html>

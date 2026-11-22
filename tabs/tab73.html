@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>User Access Comparison &mdash; Calumet</title>
+<link rel="stylesheet" href="../shared.css">
+<style>
+.basket-area{border:1px solid #ccc;border-radius:3px;background:#fff;min-height:44px;padding:6px 8px;display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.pill{display:inline-flex;align-items:center;gap:4px;background:#dbeafe;border:1px solid #93c5fd;border-radius:10px;padding:3px 8px 3px 10px;font-size:11px;color:#1e3a5f}
+.pill-x{background:transparent;border:none;color:#475569;font-size:12px;padding:0 0 0 4px;cursor:default;line-height:1}
+.bdg{display:inline-block;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:700;white-space:nowrap;color:#fff}
+.bdg-psg{background:#3d7a8a}.bdg-ps{background:#5b9bac}.bdg-profile{background:#2c3e50}
+.bdg-regular{background:#2980b9}.bdg-queue{background:#d35400}.bdg-role{background:#27ae60}.bdg-roleAndSub{background:#16a085}
+.bdcat-OBJECT{background:#dbeafe;color:#1d4ed8}.bdcat-FIELD{background:#ccfbf1;color:#0f766e}.bdcat-SYSTEM{background:#ede9fe;color:#6d28d9}
+.bdcat-SETUP{background:#ffedd5;color:#c2410c}.bdcat-TAB{background:#e2e8f0;color:#475569}.bdcat-APP{background:#e0e7ff;color:#4338ca}.bdcat-RECORDTYPE{background:#f5e8dd;color:#92400e}
+.gb{display:inline-block;padding:1px 6px;border-radius:3px;font-size:10px;font-weight:700;margin-right:4px}
+.gb-ps{background:#dbeafe;color:#1d4ed8}.gb-psg{background:#ede9fe;color:#6d28d9}.gb-prof{background:#ffedd5;color:#c2410c}
+.fp{display:inline-block;padding:2px 10px;border-radius:10px;border:1px solid #cbd5e1;background:#f1f5f9;color:#334155;font-size:11px;margin-right:4px}
+.fp-on{background:#2980b9;border-color:#2980b9;color:#fff}
+.tcheck{text-align:center;font-size:14px}
+.role-block{font-size:11px;color:#1a2a35;padding:1px 0}
+</style>
+</head>
+<body class="tab-page">
+
+<div class="sum">
+  <div class="sum-title">
+    <h2>User Access Comparison</h2>
+    <span class="sum-badge">Tab 73</span>
+  </div>
+  <p class="sum-desc">
+    Compare permission sets, profiles and roles between users. Add users to a basket, retrieve their access details, and diff assignments side by side.
+    <button class="cal-btn btn-d" style="margin-left:10px" onclick="document.getElementById('modal-kf').style.display='flex'">&#9733; Key features</button>
+  </p>
+</div>
+
+<div class="mockup-wrap">
+  <div class="mockup">
+    <div class="vbox" style="gap:0">
+
+      <div class="hbox" style="gap:8px;align-items:center;padding:8px 8px 4px 8px">
+        <span class="cal-lbl">User</span>
+        <input class="cal-tf" style="width:220px" readonly placeholder="Search user by name&hellip;" data-tip="Type a user name to search &mdash; the matching Salesforce User ID will be used">
+        <button class="cal-btn btn-d" data-tip="Add this user to the comparison basket">Add</button>
+        <button class="cal-btn btn-d" data-tip="Remove all users from the basket">Clear all</button>
+      </div>
+
+      <div style="padding:0 8px 4px 8px">
+        <div class="basket-area">
+          <div class="pill"><span>Sales User 1</span><button class="pill-x">&times;</button></div>
+          <div class="pill"><span>Sales User 2</span><button class="pill-x">&times;</button></div>
+          <div class="pill"><span>Support User 1</span><button class="pill-x">&times;</button></div>
+        </div>
+      </div>
+
+      <div class="hbox" style="gap:8px;align-items:center;padding:4px 8px">
+        <button class="cal-btn btn-b" data-tip="Retrieve role, permission sets and group memberships for the user(s) in the basket">Retrieve</button>
+        <span id="as73"><button class="cal-btn btn-g" data-tip="Assign the selected permission sets to the corresponding user(s) - select the user cells in compare mode, the rows in single mode">Assign</button>
+        <button class="cal-btn btn-r" data-tip="Remove the selected permission set assignments from the corresponding user(s)">UnAssign</button></span>
+        <span class="cal-lbl" id="st73" style="color:#27ae60;font-weight:700">9 perm set differences &middot; 7 group differences</span>
+      </div>
+
+      <div class="hbox" style="gap:6px;align-items:flex-start;padding:2px 8px 6px 8px">
+        <span class="cal-lbl" style="font-weight:700;white-space:nowrap">Role:</span>
+        <div class="vbox" style="gap:1px">
+          <div class="role-block">Sales User 1: (none)</div>
+          <div class="role-block">Sales User 2: Branch A</div>
+          <div class="role-block">Support User 1: Region 1</div>
+        </div>
+      </div>
+
+      <div class="m-tabpane" id="tp73" style="margin:0 8px 8px 8px">
+        <div class="m-tabbar">
+          <div class="m-tab act" onclick="sw73(0)">Permission Sets</div>
+          <div class="m-tab" onclick="sw73(1)">Groups</div>
+          <div class="m-tab" onclick="sw73(2)">Rights</div>
+        </div>
+        <div class="m-body">
+
+          <div class="m-panel act" id="tp73-0">
+            <div class="tbl-wrap">
+              <table class="cal-tbl">
+                <thead><tr><th style="width:120px">Type</th><th style="width:230px">Label</th><th style="width:230px">API Name</th><th style="width:115px;text-align:center">Sales User 1</th><th style="width:115px;text-align:center">Sales User 2</th><th style="width:115px;text-align:center">Support User 1</th></tr></thead>
+                <tbody>
+<tr><td><span class="bdg bdg-ps">PermSet</span></td><td><span style="color:#1d4ed8;text-decoration:underline;cursor:pointer">Data Export Access</span></td><td>Data_Export_Access</td><td class="tcheck" style="color:#27ae60">&#10003;</td><td class="tcheck" style="color:#E74C3C">&#10007;</td><td class="tcheck" style="color:#E74C3C">&#10007;</td></tr>
+<tr><td><span class="bdg bdg-ps">PermSet</span></td><td><span style="color:#1d4ed8;text-decoration:underline;cursor:pointer">Security Review</span></td><td>Security_Review</td><td class="tcheck" style="color:#27ae60">&#10003;</td><td class="tcheck" style="color:#E74C3C">&#10007;</td><td class="tcheck" style="color:#27ae60">&#10003;</td></tr>
+<tr><td><span class="bdg bdg-ps">PermSet</span></td><td><span style="color:#1d4ed8;text-decoration:underline;cursor:pointer">Chat Supervision</span></td><td>Chat_Supervision</td><td class="tcheck" style="color:#27ae60">&#10003;</td><td class="tcheck" style="color:#E74C3C">&#10007;</td><td class="tcheck" style="color:#27ae60">&#10003;</td></tr>
+<tr><td><span class="bdg bdg-ps">PermSet</span></td><td><span style="color:#1d4ed8;text-decoration:underline;cursor:pointer">Bypass Validation Rules</span></td><td>Bypass_Validation_Rules</td><td class="tcheck" style="color:#27ae60">&#10003;</td><td class="tcheck" style="color:#E74C3C">&#10007;</td><td class="tcheck" style="color:#E74C3C">&#10007;</td></tr>
+<tr><td><span class="bdg bdg-profile">Profile</span></td><td>System Administrator</td><td>System Administrator</td><td class="tcheck" style="color:#27ae60">&#10003;</td><td class="tcheck" style="color:#E74C3C">&#10007;</td><td class="tcheck" style="color:#E74C3C">&#10007;</td></tr>
+<tr><td><span class="bdg bdg-profile">Profile</span></td><td>Standard Branch User</td><td>Standard Branch User</td><td class="tcheck" style="color:#E74C3C">&#10007;</td><td class="tcheck" style="color:#27ae60">&#10003;</td><td class="tcheck" style="color:#27ae60">&#10003;</td></tr>
+<tr><td><span class="bdg bdg-psg">PermSetGroup</span></td><td><span style="color:#1d4ed8;text-decoration:underline;cursor:pointer">Sales Full Access</span></td><td>Sales_Full_Access</td><td class="tcheck" style="color:#E74C3C">&#10007;</td><td class="tcheck" style="color:#27ae60">&#10003;</td><td class="tcheck" style="color:#27ae60">&#10003;</td></tr>
+<tr><td><span class="bdg bdg-ps">PermSet</span></td><td><span style="color:#1d4ed8;text-decoration:underline;cursor:pointer">Analytics Viewer</span></td><td>Analytics_Viewer</td><td class="tcheck" style="color:#E74C3C">&#10007;</td><td class="tcheck" style="color:#E74C3C">&#10007;</td><td class="tcheck" style="color:#27ae60">&#10003;</td></tr>
+<tr><td><span class="bdg bdg-ps">PermSet</span></td><td><span style="color:#1d4ed8;text-decoration:underline;cursor:pointer">Report Builder</span></td><td>Report_Builder</td><td class="tcheck" style="color:#E74C3C">&#10007;</td><td class="tcheck" style="color:#27ae60">&#10003;</td><td class="tcheck" style="color:#E74C3C">&#10007;</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="m-panel" id="tp73-1">
+            <div class="tbl-wrap">
+              <table class="cal-tbl">
+                <thead><tr><th style="width:150px">Type</th><th style="width:200px">Name</th><th style="width:200px">API Name</th><th style="width:115px;text-align:center">Sales User 1</th><th style="width:115px;text-align:center">Sales User 2</th><th style="width:115px;text-align:center">Support User 1</th></tr></thead>
+                <tbody>
+<tr><td><span class="bdg bdg-regular">Regular</span></td><td>Sales Managers</td><td>Sales_Managers</td><td class="tcheck" style="color:#27ae60">&#10003;</td><td class="tcheck" style="color:#E74C3C">&#10007;</td><td class="tcheck" style="color:#E74C3C">&#10007;</td></tr>
+<tr><td><span class="bdg bdg-regular">Regular</span></td><td>IT Users</td><td>IT_Users</td><td class="tcheck" style="color:#27ae60">&#10003;</td><td class="tcheck" style="color:#E74C3C">&#10007;</td><td class="tcheck" style="color:#E74C3C">&#10007;</td></tr>
+<tr><td><span class="bdg bdg-queue">Queue</span></td><td>Chat Queue</td><td>Chat_Queue</td><td class="tcheck" style="color:#27ae60">&#10003;</td><td class="tcheck" style="color:#E74C3C">&#10007;</td><td class="tcheck" style="color:#27ae60">&#10003;</td></tr>
+<tr><td><span class="bdg bdg-regular">Regular</span></td><td>Knowledge Reporting</td><td>Knowledge_Reporting</td><td class="tcheck" style="color:#27ae60">&#10003;</td><td class="tcheck" style="color:#E74C3C">&#10007;</td><td class="tcheck" style="color:#27ae60">&#10003;</td></tr>
+<tr><td><span class="bdg bdg-queue">Queue</span></td><td>Dispatch Desk</td><td>Dispatch_Desk</td><td class="tcheck" style="color:#27ae60">&#10003;</td><td class="tcheck" style="color:#E74C3C">&#10007;</td><td class="tcheck" style="color:#E74C3C">&#10007;</td></tr>
+<tr><td><span class="bdg bdg-role">Role</span></td><td>Branch A</td><td>Branch_A</td><td class="tcheck" style="color:#E74C3C">&#10007;</td><td class="tcheck" style="color:#27ae60">&#10003;</td><td class="tcheck" style="color:#E74C3C">&#10007;</td></tr>
+<tr><td><span class="bdg bdg-roleAndSub">RoleAndSubordinates</span></td><td>Region 1</td><td>Region_1</td><td class="tcheck" style="color:#E74C3C">&#10007;</td><td class="tcheck" style="color:#27ae60">&#10003;</td><td class="tcheck" style="color:#27ae60">&#10003;</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="m-panel" id="tp73-2">
+            <div class="vbox" style="gap:6px;padding:6px">
+              <input class="cal-tf cal-grow" readonly placeholder="Filter rights (name, access, source)&hellip;">
+              <div class="hbox" style="gap:6px;align-items:center"><span class="cal-lbl" style="font-size:12px;color:#555">Type:</span><span class="fp fp-on">All <b>9</b></span><span class="fp">OBJECT <b>2</b></span><span class="fp">FIELD <b>1</b></span><span class="fp">SYSTEM <b>2</b></span><span class="fp">SETUP <b>1</b></span><span class="fp">TAB <b>1</b></span><span class="fp">APP <b>1</b></span><span class="fp">RECORDTYPE <b>1</b></span></div>
+              <div class="tbl-wrap">
+                <table class="cal-tbl">
+                  <thead><tr><th style="width:120px">Category</th><th style="width:260px">Right</th><th style="width:90px">Access</th><th style="width:190px">Sales User 1</th><th style="width:190px">Sales User 2</th><th style="width:190px">Support User 1</th></tr></thead>
+                  <tbody>
+<tr><td><span class="bdg bdcat-OBJECT">OBJECT</span></td><td>Account</td><td>Delete</td><td><span class="gb gb-ps">PS 1</span></td><td></td><td><span class="gb gb-prof">PROFILE</span></td></tr>
+<tr><td><span class="bdg bdcat-OBJECT">OBJECT</span></td><td>Opportunity</td><td>Edit</td><td><span class="gb gb-ps">PS 2</span><span class="gb gb-psg">PSG 1</span></td><td><span class="gb gb-prof">PROFILE</span></td><td><span class="gb gb-prof">PROFILE</span></td></tr>
+<tr><td><span class="bdg bdcat-FIELD">FIELD</span></td><td>Account.Annual_Revenue__c</td><td>Edit</td><td><span class="gb gb-ps">PS 1</span></td><td></td><td><span class="gb gb-ps">PS 1</span></td></tr>
+<tr><td><span class="bdg bdcat-SYSTEM">SYSTEM</span></td><td>Export Reports</td><td>Enabled</td><td><span class="gb gb-ps">PS 1</span><span class="gb gb-prof">PROFILE</span></td><td></td><td><span class="gb gb-psg">PSG 1</span></td></tr>
+<tr><td><span class="bdg bdcat-SYSTEM">SYSTEM</span></td><td>Bypass Validation Rules</td><td>Enabled</td><td><span class="gb gb-ps">PS 1</span></td><td></td><td></td></tr>
+<tr><td><span class="bdg bdcat-SETUP">SETUP</span></td><td>Apex Class: QuoteService</td><td>Execute</td><td></td><td><span class="gb gb-psg">PSG 1</span></td><td><span class="gb gb-psg">PSG 1</span></td></tr>
+<tr><td><span class="bdg bdcat-TAB">TAB</span></td><td>Reports</td><td>Visible</td><td><span class="gb gb-prof">PROFILE</span></td><td></td><td><span class="gb gb-ps">PS 1</span></td></tr>
+<tr><td><span class="bdg bdcat-APP">APP</span></td><td>Sales Console</td><td>Visible</td><td></td><td><span class="gb gb-prof">PROFILE</span></td><td><span class="gb gb-prof">PROFILE</span></td></tr>
+<tr><td><span class="bdg bdcat-RECORDTYPE">RECORDTYPE</span></td><td>Case.Escalation</td><td>Available</td><td><span class="gb gb-ps">PS 1</span></td><td></td><td></td></tr>
+
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+function sw(id,idx){
+  var tp=document.getElementById(id);
+  tp.querySelectorAll('.m-tab').forEach(function(t,i){t.classList.toggle('act',i===idx)});
+  tp.querySelectorAll('.m-panel').forEach(function(p,i){p.classList.toggle('act',i===idx)});
+}
+var ST73=['9 perm set differences · 7 group differences','9 perm set differences · 7 group differences','9 rights differences'];
+function sw73(idx){
+  sw('tp73',idx);
+  document.getElementById('as73').style.display=idx===0?'inline':'none';
+  document.getElementById('st73').textContent=ST73[idx];
+}
+</script>
+
+<!-- Key features modal -->
+<div id="modal-kf" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:999;align-items:center;justify-content:center" onclick="if(event.target===this)this.style.display='none'">
+  <div style="background:#fff;border-radius:8px;padding:28px 32px;max-width:560px;width:90%;color:#1a2a35;box-shadow:0 8px 32px rgba(0,0,0,.3)">
+    <h3 style="margin:0 0 14px;color:#2980b9">&#9733; Key features</h3>
+    <ul style="margin:0;padding-left:20px;line-height:1.8">
+      <li>Search users by name and collect them in a basket; remove one with its &times; or empty it with <strong>Clear all</strong>.</li>
+      <li><strong>Retrieve</strong> loads the role, permission sets, permission set groups, profile and group memberships of every user in the basket.</li>
+      <li><strong>Single user:</strong> every assignment is listed. The Groups tab adds a <em>Membership</em> badge (Direct or Indirect) and a <em>Via</em> column naming the group that grants it.</li>
+      <li><strong>Two users or more:</strong> only the differences are shown, one column per user with a check (has it) or a cross (does not have it). The status line counts permission set and group differences.</li>
+      <li>Click a permission set or permission set group label to open its full content.</li>
+      <li><strong>Assign / UnAssign</strong> (Permission Sets tab): select the user cells in compare mode, or the rows in single mode. Profiles cannot be assigned. The basket is retrieved again afterwards.</li>
+      <li><strong>Rights</strong> tab: effective rights (only the differences when comparing), filtered by text and by category. Each user cell shows how many permission sets (PS) and groups (PSG) grant the right, and whether the profile does; click it to list the sources.</li>
+      <li>The role line shows each user's role, or one shared role when all users have the same.</li>
+    </ul>
+    <div style="text-align:right;margin-top:18px">
+      <button class="cal-btn btn-d" onclick="document.getElementById('modal-kf').style.display='none'">Close</button>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

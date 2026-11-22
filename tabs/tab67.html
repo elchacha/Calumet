@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Unused Profiles — Calumet</title>
+<link rel="stylesheet" href="../shared.css">
+</head>
+<body class="tab-page">
+
+<div class="sum">
+  <div class="sum-title">
+    <h2>Unused Profiles</h2>
+    <span class="sum-badge">Tab 67</span>
+  </div>
+  <p class="sum-desc">
+    Find profiles with no active user: review creation date, licence and the number of active and inactive users, then delete the obsolete ones after moving their remaining users to a replacement profile.
+    <button class="cal-btn btn-d" style="margin-left:10px" onclick="document.getElementById('modal-kf').style.display='flex'">&#9733; Key features</button>
+  </p>
+</div>
+
+<div class="mockup-wrap">
+  <div class="mockup">
+    <div class="vbox" style="gap:8px;padding:8px 10px">
+
+      <!-- Toolbar card -->
+      <div class="vbox" style="gap:8px;padding:8px 12px;background:#f7f9fa;border:1px solid #e1e6ea;border-radius:6px">
+        <div class="hbox" style="gap:10px;align-items:center">
+          <button class="cal-btn btn-b" data-tip="Read all profiles of the org with their active and inactive user counts">Extract</button>
+          <span style="color:#cfd6dc">|</span>
+          <span class="cal-lbl" style="font-size:11px;color:#888">Scope</span>
+          <span style="background:#2980b9;color:#fff;border-radius:12px;padding:2px 10px;font-size:11px" data-tip="Active pill: click it again to go back to all profiles">Custom 9</span>
+          <span style="background:#eef1f3;color:#7f8c8d;border:1px solid #d5dbe0;border-radius:12px;padding:2px 10px;font-size:11px">Standard 5</span>
+          <span style="color:#cfd6dc">|</span>
+          <span class="cal-lbl" style="font-size:11px;color:#888">Usage</span>
+          <span style="background:#27ae60;color:#fff;border-radius:12px;padding:2px 10px;font-size:11px">No active users 6</span>
+          <span style="background:#eef1f3;color:#16a085;border:1px solid #d5dbe0;border-radius:12px;padding:2px 10px;font-size:11px">Unused 4</span>
+          <span style="background:#eef1f3;color:#e67e22;border:1px solid #d5dbe0;border-radius:12px;padding:2px 10px;font-size:11px">Inactive only 2</span>
+          <span style="background:#eef1f3;color:#c0392b;border:1px solid #d5dbe0;border-radius:12px;padding:2px 10px;font-size:11px">In use 3</span>
+          <span class="spacer"></span>
+          <span style="color:#888;font-size:12px">6 of 14 profiles</span>
+        </div>
+        <div class="hbox" style="gap:10px;align-items:center">
+          <span style="font-size:11px;color:#888;white-space:nowrap">No active users = safe to delete or to empty first &nbsp;|&nbsp; In use = active users still assigned</span>
+          <span class="spacer"></span>
+          <span class="cal-lbl" style="white-space:nowrap">Move remaining users to</span>
+          <input class="cal-tf" style="width:230px" placeholder="replacing profile name" readonly
+                 data-tip="Autocompleted profile that receives the remaining users. Mandatory (field highlighted) when a selected profile still has users.">
+          <button class="cal-btn btn-r" style="opacity:.55;white-space:nowrap" disabled
+                  data-tip="Disabled until a profile is selected (and a replacement is given if it has users). Shows the count, e.g. 'Delete 2 selected'.">Delete selected profiles</button>
+        </div>
+      </div>
+
+      <!-- Table (Type column hidden while Scope = Custom) -->
+      <div class="tbl-wrap">
+        <table class="cal-tbl">
+          <thead>
+            <tr>
+              <th style="width:260px">Name</th>
+              <th style="width:150px">Status</th>
+              <th style="width:190px">License</th>
+              <th style="width:190px;text-align:center">Created</th>
+              <th style="width:130px">CreatedBy</th>
+              <th style="width:110px;text-align:center">Active users</th>
+              <th style="width:110px;text-align:center">Inactive users</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr style="background:#f1faf4">
+              <td>Legacy Sales Agent</td>
+              <td><span style="background:#27ae60;color:#fff;border-radius:10px;padding:2px 9px;font-size:11px">Unused</span></td>
+              <td>Salesforce</td>
+              <td style="text-align:center">2017-03-12T09:14:02.000Z</td>
+              <td>John Doe</td>
+              <td style="text-align:center;color:#95a5a6">0</td>
+              <td style="text-align:center;color:#95a5a6">0</td>
+            </tr>
+            <tr style="background:#f1faf4">
+              <td>Survey Guest Profile</td>
+              <td><span style="background:#27ae60;color:#fff;border-radius:10px;padding:2px 9px;font-size:11px">Unused</span></td>
+              <td>Guest User License</td>
+              <td style="text-align:center">2015-07-22T12:10:07.000Z</td>
+              <td>Jane Smith</td>
+              <td style="text-align:center;color:#95a5a6">0</td>
+              <td style="text-align:center;color:#95a5a6">0</td>
+            </tr>
+            <tr style="background:#f1faf4">
+              <td>Community Login Old</td>
+              <td><span style="background:#27ae60;color:#fff;border-radius:10px;padding:2px 9px;font-size:11px">Unused</span></td>
+              <td>Customer Community Login</td>
+              <td style="text-align:center">2018-11-03T14:22:09.000Z</td>
+              <td>John Doe</td>
+              <td style="text-align:center;color:#95a5a6">0</td>
+              <td style="text-align:center;color:#95a5a6">0</td>
+            </tr>
+            <tr style="background:#f1faf4">
+              <td>Read Only Contractor</td>
+              <td><span style="background:#27ae60;color:#fff;border-radius:10px;padding:2px 9px;font-size:11px">Unused</span></td>
+              <td>Salesforce Platform</td>
+              <td style="text-align:center">2022-01-18T08:40:55.000Z</td>
+              <td>Admin User</td>
+              <td style="text-align:center;color:#95a5a6">0</td>
+              <td style="text-align:center;color:#95a5a6">0</td>
+            </tr>
+            <tr style="background:#fff6ea">
+              <td>Partner Profile 2014</td>
+              <td><span style="background:#e67e22;color:#fff;border-radius:10px;padding:2px 9px;font-size:11px">Inactive users only</span></td>
+              <td>Gold Partner</td>
+              <td style="text-align:center">2014-05-24T08:52:55.000Z</td>
+              <td>Admin User</td>
+              <td style="text-align:center;color:#95a5a6">0</td>
+              <td style="text-align:center"><span style="background:#e67e22;color:#fff;border-radius:10px;padding:2px 9px;font-size:11px">78</span></td>
+            </tr>
+            <tr style="background:#cce5f8">
+              <td>Support Level 2 Archive</td>
+              <td><span style="background:#e67e22;color:#fff;border-radius:10px;padding:2px 9px;font-size:11px">Inactive users only</span></td>
+              <td>Salesforce</td>
+              <td style="text-align:center">2015-04-29T13:57:54.000Z</td>
+              <td>Jane Smith</td>
+              <td style="text-align:center;color:#95a5a6">0</td>
+              <td style="text-align:center"><span style="background:#e67e22;color:#fff;border-radius:10px;padding:2px 9px;font-size:11px">181</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+function sw(id,idx){
+  var tp=document.getElementById(id);
+  tp.querySelectorAll('.m-tab').forEach(function(t,i){t.classList.toggle('act',i===idx)});
+  tp.querySelectorAll('.m-panel').forEach(function(p,i){p.classList.toggle('act',i===idx)});
+}
+</script>
+
+<!-- Key features modal -->
+<div id="modal-kf" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:999;align-items:center;justify-content:center" onclick="if(event.target===this)this.style.display='none'">
+  <div style="background:#fff;border-radius:8px;padding:28px 32px;max-width:560px;width:90%;color:#1a2a35;box-shadow:0 8px 32px rgba(0,0,0,.3)">
+    <h3 style="margin:0 0 14px;color:#2980b9">&#9733; Key features</h3>
+    <ul style="margin:0;padding-left:20px;line-height:1.8">
+      <li><strong>Extract</strong> reads every profile once; the pills then filter the result instantly, without calling the org again.</li>
+      <li><strong>Scope</strong> pills: Custom (default) or Standard. Clicking the active pill again shows all profiles. The Type column appears when the scope is not Custom.</li>
+      <li><strong>Usage</strong> pills: No active users (default), Unused, Inactive only, In use. Each pill shows its count.</li>
+      <li><strong>Status</strong> badge: Unused (nobody assigned, green row), Inactive users only (orange row), In use (active users still assigned).</li>
+      <li>Columns show licence, creation date, creator and the number of active and inactive users.</li>
+      <li>Select one or more rows, type the <strong>replacement profile</strong> (autocomplete) and click Delete: remaining users are moved first. The field is mandatory when a selected profile still has users.</li>
+      <li>The button shows the selection size (&laquo;Delete 2 selected&raquo;). If the org refuses some deletions, a popup lists the reasons, and the table is refreshed.</li>
+    </ul>
+    <div style="text-align:right;margin-top:18px">
+      <button class="cal-btn btn-d" onclick="document.getElementById('modal-kf').style.display='none'">Close</button>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

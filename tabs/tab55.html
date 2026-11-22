@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>CustomFields Usage — Calumet</title>
+<link rel="stylesheet" href="../shared.css">
+<style>
+.badge-type{display:inline-block;padding:1px 7px;border-radius:10px;font-size:10px;font-weight:700;white-space:nowrap;border:1px solid transparent}
+.badge-type-text{background:#d6eaf8;color:#1A5276;border-color:#aed6f1}
+.badge-type-number{background:#d5f5e3;color:#1a5226;border-color:#a9dfbf}
+.badge-type-date{background:#e8d5f5;color:#5b1aa6;border-color:#c4a9df}
+.badge-type-boolean{background:#fdebd0;color:#784212;border-color:#f0c994}
+.badge-type-picklist{background:#e67e22;color:#fff;border-color:#b8621a}
+.badge-type-relation{background:#2980b9;color:#fff;border-color:#1f6699}
+.badge-type-datetime{background:#c8d5f5;color:#1a2a7a;border-color:#a0b2e8}
+.badge-usage{display:inline-block;padding:1px 8px;border-radius:10px;font-size:10px;font-weight:700;white-space:nowrap;text-align:center;min-width:46px}
+.badge-usage-full{background:#27ae60;color:#fff}
+.badge-usage-good{background:#2ecc71;color:#fff}
+.badge-usage-medium{background:#e67e22;color:#fff}
+.badge-usage-low{background:#E74C3C;color:#fff}
+.badge-usage-empty{background:#bdc3c7;color:#fff}
+tr.pl-active td{color:#1a5226}
+tr.pl-inactive td{color:#888}
+.obj-info{font-weight:700;font-size:14px;color:#1A5276}
+.stats-bar{font-size:11px;color:#7f8c8d;font-style:italic}
+.stats-bar .sep{display:inline-block;width:1px;height:11px;background:#9AABBF;margin:0 8px;vertical-align:middle}
+.tbl-scroll{max-height:340px;overflow-y:auto}
+.cols{display:flex;gap:8px;align-items:flex-start}
+.cols .left{flex:0 0 230px;min-width:0}
+.cols .right{flex:1;min-width:0}
+.cols .detail{display:flex;gap:8px;align-items:flex-start}
+.cols .detail .main{flex:3;min-width:0}
+.cols .detail .side{flex:2;min-width:0}
+.pbox{border:1px solid #e2e8f0;border-radius:6px;padding:6px;margin-top:6px;font-size:11px;display:flex;flex-direction:column;gap:4px}
+.pbox .ttl{font-weight:700;color:#7c3aed}
+.hint{font-size:11px;font-weight:700;color:#1A5276;margin-bottom:4px}
+</style>
+</head>
+<body class="tab-page">
+
+<div class="sum">
+  <div class="sum-title">
+    <h2>CustomFields Usage</h2>
+    <span class="sum-badge">Tab 55</span>
+  </div>
+  <p class="sum-desc">
+    Analyse custom field usage broken down by Record Type to identify unused or underused fields.
+    <button class="cal-btn btn-d" style="margin-left:10px" onclick="document.getElementById('modal-kf').style.display='flex'">&#9733; Key features</button>
+  </p>
+</div>
+
+<div class="mockup-wrap">
+  <div class="mockup" style="padding:10px">
+    <div class="cols">
+
+      <div class="left">
+        <div style="font-size:12px;color:#334155;margin-bottom:6px">6 objects &nbsp;|&nbsp; 587&nbsp;416 records &nbsp;|&nbsp; 27.7 MB on disk &nbsp;|&nbsp; 2 stale</div>
+        <div class="hbox" style="gap:4px;align-items:center;margin-bottom:6px">
+          <input class="cal-tf cal-grow" readonly placeholder="Filter..." style="min-width:0">
+          <button class="cal-btn btn-d" data-tip="Delete the .ids files older than 30 days (the JSON analysis is kept). Frees disk.">Clean 3.2 MB</button>
+        </div>
+        <div class="hbox" style="gap:4px;align-items:center;margin-bottom:6px"><span style="color:#94a3b8;font-size:11px">Sort</span><span style="background:#2563eb;color:#fff;font-size:11px;padding:2px 10px;border-radius:4px;cursor:pointer">Name &#9650;</span><span style="background:#dce3e8;color:#64748b;font-size:11px;padding:2px 10px;border-radius:4px;cursor:pointer">Records</span><span style="background:#dce3e8;color:#64748b;font-size:11px;padding:2px 10px;border-radius:4px;cursor:pointer">Date</span></div>
+        <div style="border:1px solid #dce3e8;border-radius:4px;background:#fff;color:#1a2a35">
+<div style="background:#d6eaf8;border-bottom:1px solid #e2e8f0;padding:4px 6px"><div style="font-weight:700;font-size:13px">Account</div><div style="color:#64748b;font-size:11px">72 262 rec &nbsp;|&nbsp; 190 fld &nbsp;|&nbsp; 4.1 MB</div><div style="font-size:11px;color:#64748b;display:flex;align-items:center;gap:6px"><span style="width:8px;height:8px;border-radius:50%;background:#27ae60;display:inline-block"></span>today </div></div>
+<div style="border-bottom:1px solid #e2e8f0;padding:4px 6px"><div style="font-weight:700;font-size:13px">Case</div><div style="color:#64748b;font-size:11px">184 530 rec &nbsp;|&nbsp; 96 fld &nbsp;|&nbsp; 7.8 MB</div><div style="font-size:11px;color:#64748b;display:flex;align-items:center;gap:6px"><span style="width:8px;height:8px;border-radius:50%;background:#27ae60;display:inline-block"></span>3 d ago </div></div>
+<div style="border-bottom:1px solid #e2e8f0;padding:4px 6px"><div style="font-weight:700;font-size:13px">Contact</div><div style="color:#64748b;font-size:11px">141 007 rec &nbsp;|&nbsp; 74 fld &nbsp;|&nbsp; 5.2 MB</div><div style="font-size:11px;color:#64748b;display:flex;align-items:center;gap:6px"><span style="width:8px;height:8px;border-radius:50%;background:#27ae60;display:inline-block"></span>12 d ago <span style="background:#fde68a;color:#92400e;padding:1px 6px;border-radius:8px;font-size:10px;font-weight:700;cursor:pointer" data-tip="Click to list the fields added since the last analysis">+3 new</span></div></div>
+<div style="border-bottom:1px solid #e2e8f0;padding:4px 6px"><div style="font-weight:700;font-size:13px">Lead</div><div style="color:#64748b;font-size:11px">38 415 rec &nbsp;|&nbsp; 61 fld &nbsp;|&nbsp; 1.9 MB</div><div style="font-size:11px;color:#64748b;display:flex;align-items:center;gap:6px"><span style="width:8px;height:8px;border-radius:50%;background:#e67e22;display:inline-block"></span>2 mo ago </div></div>
+<div style="border-bottom:1px solid #e2e8f0;padding:4px 6px"><div style="font-weight:700;font-size:13px">Opportunity</div><div style="color:#64748b;font-size:11px">96 880 rec &nbsp;|&nbsp; 143 fld &nbsp;|&nbsp; 6.4 MB</div><div style="font-size:11px;color:#64748b;display:flex;align-items:center;gap:6px"><span style="width:8px;height:8px;border-radius:50%;background:#e67e22;display:inline-block"></span>5 mo ago <span style="background:#fde68a;color:#92400e;padding:1px 6px;border-radius:8px;font-size:10px;font-weight:700;cursor:pointer" data-tip="Click to list the fields added since the last analysis">+1 new</span></div></div>
+<div style="border-bottom:1px solid #e2e8f0;padding:4px 6px"><div style="font-weight:700;font-size:13px">Order</div><div style="color:#64748b;font-size:11px">54 322 rec &nbsp;|&nbsp; 52 fld &nbsp;|&nbsp; 2.3 MB</div><div style="font-size:11px;color:#64748b;display:flex;align-items:center;gap:6px"><span style="width:8px;height:8px;border-radius:50%;background:#E74C3C;display:inline-block"></span>1 y ago </div></div>
+
+        </div>
+
+        <div class="pbox">
+          <div class="ttl">Mass analysis (Premium)</div>
+          <div class="hbox" style="gap:6px;align-items:center">
+            <span>Min custom fields</span>
+            <input class="cal-tf" readonly value="3" style="width:46px" data-tip="Skip STANDARD objects with fewer than N custom fields (e.g. ContentVersion, EmailMessage). 1 = analyse every object that has any custom field. Applies to 'Analyse all objects' only.">
+          </div>
+          <label class="cal-chk" data-tip="Also apply the threshold to custom (__c) objects. Off (default) = every custom object with at least one custom field is analysed regardless of the threshold."><input type="checkbox" disabled> incl. custom objects</label>
+          <button class="cal-btn btn-b" data-tip="Analyse field usage on EVERY object. Heavy - consumes API. Sequential, cancellable.">Analyse all objects</button>
+          <button class="cal-btn btn-d" data-tip="Pick the objects to analyse (with record / field counts) and run on the selection.">Select objects</button>
+          <label class="cal-chk" data-tip="Reuse the record ids already computed on disk instead of re-extracting them (Bulk). Shown only when ids exist. Uncheck to force a fresh id extraction."><input type="checkbox" checked disabled> reuse existing ids</label>
+          <label class="cal-chk" data-tip="Recompute even objects already analysed. Off (default) = skip objects that already have an analysis."><input type="checkbox" disabled> re-analyse existing</label>
+          <label class="cal-chk" data-tip="Also analyse standard fields, not just custom ones (standard picklists are always included)."><input type="checkbox" disabled> include standard fields</label>
+          <label class="cal-chk" data-tip="Also analyse the fields of installed packages (managed). Their usage can be read; they cannot be edited or deleted."><input type="checkbox" disabled> include managed fields</label>
+          <label class="cal-chk" data-tip="Include Long Text Area fields in the mass analysis (slower)."><input type="checkbox" disabled> include long text</label>
+          <label class="cal-chk" data-tip="Delete ALL record-id (.ids) files once a mass analysis finishes. Frees disk; the ids are regenerable via a Bulk re-extract on the next run."><input type="checkbox" disabled> delete ids after analysis</label>
+        </div>
+
+        <div class="pbox">
+          <div class="ttl">Org sync (Premium)</div>
+          <button class="cal-btn btn-g" data-tip="Zip the analysis JSON cache and store it on this org as a single shared document (overwrites the previous one). Other Calumet instances can then Load it.">Publish to org</button>
+          <button class="cal-btn btn-b" data-tip="Download the shared analysis JSON from this org into the local cache (overwrites local files).">Load from org</button>
+        </div>
+      </div>
+
+      <div class="right">
+        <div class="hbox" style="gap:8px;align-items:center;margin-bottom:6px">
+          <span class="cal-lbl">Object</span>
+          <input class="cal-tf cal-grow" readonly value="Account" data-tip="Type an object name and select from autocomplete suggestions" style="max-width:220px">
+          <button class="cal-btn btn-b" data-tip="Load field metadata and last analysis results for this object">Display</button>
+          <div class="vsep"></div>
+          <span class="cal-lbl" style="color:#7f8c8d">Threads</span>
+          <button class="cal-btn btn-d" data-tip="Half of the recommended count - leaves CPU/RAM headroom for other apps">Eco (4)</button>
+          <button class="cal-btn btn-d" style="outline:2px solid #2980b9" data-tip="Recommendation based on this machine CPU cores, free heap and current load">Auto (8)</button>
+          <button class="cal-btn btn-d" data-tip="Pushes towards the Salesforce session cap (~25) - faster but heavier on the machine">Turbo (16)</button>
+          <input class="cal-tf" readonly value="8" style="width:46px" data-tip="Type a custom value to override the preset (max 25 - Salesforce session cap)">
+          <span style="color:#94a3b8;font-size:11px">12 cores | CPU 18% | heap 34% used (free 5120 MB)</span>
+        </div>
+
+        <div class="hbox" style="gap:10px;align-items:center;margin-bottom:4px">
+          <span class="obj-info">Account : 72&nbsp;262 records</span>
+          <select class="cal-cb" style="width:240px" data-tip="Filter analysis by RecordType">
+            <option>All</option><option>Standard</option><option>Premium</option><option>Partner</option><option>Reseller</option>
+          </select>
+          <div class="spacer"></div>
+          <button class="cal-btn btn-b" data-tip="Run the field usage analysis of this object: a window shows the options (pre-filled from the mass analysis settings) and lets you change them for this run">Analyse</button>
+          <button class="cal-btn btn-o" data-tip="Export analysis results to an Excel file">Export</button>
+        </div>
+
+        <div class="hbox stats-bar" style="gap:0;align-items:center;margin-bottom:8px">
+          <span>Last Analysis : 2026-05-03</span><span class="sep"></span>
+          <span>nb fields : 190</span><span class="sep"></span>
+          <span>execution : 0 mn 8 s</span>
+        </div>
+
+        <div class="detail">
+          <div class="main">
+            <div class="tbl-wrap tbl-scroll" data-tip="Click a row to see detail (usage by RecordType, plus value distribution for picklists) — double-click to open in Salesforce">
+              <table class="cal-tbl">
+                <thead><tr>
+                  <th style="width:130px">Field Name</th><th style="width:120px">Label</th><th style="width:90px">Type</th>
+                  <th style="width:70px;text-align:center">Usage</th><th style="width:70px;text-align:center">Percent</th><th style="width:70px;text-align:center">Score</th><th style="width:130px">Meta modified</th>
+                </tr></thead>
+                <tbody>
+<tr><td>Status__c</td><td>Status</td><td><span class="badge-type badge-type-picklist">picklist</span></td><td style="text-align:center">72&nbsp;262</td><td style="text-align:center"><span class="badge-usage badge-usage-full">100.0</span></td><td style="text-align:center"><span class="badge-usage badge-usage-full">100.0</span></td><td>2026-05-02 09:14:03</td></tr>
+<tr><td>Region__c</td><td>Account Region</td><td><span class="badge-type badge-type-picklist">picklist</span></td><td style="text-align:center">63&nbsp;381</td><td style="text-align:center"><span class="badge-usage badge-usage-good">87.7</span></td><td style="text-align:center"><span class="badge-usage badge-usage-good">87.7</span></td><td>2026-05-02 09:14:03</td></tr>
+<tr><td>Segment__c</td><td>Segment</td><td><span class="badge-type badge-type-picklist">picklist</span></td><td style="text-align:center">22&nbsp;202</td><td style="text-align:center"><span class="badge-usage badge-usage-medium">30.7</span></td><td style="text-align:center"><span class="badge-usage badge-usage-medium">30.7</span></td><td>2026-04-08 16:40:51</td></tr>
+<tr style="background:#d6eaf8"><td><strong>CustomerType__c</strong></td><td><strong>Customer Type</strong></td><td><span class="badge-type badge-type-picklist">picklist</span></td><td style="text-align:center">1&nbsp;183</td><td style="text-align:center"><span class="badge-usage badge-usage-low">1.6</span></td><td style="text-align:center"><span class="badge-usage badge-usage-low">1.6</span></td><td>2026-04-27 11:02:37</td></tr>
+<tr><td>AssignedTo__c</td><td>Assigned To</td><td><span class="badge-type badge-type-relation">reference</span></td><td style="text-align:center">72&nbsp;132</td><td style="text-align:center"><span class="badge-usage badge-usage-full">99.8</span></td><td style="text-align:center"><span class="badge-usage badge-usage-full">100.0</span></td><td>2026-05-02 09:14:03</td></tr>
+<tr><td>TotalAmount__c</td><td>Total Amount</td><td><span class="badge-type badge-type-number">currency</span></td><td style="text-align:center">71&nbsp;936</td><td style="text-align:center"><span class="badge-usage badge-usage-full">99.5</span></td><td style="text-align:center"><span class="badge-usage badge-usage-full">100.0</span></td><td>2026-05-02 09:14:03</td></tr>
+<tr><td>NextStepDate__c</td><td>Next Step Date</td><td><span class="badge-type badge-type-date">date</span></td><td style="text-align:center">26&nbsp;388</td><td style="text-align:center"><span class="badge-usage badge-usage-medium">36.5</span></td><td style="text-align:center"><span class="badge-usage badge-usage-medium">43.0</span></td><td>2026-04-28 13:25:10</td></tr>
+<tr><td>ContactEmail__c</td><td>Contact Email</td><td><span class="badge-type badge-type-text">email</span></td><td style="text-align:center">18&nbsp;940</td><td style="text-align:center"><span class="badge-usage badge-usage-medium">26.2</span></td><td style="text-align:center"><span class="badge-usage badge-usage-medium">30.0</span></td><td>2026-03-19 08:51:44</td></tr>
+<tr><td>MigrationDate__c</td><td>Migration Date</td><td><span class="badge-type badge-type-datetime">datetime</span></td><td style="text-align:center">44&nbsp;734</td><td style="text-align:center"><span class="badge-usage badge-usage-good">61.9</span></td><td style="text-align:center"><span class="badge-usage badge-usage-good">72.0</span></td><td>2026-05-01 17:33:20</td></tr>
+<tr><td>IsReviewed__c</td><td>Is Reviewed</td><td><span class="badge-type badge-type-boolean">boolean</span></td><td style="text-align:center">9&nbsp;114</td><td style="text-align:center"><span class="badge-usage badge-usage-low">12.6</span></td><td style="text-align:center"><span class="badge-usage badge-usage-low">14.0</span></td><td>2026-02-11 10:07:58</td></tr>
+<tr><td>LegacyCode__c</td><td>Legacy Code</td><td><span class="badge-type badge-type-text">string</span></td><td style="text-align:center">0</td><td style="text-align:center"><span class="badge-usage badge-usage-empty">0.0</span></td><td style="text-align:center"><span class="badge-usage badge-usage-empty">0.0</span></td><td>2025-11-03 15:48:12</td></tr>
+
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="side">
+            <div class="hint">Picklist values — Customer Type</div>
+            <div class="tbl-wrap">
+              <table class="cal-tbl">
+                <thead><tr><th>Label</th><th style="text-align:center">Usage</th><th style="text-align:center">Percent</th><th>Modified</th><th>Active</th><th>Default</th></tr></thead>
+                <tbody>
+<tr class="pl-active"><td><span style="color:#888;font-style:italic">(empty)</span></td><td style="text-align:center">70&nbsp;675</td><td style="text-align:center">97.8</td><td>2026-05-02</td><td></td><td></td></tr>
+<tr class="pl-active"><td>Direct</td><td style="text-align:center">437</td><td style="text-align:center">0.6</td><td>2026-01-11</td><td style="color:#27ae60;font-weight:700">true</td><td style="color:#888">false</td></tr>
+<tr class="pl-active"><td>Enterprise</td><td style="text-align:center">199</td><td style="text-align:center">0.28</td><td>2026-04-27</td><td style="color:#27ae60;font-weight:700">true</td><td style="color:#888">false</td></tr>
+<tr class="pl-active"><td>Government</td><td style="text-align:center">152</td><td style="text-align:center">0.21</td><td>2026-01-11</td><td style="color:#27ae60;font-weight:700">true</td><td style="color:#888">false</td></tr>
+<tr class="pl-active"><td>Non-Profit</td><td style="text-align:center">112</td><td style="text-align:center">0.15</td><td>2026-01-11</td><td style="color:#27ae60;font-weight:700">true</td><td style="color:#888">false</td></tr>
+<tr class="pl-active"><td>Reseller</td><td style="text-align:center">71</td><td style="text-align:center">0.10</td><td>2026-01-11</td><td style="color:#27ae60;font-weight:700">true</td><td style="color:#888">false</td></tr>
+<tr class="pl-inactive"><td>Legacy</td><td style="text-align:center">1</td><td style="text-align:center">0.0</td><td>2026-01-11</td><td style="color:#888">false</td><td style="color:#888">false</td></tr>
+
+                </tbody>
+              </table>
+            </div>
+            <div class="hint" style="margin-top:8px">Usage by RecordType — Customer Type</div>
+            <div class="tbl-wrap" data-tip="Usage of this field per RecordType. For a picklist, click a RecordType to see which values it uses (re-click the field to reset).">
+              <table class="cal-tbl">
+                <thead><tr><th>RecordType</th><th style="text-align:center">Usage</th><th style="text-align:center">Total</th></tr></thead>
+                <tbody>
+<tr><td>Standard</td><td style="text-align:center">1&nbsp;004</td><td style="text-align:center">60&nbsp;865</td></tr>
+<tr><td>Premium</td><td style="text-align:center">132</td><td style="text-align:center">2&nbsp;486</td></tr>
+<tr><td>Partner</td><td style="text-align:center">28</td><td style="text-align:center">4&nbsp;066</td></tr>
+<tr><td>Reseller</td><td style="text-align:center">15</td><td style="text-align:center">2&nbsp;467</td></tr>
+<tr><td>Non-Profit</td><td style="text-align:center">4</td><td style="text-align:center">339</td></tr>
+<tr><td>Other</td><td style="text-align:center">0</td><td style="text-align:center">1&nbsp;689</td></tr>
+
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <div class="hbox" style="gap:10px;align-items:center;margin-top:10px;padding:8px;border:1px solid #e2e8f0;border-radius:8px;background:#f8fafc;color:#1a2a35">
+          <span style="font-weight:700;font-size:12px">Analysing fields...</span>
+          <div style="width:260px;height:14px;background:#e2e8f0;border-radius:7px;overflow:hidden"><div style="width:58%;height:100%;background:#2980b9"></div></div>
+          <span style="font-size:12px;color:#475569">110 / 190 fields</span>
+          <div class="spacer"></div>
+          <span style="font-size:12px;color:#475569">42 req/s</span>
+          <span style="font-size:12px;color:#475569;font-weight:700">ETA 4 s</span>
+          <button class="cal-btn btn-d" data-tip="Open the floating monitor: org, objects, progress and Stop, whatever you do in the main window">Monitor</button>
+          <button class="cal-btn btn-d" data-tip="Stop the running analysis at the next chunk boundary">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="modal-kf" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:999;align-items:center;justify-content:center" onclick="if(event.target===this)this.style.display='none'">
+  <div style="background:#fff;border-radius:8px;padding:28px 32px;max-width:560px;width:90%;color:#1a2a35;box-shadow:0 8px 32px rgba(0,0,0,.3)">
+    <h3 style="margin:0 0 14px;color:#2980b9">&#9733; Key features</h3>
+    <ul style="margin:0;padding-left:20px;line-height:1.8">
+      <li>Left panel lists every object already analysed, with record and field counts, disk size, age and a "+N new" badge for fields added since</li>
+      <li>Sort the list by Name, Records or Date; click the active sort badge to flip its direction</li>
+      <li>Parallel analysis with Eco, Auto and Turbo thread presets (up to 25 sessions) and a live machine load indicator</li>
+      <li>Analyse options window pre-filled from the mass analysis settings: long text, standard fields, managed fields, record id reuse and cleanup</li>
+      <li>Usage, Percent and Score badges colour-coded from green (fully used) to red (rarely used) and grey (empty)</li>
+      <li>Select a field to see usage per Record Type and, for picklists, the usage of each value with active and default flags</li>
+      <li>Filter the whole analysis by Record Type; double-click a field to open it in Salesforce</li>
+      <li>Progress panel with throughput, ETA, floating monitor and Cancel; Export to Excel</li>
+      <li>Premium: mass analysis of all or selected objects, and publishing or loading the analysis cache on the org</li>
+    </ul>
+    <div style="text-align:right;margin-top:18px">
+      <button class="cal-btn btn-d" onclick="document.getElementById('modal-kf').style.display='none'">Close</button>
+    </div>
+  </div>
+</div>
+
+<script>
+function sw(id,idx){
+  var tp=document.getElementById(id);
+  tp.querySelectorAll('.m-tab').forEach(function(t,i){t.classList.toggle('act',i===idx)});
+  tp.querySelectorAll('.m-panel').forEach(function(p,i){p.classList.toggle('act',i===idx)});
+}
+</script>
+</body>
+</html>
